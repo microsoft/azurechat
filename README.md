@@ -1,6 +1,6 @@
 # Unleash the Power of Azure Open AI
 
-![](/images/Intro.png)
+![](/images/intro.png)
 
 # 📘 Prerequisites
 
