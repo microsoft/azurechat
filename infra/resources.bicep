@@ -32,7 +32,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
     siteConfig: {
       linuxFxVersion: 'node|18-lts'
       alwaysOn: true
-      appCommandLine: 'pm2 start /home/site/wwwroot/ecosystem.config.js --no-daemon'
+      appCommandLine: 'node server.js'
       appSettings: [
         {
           name: 'AZURE_COSMOSEDB_URI'
