@@ -5,8 +5,6 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: [main]
-    paths:
-      - ".github/workflows/open-ai-app.yml"
 
   # Allow mannually trigger
   workflow_dispatch:
@@ -29,14 +27,25 @@ jobs:
           npm install
           npm run build --if-present
 
-      - name: 🗃️ Zip all files for upload between jobs
-        run: zip next.zip ./* .next -qr
+      - name: 📂 Copy standalone into the root
+        run: cp -R .next/standalone ./site-deploy
 
-      - name: ⬆️ Upload artifact for deployment job
+      - name: 📂 Copy static into the .next folder
+        run: cp -R .next/static ./site-deploy/.next/static
+
+      - name: 📂 Copy Public folder
+        run: cp -R public ./site-deploy/public
+
+      - name: 📦 Package Next application
+        run: |
+          cd site-deploy
+          zip Nextjs-site.zip ./* .next -qr
+
+      - name: ⬆️ Publish Next Application artifact
         uses: actions/upload-artifact@v2
         with:
-          name: node-app
-          path: next.zip
+          name: Nextjs-site
+          path: ./site-deploy/Nextjs-site.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,7 +57,7 @@ jobs:
       - name: ⬇️ Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: node-app
+          name: Nextjs-site
 
       - name: 🗝️ Azure Login
         uses: azure/login@v1
@@ -60,7 +69,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.AZURE_APP_SERVICE_NAME }}
-          package: next.zip
+          package: ${{ github.workspace }}/Nextjs-site.zip
 
       - name: 🧹 Cleanup
-        run: rm next.zip
+        run: rm ${{ github.workspace }}/Nextjs-site.zip

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "13201574633679978239"
+      "templateHash": "1227993760546987884"
     }
   },
   "parameters": {
@@ -90,7 +90,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "1227160063320940710"
+              "templateHash": "4144097780865821807"
             }
           },
           "parameters": {
@@ -144,7 +144,7 @@
                 "siteConfig": {
                   "linuxFxVersion": "node|18-lts",
                   "alwaysOn": true,
-                  "appCommandLine": "pm2 start /home/site/wwwroot/ecosystem.config.js --no-daemon",
+                  "appCommandLine": "node server.js",
                   "appSettings": [
                     {
                       "name": "AZURE_COSMOSEDB_URI",
