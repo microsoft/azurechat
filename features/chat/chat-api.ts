@@ -19,7 +19,6 @@ export const PromptGPT = async (
   model: string
 ) => {
   const chatThread = await EnsureChatThreadIsForCurrentUser(threadID);
-
   const { content } = message as ChatMessageOutputModel;
   const _messages = await FindAllChats(threadID);
   await updateChatTitle(chatThread, _messages, model, content);

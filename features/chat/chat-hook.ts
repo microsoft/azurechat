@@ -18,6 +18,9 @@ export const useAzureOpenAIChat = (options: UseChatOptions = {}) => {
   const chatId = options.id!;
   const api = options.api || "/api/chat/" + chatId;
   const [messages, setMessages] = useState(options.messages || []);
+  const [lastMessage, setLastMessage] = useState<ChatMessageOutputModel | null>(
+    null
+  );
   const [body, setBody] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -38,7 +41,16 @@ export const useAzureOpenAIChat = (options: UseChatOptions = {}) => {
       isDeleted: false,
     };
 
+    setLastMessage(newUserMessage);
     await promptChat(newUserMessage);
+  };
+
+  const reTry = async () => {
+    if (!lastMessage) return;
+
+    const _messages = messages.filter((m) => m.id !== lastMessage.id);
+    setMessages(_messages);
+    await promptChat(lastMessage);
   };
 
   const handleInputChange = (e: any) => {
@@ -66,7 +78,7 @@ export const useAzureOpenAIChat = (options: UseChatOptions = {}) => {
       });
 
       if (!response.ok) {
-        throw new Error((await response.text()) || "Failed to fetch");
+        throw new Error(response.statusText);
       }
 
       const reader = response.body!.getReader();
@@ -166,5 +178,6 @@ export const useAzureOpenAIChat = (options: UseChatOptions = {}) => {
     stop,
     body,
     setBody,
+    reTry,
   };
 };
