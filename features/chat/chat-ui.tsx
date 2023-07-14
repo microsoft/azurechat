@@ -5,10 +5,12 @@ import ChatRow from "@/components/chat/chat-row";
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useAzureOpenAIChat } from "@/features/chat/chat-hook";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import { FC, useRef } from "react";
+import { FC, FormEvent, useRef } from "react";
 import { ChatMessageOutputModel } from "./chat-service";
 
 interface Prop {
@@ -27,13 +29,41 @@ export const ChatUI: FC<Prop> = (props) => {
     handleSubmit,
     isLoading,
     setBody,
-  } = useAzureOpenAIChat({ id: id, messages: props.chats });
+    reTry,
+  } = useAzureOpenAIChat({
+    id: id,
+    messages: props.chats,
+    onError,
+  });
+
+  const { toast } = useToast();
 
   const scrollRef = useRef<HTMLDivElement>(null);
   useChatScrollAnchor(messages, scrollRef);
 
+  function onError(error: Error) {
+    toast({
+      variant: "destructive",
+      description: error.message,
+      action: (
+        <ToastAction
+          altText="Try again"
+          onClick={() => {
+            reTry();
+          }}
+        >
+          Try again
+        </ToastAction>
+      ),
+    });
+  }
+
   const onValueChange = (value: string) => {
     setBody((e) => ({ ...e, model: value }));
+  };
+
+  const onHandleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    handleSubmit(e);
   };
 
   return (
@@ -74,7 +104,7 @@ export const ChatUI: FC<Prop> = (props) => {
         isLoading={isLoading}
         value={input}
         handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
+        handleSubmit={onHandleSubmit}
       />
     </Card>
   );
