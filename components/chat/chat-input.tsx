@@ -1,4 +1,4 @@
-import { Send } from "lucide-react";
+import { Loader, Send } from "lucide-react";
 import { FC, FormEvent, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
@@ -74,10 +74,15 @@ const ChatInput: FC<Props> = (props) => {
           <Button
             size="icon"
             type="submit"
+            variant={"ghost"}
             ref={buttonRef}
             disabled={props.isLoading}
           >
-            <Send size={16} />
+            {props.isLoading ? (
+              <Loader className="animate-spin" size={16} />
+            ) : (
+              <Send size={16} />
+            )}
           </Button>
         </div>
       </div>
