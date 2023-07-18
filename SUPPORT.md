@@ -1,11 +1,10 @@
 # Support
 
-## How to file issues and get help  
+## How to file issues and get help
 
-This project uses GitHub Issues to track bugs and feature requests. Please search the existing 
-issues before filing new issues to avoid duplicates.  For new issues, file your bug or 
-feature request as a new Issue.
+We use [GitHub issues](https://github.com/microsoft/azurechatgpt/issues) as an issue tracker for the repository. Firstly, please search in open issues and try to make sure your problem doesn't exist. If there is an issue, add your comments to this issue.
+If there are no issues yet, please open a new one.
 
-## Microsoft Support Policy  
+## Microsoft Support Policy
 
 Support for this **PROJECT or PRODUCT** is limited to the resources listed above.
