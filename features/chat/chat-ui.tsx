@@ -1,6 +1,7 @@
 "use client";
 
 import ChatInput from "@/components/chat/chat-input";
+import ChatLoading from "@/components/chat/chat-loading";
 import ChatRow from "@/components/chat/chat-row";
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor";
 import { Card } from "@/components/ui/card";
@@ -98,6 +99,7 @@ export const ChatUI: FC<Prop> = (props) => {
               key={index}
             />
           ))}
+          {isLoading && <ChatLoading />}
         </div>
       </div>
       <ChatInput
