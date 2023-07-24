@@ -1,10 +1,10 @@
 "use client";
 
-import { ChatMessageOutputModel } from "@/features/chat/chat-service";
+import { Message } from "ai";
 import { RefObject, useEffect } from "react";
 
 export const useChatScrollAnchor = (
-  chats: ChatMessageOutputModel[],
+  chats: Message[],
   ref: RefObject<HTMLDivElement>
 ) => {
   useEffect(() => {

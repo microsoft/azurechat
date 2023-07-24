@@ -27,9 +27,6 @@ const UserProfile = () => {
                 alt={session?.user?.name!}
               />
             </Avatar>
-            {/* <span className="text-sm font-medium leading-none capitalize">
-              {session?.user?.name!}
-            </span> */}
           </Button>
         </div>
       </DropdownMenuTrigger>

@@ -2,7 +2,7 @@
 import "server-only";
 
 import { userHashedId, userSession } from "@/features/auth/helpers";
-import { FindAllChats } from "@/features/chat/chat-service";
+import { ChatMessageModel, FindAllChats } from "@/features/chat/chat-service";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { nanoid } from "nanoid";
 import { memoryContainer } from "../common/cosmos";
@@ -76,17 +76,17 @@ export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
   if (threads.length !== 0) {
     const chats = await FindAllChats(chatThreadID);
 
-    threads.forEach(async (thread) => {
+    chats.forEach(async (chat) => {
       const itemToUpdate = {
-        ...thread,
+        ...chat,
       };
       itemToUpdate.isDeleted = true;
       await container.items.upsert(itemToUpdate);
     });
 
-    chats.forEach(async (chat) => {
+    threads.forEach(async (thread) => {
       const itemToUpdate = {
-        ...chat,
+        ...thread,
       };
       itemToUpdate.isDeleted = true;
       await container.items.upsert(itemToUpdate);
@@ -110,12 +110,27 @@ export const UpsertChatThread = async (chatThread: ChatThreadModel) => {
   return await container.items.upsert(chatThread);
 };
 
-export const CreateChatThread = async (chatThread: ChatThreadInputModel) => {
+export const updateChatThreadTitle = async (
+  chatThread: ChatThreadModel,
+  messages: ChatMessageModel[],
+  modelName: string,
+  userMessage: string
+) => {
+  if (messages.length === 0) {
+    await UpsertChatThread({
+      ...chatThread,
+      model: modelName,
+      name: userMessage.substring(0, 30),
+    });
+  }
+};
+
+export const CreateChatThread = async () => {
   const modelToSave: ChatThreadModel = {
-    name: chatThread.name,
+    name: "new chat",
     useName: (await userSession())!.name,
     userId: await userHashedId(),
-    model: chatThread.model,
+    model: "",
     id: nanoid(),
     createdAt: new Date(),
     isDeleted: false,
@@ -127,13 +142,10 @@ export const CreateChatThread = async (chatThread: ChatThreadInputModel) => {
   return response.resource;
 };
 
-export interface ChatThreadInputModel {
+export interface ChatThreadModel {
+  id: string;
   name: string;
   model: string;
-}
-
-export interface ChatThreadModel extends ChatThreadInputModel {
-  id: string;
   createdAt: Date;
   userId: string;
   useName: string;
