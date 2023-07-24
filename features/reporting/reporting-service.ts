@@ -1,5 +1,5 @@
 import { SqlQuerySpec } from "@azure/cosmos";
-import { ChatMessageOutputModel } from "../chat/chat-service";
+import { ChatMessageModel } from "../chat/chat-service";
 import { ChatThreadModel } from "../chat/chat-thread-service";
 import { memoryContainer } from "../common/cosmos";
 
@@ -71,7 +71,7 @@ export const FindAllChatsInThread = async (chatThreadID: string) => {
     ],
   };
   const { resources } = await container.items
-    .query<ChatMessageOutputModel>(querySpec)
+    .query<ChatMessageModel>(querySpec)
     .fetchAll();
   return resources;
 };

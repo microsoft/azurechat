@@ -2,8 +2,6 @@ import { ProtectedPage } from "@/features/auth/protected-page";
 import { ChatMenu } from "@/features/chat/chat-menu/chat-menu";
 import { MainMenu } from "@/features/menu/menu";
 
-export const revalidate = 0;
-
 export const metadata = {
   title: "AzureChatGPT",
   description: "AzureChatGPT",
