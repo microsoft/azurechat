@@ -1,3 +1,4 @@
+import { chatRole } from "@/features/chat/chat-service";
 import { cn } from "@/lib/utils";
 import { FC } from "react";
 import remarkGfm from "remark-gfm";
@@ -10,7 +11,7 @@ interface ChatRowProps {
   name: string;
   profilePicture: string;
   message: string;
-  type: "user" | "assistant" | "system";
+  type: chatRole;
 }
 
 const ChatRow: FC<ChatRowProps> = (props) => {
