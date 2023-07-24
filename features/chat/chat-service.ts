@@ -26,13 +26,15 @@ export const FindAllChats = async (chatThreadID: string) => {
       },
     ],
   };
+
   const { resources } = await container.items
-    .query<ChatMessageOutputModel>(querySpec)
+    .query<ChatMessageModel>(querySpec)
     .fetchAll();
+
   return resources;
 };
 
-export const UpsertChat = async (chatModel: ChatMessageInputModel) => {
+export const UpsertChat = async (chatModel: ChatMessageModel) => {
   const modelToSave: ChatMessageModel = {
     ...chatModel,
     id: nanoid(),
@@ -45,18 +47,45 @@ export const UpsertChat = async (chatModel: ChatMessageInputModel) => {
   await container.items.upsert(modelToSave);
 };
 
-export interface ChatMessageInputModel {
-  threadId: string;
-  content: string;
-  role: "system" | "user" | "assistant";
-}
+export const inertPromptAndResponse = async (
+  threadID: string,
+  userQuestion: string,
+  assistantResponse: string
+) => {
+  await UpsertChat({
+    ...newChatModel(),
+    content: userQuestion,
+    threadId: threadID,
+    role: "user",
+  });
+  await UpsertChat({
+    ...newChatModel(),
+    content: assistantResponse,
+    threadId: threadID,
+    role: "assistant",
+  });
+};
 
-export interface ChatMessageOutputModel extends ChatMessageInputModel {
+export const newChatModel = (): ChatMessageModel => {
+  return {
+    content: "",
+    threadId: "",
+    role: "user",
+    id: nanoid(),
+    createdAt: new Date(),
+    type: "CHAT_MESSAGE",
+    isDeleted: false,
+  };
+};
+
+export interface ChatMessageModel {
   id: string;
   createdAt: Date;
   isDeleted: boolean;
-}
-
-interface ChatMessageModel extends ChatMessageOutputModel {
+  threadId: string;
+  content: string;
+  role: chatRole;
   type: "CHAT_MESSAGE";
 }
+
+export type chatRole = "system" | "user" | "assistant" | "function";

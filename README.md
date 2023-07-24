@@ -33,7 +33,7 @@ AzureChatGPT is built with the following technologies.
 
 # 💙 One click Azure deployment
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fazurechatgpt%2Fmain%2Finfra%2Fmain.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthivy%2Fazure-chatgpt%2Fmain%2Finfra%2Fmain.json)
 
 Click on the Deploy to Azure button and configure your settings in the Azure Portal as described in the [Environment variables](#🔑-environment-variables) section.
 

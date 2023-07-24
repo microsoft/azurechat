@@ -9,10 +9,7 @@ export const NewChat = () => {
   const router = useRouter();
   const startNewChat = async () => {
     try {
-      const newChatThread = await CreateChatThread({
-        name: "New Chat",
-        model: "GPT-3.5",
-      });
+      const newChatThread = await CreateChatThread();
       if (newChatThread) {
         router.push("/chat/" + newChatThread.id);
         router.refresh();

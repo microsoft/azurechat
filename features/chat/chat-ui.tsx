@@ -8,36 +8,41 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
-import { useAzureOpenAIChat } from "@/features/chat/chat-hook";
+import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import { FC, FormEvent, useRef } from "react";
-import { ChatMessageOutputModel } from "./chat-service";
+import { FC, FormEvent, useRef, useState } from "react";
+import { PromptGPTBody } from "./chat-api-helpers";
+import { transformCosmosToAIModel } from "./chat-helpers";
+import { ChatMessageModel } from "./chat-service";
 
 interface Prop {
-  chats: Array<ChatMessageOutputModel>;
+  chats: Array<ChatMessageModel>;
   model: string;
 }
 
 export const ChatUI: FC<Prop> = (props) => {
   const { id } = useParams();
   const { data: session } = useSession();
+  const [chatBody, setBody] = useState<PromptGPTBody>({
+    id: id,
+    model: "GPT-3.5",
+  });
 
+  const { toast } = useToast();
   const {
     messages,
     input,
     handleInputChange,
     handleSubmit,
+    reload,
     isLoading,
-    setBody,
-    reTry,
-  } = useAzureOpenAIChat({
-    id: id,
-    messages: props.chats,
+  } = useChat({
     onError,
+    id,
+    body: chatBody,
+    initialMessages: transformCosmosToAIModel(props.chats),
   });
-
-  const { toast } = useToast();
 
   const scrollRef = useRef<HTMLDivElement>(null);
   useChatScrollAnchor(messages, scrollRef);
@@ -50,7 +55,7 @@ export const ChatUI: FC<Prop> = (props) => {
         <ToastAction
           altText="Try again"
           onClick={() => {
-            reTry();
+            reload();
           }}
         >
           Try again
