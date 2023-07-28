@@ -1,3 +1,4 @@
+import { ChatMessageModel } from "@/features/chat/chat-service";
 import { CosmosClient } from "@azure/cosmos";
 import {
   AIMessage,
@@ -6,8 +7,6 @@ import {
 } from "langchain/schema";
 import { nanoid } from "nanoid";
 import {
-  ChatMessageModel,
-  MESSAGE_ATTRIBUTE,
   addChatMessage,
   getChatMessages,
   initChatContainer,
@@ -48,11 +47,7 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
   }
 
   async getMessages(): Promise<BaseMessage[]> {
-    const resources = await getChatMessages(
-      this.sessionId,
-      await this.getContainer()
-    );
-
+    const resources = await getChatMessages(this.sessionId);
     return mapStoredMessagesToChatMessages(resources);
   }
 
@@ -65,17 +60,15 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
     const modelToSave: ChatMessageModel = {
       id: nanoid(),
       createdAt: new Date(),
-      type: MESSAGE_ATTRIBUTE,
+      type: "CHAT_MESSAGE",
       isDeleted: false,
-      data: {
-        content: message.content,
-        name: this.userId,
-        role: message instanceof AIMessage ? "ai" : "human",
-      },
-      sessionId: this.sessionId,
+      content: message.content,
+      role: message instanceof AIMessage ? "assistant" : "user",
+      threadId: this.sessionId,
+      userId: this.userId,
     };
 
-    await addChatMessage(modelToSave, await this.getContainer());
+    await addChatMessage(modelToSave);
   }
 
   getContainer = async () => {

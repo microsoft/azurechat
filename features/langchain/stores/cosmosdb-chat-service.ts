@@ -1,14 +1,10 @@
-import { Container, CosmosClient, SqlQuerySpec } from "@azure/cosmos";
+import {
+  ChatMessageModel,
+  FindAllChats,
+  UpsertChat,
+} from "@/features/chat/chat-service";
+import { CosmosClient } from "@azure/cosmos";
 import { StoredMessage } from "langchain/schema";
-
-export interface ChatMessageModel extends StoredMessage {
-  id: string;
-  createdAt: Date;
-  isDeleted: boolean;
-  sessionId: string;
-}
-
-export const MESSAGE_ATTRIBUTE = "CHAT_MESSAGE";
 
 export interface CosmosDBClientConfig {
   db: string;
@@ -35,39 +31,24 @@ export const initChatContainer = async (
 };
 
 export const getChatMessages = async (
-  sessionId: string,
-  container: Container
-) => {
-  const querySpec: SqlQuerySpec = {
-    query:
-      "SELECT * FROM root r WHERE r.type=@type AND r.sessionId=@sessionId AND r.isDeleted=@isDeleted",
-    parameters: [
-      {
-        name: "@type",
-        value: MESSAGE_ATTRIBUTE,
+  sessionId: string
+): Promise<StoredMessage[]> => {
+  const items = await FindAllChats(sessionId);
+  const ms: StoredMessage[] = [];
+  items.forEach((item) => {
+    ms.push({
+      type: "CHAT_MESSAGE",
+      data: {
+        content: item.content,
+        role: item.role === "user" ? "human" : "ai",
+        name: item.userId,
       },
-      {
-        name: "@sessionId",
-        value: sessionId,
-      },
-      {
-        name: "@isDeleted",
-        value: false,
-      },
-    ],
-  };
+    });
+  });
 
-  const { resources } = await container.items
-    .query<ChatMessageModel>(querySpec)
-    .fetchAll();
-
-  return resources;
+  return ms;
 };
 
-export const addChatMessage = async (
-  modelToSave: ChatMessageModel,
-  container: Container
-) => {
-  const { resource } = await container.items.upsert(modelToSave);
-  return resource;
+export const addChatMessage = async (modelToSave: ChatMessageModel) => {
+  return await UpsertChat(modelToSave);
 };
