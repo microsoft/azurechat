@@ -4,16 +4,16 @@
 
 # 📘 Prerequisites
 
-1. [Azure OpenAI](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/): To deploy and run AzureChatGPT, you'll need an Azure subscription with access to the Azure OpenAI service. Request access [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu). Once you have access, follow the instructions in this [link](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) to deploy the gpt-35-turbo or gpt-4 models.
+1. [Azure OpenAI](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/): To deploy and run ChatGPT on Azure, you'll need an Azure subscription with access to the Azure OpenAI service. Request access [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu). Once you have access, follow the instructions in this [link](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) to deploy the gpt-35-turbo or gpt-4 models.
 
 2. Setup GitHub or Azure AD for Authentication:
-   The [Add an identity provider](#🪪-add-an-identity-provider) section below shows how to configure authentication providers.
+   The [Add an identity provider](#add-an-identity-provider) section below shows how to configure authentication providers.
 
    💡Note: You can configure the authentication provider to your identity solution using [NextAuth providers](https://next-auth.js.org/providers/)
 
 # 👋🏻 Introduction
 
-AzureChatGPT is built with the following technologies.
+ChatGPT on Azure is built with the following technologies.
 
 [Node.js 18](https://nodejs.org/en): an open-source, cross-platform JavaScript runtime environment.
 
@@ -122,6 +122,42 @@ Once the deployment is complete, you will need to add an identity provider to au
 
 ⚠️ Note: Only one of the identity provider is required below.
 
+## GitHub Authentication provider
+
+We'll create two GitHub apps: one for testing locally and another for production.
+
+### 🟡 Development app setup
+
+1. Navigate to GitHub OAuth Apps setup https://github.com/settings/developers
+2. Create a `New OAuth App` https://github.com/settings/applications/new
+3. Fill in the following details
+
+```
+Application name: Azure ChatGPT DEV Environment
+Homepage URL:http://localhost:3000/
+Authorization callback URL:http://localhost:3000/api/auth/callback/github/
+```
+
+### 🟢 Production app setup
+
+1. Navigate to GitHub OAuth Apps setup https://github.com/settings/developers
+2. Create a `New OAuth App` https://github.com/settings/applications/new
+3. Fill in the following details
+
+```
+Application name: Azure ChatGPT Production
+Homepage URL:https://YOUR-WEBSITE-NAME.azurewebsites.net/
+Authorization callback URL:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/github/
+```
+
+⚠️ Once the apps are setup, ensure to update the environment variables locally and on Azure App Service.
+
+```
+   # github OAuth app configuration
+   AUTH_GITHUB_ID=
+   AUTH_GITHUB_SECRET=
+```
+
 ## Azure AD Authentication provider
 
 ### 🟡 Development app setup
@@ -131,7 +167,7 @@ Once the deployment is complete, you will need to add an identity provider to au
 3. Fill in the following details
 
 ```
-Application name: AzureChatGPT DEV Environment
+Application name: Azure ChatGPT DEV Environment
 Supported account types: Accounts in this organizational directory only
 Redirect URI Platform: Web
 Redirect URI:http://localhost:3000/api/auth/callback/azure-ad/
@@ -144,7 +180,7 @@ Redirect URI:http://localhost:3000/api/auth/callback/azure-ad/
 3. Fill in the following details
 
 ```
-Application name: AzureChatGPT Production
+Application name: Azure ChatGPT Production
 Supported account types: Accounts in this organizational directory only
 Redirect URI Platform: Web
 Redirect URI:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure-ad/
@@ -158,42 +194,6 @@ Redirect URI:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure
 AZURE_AD_CLIENT_ID=
 AZURE_AD_CLIENT_SECRET=
 AZURE_AD_TENANT_ID=
-```
-
-## GitHub Authentication provider
-
-We'll create two GitHub apps: one for testing locally and another for production.
-
-### 🟡 Development app setup
-
-1. Navigate to GitHub OAuth Apps setup https://github.com/settings/developers
-2. Create a `New OAuth App` https://github.com/settings/applications/new
-3. Fill in the following details
-
-```
-Application name: AzureChatGPT DEV Environment
-Homepage URL:http://localhost:3000/
-Authorization callback URL:http://localhost:3000/api/auth/callback/github/
-```
-
-### 🟢 Production app setup
-
-1. Navigate to GitHub OAuth Apps setup https://github.com/settings/developers
-2. Create a `New OAuth App` https://github.com/settings/applications/new
-3. Fill in the following details
-
-```
-Application name: AzureChatGPT Production
-Homepage URL:https://YOUR-WEBSITE-NAME.azurewebsites.net/
-Authorization callback URL:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/github/
-```
-
-⚠️ Once the apps are setup, ensure to update the environment variables locally and on Azure App Service.
-
-```
-   # github OAuth app configuration
-   AUTH_GITHUB_ID=
-   AUTH_GITHUB_SECRET=
 ```
 
 # 🔑 Environment variables
