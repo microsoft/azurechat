@@ -14,7 +14,7 @@ export const FindAllChats = async (chatThreadID: string) => {
     parameters: [
       {
         name: "@type",
-        value: "CHAT_MESSAGE",
+        value: MESSAGE_ATTRIBUTE,
       },
       {
         name: "@threadId",
@@ -39,7 +39,7 @@ export const UpsertChat = async (chatModel: ChatMessageModel) => {
     ...chatModel,
     id: nanoid(),
     createdAt: new Date(),
-    type: "CHAT_MESSAGE",
+    type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
   };
 
@@ -71,9 +71,10 @@ export const newChatModel = (): ChatMessageModel => {
     content: "",
     threadId: "",
     role: "user",
+    userId: "",
     id: nanoid(),
     createdAt: new Date(),
-    type: "CHAT_MESSAGE",
+    type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
   };
 };
@@ -83,9 +84,12 @@ export interface ChatMessageModel {
   createdAt: Date;
   isDeleted: boolean;
   threadId: string;
+  userId: string;
   content: string;
   role: chatRole;
   type: "CHAT_MESSAGE";
 }
 
 export type chatRole = "system" | "user" | "assistant" | "function";
+
+const MESSAGE_ATTRIBUTE = "CHAT_MESSAGE";
