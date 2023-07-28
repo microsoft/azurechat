@@ -1,6 +1,6 @@
 import { LangChainStream, StreamingTextResponse } from "ai";
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { HumanMessage, LLMResult, SystemMessage } from "langchain/schema";
+import { HumanMessage, SystemMessage } from "langchain/schema";
 import { PromptGPTProps, initAndGuardChatSession } from "./chat-api-helpers";
 import { mostRecentMemory } from "./chat-helpers";
 import { inertPromptAndResponse } from "./chat-service";
@@ -8,7 +8,11 @@ import { inertPromptAndResponse } from "./chat-service";
 export const PromptGPT = async (props: PromptGPTProps) => {
   const { lastHumanMessage, id, chats } = await initAndGuardChatSession(props);
 
-  const { stream, handlers } = LangChainStream();
+  const { stream, handlers } = LangChainStream({
+    onCompletion: async (completion: string) => {
+      await inertPromptAndResponse(id, lastHumanMessage.content, completion);
+    },
+  });
 
   const memory = mostRecentMemory(chats, 10);
 
@@ -26,24 +30,7 @@ export const PromptGPT = async (props: PromptGPTProps) => {
       new HumanMessage(lastHumanMessage.content),
     ],
     {},
-    [
-      {
-        ...handlers,
-        handleLLMEnd: async (
-          output: LLMResult,
-          runId: string,
-          parentRunId?: string | undefined,
-          tags?: string[] | undefined
-        ) => {
-          await handlers.handleLLMEnd(output, runId);
-          await inertPromptAndResponse(
-            id,
-            lastHumanMessage.content,
-            output.generations[0][0].text
-          );
-        },
-      },
-    ]
+    [handlers]
   );
 
   return new StreamingTextResponse(stream);

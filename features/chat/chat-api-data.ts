@@ -8,7 +8,6 @@ import {
   HumanMessagePromptTemplate,
   SystemMessagePromptTemplate,
 } from "langchain/prompts";
-import { ChainValues } from "langchain/schema";
 import {
   AzureCogDocument,
   AzureCogSearch,
@@ -32,12 +31,18 @@ export const PromptDataGPT = async (props: PromptGPTProps) => {
     streaming: true,
   });
 
-  const relevantDocuments = findRelevantDocuments(lastHumanMessage.content);
+  const relevantDocuments = await findRelevantDocuments(
+    lastHumanMessage.content
+  );
 
   const chain = loadQAMapReduceChain(chatModel, {
     combinePrompt: defineSystemPrompt(),
   });
-  const { stream, handlers } = LangChainStream();
+  const { stream, handlers } = LangChainStream({
+    onCompletion: async (completion: string) => {
+      await inertPromptAndResponse(id, lastHumanMessage.content, completion);
+    },
+  });
 
   const memory = buildMemory(chats);
 
@@ -47,24 +52,7 @@ export const PromptDataGPT = async (props: PromptGPTProps) => {
       question: lastHumanMessage.content,
       memory: memory,
     },
-    [
-      {
-        ...handlers,
-        handleChainEnd: async (
-          outputs: ChainValues,
-          runId: string,
-          parentRunId?: string,
-          tags?: string[]
-        ) => {
-          await handlers.handleChainEnd(outputs, runId);
-          await inertPromptAndResponse(
-            id,
-            lastHumanMessage.content,
-            outputs.text
-          );
-        },
-      },
-    ]
+    [handlers]
   );
 
   return new StreamingTextResponse(stream);
