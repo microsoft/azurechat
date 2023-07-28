@@ -12,7 +12,7 @@ export function mapStoredMessagesToChatMessages(
   messages: StoredMessage[]
 ): BaseMessage[] {
   return messages.map((message) => {
-    switch (message.type) {
+    switch (message.data.role) {
       case "human":
         return new HumanMessage(message.data);
       case "ai":
@@ -21,7 +21,7 @@ export function mapStoredMessagesToChatMessages(
         return new SystemMessage(message.data);
       case "chat": {
         if (message.data.role === undefined) {
-          throw new Error("Role must be defined for chat messages");
+          // throw new Error("Role must be defined for chat messages");
         }
         return new ChatMessage(message.data as ChatMessageFieldsWithRole);
       }

@@ -1,16 +1,12 @@
 import { Container, CosmosClient, SqlQuerySpec } from "@azure/cosmos";
+import { StoredMessage } from "langchain/schema";
 
-export interface ChatMessageModel {
+export interface ChatMessageModel extends StoredMessage {
   id: string;
   createdAt: Date;
   isDeleted: boolean;
-  name: string;
-  content: string;
-  role: chatRole | string;
-  type: string;
+  sessionId: string;
 }
-
-export type chatRole = "system" | "user" | "assistant" | "function";
 
 export const MESSAGE_ATTRIBUTE = "CHAT_MESSAGE";
 
@@ -44,7 +40,7 @@ export const getChatMessages = async (
 ) => {
   const querySpec: SqlQuerySpec = {
     query:
-      "SELECT * FROM root r WHERE r.type=@type AND r.sessionId = @sessionId AND r.isDeleted=@isDeleted",
+      "SELECT * FROM root r WHERE r.type=@type AND r.sessionId=@sessionId AND r.isDeleted=@isDeleted",
     parameters: [
       {
         name: "@type",
@@ -72,5 +68,6 @@ export const addChatMessage = async (
   modelToSave: ChatMessageModel,
   container: Container
 ) => {
-  await container.items.upsert(modelToSave);
+  const { resource } = await container.items.upsert(modelToSave);
+  return resource;
 };

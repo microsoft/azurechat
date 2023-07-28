@@ -1,9 +1,9 @@
 import { CosmosClient } from "@azure/cosmos";
 import {
+  AIMessage,
   BaseListChatMessageHistory,
   BaseMessage,
-  StoredMessage,
-} from "langchain/schema.js";
+} from "langchain/schema";
 import { nanoid } from "nanoid";
 import {
   ChatMessageModel,
@@ -12,10 +12,7 @@ import {
   getChatMessages,
   initChatContainer,
 } from "./cosmosdb-chat-service";
-import {
-  mapChatMessagesToStoredMessages,
-  mapStoredMessagesToChatMessages,
-} from "./utils";
+import { mapStoredMessagesToChatMessages } from "./utils";
 
 export interface CosmosDBClientConfig {
   db: string;
@@ -56,33 +53,26 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
       await this.getContainer()
     );
 
-    const response: StoredMessage[] = [];
-
-    resources.forEach((doc) => {
-      response.push({
-        type: MESSAGE_ATTRIBUTE,
-        data: doc,
-      });
-    });
-
-    return mapStoredMessagesToChatMessages(response);
+    return mapStoredMessagesToChatMessages(resources);
   }
 
   async clear(): Promise<void> {
-    // const container = await this.init();
-    // container.delete();
+    const container = await this.getContainer();
+    await container.delete();
   }
 
   protected async addMessage(message: BaseMessage) {
-    const messages = mapChatMessagesToStoredMessages([message]);
     const modelToSave: ChatMessageModel = {
       id: nanoid(),
       createdAt: new Date(),
       type: MESSAGE_ATTRIBUTE,
       isDeleted: false,
-      content: message.content,
-      name: this.userId,
-      role: messages[0].data.role ?? "",
+      data: {
+        content: message.content,
+        name: this.userId,
+        role: message instanceof AIMessage ? "ai" : "human",
+      },
+      sessionId: this.sessionId,
     };
 
     await addChatMessage(modelToSave, await this.getContainer());
