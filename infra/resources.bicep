@@ -64,7 +64,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'NEXTAUTH_URL'
-          value: '${name}-app-${resourceToken}.azurewebsites.net'
+          value: 'https://${name}-app-${resourceToken}.azurewebsites.net'
         }
       ]
     }
