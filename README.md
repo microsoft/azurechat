@@ -59,7 +59,7 @@ Please see the [section below](#🪪-add-an-identity-provider) for important inf
 
 # 👨🏻‍💻 Run from your local machine
 
-Clone this repository locally or fork to your Github account.
+Clone this repository locally or fork to your Github account. Run all of the the steps below from the "src" directory.
 
 1. Create a new file named `.env.local` to store the environment variables add the following variables
 
