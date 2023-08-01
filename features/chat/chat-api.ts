@@ -10,16 +10,11 @@ import {
 import { userHashedId } from "../auth/helpers";
 import { CosmosDBChatMessageHistory } from "../langchain/stores/cosmosdb";
 import { PromptGPTProps, initAndGuardChatSession } from "./chat-api-helpers";
-import { inertPromptAndResponse } from "./chat-service";
 
 export const PromptGPT = async (props: PromptGPTProps) => {
   const { lastHumanMessage, id } = await initAndGuardChatSession(props);
 
-  const { stream, handlers } = LangChainStream({
-    onCompletion: async (completion: string) => {
-      await inertPromptAndResponse(id, lastHumanMessage.content, completion);
-    },
-  });
+  const { stream, handlers } = LangChainStream();
 
   const userId = await userHashedId();
 
