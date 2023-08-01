@@ -1,5 +1,21 @@
 # Unleash the Power of Azure Open AI
 
+ChatGPT has grown explosively in popularity as we all know now. Business users across the globe often tap into the public service to work more productively or act as a creative assistant.
+
+However, ChatGPT risks exposing confidential intellectual property. One option is to block corporate access to ChatGPT, but people always find workarounds. This also limits the powerful capabilities of ChatGPT and reduces employee productivity and their work experience.
+
+Azure ChatGPT is our enterprise option. This is the exact same service but offered as your private ChatGPT.
+
+### Benefits are:
+
+**1. Private:** Built-in guarantees around the privacy of your data and fully isolated from those operated by OpenAI.
+
+**2. Controlled:** Network traffic can be fully isolated to your network and other enterprise grade security controls are built in.
+
+**3. Value:** Deliver added business value with your own internal data sources (plug and play) or use plug-ins to integrate with your internal services (e.g., ServiceNow, etc).
+
+We've built a Solution Accelerator to empower your workforce with Azure ChatGPT.
+
 ![](/images/intro.png)
 
 # 📘 Prerequisites
@@ -13,13 +29,15 @@
 
 # 👋🏻 Introduction
 
-ChatGPT on Azure is built with the following technologies.
+Azure ChatGPT is built with the following technologies.
 
 [Node.js 18](https://nodejs.org/en): an open-source, cross-platform JavaScript runtime environment.
 
 [Next.js 13](https://nextjs.org/docs): enables you to create full-stack web applications by extending the latest React features
 
 [NextAuth.js](https://next-auth.js.org/): configurable authentication framework for Next.js 13
+
+[LangChain JS](https://www.langchain.com/): AI orchestration layer to build intelligent apps
 
 [Tailwind CSS](https://tailwindcss.com/): is a utility-first CSS framework that provides a series of predefined classes that can be used to style each element by mixing and matching
 
