@@ -188,7 +188,7 @@ Authorization callback URL:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/
 Application name: Azure ChatGPT DEV Environment
 Supported account types: Accounts in this organizational directory only
 Redirect URI Platform: Web
-Redirect URI:http://localhost:3000/api/auth/callback/azure-ad/
+Redirect URI:http://localhost:3000/api/auth/callback/azure-ad
 ```
 
 ### 🟢 Production app setup
@@ -201,7 +201,7 @@ Redirect URI:http://localhost:3000/api/auth/callback/azure-ad/
 Application name: Azure ChatGPT Production
 Supported account types: Accounts in this organizational directory only
 Redirect URI Platform: Web
-Redirect URI:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure-ad/
+Redirect URI:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure-ad
 ```
 
 ⚠️ Once the apps are setup, ensure to update the environment variables locally and on Azure App Service.
