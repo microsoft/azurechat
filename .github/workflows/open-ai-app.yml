@@ -12,9 +12,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./src
 
     steps:
       - name: 🌱 Checkout to the branch
@@ -27,17 +24,18 @@ jobs:
 
       - name: ⚙️ npm install and build
         run: |
+          cd src
           npm install
           npm run build --if-present
 
       - name: 📂 Copy standalone into the root
-        run: cp -R .next/standalone ./site-deploy
+        run: cp -R src/.next/standalone ./site-deploy
 
       - name: 📂 Copy static into the .next folder
-        run: cp -R .next/static ./site-deploy/.next/static
+        run: cp -R src/.next/static ./site-deploy/.next/static
 
       - name: 📂 Copy Public folder
-        run: cp -R public ./site-deploy/public
+        run: cp -R src/public ./site-deploy/public
 
       - name: 📦 Package Next application
         run: |
@@ -48,13 +46,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Nextjs-site
-          path: ./site-deploy/Nextjs-site.zip
+          path: ./srcsite-deploy/Nextjs-site.zip
 
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./src
     needs: build
     environment:
       name: "Production"
