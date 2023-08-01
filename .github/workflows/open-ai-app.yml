@@ -41,13 +41,19 @@ jobs:
       - name: 📦 Package Next application
         run: |
           cd ./site-deploy
-          zip Nextjs-site.zip ./* .next -qr           
+          zip Nextjs-site.zip ./* .next -qr      
+          
+      - name: Diagnostics
+        run: |
+          ls ./src
+          ls ./src/.next
+          ls ./site-deploy
 
       - name: ⬆️ Publish Next Application artifact
         uses: actions/upload-artifact@v2
         with:
           name: Nextjs-site
-          path: ./src/site-deploy/Nextjs-site.zip
+          path: ./site-deploy/Nextjs-site.zip
 
   deploy:
     runs-on: ubuntu-latest
