@@ -24,18 +24,18 @@ jobs:
 
       - name: ⚙️ npm install and build
         run: |
-          cd src
+          cd ./src
           npm install
           npm run build --if-present
 
       - name: 📂 Copy standalone into the root
-        run: cp -R src/.next/standalone ./site-deploy
+        run: cp -R ./src/.next/standalone ./site-deploy
 
       - name: 📂 Copy static into the .next folder
-        run: cp -R src/.next/static ./site-deploy/.next/static
+        run: cp -R ./src/.next/static ./site-deploy/.next/static
 
       - name: 📂 Copy Public folder
-        run: cp -R src/public ./site-deploy/public
+        run: cp -R ./src/public ./site-deploy/public
 
       - name: 📦 Package Next application
         run: |
