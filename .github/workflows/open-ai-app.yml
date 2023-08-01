@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Nextjs-site
-          path: ./site-deploy/Nextjs-site.zip
+          path: ../site-deploy/Nextjs-site.zip
 
   deploy:
     runs-on: ubuntu-latest
