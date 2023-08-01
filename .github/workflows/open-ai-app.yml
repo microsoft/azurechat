@@ -27,6 +27,7 @@ jobs:
           cd ./src
           npm install
           npm run build --if-present
+          cd ..
 
       - name: 📂 Copy standalone into the root
         run: cp -R ./src/.next/standalone ./site-deploy
@@ -39,14 +40,14 @@ jobs:
 
       - name: 📦 Package Next application
         run: |
-          cd site-deploy
-          zip Nextjs-site.zip ./* .next -qr
+          cd ./site-deploy
+          zip Nextjs-site.zip ./* .next -qr           
 
       - name: ⬆️ Publish Next Application artifact
         uses: actions/upload-artifact@v2
         with:
           name: Nextjs-site
-          path: ./srcsite-deploy/Nextjs-site.zip
+          path: ./src/site-deploy/Nextjs-site.zip
 
   deploy:
     runs-on: ubuntu-latest
