@@ -1,10 +1,11 @@
 import { LangChainStream, StreamingTextResponse } from "ai";
 import { ConversationChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { BufferMemory } from "langchain/memory";
+import { BufferWindowMemory } from "langchain/memory";
 import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
+  MessagesPlaceholder,
   SystemMessagePromptTemplate,
 } from "langchain/prompts";
 import { userHashedId } from "../auth/helpers";
@@ -23,7 +24,10 @@ export const PromptGPT = async (props: PromptGPTProps) => {
     streaming: true,
   });
 
-  const memory = new BufferMemory({
+  const memory = new BufferWindowMemory({
+    k: 100,
+    returnMessages: true,
+    memoryKey: "history",
     chatHistory: new CosmosDBChatMessageHistory({
       sessionId: id,
       userId: userId,
@@ -37,28 +41,22 @@ export const PromptGPT = async (props: PromptGPTProps) => {
     }),
   });
 
+  const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+    SystemMessagePromptTemplate.fromTemplate(
+      `-You are Azure ChatGPT who is a helpful AI Assistant.
+      - You will provide clear and concise queries, and you will respond with polite and professional answers.
+      - You will answer questions truthfully and accurately.`
+    ),
+    new MessagesPlaceholder("history"),
+    HumanMessagePromptTemplate.fromTemplate("{input}"),
+  ]);
   const chain = new ConversationChain({
     llm: chat,
     memory,
-    prompt: defineSystemPrompt(),
+    prompt: chatPrompt,
   });
 
   chain.call({ input: lastHumanMessage.content }, [handlers]);
 
   return new StreamingTextResponse(stream);
-};
-
-const defineSystemPrompt = () => {
-  const system_combine_template = `-You are Azure ChatGPT who is a helpful AI Assistant.
-     - You will provide clear and concise queries, and you will respond with polite and professional answers.
-     - You will answer questions truthfully and accurately.`;
-  const combine_messages = [
-    SystemMessagePromptTemplate.fromTemplate(system_combine_template),
-    HumanMessagePromptTemplate.fromTemplate("{input}"),
-  ];
-
-  const CHAT_COMBINE_PROMPT =
-    ChatPromptTemplate.fromPromptMessages(combine_messages);
-
-  return CHAT_COMBINE_PROMPT;
 };
