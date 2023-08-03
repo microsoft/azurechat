@@ -4,6 +4,7 @@ import "server-only";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { nanoid } from "nanoid";
 import { memoryContainer } from "../common/cosmos";
+import { MESSAGE_ATTRIBUTE } from "./models";
 
 export const FindAllChats = async (chatThreadID: string) => {
   const container = await memoryContainer();
@@ -91,5 +92,3 @@ export interface ChatMessageModel {
 }
 
 export type chatRole = "system" | "user" | "assistant" | "function";
-
-const MESSAGE_ATTRIBUTE = "CHAT_MESSAGE";

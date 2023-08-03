@@ -6,6 +6,7 @@ import { ChatMessageModel, FindAllChats } from "@/features/chat/chat-service";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { nanoid } from "nanoid";
 import { memoryContainer } from "../common/cosmos";
+import { CHAT_THREAD_ATTRIBUTE } from "./models";
 
 export const FindAllChatThreadForCurrentUser = async () => {
   const container = await memoryContainer();
@@ -16,7 +17,7 @@ export const FindAllChatThreadForCurrentUser = async () => {
     parameters: [
       {
         name: "@type",
-        value: "CHAT_THREAD",
+        value: CHAT_THREAD_ATTRIBUTE,
       },
       {
         name: "@userId",
@@ -44,7 +45,7 @@ export const FindChatThreadByID = async (id: string) => {
     parameters: [
       {
         name: "@type",
-        value: "CHAT_THREAD",
+        value: CHAT_THREAD_ATTRIBUTE,
       },
       {
         name: "@userId",
@@ -134,7 +135,7 @@ export const CreateChatThread = async () => {
     id: nanoid(),
     createdAt: new Date(),
     isDeleted: false,
-    type: "CHAT_THREAD",
+    type: CHAT_THREAD_ATTRIBUTE,
   };
 
   const container = await memoryContainer();
