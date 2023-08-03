@@ -1,13 +1,11 @@
 "use client";
 import { MenuItem } from "@/components/menu";
 import { Button } from "@/components/ui/button";
-import {
-  ChatThreadModel,
-  SoftDeleteChatThreadByID,
-} from "@/features/chat/chat-thread-service";
+import { SoftDeleteChatThreadByID } from "@/features/chat/chat-services/chat-thread-service";
 import { MessageCircle, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { FC } from "react";
+import { ChatThreadModel } from "../chat-services/models";
 
 interface Prop {
   menuItems: Array<ChatThreadModel>;

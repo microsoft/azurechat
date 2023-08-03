@@ -5,16 +5,15 @@ import ChatLoading from "@/components/chat/chat-loading";
 import ChatRow from "@/components/chat/chat-row";
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { FC, FormEvent, useRef, useState } from "react";
-import { PromptGPTBody } from "./chat-api-utils";
-import { ChatMessageModel } from "./chat-service";
-import { transformCosmosToAIModel } from "./utils";
+import { ChatMessageModel, PromptGPTBody } from "../chat-services/models";
+import { transformCosmosToAIModel } from "../chat-services/utils";
+import { ChatHeader } from "./chat-header";
 
 interface Prop {
   chats: Array<ChatMessageModel>;
@@ -27,6 +26,7 @@ export const ChatUI: FC<Prop> = (props) => {
   const [chatBody, setBody] = useState<PromptGPTBody>({
     id: id,
     model: "GPT-3.5",
+    chatType: "simple",
   });
 
   const { toast } = useToast();
@@ -76,19 +76,11 @@ export const ChatUI: FC<Prop> = (props) => {
     <Card className="h-full relative">
       <div className="h-full rounded-md overflow-y-auto" ref={scrollRef}>
         <div className="flex justify-center p-4">
-          <Tabs
-            defaultValue={props.model ?? "GPT-3.5"}
-            onValueChange={onValueChange}
-          >
-            <TabsList className="grid w-full grid-cols-2 h-12 items-stretch">
-              <TabsTrigger disabled={messages.length !== 0} value="GPT-3.5">
-                ⚡ GPT-3.5
-              </TabsTrigger>
-              <TabsTrigger disabled={messages.length !== 0} value="GPT-4">
-                ✨ GPT-4
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <ChatHeader
+            isEnabled={messages.length !== 0}
+            chatType="data"
+            onValueChange={(chatType) => {}}
+          />
         </div>
         <div className=" pb-[80px] ">
           {messages.map((message, index) => (

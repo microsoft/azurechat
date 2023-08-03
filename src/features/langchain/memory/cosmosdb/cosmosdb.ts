@@ -1,5 +1,7 @@
-import { ChatMessageModel } from "@/features/chat/chat-service";
-import { MESSAGE_ATTRIBUTE } from "@/features/chat/models";
+import {
+  ChatMessageModel,
+  MESSAGE_ATTRIBUTE,
+} from "@/features/chat/chat-services/models";
 import { CosmosClient } from "@azure/cosmos";
 import {
   AIMessage,

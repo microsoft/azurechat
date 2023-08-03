@@ -1,7 +1,10 @@
 import { SqlQuerySpec } from "@azure/cosmos";
-import { ChatMessageModel } from "../chat/chat-service";
-import { ChatThreadModel } from "../chat/chat-thread-service";
-import { CHAT_THREAD_ATTRIBUTE, MESSAGE_ATTRIBUTE } from "../chat/models";
+import {
+  CHAT_THREAD_ATTRIBUTE,
+  ChatMessageModel,
+  ChatThreadModel,
+  MESSAGE_ATTRIBUTE,
+} from "../chat/chat-services/models";
 import { memoryContainer } from "../common/cosmos";
 
 export const FindAllChatThreadsForReporting = async (

@@ -1,9 +1,11 @@
 import {
-  ChatMessageModel,
   FindAllChats,
   UpsertChat,
-} from "@/features/chat/chat-service";
-import { MESSAGE_ATTRIBUTE } from "@/features/chat/models";
+} from "@/features/chat/chat-services/chat-service";
+import {
+  ChatMessageModel,
+  MESSAGE_ATTRIBUTE,
+} from "@/features/chat/chat-services/models";
 import { CosmosClient } from "@azure/cosmos";
 import { StoredMessage } from "langchain/schema";
 
