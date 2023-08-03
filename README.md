@@ -23,7 +23,7 @@ We've built a Solution Accelerator to empower your workforce with Azure ChatGPT.
 1. [Azure OpenAI](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/): To deploy and run ChatGPT on Azure, you'll need an Azure subscription with access to the Azure OpenAI service. Request access [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu). Once you have access, follow the instructions in this [link](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) to deploy the gpt-35-turbo or gpt-4 models.
 
 2. Setup GitHub or Azure AD for Authentication:
-   The [Add an identity provider](#add-an-identity-provider) section below shows how to configure authentication providers.
+   The [add an identity provider](https://github.com/oliverlabs/azurechatgpt#-add-an-identity-provider) section below shows how to configure authentication providers.
 
    💡Note: You can configure the authentication provider to your identity solution using [NextAuth providers](https://next-auth.js.org/providers/)
 
