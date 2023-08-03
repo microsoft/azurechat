@@ -61,7 +61,12 @@ Please see the [section below](#🪪-add-an-identity-provider) for important inf
 
 Clone this repository locally or fork to your Github account. Run all of the the steps below from the "src" directory.
 
-1. Create a new file named `.env.local` to store the environment variables add the following variables
+1. Make sure you deploy an instance of Cosmos DB in your Azure Subscription
+2. Create a new file named `.env.local` to store the environment variables add the following variables.
+
+**Please note:**
+- Do not use double-quotes and do not delete any of the variables.
+- Make sure that `NEXTAUTH_URL=http://localhost:3000` has no comments in the same line.
 
    ```
    - azure-open-ai-accelerator
@@ -89,8 +94,8 @@ Clone this repository locally or fork to your Github account. Run all of the the
    AZURE_COSMOSEDB_KEY=
    ```
 
-2. Install npm packages by running `npm install`
-3. Start the project by running `npm run dev`
+4. Install npm packages by running `npm install`
+5. Start the project by running `npm run dev`
 
 You should now be prompted to login with GitHub. Once you successfully login, you can start creating new conversations.
 
