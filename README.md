@@ -69,14 +69,13 @@ Clone this repository locally or fork to your Github account. Run all of the the
 - Make sure that `NEXTAUTH_URL=http://localhost:3000` has no comments in the same line.
 
    ```
-   - azure-open-ai-accelerator
-   # azure open ai related configurations
+   # Azure OpenAI configuration
    AZURE_OPENAI_API_KEY=
    AZURE_OPENAI_API_INSTANCE_NAME=
    AZURE_OPENAI_API_DEPLOYMENT_NAME=
    AZURE_OPENAI_API_VERSION=
 
-   # github OAuth app configuration
+   # GitHub OAuth app configuration
    AUTH_GITHUB_ID=
    AUTH_GITHUB_SECRET=
 
@@ -85,7 +84,9 @@ Clone this repository locally or fork to your Github account. Run all of the the
    AZURE_AD_CLIENT_SECRET=
    AZURE_AD_TENANT_ID=
 
-   # when deploying to production, set the NEXTAUTH_URL environment variable to the canonical URL of your site. https://next-auth.js.org/configuration/options
+   # When deploying to production, 
+   # set the NEXTAUTH_URL environment variable to the canonical URL of your site. 
+   # More information: https://next-auth.js.org/configuration/options
 
    NEXTAUTH_SECRET=
    NEXTAUTH_URL=http://localhost:3000
@@ -97,7 +98,7 @@ Clone this repository locally or fork to your Github account. Run all of the the
 4. Install npm packages by running `npm install`
 5. Start the project by running `npm run dev`
 
-You should now be prompted to login with GitHub. Once you successfully login, you can start creating new conversations.
+You should now be prompted to login with your chosen OAuth provider. Once successfully logged in, you can start creating new conversations.
 
 ![](/images/chat-home.png)
 ![](/images/chat-history.png)
@@ -112,7 +113,7 @@ Fork this repository to your own organisation so that you can execute GitHub Act
 
 ### 1. AZURE_CREDENTIALS
 
-The GitHub workflow requires a secret named AZURE_CREDENTIALS to authenticate with Azure. The secret contains the credentials for a service principal with the Contributor role on the resource group containing the container app and container registry.
+The GitHub workflow requires a secret named `AZURE_CREDENTIALS` to authenticate with Azure. The secret contains the credentials for a service principal with the Contributor role on the resource group containing the container app and container registry.
 
 1. Create a service principal with the Contributor role on the resource group that contains the Azure App Service.
 
@@ -125,9 +126,9 @@ The GitHub workflow requires a secret named AZURE_CREDENTIALS to authenticate wi
 
 3. In the GitHub repository, navigate to Settings > Secrets > Actions and select New repository secret.
 
-4. Enter AZURE_CREDENTIALS as the name and paste the contents of the JSON output as the value.
+4. Enter `AZURE_CREDENTIALS` as the name and paste the contents of the JSON output as the value.
 
-5. Select Add secret.
+5. Select **Add secret**.
 
 ### 2. AZURE_APP_SERVICE_NAME
 
@@ -135,7 +136,7 @@ Under the same repository secrets add a new variable `AZURE_APP_SERVICE_NAME` to
 
 ### 🔄 Run GitHub Actions
 
-Once the secrets are configured, the GitHub Actions will be triggered for every code push to the repository. Alternatively, you can manually run the workflow by clicking on the "Run Workflow" button.
+Once the secrets are configured, the GitHub Actions will be triggered for every code push to the repository. Alternatively, you can manually run the workflow by clicking on the "Run Workflow" button in the Actions tab in GitHub.
 
 ![](./images/runworkflow.png)
 
@@ -157,8 +158,8 @@ We'll create two GitHub apps: one for testing locally and another for production
 
 ```
 Application name: Azure ChatGPT DEV Environment
-Homepage URL:http://localhost:3000/
-Authorization callback URL:http://localhost:3000/api/auth/callback/github/
+Homepage URL: http://localhost:3000
+Authorization callback URL: http://localhost:3000/api/auth/callback/github
 ```
 
 ### 🟢 Production app setup
@@ -169,14 +170,14 @@ Authorization callback URL:http://localhost:3000/api/auth/callback/github/
 
 ```
 Application name: Azure ChatGPT Production
-Homepage URL:https://YOUR-WEBSITE-NAME.azurewebsites.net/
-Authorization callback URL:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/github/
+Homepage URL: https://YOUR-WEBSITE-NAME.azurewebsites.net
+Authorization callback URL: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/github
 ```
 
-⚠️ Once the apps are setup, ensure to update the environment variables locally and on Azure App Service.
+⚠️ After completing app setup, ensure your environment variables locally and on Azure App Service are up to date.
 
 ```
-   # github OAuth app configuration
+   # GitHub OAuth app configuration
    AUTH_GITHUB_ID=
    AUTH_GITHUB_SECRET=
 ```
@@ -193,7 +194,7 @@ Authorization callback URL:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/
 Application name: Azure ChatGPT DEV Environment
 Supported account types: Accounts in this organizational directory only
 Redirect URI Platform: Web
-Redirect URI:http://localhost:3000/api/auth/callback/azure-ad
+Redirect URI: http://localhost:3000/api/auth/callback/azure-ad
 ```
 
 ### 🟢 Production app setup
@@ -206,10 +207,10 @@ Redirect URI:http://localhost:3000/api/auth/callback/azure-ad
 Application name: Azure ChatGPT Production
 Supported account types: Accounts in this organizational directory only
 Redirect URI Platform: Web
-Redirect URI:https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure-ad
+Redirect URI: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure-ad
 ```
 
-⚠️ Once the apps are setup, ensure to update the environment variables locally and on Azure App Service.
+⚠️ After completing app setup, ensure your environment variables locally and on Azure App Service are up to date.
 
 ```
 # Azure AD OAuth app configuration
@@ -219,9 +220,9 @@ AZURE_AD_CLIENT_SECRET=
 AZURE_AD_TENANT_ID=
 ```
 
-# 🔑 Environment variables
+## 🔑 Environment variables
 
-Below are the required environment variables
+Below are the required environment variables, to be added to the Azure Portal or in the `.env.local` file.
 
 | App Setting                      | Value              | Note                                                                                                                                   |
 | -------------------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
@@ -232,7 +233,7 @@ Below are the required environment variables
 | AUTH_GITHUB_ID                   |                    | Client ID of your GitHub OAuth application                                                                                             |
 | AUTH_GITHUB_SECRET               |                    | Client Secret of your GitHub OAuth application                                                                                         |
 | NEXTAUTH_SECRET                  |                    | Used to encrypt the NextAuth.js JWT, and to hash email verification tokens. **This set by default as part of the deployment template** |
-| NEXTAUTH_URL                     |                    | Current webs hosting domain name with HTTP or HTTPS. **This set by default as part of the deployment template** qweqweqwe              |
+| NEXTAUTH_URL                     |                    | Current webs hosting domain name with HTTP or HTTPS. **This set by default as part of the deployment template**              |
 | AZURE_COSMOSEDB_URI              |                    | URL of the Azure CosmosDB                                                                                                              |
 | AZURE_COSMOSEDB_KEY              |                    | API Key for Azure Cosmos DB                                                                                                            |
 | AZURE_AD_CLIENT_ID               |                    | The client id specific to the application                                                                                              |
