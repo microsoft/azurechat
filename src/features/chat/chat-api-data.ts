@@ -11,8 +11,8 @@ import {
 import {
   AzureCogDocument,
   AzureCogSearch,
-} from "../azure-cog-search/azure-cog-vector-store";
-import { PromptGPTProps, initAndGuardChatSession } from "./chat-api-helpers";
+} from "../langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
+import { PromptGPTProps, initAndGuardChatSession } from "./chat-api-utils";
 import { ChatMessageModel, inertPromptAndResponse } from "./chat-service";
 
 export interface FaqDocumentIndex extends AzureCogDocument {

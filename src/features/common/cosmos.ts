@@ -5,8 +5,8 @@ const DB_NAME = "chat";
 const CONTAINER_NAME = "history";
 
 export const memoryContainer = async () => {
-  const endpoint = process.env.AZURE_COSMOSEDB_URI!;
-  const key = process.env.AZURE_COSMOSEDB_KEY!;
+  const endpoint = process.env.AZURE_COSMOSDB_URI!;
+  const key = process.env.AZURE_COSMOSDB_KEY!;
   const client = new CosmosClient({ endpoint, key });
 
   await client.databases.createIfNotExists({ id: DB_NAME });

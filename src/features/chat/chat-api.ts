@@ -9,8 +9,8 @@ import {
   SystemMessagePromptTemplate,
 } from "langchain/prompts";
 import { userHashedId } from "../auth/helpers";
-import { CosmosDBChatMessageHistory } from "../langchain/stores/cosmosdb";
-import { PromptGPTProps, initAndGuardChatSession } from "./chat-api-helpers";
+import { CosmosDBChatMessageHistory } from "../langchain/memory/cosmosdb/cosmosdb";
+import { PromptGPTProps, initAndGuardChatSession } from "./chat-api-utils";
 
 export const PromptGPT = async (props: PromptGPTProps) => {
   const { lastHumanMessage, id } = await initAndGuardChatSession(props);
@@ -32,10 +32,10 @@ export const PromptGPT = async (props: PromptGPTProps) => {
       sessionId: id,
       userId: userId,
       config: {
-        db: process.env.AZURE_COSMOSEDBDB_DB_NAME,
-        container: process.env.AZURE_COSMOSEDBDB_CONTAINER_NAME,
-        endpoint: process.env.AZURE_COSMOSEDB_URI,
-        key: process.env.AZURE_COSMOSEDB_KEY,
+        db: process.env.AZURE_COSMOSDB_DB_NAME,
+        container: process.env.AZURE_COSMOSDB_CONTAINER_NAME,
+        endpoint: process.env.AZURE_COSMOSDB_URI,
+        key: process.env.AZURE_COSMOSDB_KEY,
         partitionKey: "id",
       },
     }),

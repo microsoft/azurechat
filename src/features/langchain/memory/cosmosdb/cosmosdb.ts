@@ -1,4 +1,5 @@
 import { ChatMessageModel } from "@/features/chat/chat-service";
+import { MESSAGE_ATTRIBUTE } from "@/features/chat/models";
 import { CosmosClient } from "@azure/cosmos";
 import {
   AIMessage,
@@ -6,12 +7,12 @@ import {
   BaseMessage,
 } from "langchain/schema";
 import { nanoid } from "nanoid";
+import { mapStoredMessagesToChatMessages } from "../utils";
 import {
   addChatMessage,
   getChatMessages,
   initChatContainer,
 } from "./cosmosdb-chat-service";
-import { mapStoredMessagesToChatMessages } from "./utils";
 
 export interface CosmosDBClientConfig {
   db: string;
@@ -60,7 +61,7 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
     const modelToSave: ChatMessageModel = {
       id: nanoid(),
       createdAt: new Date(),
-      type: "CHAT_MESSAGE",
+      type: MESSAGE_ATTRIBUTE,
       isDeleted: false,
       content: message.content,
       role: message instanceof AIMessage ? "assistant" : "user",

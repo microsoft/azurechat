@@ -147,11 +147,11 @@
                   "appCommandLine": "node server.js",
                   "appSettings": [
                     {
-                      "name": "AZURE_COSMOSEDB_URI",
+                      "name": "AZURE_COSMOSDB_URI",
                       "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken'))), '2023-04-15').documentEndpoint]"
                     },
                     {
-                      "name": "AZURE_COSMOSEDB_KEY",
+                      "name": "AZURE_COSMOSDB_KEY",
                       "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken'))), '2023-04-15').primaryMasterKey]"
                     },
                     {
