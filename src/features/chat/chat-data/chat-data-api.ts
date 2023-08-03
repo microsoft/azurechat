@@ -11,9 +11,10 @@ import {
 import {
   AzureCogDocument,
   AzureCogSearch,
-} from "../langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
-import { PromptGPTProps, initAndGuardChatSession } from "./chat-api-utils";
-import { ChatMessageModel, inertPromptAndResponse } from "./chat-service";
+} from "../../langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
+import { insertPromptAndResponse } from "../chat-services/chat-service";
+import { initAndGuardChatSession } from "../chat-services/chat-thread-service";
+import { ChatMessageModel, PromptGPTProps } from "../chat-services/models";
 
 export interface FaqDocumentIndex extends AzureCogDocument {
   id: string;
@@ -23,7 +24,7 @@ export interface FaqDocumentIndex extends AzureCogDocument {
   metadata: any;
 }
 
-export const PromptDataGPT = async (props: PromptGPTProps) => {
+export const ChatData = async (props: PromptGPTProps) => {
   const { lastHumanMessage, id, chats } = await initAndGuardChatSession(props);
 
   const chatModel = new ChatOpenAI({
@@ -40,7 +41,7 @@ export const PromptDataGPT = async (props: PromptGPTProps) => {
   });
   const { stream, handlers } = LangChainStream({
     onCompletion: async (completion: string) => {
-      await inertPromptAndResponse(id, lastHumanMessage.content, completion);
+      await insertPromptAndResponse(id, lastHumanMessage.content, completion);
     },
   });
 

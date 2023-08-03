@@ -2,11 +2,16 @@
 import "server-only";
 
 import { userHashedId, userSession } from "@/features/auth/helpers";
-import { ChatMessageModel, FindAllChats } from "@/features/chat/chat-service";
+import { FindAllChats } from "@/features/chat/chat-services/chat-service";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { nanoid } from "nanoid";
-import { memoryContainer } from "../common/cosmos";
-import { CHAT_THREAD_ATTRIBUTE } from "./models";
+import { memoryContainer } from "../../common/cosmos";
+import {
+  CHAT_THREAD_ATTRIBUTE,
+  ChatMessageModel,
+  ChatThreadModel,
+  PromptGPTProps,
+} from "./models";
 
 export const FindAllChatThreadForCurrentUser = async () => {
   const container = await memoryContainer();
@@ -135,6 +140,7 @@ export const CreateChatThread = async () => {
     id: nanoid(),
     createdAt: new Date(),
     isDeleted: false,
+    chatType: "simple",
     type: CHAT_THREAD_ATTRIBUTE,
   };
 
@@ -143,13 +149,25 @@ export const CreateChatThread = async () => {
   return response.resource;
 };
 
-export interface ChatThreadModel {
-  id: string;
-  name: string;
-  model: string;
-  createdAt: Date;
-  userId: string;
-  useName: string;
-  isDeleted: boolean;
-  type: "CHAT_THREAD";
-}
+export const initAndGuardChatSession = async (props: PromptGPTProps) => {
+  const { messages, id, model } = props;
+
+  //last message
+  const lastHumanMessage = messages[messages.length - 1];
+
+  const chatThread = await EnsureChatThreadIsForCurrentUser(id);
+  const chats = await FindAllChats(id);
+
+  await updateChatThreadTitle(
+    chatThread,
+    chats,
+    model,
+    lastHumanMessage.content
+  );
+
+  return {
+    id,
+    lastHumanMessage,
+    chats,
+  };
+};

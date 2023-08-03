@@ -3,8 +3,8 @@ import "server-only";
 
 import { SqlQuerySpec } from "@azure/cosmos";
 import { nanoid } from "nanoid";
-import { memoryContainer } from "../common/cosmos";
-import { MESSAGE_ATTRIBUTE } from "./models";
+import { memoryContainer } from "../../common/cosmos";
+import { ChatMessageModel, MESSAGE_ATTRIBUTE } from "./models";
 
 export const FindAllChats = async (chatThreadID: string) => {
   const container = await memoryContainer();
@@ -48,7 +48,7 @@ export const UpsertChat = async (chatModel: ChatMessageModel) => {
   await container.items.upsert(modelToSave);
 };
 
-export const inertPromptAndResponse = async (
+export const insertPromptAndResponse = async (
   threadID: string,
   userQuestion: string,
   assistantResponse: string
@@ -79,16 +79,3 @@ export const newChatModel = (): ChatMessageModel => {
     isDeleted: false,
   };
 };
-
-export interface ChatMessageModel {
-  id: string;
-  createdAt: Date;
-  isDeleted: boolean;
-  threadId: string;
-  userId: string;
-  content: string;
-  role: chatRole;
-  type: "CHAT_MESSAGE";
-}
-
-export type chatRole = "system" | "user" | "assistant" | "function";
