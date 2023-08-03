@@ -15,10 +15,10 @@ jobs:
 
     steps:
       - name: 🌱 Checkout to the branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 🍏 Set up Node.js version
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: "18.x"
 
@@ -43,14 +43,14 @@ jobs:
           cd ./site-deploy
           zip Nextjs-site.zip ./* .next -qr      
           
-      - name: Diagnostics
+      - name: 🔍 Diagnostics
         run: |
           ls ./src
           ls ./src/.next
           ls ./site-deploy
 
       - name: ⬆️ Publish Next Application artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Nextjs-site
           path: ./site-deploy/Nextjs-site.zip
@@ -63,7 +63,7 @@ jobs:
 
     steps:
       - name: ⬇️ Download artifact from build job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: Nextjs-site
 
