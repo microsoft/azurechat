@@ -6,7 +6,7 @@ on:
   push:
     branches: [main]
 
-  # Allow mannually trigger
+  # Allow manual workflow trigger
   workflow_dispatch:
 
 jobs:
