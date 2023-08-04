@@ -1,4 +1,4 @@
-import { chatRole } from "@/features/chat/chat-service";
+import { ChatRole } from "@/features/chat/chat-services/models";
 import { cn } from "@/lib/utils";
 import { FC } from "react";
 import remarkGfm from "remark-gfm";
@@ -11,7 +11,7 @@ interface ChatRowProps {
   name: string;
   profilePicture: string;
   message: string;
-  type: chatRole;
+  type: ChatRole;
 }
 
 const ChatRow: FC<ChatRowProps> = (props) => {

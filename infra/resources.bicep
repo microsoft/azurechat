@@ -35,11 +35,11 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
       appCommandLine: 'node server.js'
       appSettings: [
         {
-          name: 'AZURE_COSMOSEDB_URI'
+          name: 'AZURE_COSMOSDB_URI'
           value: cosmosDbAccount.properties.documentEndpoint
         }
         {
-          name: 'AZURE_COSMOSEDB_KEY'
+          name: 'AZURE_COSMOSDB_KEY'
           value: cosmosDbAccount.listKeys().primaryMasterKey
         }
         {

@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { NewChat } from "@/features/chat/chat-menu/new-chat";
-import { FindAllChatThreadForCurrentUser } from "@/features/chat/chat-thread-service";
+import { FindAllChatThreadForCurrentUser } from "@/features/chat/chat-services/chat-thread-service";
 import { redirect } from "next/navigation";
 
 export default async function Home() {

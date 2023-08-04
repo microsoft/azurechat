@@ -1,8 +1,11 @@
 import {
-  ChatMessageModel,
   FindAllChats,
   UpsertChat,
-} from "@/features/chat/chat-service";
+} from "@/features/chat/chat-services/chat-service";
+import {
+  ChatMessageModel,
+  MESSAGE_ATTRIBUTE,
+} from "@/features/chat/chat-services/models";
 import { CosmosClient } from "@azure/cosmos";
 import { StoredMessage } from "langchain/schema";
 
@@ -37,7 +40,7 @@ export const getChatMessages = async (
   const ms: StoredMessage[] = [];
   items.forEach((item) => {
     ms.push({
-      type: "CHAT_MESSAGE",
+      type: MESSAGE_ATTRIBUTE,
       data: {
         content: item.content,
         role: item.role === "user" ? "human" : "ai",

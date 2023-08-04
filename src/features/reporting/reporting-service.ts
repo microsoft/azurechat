@@ -1,6 +1,10 @@
 import { SqlQuerySpec } from "@azure/cosmos";
-import { ChatMessageModel } from "../chat/chat-service";
-import { ChatThreadModel } from "../chat/chat-thread-service";
+import {
+  CHAT_THREAD_ATTRIBUTE,
+  ChatMessageModel,
+  ChatThreadModel,
+  MESSAGE_ATTRIBUTE,
+} from "../chat/chat-services/models";
 import { memoryContainer } from "../common/cosmos";
 
 export const FindAllChatThreadsForReporting = async (
@@ -16,7 +20,7 @@ export const FindAllChatThreadsForReporting = async (
     parameters: [
       {
         name: "@type",
-        value: "CHAT_THREAD",
+        value: CHAT_THREAD_ATTRIBUTE,
       },
     ],
   };
@@ -37,7 +41,7 @@ export const FindChatThreadByID = async (chatThreadID: string) => {
     parameters: [
       {
         name: "@type",
-        value: "CHAT_THREAD",
+        value: CHAT_THREAD_ATTRIBUTE,
       },
 
       {
@@ -62,7 +66,7 @@ export const FindAllChatsInThread = async (chatThreadID: string) => {
     parameters: [
       {
         name: "@type",
-        value: "CHAT_MESSAGE",
+        value: MESSAGE_ATTRIBUTE,
       },
       {
         name: "@threadId",

@@ -1,6 +1,6 @@
-import { FindAllChats } from "@/features/chat/chat-service";
-import { FindChatThreadByID } from "@/features/chat/chat-thread-service";
-import { ChatUI } from "@/features/chat/chat-ui";
+import { FindAllChats } from "@/features/chat/chat-services/chat-service";
+import { FindChatThreadByID } from "@/features/chat/chat-services/chat-thread-service";
+import { ChatUI } from "@/features/chat/chat-ui/chat-ui";
 import { notFound } from "next/navigation";
 
 export default async function Home({ params }: { params: { id: string } }) {
