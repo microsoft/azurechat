@@ -24,6 +24,7 @@ const ChatInput: FC<Props> = (props) => {
     }
 
     if (
+      !event.nativeEvent.isComposing &&
       keysPressed.has("Enter") &&
       !keysPressed.has("Shift") &&
       buttonRef.current
