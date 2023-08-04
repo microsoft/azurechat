@@ -5,6 +5,13 @@ param openai_api_key string
 param openai_instance_name string
 param openai_deployment_name string
 param openai_api_version string
+param auth_github_id string
+@secure()
+param auth_github_secret string
+param azure_ad_client_id string
+@secure()
+param azure_ad_client_secret string
+param azure_ad_tenant_id string
 
 var location = resourceGroup().location
 
@@ -65,6 +72,26 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         {
           name: 'NEXTAUTH_URL'
           value: 'https://${name}-app-${resourceToken}.azurewebsites.net'
+        }
+        {
+          name: 'AUTH_GITHUB_ID'
+          value: auth_github_id
+        }
+        {
+          name: 'AUTH_GITHUB_SECRET'
+          value: auth_github_secret
+        }
+        {
+          name: 'AZURE_AD_CLIENT_ID'
+          value: azure_ad_client_id
+        }
+        {
+          name: 'AZURE_AD_CLIENT_SECRET'
+          value: azure_ad_client_secret
+        }
+        {
+          name: 'AZURE_AD_TENANT_ID'
+          value: azure_ad_tenant_id
         }
       ]
     }

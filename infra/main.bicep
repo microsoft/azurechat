@@ -23,6 +23,14 @@ param openaiDeploymentName string
 @description('Azure OpenAI API Version e.g. 2021-08-04-preview')
 param openaiApiVersion string
 
+param authGithubId string
+@secure()
+param authGithubSecret string
+param azureAdClientId string
+@secure()
+param azureAdClientSecret string
+param azureAdTenantId string
+
 var resourceToken = toLower(uniqueString(subscription().id, name, resourceGroup().location))
 
 
@@ -35,5 +43,10 @@ module resources 'resources.bicep' = {
     openai_instance_name: openaiInstanceName
     openai_deployment_name: openaiDeploymentName
     openai_api_version: openaiApiVersion
+    auth_github_id: authGithubId
+    auth_github_secret: authGithubSecret
+    azure_ad_client_id: azureAdClientId
+    azure_ad_client_secret: azureAdClientSecret
+    azure_ad_tenant_id: azureAdTenantId
   }
 }
