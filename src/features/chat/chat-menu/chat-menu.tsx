@@ -1,5 +1,5 @@
 import { Menu, MenuContent, MenuFooter, MenuHeader } from "@/components/menu";
-import { FindAllChatThreadForCurrentUser } from "@/features/chat/chat-thread-service";
+import { FindAllChatThreadForCurrentUser } from "@/features/chat/chat-services/chat-thread-service";
 import { ThemeToggle } from "@/features/theme/theme-toggle";
 import { MenuItems } from "./menu-items";
 import { NewChat } from "./new-chat";

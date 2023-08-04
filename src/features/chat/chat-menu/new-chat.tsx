@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { CreateChatThread } from "../chat-thread-service";
+import { CreateChatThread } from "../chat-services/chat-thread-service";
 
 export const NewChat = () => {
   const router = useRouter();
