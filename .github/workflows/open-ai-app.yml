@@ -82,7 +82,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: $OPENAI_INSTANCE_NAME
+          app-name: $AZURE_OPENAI_API_INSTANCE_NAME
           package: ${{ github.workspace }}/Nextjs-site.zip
 
       - name: 🧹 Cleanup
