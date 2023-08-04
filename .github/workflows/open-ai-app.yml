@@ -67,10 +67,8 @@ jobs:
         with:
           name: Nextjs-site
 
-      - name: 🗝️ Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: "Azure Login"
+        run: az login --service-principal -u ${{ secrets.CLIENT_ID }} -p -u ${{ secrets.CLIENT_SECRET }} -t ${{ secrets.TENANT }}
 
       - name: 🚀 Deploy to Azure Web App
         id: deploy-to-webapp

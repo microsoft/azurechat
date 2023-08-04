@@ -1,0 +1,44 @@
+name: Terraform
+on: 
+  push:
+    branches:
+      - initial
+  pull_request:
+    branches: [main]
+  
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yaml
+    secrets: 
+      ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
+  plan:
+    uses: ./.github/workflows/release.yaml
+    if: github.ref != 'refs/heads/main'
+    needs: ci
+    with:
+      RUNNER_NAME:  ubuntu-latest
+      COMMAND: plan
+    secrets: 
+      ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
+      AZURE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+  apply:
+    uses: ./.github/workflows/release.yaml
+    if: github.ref == 'refs/heads/main'
+    needs: ci
+    with:
+      RUNNER_NAME: ubuntu-latest
+      COMMAND: apply
+    secrets: 
+      ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
+      AZURE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+
