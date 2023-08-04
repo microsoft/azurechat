@@ -1,0 +1,42 @@
+name: Terraform
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    uses: expert-thinking/devops-templates/.github/workflows/ci.yaml@initial
+    secrets: 
+      ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
+  plan:
+    uses: expert-thinking/devops-templates/.github/workflows/release.yaml@initial
+    if: github.ref != 'refs/heads/main'
+    needs: ci
+    with:
+      RUNNER_NAME: aks-runner
+      COMMAND: plan
+    secrets: 
+      ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
+      AZURE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+  apply:
+    uses: expert-thinking/devops-templates/.github/workflows/release.yaml@initial
+    if: github.ref == 'refs/heads/main'
+    needs: ci
+    with:
+      RUNNER_NAME: ubuntu-latest
+      COMMAND: apply
+    secrets: 
+      ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
+      AZURE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+
