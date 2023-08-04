@@ -2,7 +2,7 @@ name: Terraform
 on: 
   push:
     branches:
-      - main
+      - initial
   pull_request:
     branches: [main]
   
