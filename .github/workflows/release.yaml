@@ -17,11 +17,14 @@ on:
         required: true
       INFRACOST_API_KEY: 
         required: true
+      AZURE_OPENAI_API_KEY: 
+        required: false
 env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
   PR_NUMBER: ${{ github.event.number }}
+  AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
 
 jobs:
   deploy:
