@@ -21,7 +21,7 @@ jobs:
         with:
           load-mode: strict
           path: ./environments
-          mode: dev 
+          mode: npd 
       - name: "Validate"
         run: make validate
       - name: "Vulnerability Scan"

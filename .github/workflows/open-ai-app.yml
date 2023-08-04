@@ -62,6 +62,12 @@ jobs:
       name: "Production"
 
     steps:
+      - name: "Export environment vars"
+        uses: xom9ikk/dotenv@v2.1.1
+        with:
+          load-mode: strict
+          path: ./environments
+          mode: npd 
       - name: ⬇️ Download artifact from build job
         uses: actions/download-artifact@v3
         with:

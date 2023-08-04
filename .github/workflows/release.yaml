@@ -44,7 +44,7 @@ jobs:
         with:
           load-mode: strict
           path: ./environments
-          mode: dev 
+          mode: npd 
 
       - name: ${{ inputs.COMMAND }}
         run: make ${{ inputs.COMMAND }}
