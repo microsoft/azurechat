@@ -10,13 +10,13 @@ on:
 
 jobs:
   ci:
-    uses: ./.github/workflows/templates/ci.yaml@initial
+    uses: ./.github/workflows/templates/ci.yaml
     secrets: 
       ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
 
   plan:
-    uses: ./.github/workflows/templates/release.yaml@initial
+    uses: ./.github/workflows/templates/release.yaml
     if: github.ref != 'refs/heads/main'
     needs: ci
     with:
@@ -29,7 +29,7 @@ jobs:
       AZURE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
   apply:
-    uses: ./.github/workflows/templates/release.yaml@initial
+    uses: ./.github/workflows/templates/release.yaml
     if: github.ref == 'refs/heads/main'
     needs: ci
     with:
