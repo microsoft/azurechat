@@ -1,5 +1,5 @@
 resource "azurerm_service_plan" "openai" {
-  name                = "et-npd-openai-asp"
+  name                = "${var.AZURE_OPENAI_API_INSTANCE_NAME}-asp"
   resource_group_name = data.azurerm_resource_group.openai.name
   location            = data.azurerm_resource_group.openai.location
   os_type             = "Linux"
@@ -7,7 +7,7 @@ resource "azurerm_service_plan" "openai" {
 }
 
 resource "azurerm_linux_web_app" "openai" {
-  name                = "et-npd-openai-wapp"
+  name                = "${var.AZURE_OPENAI_API_INSTANCE_NAME}-wapp"
   resource_group_name = data.azurerm_resource_group.openai.name
   location            = data.azurerm_resource_group.openai.location
   service_plan_id     = azurerm_service_plan.openai.id
@@ -20,13 +20,15 @@ resource "azurerm_linux_web_app" "openai" {
   }
 
   app_settings = {
-    AZURE_COSMOSDB_URI               = azurerm_cosmosdb_account.openai.endpoint
+    AZURE_COSMOSDB_URI               = replace(azurerm_cosmosdb_account.openai.endpoint, ":443", "")
     AZURE_COSMOSDB_KEY               = azurerm_cosmosdb_account.openai.primary_key
     AZURE_OPENAI_API_KEY             = var.AZURE_OPENAI_API_KEY
-    AZURE_OPENAI_API_INSTANCE_NAME   = "et-npd-openai"
-    AZURE_OPENAI_API_DEPLOYMENT_NAME = "et-gpt"
-    AZURE_OPENAI_API_VERSION         = "2021-08-04-preview"
+    AZURE_OPENAI_API_INSTANCE_NAME   = var.AZURE_OPENAI_API_INSTANCE_NAME
+    AZURE_OPENAI_API_DEPLOYMENT_NAME = var.AZURE_OPENAI_API_DEPLOYMENT_NAME
+    AZURE_OPENAI_API_VERSION         = var.AZURE_OPENAI_API_VERSION
     NEXTAUTH_SECRET                  = "etnpdopenaitokenunique"
-    NEXTAUTH_URL                     = "https://et-npd-openai-wapp.azurewebsites.net"
+    NEXTAUTH_URL                     = "https://${var.AZURE_OPENAI_API_INSTANCE_NAME}-wapp.azurewebsites.net"
+    AUTH_GITHUB_ID                   = var.AUTH_GITHUB_ID
+    AUTH_GITHUB_SECRET               = var.AUTH_GITHUB_SECRET
   }
 }

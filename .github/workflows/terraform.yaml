@@ -2,10 +2,9 @@ name: Terraform
 on: 
   push:
     branches:
-      - initial
+      - main
   pull_request:
     branches: [main]
-  
   workflow_dispatch:
 
 jobs:
@@ -27,6 +26,8 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
       AZURE_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
+      AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
 
   apply:
     uses: ./.github/workflows/release.yaml

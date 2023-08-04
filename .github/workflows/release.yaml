@@ -19,12 +19,18 @@ on:
         required: true
       AZURE_OPENAI_API_KEY: 
         required: false
+      AUTH_GITHUB_ID: 
+        required: false
+      AUTH_GITHUB_SECRET: 
+        required: false
 env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
   PR_NUMBER: ${{ github.event.number }}
   AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+  AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
+  AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
 
 jobs:
   deploy:
