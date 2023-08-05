@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 import { FC, FormEvent, useRef, useState } from "react";
 import { ChatMessageModel, PromptGPTBody } from "../chat-services/models";
 import { transformCosmosToAIModel } from "../chat-services/utils";
+import { EmptyState } from "./chat-empty-state";
 import { ChatHeader } from "./chat-header";
 
 interface Prop {
@@ -72,33 +73,37 @@ export const ChatUI: FC<Prop> = (props) => {
     handleSubmit(e);
   };
 
-  return (
-    <Card className="h-full relative">
-      <div className="h-full rounded-md overflow-y-auto" ref={scrollRef}>
-        <div className="flex justify-center p-4">
-          <ChatHeader
-            isEnabled={messages.length !== 0}
-            chatType="data"
-            onValueChange={(chatType) => {}}
-          />
-        </div>
-        <div className=" pb-[80px] ">
-          {messages.map((message, index) => (
-            <ChatRow
-              name={
-                message.role === "user" ? session?.user?.name! : "AzureChatGPT"
-              }
-              profilePicture={
-                message.role === "user" ? session?.user?.image! : "/ai-icon.png"
-              }
-              message={message.content}
-              type={message.role}
-              key={index}
-            />
-          ))}
-          {isLoading && <ChatLoading />}
-        </div>
+  const ChatWindow = (
+    <div className=" h-full rounded-md overflow-y-auto" ref={scrollRef}>
+      <div className="flex justify-center p-4">
+        <ChatHeader disable={messages.length === 0} chatType="data" />
       </div>
+      <div className=" pb-[80px] ">
+        {messages.map((message, index) => (
+          <ChatRow
+            name={
+              message.role === "user" ? session?.user?.name! : "AzureChatGPT"
+            }
+            profilePicture={
+              message.role === "user" ? session?.user?.image! : "/ai-icon.png"
+            }
+            message={message.content}
+            type={message.role}
+            key={index}
+          />
+        ))}
+        {isLoading && <ChatLoading />}
+      </div>
+    </div>
+  );
+
+  return (
+    <Card className="h-full relative overflow-hidden">
+      {messages.length !== 0 ? (
+        ChatWindow
+      ) : (
+        <EmptyState onValueChange={(chat) => onValueChange(chat)} />
+      )}
       <ChatInput
         isLoading={isLoading}
         value={input}
