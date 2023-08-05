@@ -236,8 +236,8 @@ Below are the required environment variables, to be added to the Azure Portal or
 | AUTH_GITHUB_SECRET               |                    | Client Secret of your GitHub OAuth application                                                                                         |
 | NEXTAUTH_SECRET                  |                    | Used to encrypt the NextAuth.js JWT, and to hash email verification tokens. **This set by default as part of the deployment template** |
 | NEXTAUTH_URL                     |                    | Current webs hosting domain name with HTTP or HTTPS. **This set by default as part of the deployment template**                        |
-| AZURE_COSMOSEDB_URI              |                    | URL of the Azure CosmosDB                                                                                                              |
-| AZURE_COSMOSEDB_KEY              |                    | API Key for Azure Cosmos DB                                                                                                            |
+| AZURE_COSMOSDB_URI               |                    | URL of the Azure CosmosDB                                                                                                              |
+| AZURE_COSMOSDB_KEY               |                    | API Key for Azure Cosmos DB                                                                                                            |
 | AZURE_AD_CLIENT_ID               |                    | The client id specific to the application                                                                                              |
 | AZURE_AD_CLIENT_SECRET           |                    | The client secret specific to the application                                                                                          |
 | AZURE_AD_TENANT_ID               |                    | The organisation Tenant ID                                                                                                             |
