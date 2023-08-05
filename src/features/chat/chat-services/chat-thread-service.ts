@@ -5,7 +5,7 @@ import { userHashedId, userSession } from "@/features/auth/helpers";
 import { FindAllChats } from "@/features/chat/chat-services/chat-service";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { nanoid } from "nanoid";
-import { memoryContainer } from "../../common/cosmos";
+import { initDBContainer } from "../../common/cosmos";
 import {
   CHAT_THREAD_ATTRIBUTE,
   ChatMessageModel,
@@ -14,7 +14,7 @@ import {
 } from "./models";
 
 export const FindAllChatThreadForCurrentUser = async () => {
-  const container = await memoryContainer();
+  const container = await initDBContainer();
 
   const querySpec: SqlQuerySpec = {
     query:
@@ -42,7 +42,7 @@ export const FindAllChatThreadForCurrentUser = async () => {
 };
 
 export const FindChatThreadByID = async (id: string) => {
-  const container = await memoryContainer();
+  const container = await initDBContainer();
 
   const querySpec: SqlQuerySpec = {
     query:
@@ -75,7 +75,7 @@ export const FindChatThreadByID = async (id: string) => {
 };
 
 export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
-  const container = await memoryContainer();
+  const container = await initDBContainer();
 
   const threads = await FindChatThreadByID(chatThreadID);
 
@@ -112,7 +112,7 @@ export const EnsureChatThreadIsForCurrentUser = async (
 };
 
 export const UpsertChatThread = async (chatThread: ChatThreadModel) => {
-  const container = await memoryContainer();
+  const container = await initDBContainer();
   return await container.items.upsert(chatThread);
 };
 
@@ -144,7 +144,7 @@ export const CreateChatThread = async () => {
     type: CHAT_THREAD_ATTRIBUTE,
   };
 
-  const container = await memoryContainer();
+  const container = await initDBContainer();
   const response = await container.items.create<ChatThreadModel>(modelToSave);
   return response.resource;
 };

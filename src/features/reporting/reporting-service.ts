@@ -5,13 +5,13 @@ import {
   ChatThreadModel,
   MESSAGE_ATTRIBUTE,
 } from "../chat/chat-services/models";
-import { memoryContainer } from "../common/cosmos";
+import { initDBContainer } from "../common/cosmos";
 
 export const FindAllChatThreadsForReporting = async (
   pageSize = 10,
   pageNumber = 0
 ) => {
-  const container = await memoryContainer();
+  const container = await initDBContainer();
 
   const querySpec: SqlQuerySpec = {
     query: `SELECT * FROM root r WHERE r.type=@type ORDER BY r.createdAt DESC OFFSET ${
@@ -34,7 +34,7 @@ export const FindAllChatThreadsForReporting = async (
 };
 
 export const FindChatThreadByID = async (chatThreadID: string) => {
-  const container = await memoryContainer();
+  const container = await initDBContainer();
 
   const querySpec: SqlQuerySpec = {
     query: "SELECT * FROM root r WHERE r.type=@type AND r.id=@id",
@@ -59,7 +59,7 @@ export const FindChatThreadByID = async (chatThreadID: string) => {
 };
 
 export const FindAllChatsInThread = async (chatThreadID: string) => {
-  const container = await memoryContainer();
+  const container = await initDBContainer();
 
   const querySpec: SqlQuerySpec = {
     query: "SELECT * FROM root r WHERE r.type=@type AND r.threadId = @threadId",
