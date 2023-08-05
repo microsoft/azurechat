@@ -110,7 +110,7 @@ export class AzureCogSearch<
     k?: number,
     filter?: AzureCogFilter,
     _callbacks: Callbacks | undefined = undefined
-  ): Promise<[Document, number][]> {
+  ): Promise<[Document<TModel>, number][]> {
     const embeddings = await this.embeddings.embedQuery(query);
     return this.similaritySearchVectorWithScore(embeddings, k || 5, filter);
   }
