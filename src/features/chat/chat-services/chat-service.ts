@@ -3,11 +3,11 @@ import "server-only";
 
 import { SqlQuerySpec } from "@azure/cosmos";
 import { nanoid } from "nanoid";
-import { memoryContainer } from "../../common/cosmos";
+import { initDBContainer } from "../../common/cosmos";
 import { ChatMessageModel, MESSAGE_ATTRIBUTE } from "./models";
 
 export const FindAllChats = async (chatThreadID: string) => {
-  const container = await memoryContainer();
+  const container = await initDBContainer();
 
   const querySpec: SqlQuerySpec = {
     query:
@@ -44,7 +44,7 @@ export const UpsertChat = async (chatModel: ChatMessageModel) => {
     isDeleted: false,
   };
 
-  const container = await memoryContainer();
+  const container = await initDBContainer();
   await container.items.upsert(modelToSave);
 };
 
