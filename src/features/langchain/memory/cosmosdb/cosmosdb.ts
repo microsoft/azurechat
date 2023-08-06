@@ -59,7 +59,7 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
     await container.delete();
   }
 
-  protected async addMessage(message: BaseMessage) {
+  async addMessage(message: BaseMessage) {
     const modelToSave: ChatMessageModel = {
       id: nanoid(),
       createdAt: new Date(),
