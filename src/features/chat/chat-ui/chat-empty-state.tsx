@@ -1,35 +1,62 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Typography from "@/components/typography";
+import { Card } from "@/components/ui/card";
 import { FC } from "react";
-import { ChatType } from "../chat-services/models";
+import { ChatType, ConversationStyle, LLMModel } from "../chat-services/models";
+import { ChatModelSelector } from "./chat-model-selector";
+import { ChatStyleSelector } from "./chat-style-selector";
+import { ChatTypeSelector } from "./chat-type-selector";
 interface Prop {
-  onValueChange: (value: ChatType) => void;
+  llmModel: LLMModel;
+  chatType: ChatType;
+  conversationStyle: ConversationStyle;
+  onChatTypeChange: (value: ChatType) => void;
+  onConversationStyleChange: (value: ConversationStyle) => void;
+  onLLMModelChange: (value: LLMModel) => void;
 }
 export const EmptyState: FC<Prop> = (props) => {
   return (
-    <div className="flex w-full items-center container mx-auto max-w-2xl justify-center h-full gap-2">
-      <div className="flex flex-col gap-2 flex-1 items-start">
-        <img
-          alt="Bubble gum cycling"
-          src="/bubble-gum-cycling.png"
-          className=""
-        />
-      </div>
-      <div className="gap-5 flex flex-col items-start  flex-1">
-        <h2 className="text-4xl font-bold">Hello</h2>
-        <p className="text-sm text-muted-foreground">
+    <div className="grid grid-cols-5 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-9">
+      <div className="col-span-2 gap-5 flex flex-col flex-1">
+        <Typography variant="h4">Hello!</Typography>
+        <p className="">
           Start by just typing your message in the box below. You can also
-          personalise the chat by making changes to the settings.
+          personalise the chat by making changes to the settings on the right.
         </p>
-        <Tabs
-          defaultValue={"GPT-3.5"}
-          onValueChange={(value) => props.onValueChange(value as ChatType)}
-        >
-          <TabsList className="grid w-full grid-cols-2 h-12 items-stretch">
-            <TabsTrigger value="GPT-3.5">⚡ GPT-3.5</TabsTrigger>
-            <TabsTrigger value="GPT-4">✨ GPT-4</TabsTrigger>
-          </TabsList>
-        </Tabs>
       </div>
+      <Card className="col-span-3 flex flex-col gap-5 p-5 ">
+        <Typography variant="h4">Personalise</Typography>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">
+            Select the Azure OpenAI model
+          </p>
+          <ChatModelSelector
+            disable={false}
+            llmModel={props.llmModel}
+            onLLMModelChange={props.onLLMModelChange}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">
+            Choose a conversation style
+          </p>
+          <ChatStyleSelector
+            conversationStyle={props.conversationStyle}
+            onChatStyleChange={props.onConversationStyleChange}
+            disable={false}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">
+            How would you like to chat?
+          </p>
+          <ChatTypeSelector
+            chatType={props.chatType}
+            onChatTypeChange={props.onChatTypeChange}
+            disable={false}
+          />
+        </div>
+      </Card>
     </div>
   );
 };

@@ -12,16 +12,19 @@ import {
 } from "langchain/prompts";
 import { initAndGuardChatSession } from "../chat-services/chat-thread-service";
 import { PromptGPTProps } from "../chat-services/models";
+import { transformConversationStyleToTemp } from "../chat-services/utils";
 
 export const ChatSimple = async (props: PromptGPTProps) => {
-  const { lastHumanMessage, id } = await initAndGuardChatSession(props);
+  const { lastHumanMessage, id, chatThread } = await initAndGuardChatSession(
+    props
+  );
 
   const { stream, handlers } = LangChainStream();
 
   const userId = await userHashedId();
 
   const chat = new ChatOpenAI({
-    temperature: 0,
+    temperature: transformConversationStyleToTemp(chatThread.conversationStyle),
     streaming: true,
   });
 

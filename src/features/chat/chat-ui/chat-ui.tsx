@@ -9,25 +9,32 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
 import { FC, FormEvent, useRef, useState } from "react";
-import { ChatMessageModel, PromptGPTBody } from "../chat-services/models";
+import {
+  ChatMessageModel,
+  ChatThreadModel,
+  ChatType,
+  ConversationStyle,
+  LLMModel,
+  PromptGPTBody,
+} from "../chat-services/models";
 import { transformCosmosToAIModel } from "../chat-services/utils";
 import { EmptyState } from "./chat-empty-state";
 import { ChatHeader } from "./chat-header";
 
 interface Prop {
   chats: Array<ChatMessageModel>;
-  model: string;
+  chatThread: ChatThreadModel;
 }
 
 export const ChatUI: FC<Prop> = (props) => {
-  const { id } = useParams();
+  const { id, chatType, conversationStyle, model } = props.chatThread;
   const { data: session } = useSession();
   const [chatBody, setBody] = useState<PromptGPTBody>({
     id: id,
-    model: "GPT-3.5",
-    chatType: "simple",
+    model: model,
+    chatType: chatType,
+    conversationStyle: conversationStyle,
   });
 
   const { toast } = useToast();
@@ -65,8 +72,16 @@ export const ChatUI: FC<Prop> = (props) => {
     });
   }
 
-  const onValueChange = (value: string) => {
+  const onChatModelChange = (value: LLMModel) => {
     setBody((e) => ({ ...e, model: value }));
+  };
+
+  const onChatTypeChange = (value: ChatType) => {
+    setBody((e) => ({ ...e, chatType: value }));
+  };
+
+  const onConversationStyleChange = (value: ConversationStyle) => {
+    setBody((e) => ({ ...e, conversationStyle: value }));
   };
 
   const onHandleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -76,7 +91,11 @@ export const ChatUI: FC<Prop> = (props) => {
   const ChatWindow = (
     <div className=" h-full rounded-md overflow-y-auto" ref={scrollRef}>
       <div className="flex justify-center p-4">
-        <ChatHeader disable={messages.length === 0} chatType="data" />
+        <ChatHeader
+          chatType={chatBody.chatType}
+          conversationStyle={chatBody.conversationStyle}
+          llmModel={chatBody.model}
+        />
       </div>
       <div className=" pb-[80px] ">
         {messages.map((message, index) => (
@@ -102,7 +121,14 @@ export const ChatUI: FC<Prop> = (props) => {
       {messages.length !== 0 ? (
         ChatWindow
       ) : (
-        <EmptyState onValueChange={(chat) => onValueChange(chat)} />
+        <EmptyState
+          onLLMModelChange={onChatModelChange}
+          onConversationStyleChange={onConversationStyleChange}
+          onChatTypeChange={onChatTypeChange}
+          chatType={chatBody.chatType}
+          llmModel={chatBody.model}
+          conversationStyle={chatBody.conversationStyle}
+        />
       )}
       <ChatInput
         isLoading={isLoading}

@@ -15,6 +15,7 @@ import {
 import { insertPromptAndResponse } from "../chat-services/chat-service";
 import { initAndGuardChatSession } from "../chat-services/chat-thread-service";
 import { ChatMessageModel, PromptGPTProps } from "../chat-services/models";
+import { transformConversationStyleToTemp } from "../chat-services/utils";
 
 export interface FaqDocumentIndex extends AzureCogDocument {
   id: string;
@@ -25,10 +26,11 @@ export interface FaqDocumentIndex extends AzureCogDocument {
 }
 
 export const ChatData = async (props: PromptGPTProps) => {
-  const { lastHumanMessage, id, chats } = await initAndGuardChatSession(props);
+  const { lastHumanMessage, id, chats, chatThread } =
+    await initAndGuardChatSession(props);
 
   const chatModel = new ChatOpenAI({
-    temperature: 0,
+    temperature: transformConversationStyleToTemp(chatThread.conversationStyle),
     streaming: true,
   });
 

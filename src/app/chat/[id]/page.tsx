@@ -11,5 +11,5 @@ export default async function Home({ params }: { params: { id: string } }) {
     notFound();
   }
 
-  return <ChatUI chats={items} model={thread[0].model} />;
+  return <ChatUI chats={items} chatThread={thread[0]} />;
 }
