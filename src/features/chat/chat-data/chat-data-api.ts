@@ -17,8 +17,9 @@ import { FaqDocumentIndex, PromptGPTProps } from "../chat-services/models";
 import { transformConversationStyleToTemperature } from "../chat-services/utils";
 
 export const ChatData = async (props: PromptGPTProps) => {
-  const { lastHumanMessage, id, chats, chatThread } =
-    await initAndGuardChatSession(props);
+  const { lastHumanMessage, id, chatThread } = await initAndGuardChatSession(
+    props
+  );
 
   const chatModel = new ChatOpenAI({
     temperature: transformConversationStyleToTemperature(
@@ -28,7 +29,8 @@ export const ChatData = async (props: PromptGPTProps) => {
   });
 
   const relevantDocuments = await findRelevantDocuments(
-    lastHumanMessage.content
+    lastHumanMessage.content,
+    id
   );
 
   const chain = loadQAMapReduceChain(chatModel, {
@@ -65,12 +67,12 @@ export const ChatData = async (props: PromptGPTProps) => {
   return new StreamingTextResponse(stream);
 };
 
-const findRelevantDocuments = async (query: string) => {
+const findRelevantDocuments = async (query: string, chatThreadId: string) => {
   const vectorStore = initVectorStore();
 
   const relevantDocuments = await vectorStore.similaritySearch(query, 10, {
     vectorFields: vectorStore.config.vectorFieldName,
-    filter: `user eq '${await userHashedId()}'`,
+    filter: `user eq '${await userHashedId()}' and chatThreadId eq '${chatThreadId}'`,
   });
 
   return relevantDocuments;
