@@ -4,7 +4,7 @@ Once the deployment is complete, you will need to add an identity provider to au
 
 ⚠️ Note: Only one of the identity provider is required below.
 
-## GitHub Authentication provider
+# GitHub Authentication provider
 
 We'll create two GitHub apps: one for testing locally and another for production.
 
@@ -40,7 +40,7 @@ Authorization callback URL: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth
    AUTH_GITHUB_SECRET=
 ```
 
-## Azure AD Authentication provider
+# Azure AD Authentication provider
 
 #### 🟡 Development app setup
 

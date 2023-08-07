@@ -1,10 +1,12 @@
 # ☁️ Deploy to Azure - GitHub Actions
 
-### 🧬 Fork the repository
+The following steps describes how Azure ChatGPT can be deployed to Azure App service using GitHub Actions.
+
+# 🧬 Fork the repository
 
 Fork this repository to your own organisation so that you can execute GitHub Actions against your own Azure Subscription.
 
-### 🗝️ Configure secrets in your GitHub repository
+# 🗝️ Configure secrets in your GitHub repository
 
 ### 1. AZURE_CREDENTIALS
 
@@ -29,7 +31,7 @@ The GitHub workflow requires a secret named `AZURE_CREDENTIALS` to authenticate 
 
 Under the same repository secrets add a new variable `AZURE_APP_SERVICE_NAME` to deploy to your Azure Web app. The value of this secret is the name of your Azure Web app e.g. `my-web-app-name` from the domain https://my-web-app-name.azurewebsites.net/
 
-### 🔄 Run GitHub Actions
+# 🔄 Run GitHub Actions
 
 Once the secrets are configured, the GitHub Actions will be triggered for every code push to the repository. Alternatively, you can manually run the workflow by clicking on the "Run Workflow" button in the Actions tab in GitHub.
 
