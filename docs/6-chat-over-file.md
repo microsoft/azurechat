@@ -55,14 +55,13 @@ Users can utilise this functionality to upload their PDF files through the porta
     }
 ```
 
-2. After the index has been created, proceed to modify the env.local file with the appropriate Azure Cognitive Search variables.
-3. At this point, you have the capability to generate a fresh chat session, opting for the `file chat` type to start uploading of a PDF file.
+2. After the index has been created, proceed to modify the env.local file with the appropriate Azure Cognitive Search environment variables.
+3. At this point, you have the capability to generate a new chat session with opting for the `file chat` type. Click on the upload button to to start uploading a PDF file.
 4. Upon the successful completion of the file upload, you are now able to commence the conversation using the provided text box.
-5. Additionally, it is possible to start a new chat thread, and chat with the previous file that was uploaded
 
 ### Things to consider:
 
 1. Central place maintain uploaded files
 2. Currently only PDF files are supported, add additional file types
-3. A way to delete indexed documents if the chat thread is deleted
+3. A way to delete indexed documents on Azure Cognitive Search if the chat thread is deleted
 4. Integrate [Azure Document Intelligence](https://azure.microsoft.com/en-us/products/ai-services/ai-document-intelligence) to extract better information from files
