@@ -4,50 +4,50 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "1227993760546987884"
+      "version": "0.20.4.51522",
+      "templateHash": "1312349874459244269"
     }
   },
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
       "metadata": {
         "description": "Name of the the environment which is used to generate a short unique hash used in all resources."
-      },
-      "maxLength": 64,
-      "minLength": 1
+      }
     },
     "openaiApiKey": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
       "metadata": {
         "description": "Azure OpenAI API Key"
-      },
-      "maxLength": 64,
-      "minLength": 1
+      }
     },
     "openaiInstanceName": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
       "metadata": {
         "description": "Azure OpenAI Instance Name e.g. my-openai-instance"
-      },
-      "maxLength": 64,
-      "minLength": 1
+      }
     },
     "openaiDeploymentName": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
       "metadata": {
         "description": "Azure OpenAI Deployment Name e.g. gpt3-turbo"
-      },
-      "maxLength": 64,
-      "minLength": 1
+      }
     },
     "openaiApiVersion": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
       "metadata": {
         "description": "Azure OpenAI API Version e.g. 2021-08-04-preview"
-      },
-      "maxLength": 64,
-      "minLength": 1
+      }
     }
   },
   "variables": {
@@ -89,8 +89,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "4144097780865821807"
+              "version": "0.20.4.51522",
+              "templateHash": "12118655429845196874"
             }
           },
           "parameters": {
@@ -176,7 +176,7 @@
                     },
                     {
                       "name": "NEXTAUTH_URL",
-                      "value": "[format('{0}-app-{1}.azurewebsites.net', parameters('name'), parameters('resourceToken'))]"
+                      "value": "[format('https://{0}-app-{1}.azurewebsites.net', parameters('name'), parameters('resourceToken'))]"
                     }
                   ]
                 }
