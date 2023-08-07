@@ -14,7 +14,7 @@ export const transformCosmosToAIModel = (
   });
 };
 
-export const transformConversationStyleToTemp = (
+export const transformConversationStyleToTemperature = (
   conversationStyle: ConversationStyle
 ) => {
   switch (conversationStyle) {
