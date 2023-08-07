@@ -49,6 +49,7 @@ export interface PromptGPTProps extends PromptGPTBody {
 export interface FaqDocumentIndex extends AzureCogDocument {
   id: string;
   user: string;
+  chatThreadId: string;
   embedding: number[];
   pageContent: string;
   metadata: any;

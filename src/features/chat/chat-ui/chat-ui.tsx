@@ -96,6 +96,7 @@ export const ChatUI: FC<Prop> = (props) => {
   const onFileChange = async (formData: FormData) => {
     try {
       setIsUploadingFile(true);
+      formData.append("id", id);
       const fileName = await UploadDocument(formData);
       toast({
         title: "File upload",

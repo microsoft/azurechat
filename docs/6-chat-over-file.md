@@ -22,6 +22,12 @@ Users can utilise this functionality to upload their PDF files through the porta
           "searchable": true,
           "filterable": true
         },
+        {
+          "name": "chatThreadId",
+          "type": "Edm.String",
+          "searchable": true,
+          "filterable": true
+        },
          {
           "name": "pageContent",
           "searchable": true,
