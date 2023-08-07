@@ -16,13 +16,6 @@ export const MainMenu = () => {
             <AvatarImage src="/ai-icon.png" />
           </Avatar>
         </Link>
-        <Link
-          href="/reporting"
-          className="w-10 h-10 p-2 items-center justify-center flex border rounded-full"
-          title="Reporting"
-        >
-          <BarChartHorizontalBig />
-        </Link>
       </div>
       <UserProfile />
     </div>

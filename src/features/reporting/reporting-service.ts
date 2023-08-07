@@ -11,26 +11,8 @@ export const FindAllChatThreadsForReporting = async (
   pageSize = 10,
   pageNumber = 0
 ) => {
-  const container = await initDBContainer();
-
-  const querySpec: SqlQuerySpec = {
-    query: `SELECT * FROM root r WHERE r.type=@type ORDER BY r.createdAt DESC OFFSET ${
-      pageNumber * pageSize
-    } LIMIT ${pageSize}`,
-    parameters: [
-      {
-        name: "@type",
-        value: CHAT_THREAD_ATTRIBUTE,
-      },
-    ],
-  };
-
-  const { resources } = await container.items
-    .query<ChatThreadModel>(querySpec, {
-      maxItemCount: pageSize,
-    })
-    .fetchNext();
-  return { resources };
+  const emptyResponse: ChatThreadModel[] = [];
+  return { emptyResponse };
 };
 
 export const FindChatThreadByID = async (chatThreadID: string) => {
