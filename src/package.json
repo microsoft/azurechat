@@ -32,6 +32,7 @@
     "next": "^13.4.12",
     "next-auth": "^4.22.4",
     "next-themes": "^0.2.1",
+    "pdf-parse": "^1.1.1",
     "postcss": "^8.4.27",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

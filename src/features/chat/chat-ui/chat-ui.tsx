@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
 import { FC, FormEvent, useRef, useState } from "react";
+import { UploadDocument } from "../chat-services/chat-document-service";
 import {
   ChatMessageModel,
   ChatThreadModel,
@@ -29,7 +30,11 @@ interface Prop {
 
 export const ChatUI: FC<Prop> = (props) => {
   const { id, chatType, conversationStyle, model } = props.chatThread;
+
   const { data: session } = useSession();
+
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+
   const [chatBody, setBody] = useState<PromptGPTBody>({
     id: id,
     model: model,
@@ -88,6 +93,24 @@ export const ChatUI: FC<Prop> = (props) => {
     handleSubmit(e);
   };
 
+  const onFileChange = async (formData: FormData) => {
+    try {
+      setIsUploadingFile(true);
+      const fileName = await UploadDocument(formData);
+      toast({
+        title: "File upload",
+        description: `${fileName} uploaded successfully.`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "" + error,
+      });
+    } finally {
+      setIsUploadingFile(false);
+    }
+  };
+
   const ChatWindow = (
     <div className=" h-full rounded-md overflow-y-auto" ref={scrollRef}>
       <div className="flex justify-center p-4">
@@ -122,6 +145,8 @@ export const ChatUI: FC<Prop> = (props) => {
         ChatWindow
       ) : (
         <EmptyState
+          isUploadingFile={isUploadingFile}
+          onFileChange={onFileChange}
           onLLMModelChange={onChatModelChange}
           onConversationStyleChange={onConversationStyleChange}
           onChatTypeChange={onChatTypeChange}
@@ -130,6 +155,7 @@ export const ChatUI: FC<Prop> = (props) => {
           conversationStyle={chatBody.conversationStyle}
         />
       )}
+
       <ChatInput
         isLoading={isLoading}
         value={input}

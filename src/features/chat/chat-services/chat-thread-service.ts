@@ -39,7 +39,9 @@ export const FindAllChatThreadForCurrentUser = async () => {
   };
 
   const { resources } = await container.items
-    .query<ChatThreadModel>(querySpec)
+    .query<ChatThreadModel>(querySpec, {
+      partitionKey: await userHashedId(),
+    })
     .fetchAll();
   return resources;
 };

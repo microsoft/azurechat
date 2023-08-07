@@ -6,32 +6,7 @@ import {
   ChatMessageModel,
   MESSAGE_ATTRIBUTE,
 } from "@/features/chat/chat-services/models";
-import { CosmosClient } from "@azure/cosmos";
 import { StoredMessage } from "langchain/schema";
-
-export interface CosmosDBClientConfig {
-  db: string;
-  container: string;
-  endpoint: string;
-  key: string;
-  partitionKey: string;
-}
-
-export const initChatContainer = async (
-  client: CosmosClient,
-  config: CosmosDBClientConfig
-) => {
-  await client.databases.createIfNotExists({ id: config.db });
-
-  const containerRepose = await client
-    .database(config.db)
-    .containers.createIfNotExists({
-      id: config.container,
-      partitionKey: config.partitionKey,
-    });
-
-  return containerRepose.container;
-};
 
 export const getChatMessages = async (
   sessionId: string

@@ -1,3 +1,4 @@
+import { AzureCogDocument } from "@/features/langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
 import { Message } from "ai";
 
 export const CHAT_THREAD_ATTRIBUTE = "CHAT_THREAD";
@@ -42,4 +43,13 @@ export interface PromptGPTBody {
 
 export interface PromptGPTProps extends PromptGPTBody {
   messages: Message[];
+}
+
+// document models
+export interface FaqDocumentIndex extends AzureCogDocument {
+  id: string;
+  user: string;
+  embedding: number[];
+  pageContent: string;
+  metadata: any;
 }
