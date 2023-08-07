@@ -11,8 +11,9 @@ export const FindAllChatThreadsForReporting = async (
   pageSize = 10,
   pageNumber = 0
 ) => {
-  const emptyResponse: ChatThreadModel[] = [];
-  return { emptyResponse };
+  // Removes this fetch method to protect the privacy of the chats
+  const resources: ChatThreadModel[] = [];
+  return { resources };
 };
 
 export const FindChatThreadByID = async (chatThreadID: string) => {
