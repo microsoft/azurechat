@@ -23,11 +23,12 @@ export const LogIn = () => {
           </span>
         </CardTitle>
         <CardDescription>
-          Login in with your GitHub or Microsoft 365 account
+          Login in with your GitHub or Google or Microsoft 365 account
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <Button onClick={() => signIn("github")}>GitHub</Button>
+        <Button onClick={() => signIn("google")}>Google</Button>
         <Button onClick={() => signIn("azure-ad")}> Microsoft 365</Button>
       </CardContent>
     </Card>

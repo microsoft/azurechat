@@ -2,6 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import { Provider } from "next-auth/providers";
 import AzureADProvider from "next-auth/providers/azure-ad";
 import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 const configureIdentityProvider = () => {
   const providers: Array<Provider> = [];
@@ -11,6 +12,15 @@ const configureIdentityProvider = () => {
       GitHubProvider({
         clientId: process.env.AUTH_GITHUB_ID!,
         clientSecret: process.env.AUTH_GITHUB_SECRET!,
+      })
+    );
+  }
+
+  if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
+    providers.push(
+      GoogleProvider({
+        clientId: process.env.AUTH_GOOGLE_ID!,
+        clientSecret: process.env.AUTH_GOOGLE_SECRET!,
       })
     );
   }
