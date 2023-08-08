@@ -69,13 +69,10 @@ const LoadFile = async (formData: FormData) => {
 };
 
 const SplitDocuments = async (docs: Array<Document>) => {
-  const splitDocuments: Array<Document> = [];
-  for (const doc of docs) {
-    const splitter = new RecursiveCharacterTextSplitter();
-    const output = await splitter.createDocuments([doc.pageContent]);
-    splitDocuments.push(...output);
-  }
-  return splitDocuments;
+  const allContent = docs.map((doc) => doc.pageContent).join("\n");
+  const splitter = new RecursiveCharacterTextSplitter();
+  const output = await splitter.createDocuments([allContent]);
+  return output;
 };
 
 const IndexDocuments = async (
