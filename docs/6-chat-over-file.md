@@ -2,8 +2,14 @@
 
 Users can utilise this functionality to upload their PDF files through the portal and engage in chat discussions related to the content of those files.
 
-### Setup Azure Cognitive Search index
+Chat with your data utilises the following two Azure Services:
 
+1. [Azure Document Intelligence](https://learn.microsoft.com/en-GB/azure/ai-services/document-intelligence/) for extracting information from documents.
+1. [Azure Cognitive Search](https://learn.microsoft.com/en-GB/azure/search/) for indexing and retrieving information.
+
+### Setup Azure Cognitive Search index and Document Intelligence
+
+1. Create Azure Cognitive Search using the following [link](https://learn.microsoft.com/en-us/azure/search/search-get-started-portal)
 1. Create an index on Azure Cognitive Search with the following schema. You can use the Azure portal to create the following [indexes](https://learn.microsoft.com/en-us/azure/search/vector-search-how-to-create-index?tabs=portal-add-field%2Cpush)
 
 ```
@@ -62,8 +68,29 @@ Users can utilise this functionality to upload their PDF files through the porta
 ```
 
 2. After the index has been created, proceed to modify the env.local file with the appropriate Azure Cognitive Search environment variables.
-3. At this point, you have the capability to generate a new chat session with opting for the `file chat` type. Click on the upload button to to start uploading a PDF file.
-4. Upon the successful completion of the file upload, you are now able to commence the conversation using the provided text box.
+
+```
+# Azure cognitive search is used for chat over your data
+AZURE_SEARCH_API_KEY=
+AZURE_SEARCH_NAME=
+AZURE_SEARCH_INDEX_NAME=
+AZURE_SEARCH_API_VERSION="2023-07-01-Preview"
+```
+
+3. Create Azure Document intelligence using the following [link](https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/create-document-intelligence-resource?view=doc-intel-3.1.0)
+
+4. After the Document intelligence has been created, proceed to modify the env.local file with the appropriate Document intelligence environment variables.
+
+Note that the file is only preserved for each chat thread
+
+```
+# Azure AI Document Intelligence to extract content from your data
+AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT="https://REGION.api.cognitive.microsoft.com/"
+AZURE_DOCUMENT_INTELLIGENCE_KEY=
+```
+
+4. At this point, you have the capability to generate a new chat session with opting for the `file chat` type. Click on the upload button to to start uploading a PDF file.
+5. Upon the successful completion of the file upload, you are now able to commence the conversation using the provided text box.
 
 ### Things to consider:
 

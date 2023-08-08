@@ -1,6 +1,7 @@
 import { AzureCogDocument } from "@/features/langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
 import { Message } from "ai";
 
+export const CHAT_DOCUMENT_ATTRIBUTE = "CHAT_DOCUMENT";
 export const CHAT_THREAD_ATTRIBUTE = "CHAT_THREAD";
 export const MESSAGE_ATTRIBUTE = "CHAT_MESSAGE";
 
@@ -53,4 +54,14 @@ export interface FaqDocumentIndex extends AzureCogDocument {
   embedding: number[];
   pageContent: string;
   metadata: any;
+}
+
+export interface ChatDocumentModel {
+  id: string;
+  name: string;
+  chatThreadId: string;
+  userId: string;
+  isDeleted: boolean;
+  createdAt: Date;
+  type: "CHAT_DOCUMENT";
 }

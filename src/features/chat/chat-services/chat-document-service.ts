@@ -1,13 +1,23 @@
 "use server";
 
 import { userHashedId } from "@/features/auth/helpers";
+import { initDBContainer } from "@/features/common/cosmos";
 import { AzureCogSearch } from "@/features/langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
+import {
+  AzureKeyCredential,
+  DocumentAnalysisClient,
+} from "@azure/ai-form-recognizer";
 import { Document } from "langchain/document";
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { nanoid } from "nanoid";
-import { FaqDocumentIndex } from "./models";
+import {
+  CHAT_DOCUMENT_ATTRIBUTE,
+  ChatDocumentModel,
+  FaqDocumentIndex,
+} from "./models";
+
+const MAX_DOCUMENT_SIZE = 20000000;
 
 export const UploadDocument = async (formData: FormData) => {
   const { docs, file, chatThreadId } = await LoadFile(formData);
@@ -20,9 +30,39 @@ export const UploadDocument = async (formData: FormData) => {
 const LoadFile = async (formData: FormData) => {
   const file: File | null = formData.get("file") as unknown as File;
   const chatThreadId: string = formData.get("id") as unknown as string;
-  if (file && file.type === "application/pdf" && file.size < 20000000) {
-    const loader = new PDFLoader(file, { splitPages: false });
-    const docs = await loader.load();
+
+  if (
+    file &&
+    file.type === "application/pdf" &&
+    file.size < MAX_DOCUMENT_SIZE
+  ) {
+    const client = initDocumentIntelligence();
+
+    const blob = new Blob([file], { type: file.type });
+
+    const poller = await client.beginAnalyzeDocument(
+      "prebuilt-document",
+      await blob.arrayBuffer()
+    );
+
+    const { paragraphs } = await poller.pollUntilDone();
+
+    const docs: Document[] = [];
+
+    if (paragraphs) {
+      for (const paragraph of paragraphs) {
+        const doc: Document = {
+          pageContent: paragraph.content,
+          metadata: {
+            file: file.name,
+          },
+        };
+        docs.push(doc);
+      }
+    } else {
+      throw new Error("No content found in document.");
+    }
+
     return { docs, file, chatThreadId };
   }
   throw new Error("Invalid file format or size. Only PDF files are supported.");
@@ -61,6 +101,7 @@ const IndexDocuments = async (
   }
 
   await vectorStore.addDocuments(documentsToIndex);
+  await UpsertChatDocument(file.name, chatThreadId);
 };
 
 export const initAzureSearchVectorStore = () => {
@@ -74,4 +115,34 @@ export const initAzureSearchVectorStore = () => {
   });
 
   return azureSearch;
+};
+
+export const initDocumentIntelligence = () => {
+  const client = new DocumentAnalysisClient(
+    process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT,
+    new AzureKeyCredential(process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY),
+    {
+      apiVersion: "2022-08-31",
+    }
+  );
+
+  return client;
+};
+
+export const UpsertChatDocument = async (
+  fileName: string,
+  chatThreadID: string
+) => {
+  const modelToSave: ChatDocumentModel = {
+    chatThreadId: chatThreadID,
+    id: nanoid(),
+    userId: await userHashedId(),
+    createdAt: new Date(),
+    type: CHAT_DOCUMENT_ATTRIBUTE,
+    isDeleted: false,
+    name: fileName,
+  };
+
+  const container = await initDBContainer();
+  await container.items.upsert(modelToSave);
 };
