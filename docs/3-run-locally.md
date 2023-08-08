@@ -45,3 +45,5 @@ You should now be prompted to login with your chosen OAuth provider. Once succes
 
 ![](/images/chat-home.png)
 ![](/images/chat-history.png)
+
+[Next](/docs/4-deployto-azure.md)
