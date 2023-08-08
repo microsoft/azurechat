@@ -1,4 +1,4 @@
-# 📃 Chatting with your unstructured data
+# 📃 Chatting with your file
 
 Users can utilise this functionality to upload their PDF files through the portal and engage in chat discussions related to the content of those files.
 
@@ -95,8 +95,6 @@ AZURE_DOCUMENT_INTELLIGENCE_KEY=
 ### Things to consider:
 
 1. Central place maintain uploaded files
-2. Currently only PDF files are supported, add additional file types
-3. A way to delete indexed documents on Azure Cognitive Search if the chat thread is deleted
-4. Integrate [Azure Document Intelligence](https://azure.microsoft.com/en-us/products/ai-services/ai-document-intelligence) to extract better information from files
+2. A way to delete indexed documents on Azure Cognitive Search if the chat thread is deleted
 
 [Next](/docs/7-environment-variables.md)

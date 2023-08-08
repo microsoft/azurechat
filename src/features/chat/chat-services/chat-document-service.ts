@@ -31,11 +31,7 @@ const LoadFile = async (formData: FormData) => {
   const file: File | null = formData.get("file") as unknown as File;
   const chatThreadId: string = formData.get("id") as unknown as string;
 
-  if (
-    file &&
-    file.type === "application/pdf" &&
-    file.size < MAX_DOCUMENT_SIZE
-  ) {
+  if (file && file.size < MAX_DOCUMENT_SIZE) {
     const client = initDocumentIntelligence();
 
     const blob = new Blob([file], { type: file.type });
