@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/ai-form-recognizer": "^4.1.0-beta.1",
     "@azure/cosmos": "^3.17.3",
+    "@azure/identity": "^3.2.4",
     "@radix-ui/react-avatar": "^1.0.3",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@radix-ui/react-label": "^2.0.2",
@@ -32,7 +34,6 @@
     "next": "^13.4.12",
     "next-auth": "^4.22.4",
     "next-themes": "^0.2.1",
-    "pdf-parse": "^1.1.1",
     "postcss": "^8.4.27",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
