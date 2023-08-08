@@ -20,12 +20,12 @@ We've built a Solution Accelerator to empower your workforce with Azure ChatGPT.
 
 # Getting Started
 
-1. [Introduction](/docs/1-introduction.md)
+1. [ Introduction](/docs/1-introduction.md)
 1. [Provision Azure Resources](/docs/2-provision-azure-resources.md)
 1. [Run Azure ChatGPT from your local machine](/docs/3-run-locally.md)
 1. [Deploy Azure ChatGPT to Azure](/docs/4-deployto-azure.md)
 1. [Add identity provider](/docs/5-add-Identity.md)
-1. [Chat over file](/docs/6-chat-over-file.md)
+1. [Chatting with your file](/docs/6-chat-over-file.md)
 1. [Environment variables](/docs/7-environment-variables.md)
 
 # Contributing
