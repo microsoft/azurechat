@@ -77,3 +77,5 @@ AZURE_AD_CLIENT_ID=
 AZURE_AD_CLIENT_SECRET=
 AZURE_AD_TENANT_ID=
 ```
+
+[Next](/docs/5-add-Identity.md)

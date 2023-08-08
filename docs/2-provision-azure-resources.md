@@ -7,3 +7,5 @@ Click on the Deploy to Azure button and configure your settings in the Azure Por
 ⚠️ Note: This will only create azure resources. Follow the [deploy to Azure section](#-deploy-to-azure---github-actions) to build and deploy Azure ChatGPT.
 
 Please see the [section below](#-add-an-identity-provider) for important information about adding authentication to your app.
+
+[Next](/docs/3-run-locally.md)

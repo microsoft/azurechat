@@ -98,3 +98,5 @@ AZURE_DOCUMENT_INTELLIGENCE_KEY=
 2. Currently only PDF files are supported, add additional file types
 3. A way to delete indexed documents on Azure Cognitive Search if the chat thread is deleted
 4. Integrate [Azure Document Intelligence](https://azure.microsoft.com/en-us/products/ai-services/ai-document-intelligence) to extract better information from files
+
+[Next](/docs/7-environment-variables.md)

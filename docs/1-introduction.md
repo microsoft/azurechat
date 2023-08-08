@@ -28,3 +28,5 @@ Azure ChatGPT is built with the following technologies.
 [Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/): fully managed platform-as-a-service (PaaS) for hosting web applications, REST APIs, and mobile back ends.
 
 ![](/images/architecture.png)
+
+[Next](/docs/2-provision-azure-resources.md)
