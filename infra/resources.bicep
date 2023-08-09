@@ -6,9 +6,9 @@ param openai_instance_name string
 param openai_deployment_name string
 param openai_api_version string
 
-var location = resourceGroup().location
+param location string = resourceGroup().location
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: '${name}-app-${resourceToken}'
   location: location
   properties: {
@@ -24,7 +24,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   kind: 'linux'
 }
 
-resource webApp 'Microsoft.Web/sites@2020-06-01' = {
+resource webApp 'Microsoft.Web/sites@2022-09-01' = {
   name: '${name}-app-${resourceToken}'
   location: location
   properties: {
