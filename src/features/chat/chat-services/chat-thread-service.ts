@@ -10,6 +10,9 @@ import {
   CHAT_THREAD_ATTRIBUTE,
   ChatMessageModel,
   ChatThreadModel,
+  ChatType,
+  ConversationStyle,
+  LLMModel,
   PromptGPTProps,
 } from "./models";
 
@@ -36,7 +39,9 @@ export const FindAllChatThreadForCurrentUser = async () => {
   };
 
   const { resources } = await container.items
-    .query<ChatThreadModel>(querySpec)
+    .query<ChatThreadModel>(querySpec, {
+      partitionKey: await userHashedId(),
+    })
     .fetchAll();
   return resources;
 };
@@ -113,22 +118,38 @@ export const EnsureChatThreadIsForCurrentUser = async (
 
 export const UpsertChatThread = async (chatThread: ChatThreadModel) => {
   const container = await initDBContainer();
-  return await container.items.upsert(chatThread);
+  const updatedChatThread = await container.items.upsert<ChatThreadModel>(
+    chatThread
+  );
+
+  if (updatedChatThread === undefined) {
+    throw new Error("Chat thread not found");
+  }
+
+  return updatedChatThread;
 };
 
 export const updateChatThreadTitle = async (
   chatThread: ChatThreadModel,
   messages: ChatMessageModel[],
-  modelName: string,
+  modelName: LLMModel,
+  chatType: ChatType,
+  conversationStyle: ConversationStyle,
   userMessage: string
 ) => {
   if (messages.length === 0) {
-    await UpsertChatThread({
+    const updatedChatThread = await UpsertChatThread({
       ...chatThread,
       model: modelName,
+      chatType: chatType,
+      conversationStyle: conversationStyle,
       name: userMessage.substring(0, 30),
     });
+
+    return updatedChatThread.resource!;
   }
+
+  return chatThread;
 };
 
 export const CreateChatThread = async () => {
@@ -136,11 +157,12 @@ export const CreateChatThread = async () => {
     name: "new chat",
     useName: (await userSession())!.name,
     userId: await userHashedId(),
-    model: "",
     id: nanoid(),
     createdAt: new Date(),
     isDeleted: false,
     chatType: "simple",
+    model: "gpt-3.5",
+    conversationStyle: "precise",
     type: CHAT_THREAD_ATTRIBUTE,
   };
 
@@ -150,18 +172,20 @@ export const CreateChatThread = async () => {
 };
 
 export const initAndGuardChatSession = async (props: PromptGPTProps) => {
-  const { messages, id, model } = props;
+  const { messages, id, model, chatType, conversationStyle } = props;
 
   //last message
   const lastHumanMessage = messages[messages.length - 1];
 
-  const chatThread = await EnsureChatThreadIsForCurrentUser(id);
+  const currentChatThread = await EnsureChatThreadIsForCurrentUser(id);
   const chats = await FindAllChats(id);
 
-  await updateChatThreadTitle(
-    chatThread,
+  const chatThread = await updateChatThreadTitle(
+    currentChatThread,
     chats,
     model,
+    chatType,
+    conversationStyle,
     lastHumanMessage.content
   );
 
@@ -169,5 +193,6 @@ export const initAndGuardChatSession = async (props: PromptGPTProps) => {
     id,
     lastHumanMessage,
     chats,
+    chatThread,
   };
 };

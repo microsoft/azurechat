@@ -110,7 +110,7 @@ export class AzureCogSearch<
     k?: number,
     filter?: AzureCogFilter,
     _callbacks: Callbacks | undefined = undefined
-  ): Promise<[Document, number][]> {
+  ): Promise<[Document<TModel>, number][]> {
     const embeddings = await this.embeddings.embedQuery(query);
     return this.similaritySearchVectorWithScore(embeddings, k || 5, filter);
   }
@@ -127,8 +127,7 @@ export class AzureCogSearch<
 
     documents.forEach((document, i) => {
       indexes.push({
-        id: nanoid(),
-        content: document.pageContent,
+        id: nanoid().replace("_", ""),
         ...document,
         [this._config.vectorFieldName]: vectors[i],
       });
@@ -189,7 +188,7 @@ const fetcher = async (url: string, body: any, apiKey: string) => {
   if (!response.ok) {
     const err = await response.json();
     console.log(err);
-    throw new Error(err);
+    throw new Error(JSON.stringify(err));
   }
 
   return await response.json();

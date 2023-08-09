@@ -12,16 +12,21 @@ import {
 } from "langchain/prompts";
 import { initAndGuardChatSession } from "../chat-services/chat-thread-service";
 import { PromptGPTProps } from "../chat-services/models";
+import { transformConversationStyleToTemperature } from "../chat-services/utils";
 
 export const ChatSimple = async (props: PromptGPTProps) => {
-  const { lastHumanMessage, id } = await initAndGuardChatSession(props);
+  const { lastHumanMessage, id, chatThread } = await initAndGuardChatSession(
+    props
+  );
 
   const { stream, handlers } = LangChainStream();
 
   const userId = await userHashedId();
 
   const chat = new ChatOpenAI({
-    temperature: 0,
+    temperature: transformConversationStyleToTemperature(
+      chatThread.conversationStyle
+    ),
     streaming: true,
   });
 
@@ -32,13 +37,6 @@ export const ChatSimple = async (props: PromptGPTProps) => {
     chatHistory: new CosmosDBChatMessageHistory({
       sessionId: id,
       userId: userId,
-      config: {
-        db: process.env.AZURE_COSMOSDB_DB_NAME,
-        container: process.env.AZURE_COSMOSDB_CONTAINER_NAME,
-        endpoint: process.env.AZURE_COSMOSDB_URI,
-        key: process.env.AZURE_COSMOSDB_KEY,
-        partitionKey: "id",
-      },
     }),
   });
 
@@ -51,6 +49,7 @@ export const ChatSimple = async (props: PromptGPTProps) => {
     new MessagesPlaceholder("history"),
     HumanMessagePromptTemplate.fromTemplate("{input}"),
   ]);
+
   const chain = new ConversationChain({
     llm: chat,
     memory,
