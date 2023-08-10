@@ -90,7 +90,7 @@ AZURE_SEARCH_INDEX_NAME=
 AZURE_SEARCH_API_VERSION="2023-07-01-Preview"
 ```
 
-3. Create an instance of Azure Form Recognizer (also known as Azure Document Intelligence) using the following [link](https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/create-document-intelligence-resource?view=doc-intel-3.1.0). Please be aware that this resource might be called 'Form recognizer' in Azure Portal.
+3. Create an instance of Azure Form Recognizer (also known as Azure Document Intelligence) using the following [link](https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/create-document-intelligence-resource?view=doc-intel-3.1.0). Please be aware that this resource might be called *Form recognizer* in Azure Portal.
 
 4. After the Form Recognizer (Document Intelligence) resource has been created, proceed to modify the `env.local` file with appropriate environment variables. You can find values for these variables in your _Form Recognizer_ resource (Resource Management blade > Keys and Endpoint). Please make sure that you don't copy the endpoint from there, but only replace the region in the example below. For example, if your Form Recognizer resource is located in East US Azure region, your `AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT` variable would be `https://eastus.api.cognitive.microsoft.com/`.
 
@@ -102,8 +102,9 @@ AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT="https://REGION.api.cognitive.microsoft.com
 AZURE_DOCUMENT_INTELLIGENCE_KEY=
 ```
 
-4. At this point, you should have the capability to generate new chat sessions with opting of the `file chat` type. Click on the `Choose File` button to select your document and then the `Upload` button to upload your file. Please note that the Form Recognizer service supports PDF (text or scanned), JPG and PNG input documents.
-6. Upon the successful completion of the file upload, you will be able to start a conversation with a chatbot using the chat box in the app.
+4. At this point, you should be able to start new chat sessions with the `File` option.
+5. Once the `File` chat option is selected, click the `Choose File` button to select your document and then click the `Upload` button to upload your file. Please note that the Form Recognizer service supports PDF (text or scanned), JPG and PNG input documents.
+6. Once you receive a notification about a successful file upload, you should be able to start chatting with chatting with a chatbot.
 
 ### Things to consider:
 
