@@ -100,7 +100,8 @@ AZURE_SEARCH_API_VERSION="2023-07-01-Preview"
       AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT="https://REGION.api.cognitive.microsoft.com/"
       AZURE_DOCUMENT_INTELLIGENCE_KEY=
       ```
-6. At this point, you should be able to start new chat sessions with the `File` option.
+5. At this point, you should be able to start new chat sessions with the `File` option.
+   ![](/images/personalise-session.png)
 7. Once the `File` chat option is selected, click the `Choose File` button to select your document and then click the `Upload` button to upload your file. Please note that the Form Recognizer service supports PDF (text or scanned), JPG and PNG input documents.
 8. Once you receive a notification about a successful file upload, you should be able to start chatting with chatting with a chatbot.
 
