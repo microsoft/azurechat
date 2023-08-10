@@ -58,11 +58,12 @@ export const FindChatThreadByID = async (chatThreadID: string) => {
   return resources;
 };
 
-export const FindAllChatsInThread = async (chatThreadID: string) => {
+export const FindAllChatsInThread = async (chatThreadID: string, userId: string) => {
   const container = await initDBContainer();
 
   const querySpec: SqlQuerySpec = {
-    query: "SELECT * FROM root r WHERE r.type=@type AND r.threadId = @threadId",
+   // query: "SELECT * FROM root r WHERE r.type=@type AND r.threadId = @threadId",
+    query: "SELECT * FROM root r WHERE r.type=@type AND r.threadId = @threadId AND r.sender = @userId",
     parameters: [
       {
         name: "@type",
@@ -71,6 +72,10 @@ export const FindAllChatsInThread = async (chatThreadID: string) => {
       {
         name: "@threadId",
         value: chatThreadID,
+      },
+      {
+        name: "@userId",
+        value: userId,
       },
     ],
   };
