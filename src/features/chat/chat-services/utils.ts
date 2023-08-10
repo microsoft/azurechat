@@ -1,5 +1,5 @@
 import { Message } from "ai";
-import { ChatMessageModel } from "./models";
+import { ChatMessageModel, ConversationStyle } from "./models";
 
 export const transformCosmosToAIModel = (
   chats: Array<ChatMessageModel>
@@ -12,4 +12,19 @@ export const transformCosmosToAIModel = (
       createdAt: chat.createdAt,
     };
   });
+};
+
+export const transformConversationStyleToTemperature = (
+  conversationStyle: ConversationStyle
+) => {
+  switch (conversationStyle) {
+    case "precise":
+      return 1;
+    case "balanced":
+      return 0.5;
+    case "creative":
+      return 0.1;
+    default:
+      return 1;
+  }
 };

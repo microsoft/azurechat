@@ -1,27 +1,25 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FC } from "react";
-import { ChatType } from "../chat-services/models";
+import { ChatType, ConversationStyle, LLMModel } from "../chat-services/models";
+import { ChatModelSelector } from "./chat-model-selector";
+import { ChatStyleSelector } from "./chat-style-selector";
+import { ChatTypeSelector } from "./chat-type-selector";
 
 interface Prop {
   chatType: ChatType;
-  isEnabled: boolean;
-  onValueChange: (value: ChatType) => void;
+  conversationStyle: ConversationStyle;
+  llmModel: LLMModel;
 }
 
 export const ChatHeader: FC<Prop> = (props) => {
   return (
-    <Tabs
-      defaultValue={"GPT-3.5"}
-      onValueChange={(value) => props.onValueChange(value as ChatType)}
-    >
-      <TabsList className="grid w-full grid-cols-2 h-12 items-stretch">
-        <TabsTrigger disabled={props.isEnabled} value="GPT-3.5">
-          ⚡ GPT-3.5
-        </TabsTrigger>
-        <TabsTrigger disabled={props.isEnabled} value="GPT-4">
-          ✨ GPT-4
-        </TabsTrigger>
-      </TabsList>
-    </Tabs>
+    <div className="flex gap-2">
+      <ChatTypeSelector disable={true} chatType={props.chatType} />
+      <ChatModelSelector disable={true} llmModel={props.llmModel} />
+
+      <ChatStyleSelector
+        disable={true}
+        conversationStyle={props.conversationStyle}
+      />
+    </div>
   );
 };
