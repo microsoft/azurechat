@@ -6,21 +6,27 @@ import {
   MESSAGE_ATTRIBUTE,
 } from "../chat/chat-services/models";
 import { initDBContainer } from "../common/cosmos";
+import { userHashedId } from "@/features/auth/helpers";
 
 export const FindAllChatThreadsForReporting = async (
   pageSize = 10,
   pageNumber = 0
 ) => {
   const container = await initDBContainer();
+  const userId = await userHashedId();
 
   const querySpec: SqlQuerySpec = {
-    query: `SELECT * FROM root r WHERE r.type=@type ORDER BY r.createdAt DESC OFFSET ${
+    query: `SELECT * FROM root r WHERE r.type=@type AND r.userId=@userId ORDER BY r.createdAt DESC OFFSET ${
       pageNumber * pageSize
     } LIMIT ${pageSize}`,
     parameters: [
       {
         name: "@type",
         value: CHAT_THREAD_ATTRIBUTE,
+      },
+      {
+        name: "@userId",
+        value: userId,
       },
     ],
   };
@@ -35,9 +41,10 @@ export const FindAllChatThreadsForReporting = async (
 
 export const FindChatThreadByID = async (chatThreadID: string) => {
   const container = await initDBContainer();
+  const userId = await userHashedId();
 
   const querySpec: SqlQuerySpec = {
-    query: "SELECT * FROM root r WHERE r.type=@type AND r.id=@id",
+    query: "SELECT * FROM root r WHERE r.type=@type AND r.userId=@userId AND r.id=@id",
     parameters: [
       {
         name: "@type",
@@ -47,6 +54,10 @@ export const FindChatThreadByID = async (chatThreadID: string) => {
       {
         name: "@id",
         value: chatThreadID,
+      },
+      {
+        name: "@userId",
+        value: userId,
       },
     ],
   };
@@ -60,9 +71,10 @@ export const FindChatThreadByID = async (chatThreadID: string) => {
 
 export const FindAllChatsInThread = async (chatThreadID: string) => {
   const container = await initDBContainer();
+  const userId = await userHashedId();
 
   const querySpec: SqlQuerySpec = {
-    query: "SELECT * FROM root r WHERE r.type=@type AND r.threadId = @threadId",
+    query: "SELECT * FROM root r WHERE r.type=@type AND r.userId=@userId AND r.threadId = @threadId",
     parameters: [
       {
         name: "@type",
@@ -71,6 +83,10 @@ export const FindAllChatsInThread = async (chatThreadID: string) => {
       {
         name: "@threadId",
         value: chatThreadID,
+      },
+      {
+        name: "@userId",
+        value: userId,
       },
     ],
   };
