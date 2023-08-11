@@ -20,7 +20,9 @@ interface Prop {
 }
 
 export const EmptyState: FC<Prop> = (props) => {
+
   const [showFileUpload, setShowFileUpload] = useState<ChatType>("simple");
+  const [isFileNull, setIsFileNull] = useState(true);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +33,7 @@ export const EmptyState: FC<Prop> = (props) => {
 
   const onChatTypeChange = (value: ChatType) => {
     setShowFileUpload(value);
+    setIsFileNull(true);
     props.onChatTypeChange(value);
   };
 
@@ -87,11 +90,12 @@ export const EmptyState: FC<Prop> = (props) => {
                 required
                 disabled={props.isUploadingFile}
                 placeholder="Describe the purpose of the document"
+                onChange={(e) => {setIsFileNull(e.currentTarget.value === null)}}
               />
               <Button
                 type="submit"
                 value="Upload"
-                disabled={props.isUploadingFile}
+                disabled={!(!isFileNull && !props.isUploadingFile)}
                 className="flex items-center gap-1"
               >
                 {props.isUploadingFile ? (
