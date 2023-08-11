@@ -28,7 +28,7 @@ const ChatRow: FC<ChatRowProps> = (props) => {
             <Avatar>
               <AvatarImage src={props.profilePicture} />
             </Avatar>
-            <Typography variant="h5" className="capitalize">
+            <Typography variant="h5" className="capitalize text-primary">
               {props.name}
             </Typography>
           </div>

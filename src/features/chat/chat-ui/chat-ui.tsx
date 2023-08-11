@@ -7,6 +7,7 @@ import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor";
 import { Card } from "@/components/ui/card";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { AI_NAME } from "@/features/theme/customise";
 import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
 import { FC, FormEvent, useRef, useState } from "react";
@@ -124,9 +125,7 @@ export const ChatUI: FC<Prop> = (props) => {
       <div className=" pb-[80px] ">
         {messages.map((message, index) => (
           <ChatRow
-            name={
-              message.role === "user" ? session?.user?.name! : "AzureChatGPT"
-            }
+            name={message.role === "user" ? session?.user?.name! : AI_NAME}
             profilePicture={
               message.role === "user" ? session?.user?.image! : "/ai-icon.png"
             }
