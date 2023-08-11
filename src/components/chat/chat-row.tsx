@@ -1,12 +1,15 @@
 import { ChatRole } from "@/features/chat/chat-services/models";
 import { cn } from "@/lib/utils";
-import { FC } from "react";
+import { FC, useState } from "react";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import Typography from "../typography";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { CodeBlock } from "./code-block";
 import { MemoizedReactMarkdown } from "./memoized-react-markdown";
+import { CheckIcon, ClipboardIcon, ClipboardTypeIcon } from "lucide-react";
+import { Button } from "../ui/button";
+import { encode } from "gpt-tokenizer"
 interface ChatRowProps {
   name: string;
   profilePicture: string;
@@ -14,8 +17,19 @@ interface ChatRowProps {
   type: ChatRole;
 }
 
+
 const ChatRow: FC<ChatRowProps> = (props) => {
+  const [isIconChecked, setIsIconChecked] = useState(false);
+  const toggleIcon = () => {
+    setIsIconChecked(prevState => !prevState);
+  };
+
+  const handleButtonClick = () => {
+    toggleIcon();
+    navigator.clipboard.writeText(props.message);
+  };
   return (
+    
     <div
       className={cn(
         "border-b ",
@@ -30,7 +44,17 @@ const ChatRow: FC<ChatRowProps> = (props) => {
             </Avatar>
             <Typography variant="h5" className="capitalize text-primary">
               {props.name}
-            </Typography>
+            </Typography>           
+            <ClipboardTypeIcon size={16}/> Tokens count: {encode(props.message).length}
+            <Button
+              variant={"ghost"}
+              size={"sm"}
+              title="Copy text"
+              className="justify-right flex"
+              onClick={handleButtonClick}
+            >
+              {isIconChecked ? <CheckIcon size={16}/> : <ClipboardIcon size={16}/>}
+            </Button>       
           </div>
         </div>
         <div className="py-6">
@@ -76,8 +100,8 @@ const ChatRow: FC<ChatRowProps> = (props) => {
             }}
           >
             {props.message}
-          </MemoizedReactMarkdown>
-        </div>
+          </MemoizedReactMarkdown>         
+        </div>   
       </div>
     </div>
   );
