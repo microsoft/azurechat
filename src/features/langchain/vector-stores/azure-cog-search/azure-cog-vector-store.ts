@@ -133,6 +133,13 @@ export class AzureCogSearch<
       });
     });
 
+    // run through indexes and if the id has _ then remove it
+    indexes.forEach((index) => {
+      if (index.id.includes("_")) {
+        index.id = index.id.replace("_", "");
+      }
+    });
+
     const documentIndexRequest: DocumentSearchResponseModel<TModel> = {
       value: indexes,
     };
