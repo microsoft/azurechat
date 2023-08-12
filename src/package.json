@@ -28,7 +28,6 @@
     "clsx": "^2.0.0",
     "eslint": "^8.46.0",
     "eslint-config-next": "^13.4.12",
-    "gpt-tokenizer": "^2.1.1",
     "langchain": "^0.0.123",
     "lucide-react": "^0.264.0",
     "nanoid": "^4.0.2",
