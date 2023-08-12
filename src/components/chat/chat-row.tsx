@@ -9,7 +9,7 @@ import { CodeBlock } from "./code-block";
 import { MemoizedReactMarkdown } from "./memoized-react-markdown";
 import { CheckIcon, ClipboardIcon, ClipboardTypeIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { encode } from "gpt-tokenizer"
+
 interface ChatRowProps {
   name: string;
   profilePicture: string;
@@ -45,7 +45,6 @@ const ChatRow: FC<ChatRowProps> = (props) => {
             <Typography variant="h5" className="capitalize text-primary">
               {props.name}
             </Typography>           
-            <ClipboardTypeIcon size={16}/> Tokens count: {encode(props.message).length}
             <Button
               variant={"ghost"}
               size={"sm"}
