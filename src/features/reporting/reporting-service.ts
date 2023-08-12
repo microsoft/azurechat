@@ -6,21 +6,27 @@ import {
   MESSAGE_ATTRIBUTE,
 } from "../chat/chat-services/models";
 import { initDBContainer } from "../common/cosmos";
+import { userHashedId } from "../auth/helpers";
 
 export const FindAllChatThreadsForReporting = async (
   pageSize = 10,
   pageNumber = 0
 ) => {
   const container = await initDBContainer();
+  const userId = await userHashedId();
 
   const querySpec: SqlQuerySpec = {
-    query: `SELECT * FROM root r WHERE r.type=@type ORDER BY r.createdAt DESC OFFSET ${
+    query: `SELECT * FROM root r WHERE r.type=@type and r.userId=@userId ORDER BY r.createdAt DESC OFFSET ${
       pageNumber * pageSize
     } LIMIT ${pageSize}`,
     parameters: [
       {
         name: "@type",
         value: CHAT_THREAD_ATTRIBUTE,
+      },
+      {
+        name: "@userId",
+        value: userId,
       },
     ],
   };
