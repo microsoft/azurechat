@@ -6,7 +6,7 @@ ChatGPT has grown explosively in popularity as we all know now. Business users a
 
 However, ChatGPT risks exposing confidential intellectual property. One option is to block corporate access to ChatGPT, but people always find workarounds. This also limits the powerful capabilities of ChatGPT and reduces employee productivity and their work experience.
 
-Azure ChatGPT is our enterprise option. This is the exact same service but offered as your private ChatGPT.
+ChatGPT on Azure solution accelerator is our enterprise option. This solution provides similar user experience to ChatGPT but offered as your private ChatGPT.
 
 ### Benefits are:
 
@@ -16,14 +16,14 @@ Azure ChatGPT is our enterprise option. This is the exact same service but offer
 
 **3. Value:** Deliver added business value with your own internal data sources (plug and play) or use plug-ins to integrate with your internal services (e.g., ServiceNow, etc).
 
-We've built a Solution Accelerator to empower your workforce with Azure ChatGPT.
+We've built a Solution Accelerator to empower your workforce with ChatGPT on Azure solution accelerator.
 
 # Getting Started
 
 1. [ Introduction](/docs/1-introduction.md)
 1. [Provision Azure Resources](/docs/2-provision-azure-resources.md)
-1. [Run Azure ChatGPT from your local machine](/docs/3-run-locally.md)
-1. [Deploy Azure ChatGPT to Azure](/docs/4-deployto-azure.md)
+1. [Run ChatGPT on Azure solution accelerator from your local machine](/docs/3-run-locally.md)
+1. [Deploy ChatGPT on Azure solution accelerator to Azure](/docs/4-deployto-azure.md)
 1. [Add identity provider](/docs/5-add-Identity.md)
 1. [Chatting with your file](/docs/6-chat-over-file.md)
 1. [Environment variables](/docs/7-environment-variables.md)
