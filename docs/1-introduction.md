@@ -9,7 +9,7 @@
 
 # 👋🏻 Introduction
 
-Azure ChatGPT is built with the following technologies.
+ChatGPT on Azure solution accelerator is built with the following technologies.
 
 [Node.js 18](https://nodejs.org/en): an open-source, cross-platform JavaScript runtime environment.
 
