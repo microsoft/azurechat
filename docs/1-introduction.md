@@ -19,6 +19,8 @@ Azure ChatGPT is built with the following technologies.
 
 [LangChain JS](https://www.langchain.com/): AI orchestration layer to build intelligent apps
 
+[ai sdk](https://sdk.vercel.ai/docs) Open-source library that simplifies building conversational UI on top Next.js and JavaScript
+
 [Tailwind CSS](https://tailwindcss.com/): is a utility-first CSS framework that provides a series of predefined classes that can be used to style each element by mixing and matching
 
 [shadcn/ui](https://ui.shadcn.com/): re-usable components built using Radix UI and Tailwind CSS.
@@ -26,6 +28,14 @@ Azure ChatGPT is built with the following technologies.
 [Azure Cosmos DB](https://learn.microsoft.com/en-GB/azure/cosmos-db/nosql/): fully managed platform-as-a-service (PaaS) NoSQL database to store chat history
 
 [Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/): fully managed platform-as-a-service (PaaS) for hosting web applications, REST APIs, and mobile back ends.
+
+### Optional Azure
+
+[Azure Document Intelligence](https://learn.microsoft.com/en-GB/azure/ai-services/document-intelligence/) Microsoft Azure Form Recognizer is an automated data processing system that uses AI and OCR to quickly extract text and structure from documents. We use this service for extracting information from documents.
+
+[Azure Cognitive Search](https://learn.microsoft.com/en-GB/azure/search/) Azure Cognitive Search is an AI-powered platform as a service (PaaS) that helps developers build rich search experiences for applications. We use this service for indexing and retrieving information.
+
+[Azure OpenAI Embeddings](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/embeddings?tabs=console) for embed content extracted from files
 
 ![](/images/architecture.png)
 
