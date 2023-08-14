@@ -1,6 +1,6 @@
 targetScope = 'resourceGroup'
 
-param name string
+param name string = 'chatgpt-demo'
 param resourceToken string
 
 param openai_api_key string
