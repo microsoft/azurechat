@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
-import { NewChat } from "@/features/chat/chat-menu/new-chat";
 import { FindAllChatThreadForCurrentUser } from "@/features/chat/chat-services/chat-thread-service";
+import { StartNewChat } from "@/features/chat/chat-ui/start-new-chat";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
@@ -11,7 +11,7 @@ export default async function Home() {
 
   return (
     <Card className="h-full items-center flex justify-center">
-      <NewChat></NewChat>
+      <StartNewChat />
     </Card>
   );
 }

@@ -2,7 +2,7 @@ import {
   ChatMessageModel,
   MESSAGE_ATTRIBUTE,
 } from "@/features/chat/chat-services/models";
-import { CosmosClient } from "@azure/cosmos";
+import { initDBContainer } from "@/features/common/cosmos";
 import {
   AIMessage,
   BaseListChatMessageHistory,
@@ -10,43 +10,23 @@ import {
 } from "langchain/schema";
 import { nanoid } from "nanoid";
 import { mapStoredMessagesToChatMessages } from "../utils";
-import {
-  addChatMessage,
-  getChatMessages,
-  initChatContainer,
-} from "./cosmosdb-chat-service";
-
-export interface CosmosDBClientConfig {
-  db: string;
-  container: string;
-  endpoint: string;
-  key: string;
-  partitionKey: string;
-}
+import { addChatMessage, getChatMessages } from "./cosmosdb-chat-service";
 
 export interface CosmosDBChatMessageHistoryFields {
   sessionId: string;
   userId: string;
-  config: CosmosDBClientConfig;
 }
 
 export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
   lc_namespace = ["langchain", "stores", "message", "cosmosdb"];
 
-  private config: CosmosDBClientConfig;
-
   private sessionId: string;
   private userId: string;
 
-  private client: CosmosClient;
-
-  constructor({ sessionId, userId, config }: CosmosDBChatMessageHistoryFields) {
+  constructor({ sessionId, userId }: CosmosDBChatMessageHistoryFields) {
     super();
     this.sessionId = sessionId;
     this.userId = userId;
-    this.config = config;
-    const { endpoint, key } = config;
-    this.client = new CosmosClient({ endpoint, key });
   }
 
   async getMessages(): Promise<BaseMessage[]> {
@@ -59,7 +39,7 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
     await container.delete();
   }
 
-  protected async addMessage(message: BaseMessage) {
+  async addMessage(message: BaseMessage) {
     const modelToSave: ChatMessageModel = {
       id: nanoid(),
       createdAt: new Date(),
@@ -75,6 +55,6 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
   }
 
   getContainer = async () => {
-    return await initChatContainer(this.client, this.config);
+    return await initDBContainer();
   };
 }

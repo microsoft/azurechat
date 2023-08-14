@@ -2,6 +2,7 @@ import ChatRow from "@/components/chat/chat-row";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FC } from "react";
+import { AI_NAME } from "../theme/customise";
 import { FindAllChatsInThread, FindChatThreadByID } from "./reporting-service";
 
 interface Props {
@@ -31,9 +32,7 @@ export const ChatReportingUI: FC<Props> = async (props) => {
         <div className=" pb-[80px] ">
           {chats.map((message, index) => (
             <ChatRow
-              name={
-                message.role === "user" ? chatThread.useName : "AzureChatGPT"
-              }
+              name={message.role === "user" ? chatThread.useName : AI_NAME}
               profilePicture={message.role === "user" ? "" : "/ai-icon.png"}
               message={message.content}
               type={message.role}
