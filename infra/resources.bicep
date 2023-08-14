@@ -31,14 +31,17 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
 resource webApp 'Microsoft.Web/sites@2020-06-01' = {
   name: '${name}-app-${resourceToken}'
   location: location
-  tags: tags
+  tags: union(tags, { 'azd-service-name': 'frontend' })
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'node|18-lts'
       alwaysOn: true
-      appCommandLine: 'node server.js'
+      appCommandLine: 'next start'
       appSettings: [
+        { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
+          value: 'true'
+        }
         {
           name: 'AZURE_COSMOSDB_URI'
           value: cosmosDbAccount.properties.documentEndpoint
