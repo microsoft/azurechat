@@ -1,3 +1,5 @@
+targetScope = 'resourceGroup'
+
 param name string
 param resourceToken string
 
@@ -6,11 +8,13 @@ param openai_instance_name string
 param openai_deployment_name string
 param openai_api_version string
 
-var location = resourceGroup().location
+param location string
+param tags object = {}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: '${name}-app-${resourceToken}'
   location: location
+  tags: tags
   properties: {
     reserved: true
   }
@@ -27,6 +31,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
 resource webApp 'Microsoft.Web/sites@2020-06-01' = {
   name: '${name}-app-${resourceToken}'
   location: location
+  tags: tags
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
@@ -74,6 +79,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: '${name}-cosmos-${resourceToken}'
   location: location
+  tags: tags
   kind: 'GlobalDocumentDB'
   properties: {
     databaseAccountOfferType: 'Standard'
@@ -85,3 +91,5 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
     ]
   }
 }
+
+output url string = 'https://${webApp.properties.defaultHostName}'

@@ -3,31 +3,34 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "openai_api_key": {
-      "value": ""
+      "value": "${OPENAI_API_KEY}"
     },
     "openai_instance_name": {
-      "value": ""
+      "value": "${OPENAI_INSTANCE_NAME}"
     },
     "openai_deployment_name": {
-      "value": ""
+      "value": "${OPENAI_DEPLOYMENT_NAME}"
     },
     "openai_api_version": {
-      "value": ""
+      "value": "${OPENAI_API_VERSION=2022-12-01}"
     },
     "github_id": {
-      "value": ""
+      "value": "${GITHUB_ID}"
     },
     "github_secret": {
-      "value": ""
+      "value": "${GITHUB_SECRET}"
     },
     "nextauth_secret": {
-      "value": ""
+      "value": "${NEXTAUTH_SECRET}"
     },
     "nextauth_url": {
-      "value": ""
+      "value": "${NEXTAUTH_URL}"
     },
     "name": {
-      "value": "openai-app"
+      "value": "${AZURE_ENV_NAME=openai-app}"
+    },
+    "location": {
+      "value": "${AZURE_LOCATION}"
     }
   }
 }
