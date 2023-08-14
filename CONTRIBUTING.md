@@ -1,6 +1,6 @@
 # How to contribute
 
-If you would like to contribute to the Azure ChatGPT repository there are many ways you can help.
+If you would like to contribute to the ChatGPT on Azure solution accelerator repository there are many ways you can help.
 
 ## Reporting issues
 

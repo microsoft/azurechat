@@ -1,51 +1,59 @@
+import { userHashedId } from "@/features/auth/helpers";
+import { CosmosDBChatMessageHistory } from "@/features/langchain/memory/cosmosdb/cosmosdb";
 import { LangChainStream, StreamingTextResponse } from "ai";
 import { loadQAMapReduceChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { BufferMemory } from "langchain/memory";
+import { BufferWindowMemory } from "langchain/memory";
 import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
   SystemMessagePromptTemplate,
 } from "langchain/prompts";
-import {
-  AzureCogDocument,
-  AzureCogSearch,
-} from "../../langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
+import { AzureCogSearch } from "../../langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
 import { insertPromptAndResponse } from "../chat-services/chat-service";
 import { initAndGuardChatSession } from "../chat-services/chat-thread-service";
-import { ChatMessageModel, PromptGPTProps } from "../chat-services/models";
-
-export interface FaqDocumentIndex extends AzureCogDocument {
-  id: string;
-  user: string;
-  embedding?: number[];
-  pageContent: string;
-  metadata: any;
-}
+import { FaqDocumentIndex, PromptGPTProps } from "../chat-services/models";
+import { transformConversationStyleToTemperature } from "../chat-services/utils";
 
 export const ChatData = async (props: PromptGPTProps) => {
-  const { lastHumanMessage, id, chats } = await initAndGuardChatSession(props);
+  const { lastHumanMessage, id, chatThread } = await initAndGuardChatSession(
+    props
+  );
 
   const chatModel = new ChatOpenAI({
-    temperature: 0,
+    temperature: transformConversationStyleToTemperature(
+      chatThread.conversationStyle
+    ),
     streaming: true,
   });
 
   const relevantDocuments = await findRelevantDocuments(
-    lastHumanMessage.content
+    lastHumanMessage.content,
+    id
   );
 
   const chain = loadQAMapReduceChain(chatModel, {
     combinePrompt: defineSystemPrompt(),
   });
+
   const { stream, handlers } = LangChainStream({
     onCompletion: async (completion: string) => {
       await insertPromptAndResponse(id, lastHumanMessage.content, completion);
     },
   });
 
-  const memory = buildMemory(chats);
+  const userId = await userHashedId();
+
+  const memory = new BufferWindowMemory({
+    k: 100,
+    returnMessages: true,
+    memoryKey: "history",
+    chatHistory: new CosmosDBChatMessageHistory({
+      sessionId: id,
+      userId: userId,
+    }),
+  });
 
   chain.call(
     {
@@ -59,21 +67,23 @@ export const ChatData = async (props: PromptGPTProps) => {
   return new StreamingTextResponse(stream);
 };
 
-const findRelevantDocuments = async (query: string) => {
+const findRelevantDocuments = async (query: string, chatThreadId: string) => {
   const vectorStore = initVectorStore();
 
   const relevantDocuments = await vectorStore.similaritySearch(query, 10, {
     vectorFields: vectorStore.config.vectorFieldName,
+    filter: `user eq '${await userHashedId()}' and chatThreadId eq '${chatThreadId}'`,
   });
 
   return relevantDocuments;
 };
 
 const defineSystemPrompt = () => {
-  const system_combine_template = `Given the following extracted parts of a long document and a question, create a final answer. 
-  If you don't know the answer, politely decline to answer the question. Don't try to make up an answer.
+  const system_combine_template = `Given the following context and a question, create a final answer. 
+  If the context is empty or If you don't know the answer, politely decline to answer the question. Don't try to make up an answer.
   ----------------
-  {summaries}`;
+  context: {summaries}`;
+
   const combine_messages = [
     SystemMessagePromptTemplate.fromTemplate(system_combine_template),
     HumanMessagePromptTemplate.fromTemplate("{question}"),
@@ -82,23 +92,6 @@ const defineSystemPrompt = () => {
     ChatPromptTemplate.fromPromptMessages(combine_messages);
 
   return CHAT_COMBINE_PROMPT;
-};
-
-const buildMemory = (chats: ChatMessageModel[]) => {
-  const memory = new BufferMemory({
-    returnMessages: true,
-    memoryKey: "history",
-  });
-
-  chats.forEach((chat) => {
-    if (chat.role === "user") {
-      memory.chatHistory.addUserMessage(chat.content);
-    } else {
-      memory.chatHistory.addAIChatMessage(chat.content);
-    }
-  });
-
-  return memory;
 };
 
 const initVectorStore = () => {
