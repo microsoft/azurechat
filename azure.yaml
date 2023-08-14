@@ -4,7 +4,7 @@ name: azurechatgpt
 metadata:
   template: azurechatgpt@0.0.1
 services:
-  backend:
-    project: ./src/
+  frontend:
+    project: ./src
     language: ts
     host: appservice
