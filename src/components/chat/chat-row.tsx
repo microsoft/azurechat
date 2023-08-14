@@ -1,12 +1,16 @@
+"use client";
 import { ChatRole } from "@/features/chat/chat-services/models";
 import { cn } from "@/lib/utils";
-import { FC } from "react";
+import { CheckIcon, ClipboardIcon } from "lucide-react";
+import { FC, useState } from "react";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import Typography from "../typography";
 import { Avatar, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import { CodeBlock } from "./code-block";
 import { MemoizedReactMarkdown } from "./memoized-react-markdown";
+
 interface ChatRowProps {
   name: string;
   profilePicture: string;
@@ -15,6 +19,15 @@ interface ChatRowProps {
 }
 
 const ChatRow: FC<ChatRowProps> = (props) => {
+  const [isIconChecked, setIsIconChecked] = useState(false);
+  const toggleIcon = () => {
+    setIsIconChecked((prevState) => !prevState);
+  };
+
+  const handleButtonClick = () => {
+    toggleIcon();
+    navigator.clipboard.writeText(props.message);
+  };
   return (
     <div
       className={cn(
@@ -31,6 +44,19 @@ const ChatRow: FC<ChatRowProps> = (props) => {
             <Typography variant="h5" className="capitalize text-primary">
               {props.name}
             </Typography>
+            <Button
+              variant={"ghost"}
+              size={"sm"}
+              title="Copy text"
+              className="justify-right flex"
+              onClick={handleButtonClick}
+            >
+              {isIconChecked ? (
+                <CheckIcon size={16} />
+              ) : (
+                <ClipboardIcon size={16} />
+              )}
+            </Button>
           </div>
         </div>
         <div className="py-6">
