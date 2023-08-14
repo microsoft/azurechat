@@ -34,10 +34,13 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
   tags: union(tags, { 'azd-service-name': 'frontend' })
   properties: {
     serverFarmId: appServicePlan.id
+    httpsOnly: true
     siteConfig: {
       linuxFxVersion: 'node|18-lts'
       alwaysOn: true
       appCommandLine: 'next start'
+      ftpsState: 'Disabled'
+      minTlsVersion: '1.2'
       appSettings: [
         { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
           value: 'true'
@@ -77,6 +80,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
       ]
     }
   }
+  identity: { type: 'SystemAssigned'}
 }
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
