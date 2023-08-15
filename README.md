@@ -1,29 +1,25 @@
 # Unleash the Power of Azure Open AI
 
+Solution Accelerator: AzureChat powered by Azure OpenAI Service
+
 ![](/images/intro.png)
 
-ChatGPT has grown explosively in popularity as we all know now. Business users across the globe often tap into the public service to work more productively or act as a creative assistant.
+AzureChat powered by Azure OpenAI is an enterprise ready deployment option. This accelerator provides organisations with secure and powerful chat capabilities with a familiar user experience and with the added capabilities of chatting over your data and files.
 
-However, ChatGPT risks exposing confidential intellectual property. One option is to block corporate access to ChatGPT, but people always find workarounds. This also limits the powerful capabilities of ChatGPT and reduces employee productivity and their work experience.
+Benefits are:
 
-ChatGPT on Azure solution accelerator is our enterprise option. This solution provides similar user experience to ChatGPT but offered as your private ChatGPT.
+1. Private: Built-in guarantees around the privacy of your data and fully isolated.
 
-### Benefits are:
+2. Controlled: Network traffic can be fully isolated to your network and other enterprise grade security controls are built in.
 
-**1. Private:** Built-in guarantees around the privacy of your data and fully isolated from those operated by OpenAI.
-
-**2. Controlled:** Network traffic can be fully isolated to your network and other enterprise grade security controls are built in.
-
-**3. Value:** Deliver added business value with your own internal data sources (plug and play) or use plug-ins to integrate with your internal services (e.g., ServiceNow, etc).
-
-We've built a Solution Accelerator to empower your workforce with ChatGPT on Azure solution accelerator.
+3. Value: Deliver added business value with your own internal data sources (plug and play) or use plug-ins to integrate with your internal services (e.g., ServiceNow, etc).
 
 # Getting Started
 
-1. [ Introduction](/docs/1-introduction.md)
+1. [Introduction](/docs/1-introduction.md)
 1. [Provision Azure Resources](/docs/2-provision-azure-resources.md)
-1. [Run ChatGPT on Azure solution accelerator from your local machine](/docs/3-run-locally.md)
-1. [Deploy ChatGPT on Azure solution accelerator to Azure](/docs/4-deployto-azure.md)
+1. [Run AzureChat from your local machine](/docs/3-run-locally.md)
+1. [Deploy AzureChat to Azure](/docs/4-deployto-azure.md)
 1. [Add identity provider](/docs/5-add-Identity.md)
 1. [Chatting with your file](/docs/6-chat-over-file.md)
 1. [Environment variables](/docs/7-environment-variables.md)
