@@ -4,8 +4,10 @@ import { ChatUI } from "@/features/chat/chat-ui/chat-ui";
 import { notFound } from "next/navigation";
 
 export default async function Home({ params }: { params: { id: string } }) {
-  const items = await FindAllChats(params.id);
-  const thread = await FindChatThreadByID(params.id);
+  const [items, thread] = await Promise.all([
+    FindAllChats(params.id),
+    FindChatThreadByID(params.id)
+  ]);
 
   if (thread.length === 0) {
     notFound();
