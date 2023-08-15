@@ -8,6 +8,7 @@ param name string
 @minLength(1)
 @maxLength(64)
 @description('Azure OpenAI API Key')
+@secure()
 param openaiApiKey string
 
 @minLength(1)
@@ -22,8 +23,8 @@ param openaiDeploymentName string
 
 @minLength(1)
 @maxLength(64)
-@description('Azure OpenAI API Version e.g. 2021-08-04-preview')
-param openaiApiVersion string = '2022-12-01'
+@description('Azure OpenAI API Version e.g. 2023-03-15-preview')
+param openaiApiVersion string = '2023-03-15-preview'
 
 @minLength(1)
 @description('Primary location for all resources')
