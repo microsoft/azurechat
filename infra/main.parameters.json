@@ -2,19 +2,19 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "openai_api_key": {
+    "openaiApiKey": {
       "value": "${OPENAI_API_KEY}",
       "metadata": {
         "description": "The OpenAI API key to use for authentication."
       }
     },
-    "openai_instance_name": {
+    "openaiInstanceName": {
       "value": "${OPENAI_INSTANCE_NAME}"
     },
-    "openai_deployment_name": {
+    "openaiDeploymentName": {
       "value": "${OPENAI_DEPLOYMENT_NAME}"
     },
-    "openai_api_version": {
+    "openaiApiVersion": {
       "value": "${OPENAI_API_VERSION=2023-03-15-preview}"
     },
     "name": {
