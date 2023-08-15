@@ -64,7 +64,6 @@ When deploying to Azure, ensure to update the Azure App service app settings wit
           "sortable": false,
           "facetable": false,
           "retrievable": true,
-          "analyzer": "",
           "dimensions": 1536,
           "vectorSearchConfiguration": "vectorConfig"
         }
