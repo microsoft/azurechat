@@ -1,6 +1,6 @@
 # ☁️ Deploy to Azure - GitHub Actions
 
-The following steps describes how ChatGPT on Azure solution accelerator can be deployed to Azure App service using GitHub Actions.
+The following steps describes how AzureChat can be deployed to Azure App service using GitHub Actions.
 
 # 🧬 Fork the repository
 
