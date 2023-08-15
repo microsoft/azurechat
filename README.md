@@ -1,12 +1,10 @@
 # Unleash the Power of Azure Open AI
 
-AzureChat powered by Azure OpenAI Service
+Solution Accelerator: AzureChat powered by Azure OpenAI Service
 
 ![](/images/intro.png)
 
-The AzureChat powered by Azure OpenAI solution accelerator (AzureChat) is an enterprise option. What makes AzureChat special is that the solution has been developed on ChatGPT API and therefore provides familiar chat experience for the user, but in a private instance.
-
-AzureChat provides organisations with secure and powerful chat capabilities so that they can realise the positive impact on employee productivity and their work experience.
+AzureChat powered by Azure OpenAI is an enterprise ready deployment option. This accelerator provides organisations with secure and powerful chat capabilities with a familiar user experience and with the added capabilities of chatting over your data and files.
 
 Benefits are:
 
