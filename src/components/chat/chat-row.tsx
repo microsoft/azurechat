@@ -60,6 +60,7 @@ const ChatRow: FC<ChatRowProps> = (props) => {
           </div>
         </div>
         <div className="py-6">
+          {/* https://github.com/vercel-labs/ai-chatbot/blob/main/components/markdown.tsx */}
           <MemoizedReactMarkdown
             className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-none"
             remarkPlugins={[remarkGfm, remarkMath]}
