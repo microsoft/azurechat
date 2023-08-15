@@ -10,7 +10,7 @@ Clone this repository locally or fork to your Github account. Run all of the the
 - Do not use double-quotes and do not delete any of the variables.
 - Make sure that `NEXTAUTH_URL=http://localhost:3000` has no comments in the same line.
 
-  ```
+  ```bash
   # Azure OpenAI configuration
   AZURE_OPENAI_API_KEY=
   AZURE_OPENAI_API_INSTANCE_NAME=
@@ -43,7 +43,7 @@ Clone this repository locally or fork to your Github account. Run all of the the
 
 You should now be prompted to login with your chosen OAuth provider. Once successfully logged in, you can start creating new conversations.
 
-![](/images/chat-home.png)
-![](/images/chat-history.png)
+![Chat Home](/images/chat-home.png)
+![Chat history](/images/chat-history.png)
 
 [Next](/docs/4-deployto-azure.md)

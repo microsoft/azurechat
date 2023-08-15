@@ -7,7 +7,7 @@
 
    💡Note: You can configure the authentication provider to your identity solution using [NextAuth providers](https://next-auth.js.org/providers/)
 
-# 👋🏻 Introduction
+## 👋🏻 Introduction
 
 ChatGPT on Azure solution accelerator is built with the following technologies.
 
@@ -37,6 +37,6 @@ ChatGPT on Azure solution accelerator is built with the following technologies.
 
 [Azure OpenAI Embeddings](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/embeddings?tabs=console) for embed content extracted from files
 
-![](/images/architecture.png)
+![Architecture diagram](/images/architecture.png)
 
 [Next](/docs/2-provision-azure-resources.md)
