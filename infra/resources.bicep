@@ -3,10 +3,14 @@ targetScope = 'resourceGroup'
 param name string = 'chatgpt-demo'
 param resourceToken string
 
+@secure()
 param openai_api_key string
 param openai_instance_name string
 param openai_deployment_name string
 param openai_api_version string
+
+@secure()
+param nextAuthHash string = uniqueString(newGuid())
 
 param location string
 param tags object = {}
@@ -42,7 +46,8 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
       appSettings: [
-        { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
+        { 
+          name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
           value: 'true'
         }
         {
@@ -71,7 +76,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'NEXTAUTH_SECRET'
-          value: '${name}app${resourceToken}'
+          value: nextAuthHash
         }
         {
           name: 'NEXTAUTH_URL'
