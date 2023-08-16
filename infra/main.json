@@ -1,0 +1,284 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.20.4.51522",
+      "templateHash": "1595224018026537665"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "metadata": {
+        "description": "Name of the the environment which is used to generate a short unique hash used in all resources."
+      }
+    },
+    "openaiApiKey": {
+      "type": "securestring",
+      "minLength": 1,
+      "maxLength": 64,
+      "metadata": {
+        "description": "Azure OpenAI API Key"
+      }
+    },
+    "openaiInstanceName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "metadata": {
+        "description": "Azure OpenAI Instance Name e.g. my-openai-instance"
+      }
+    },
+    "openaiDeploymentName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "metadata": {
+        "description": "Azure OpenAI Deployment Name e.g. gpt3-turbo"
+      }
+    },
+    "openaiApiVersion": {
+      "type": "string",
+      "defaultValue": "2023-03-15-preview",
+      "minLength": 1,
+      "maxLength": 64,
+      "metadata": {
+        "description": "Azure OpenAI API Version e.g. 2023-03-15-preview"
+      }
+    },
+    "location": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Primary location for all resources"
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "resourceToken": "[toLower(uniqueString(subscription().id, parameters('name'), parameters('location')))]",
+    "tags": {
+      "azd-env-name": "[parameters('name')]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2021-04-01",
+      "name": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('resources-{0}', variables('resourceToken'))]",
+      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "resourceToken": {
+            "value": "[variables('resourceToken')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "openai_api_key": {
+            "value": "[parameters('openaiApiKey')]"
+          },
+          "openai_instance_name": {
+            "value": "[parameters('openaiInstanceName')]"
+          },
+          "openai_deployment_name": {
+            "value": "[parameters('openaiDeploymentName')]"
+          },
+          "openai_api_version": {
+            "value": "[parameters('openaiApiVersion')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.20.4.51522",
+              "templateHash": "9221304704740617924"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "defaultValue": "chatgpt-demo"
+            },
+            "resourceToken": {
+              "type": "string"
+            },
+            "openai_api_key": {
+              "type": "securestring"
+            },
+            "openai_instance_name": {
+              "type": "string"
+            },
+            "openai_deployment_name": {
+              "type": "string"
+            },
+            "openai_api_version": {
+              "type": "string"
+            },
+            "nextAuthHash": {
+              "type": "securestring",
+              "defaultValue": "[uniqueString(newGuid())]"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {}
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Web/serverfarms",
+              "apiVersion": "2020-06-01",
+              "name": "[format('{0}-app-{1}', parameters('name'), parameters('resourceToken'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "reserved": true
+              },
+              "sku": {
+                "name": "P0v3",
+                "tier": "Premium0V3",
+                "size": "P0v3",
+                "family": "Pv3",
+                "capacity": 1
+              },
+              "kind": "linux"
+            },
+            {
+              "type": "Microsoft.Web/sites",
+              "apiVersion": "2020-06-01",
+              "name": "[format('{0}-app-{1}', parameters('name'), parameters('resourceToken'))]",
+              "location": "[parameters('location')]",
+              "tags": "[union(parameters('tags'), createObject('azd-service-name', 'frontend'))]",
+              "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
+                "httpsOnly": true,
+                "siteConfig": {
+                  "linuxFxVersion": "node|18-lts",
+                  "alwaysOn": true,
+                  "appCommandLine": "next start",
+                  "ftpsState": "Disabled",
+                  "minTlsVersion": "1.2",
+                  "appSettings": [
+                    {
+                      "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+                      "value": "true"
+                    },
+                    {
+                      "name": "AZURE_COSMOSDB_URI",
+                      "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken'))), '2023-04-15').documentEndpoint]"
+                    },
+                    {
+                      "name": "AZURE_COSMOSDB_KEY",
+                      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken'))), '2023-04-15').primaryMasterKey]"
+                    },
+                    {
+                      "name": "AZURE_OPENAI_API_KEY",
+                      "value": "[parameters('openai_api_key')]"
+                    },
+                    {
+                      "name": "AZURE_OPENAI_API_INSTANCE_NAME",
+                      "value": "[parameters('openai_instance_name')]"
+                    },
+                    {
+                      "name": "AZURE_OPENAI_API_DEPLOYMENT_NAME",
+                      "value": "[parameters('openai_deployment_name')]"
+                    },
+                    {
+                      "name": "AZURE_OPENAI_API_VERSION",
+                      "value": "[parameters('openai_api_version')]"
+                    },
+                    {
+                      "name": "NEXTAUTH_SECRET",
+                      "value": "[parameters('nextAuthHash')]"
+                    },
+                    {
+                      "name": "NEXTAUTH_URL",
+                      "value": "[format('https://{0}-app-{1}.azurewebsites.net', parameters('name'), parameters('resourceToken'))]"
+                    }
+                  ]
+                }
+              },
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "kind": "GlobalDocumentDB",
+              "properties": {
+                "databaseAccountOfferType": "Standard",
+                "locations": [
+                  {
+                    "locationName": "[parameters('location')]",
+                    "failoverPriority": 0
+                  }
+                ]
+              }
+            }
+          ],
+          "outputs": {
+            "url": {
+              "type": "string",
+              "value": "[format('https://{0}', reference(resourceId('Microsoft.Web/sites', format('{0}-app-{1}', parameters('name'), parameters('resourceToken'))), '2020-06-01').defaultHostName)]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name'))))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "APP_URL": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', format('resources-{0}', variables('resourceToken'))), '2022-09-01').outputs.url.value]"
+    },
+    "AZURE_LOCATION": {
+      "type": "string",
+      "value": "[parameters('location')]"
+    },
+    "AZURE_TENANT_ID": {
+      "type": "string",
+      "value": "[tenant().tenantId]"
+    }
+  }
+}
