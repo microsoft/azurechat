@@ -1,10 +1,10 @@
 # How to contribute
 
-If you would like to contribute to the ChatGPT on Azure solution accelerator repository there are many ways you can help.
+If you would like to contribute to the AzureChat solution accelerator repository there are many ways you can help.
 
 ## Reporting issues
 
-We use [GitHub issues](https://github.com/microsoft/azurechatgpt/issues) as an issue tracker for the repository. Firstly, please search in open issues and try to make sure your problem doesn't exist. If there is an issue, add your comments to this issue.
+We use [GitHub issues](https://github.com/microsoft/azurechat/issues) as an issue tracker for the repository. Firstly, please search in open issues and try to make sure your problem doesn't exist. If there is an issue, add your comments to this issue.
 If there are no issues yet, please open a new one.
 
 ## Contributing Code
@@ -15,7 +15,7 @@ If you would like to contribute an improvement or a fix please create a Pull Req
 
 Before submitting a pull request please make sure the following is done:
 
-1. Fork [the repository](https://github.com/microsoft/azurechatgpt)
+1. Fork [the repository](https://github.com/microsoft/azurechat)
 2. Create a branch from the `main`
 3. Ensure that the code build and runs without any errors
 4. If required update the README.md

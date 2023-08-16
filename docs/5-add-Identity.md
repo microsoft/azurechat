@@ -15,7 +15,7 @@ We'll create two GitHub apps: one for testing locally and another for production
 3. Fill in the following details
 
 ```default
-Application name: ChatGPT on Azure solution accelerator DEV Environment
+Application name: AzureChat DEV Environment
 Homepage URL: http://localhost:3000
 Authorization callback URL: http://localhost:3000/api/auth/callback/github
 ```
@@ -27,7 +27,7 @@ Authorization callback URL: http://localhost:3000/api/auth/callback/github
 3. Fill in the following details
 
 ```default
-Application name: ChatGPT on Azure solution accelerator Production
+Application name: AzureChat Production
 Homepage URL: https://YOUR-WEBSITE-NAME.azurewebsites.net
 Authorization callback URL: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/github
 ```
@@ -49,7 +49,7 @@ Authorization callback URL: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth
 3. Fill in the following details
 
 ```default
-Application name: ChatGPT on Azure solution accelerator DEV Environment
+Application name: AzureChat DEV Environment
 Supported account types: Accounts in this organizational directory only
 Redirect URI Platform: Web
 Redirect URI: http://localhost:3000/api/auth/callback/azure-ad
@@ -62,7 +62,7 @@ Redirect URI: http://localhost:3000/api/auth/callback/azure-ad
 3. Fill in the following details
 
 ```default
-Application name: ChatGPT on Azure solution accelerator Production
+Application name: AzureChat Production
 Supported account types: Accounts in this organizational directory only
 Redirect URI Platform: Web
 Redirect URI: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure-ad
