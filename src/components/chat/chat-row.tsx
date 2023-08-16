@@ -37,26 +37,30 @@ const ChatRow: FC<ChatRowProps> = (props) => {
     >
       <div className="container mx-auto max-w-4xl py-6">
         <div className="flex items-center justify-between">
-          <div className="flex gap-4 items-center">
-            <Avatar>
-              <AvatarImage src={props.profilePicture} />
-            </Avatar>
-            <Typography variant="h5" className="capitalize text-primary">
-              {props.name}
-            </Typography>
-            <Button
-              variant={"ghost"}
-              size={"sm"}
-              title="Copy text"
-              className="justify-right flex"
-              onClick={handleButtonClick}
-            >
-              {isIconChecked ? (
-                <CheckIcon size={16} />
-              ) : (
-                <ClipboardIcon size={16} />
-              )}
-            </Button>
+          <div className="flex gap-4 items-center place-items-end flex-1">
+            <div className="flex gap-4 items-center flex-1">
+              <Avatar>
+                <AvatarImage src={props.profilePicture} />
+              </Avatar>
+              <Typography variant="h5" className="capitalize text-primary">
+                {props.name}
+              </Typography>
+            </div>
+            <div>
+              <Button
+                variant={"ghost"}
+                size={"sm"}
+                title="Copy text"
+                className="justify-right flex"
+                onClick={handleButtonClick}
+              >
+                {isIconChecked ? (
+                  <CheckIcon size={16} />
+                ) : (
+                  <ClipboardIcon size={16} />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
         <div className="py-6">
