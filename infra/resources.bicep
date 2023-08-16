@@ -1,16 +1,24 @@
-param name string
+targetScope = 'resourceGroup'
+
+param name string = 'chatgpt-demo'
 param resourceToken string
 
+@secure()
 param openai_api_key string
 param openai_instance_name string
 param openai_deployment_name string
 param openai_api_version string
 
-var location = resourceGroup().location
+@secure()
+param nextAuthHash string = uniqueString(newGuid())
+
+param location string
+param tags object = {}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: '${name}-app-${resourceToken}'
   location: location
+  tags: tags
   properties: {
     reserved: true
   }
@@ -27,13 +35,21 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
 resource webApp 'Microsoft.Web/sites@2020-06-01' = {
   name: '${name}-app-${resourceToken}'
   location: location
+  tags: union(tags, { 'azd-service-name': 'frontend' })
   properties: {
     serverFarmId: appServicePlan.id
+    httpsOnly: true
     siteConfig: {
       linuxFxVersion: 'node|18-lts'
       alwaysOn: true
-      appCommandLine: 'node server.js'
+      appCommandLine: 'next start'
+      ftpsState: 'Disabled'
+      minTlsVersion: '1.2'
       appSettings: [
+        { 
+          name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
+          value: 'true'
+        }
         {
           name: 'AZURE_COSMOSDB_URI'
           value: cosmosDbAccount.properties.documentEndpoint
@@ -60,7 +76,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'NEXTAUTH_SECRET'
-          value: '${name}app${resourceToken}'
+          value: nextAuthHash
         }
         {
           name: 'NEXTAUTH_URL'
@@ -69,11 +85,13 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
       ]
     }
   }
+  identity: { type: 'SystemAssigned'}
 }
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: '${name}-cosmos-${resourceToken}'
   location: location
+  tags: tags
   kind: 'GlobalDocumentDB'
   properties: {
     databaseAccountOfferType: 'Standard'
@@ -85,3 +103,5 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
     ]
   }
 }
+
+output url string = 'https://${webApp.properties.defaultHostName}'
