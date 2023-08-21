@@ -27,7 +27,7 @@ Benefits are:
 # Azure Deployment Costs
 
 Pricing varies per region and usage, so it isn't possible to predict exact costs for your usage.
-However, you can try the [Azure pricing calculator - Sample Estimate for Azure Chat App](https://azure.com/e/1f08b35661df4b5ea3663df112250b09) for the resources below. The total monthly cost for the provided example is $372.33.
+However, you can try the [Azure pricing calculator - Sample Estimate for Azure Chat App](https://azure.com/e/1f08b35661df4b5ea3663df112250b09) for the resources below.
 
 - Azure App Service: Premium V3 Tier 1 CPU core, 4 GB RAM, 250 GB Storage. Pricing per hour. [Pricing](https://azure.microsoft.com/pricing/details/app-service/linux/)
 - Azure Open AI: Standard tier, ChatGPT and Embedding models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/)
