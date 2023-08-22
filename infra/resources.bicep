@@ -7,9 +7,9 @@ param openAiResourceGroupLocation string
 param openAiSkuName string = 'S0'
 param chatGptDeploymentCapacity int = 30
 param chatGptDeploymentName string = 'chat-gpt-35-turbo'
-param chatGptModelName string = 'gpt-35-turbo'
+param chatGptModelName string = 'chat-gpt-35-turbo'
 param chatGptModelVersion string = '0613'
-param embeddingDeploymentName string = 'embedding'
+param embeddingDeploymentName string = 'text-embedding-ada-002'
 param embeddingDeploymentCapacity int = 30
 param embeddingModelName string = 'text-embedding-ada-002'
 
@@ -138,7 +138,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME'
-          value: embeddingModelName
+          value: embeddingDeploymentName
         }
         {
           name: 'AZURE_OPENAI_API_VERSION'
