@@ -1,5 +1,16 @@
 # Unleash the Power of Azure Open AI
 
+1. [Introduction](#introduction)
+1. [Solution Overview](/docs/1-introduction.md)
+1. [Provision Azure Resources](/docs/2-provision-azure-resources.md)
+1. [Run AzureChat from your local machine](/docs/3-run-locally.md)
+1. [Deploy AzureChat to Azure](/docs/4-deployto-azure.md)
+1. [Add identity provider](/docs/5-add-Identity.md)
+1. [Chatting with your file](/docs/6-chat-over-file.md)
+1. [Environment variables](/docs/7-environment-variables.md)
+
+# Introduction
+
 Solution Accelerator: AzureChat powered by Azure OpenAI Service
 
 ![](/images/intro.png)
@@ -14,15 +25,7 @@ Benefits are:
 
 3. Value: Deliver added business value with your own internal data sources (plug and play) or use plug-ins to integrate with your internal services (e.g., ServiceNow, etc).
 
-# Getting Started
-
-1. [Introduction](/docs/1-introduction.md)
-1. [Provision Azure Resources](/docs/2-provision-azure-resources.md)
-1. [Run AzureChat from your local machine](/docs/3-run-locally.md)
-1. [Deploy AzureChat to Azure](/docs/4-deployto-azure.md)
-1. [Add identity provider](/docs/5-add-Identity.md)
-1. [Chatting with your file](/docs/6-chat-over-file.md)
-1. [Environment variables](/docs/7-environment-variables.md)
+[Next](./docs/1-introduction.md)
 
 # Contributing
 
