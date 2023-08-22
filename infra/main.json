@@ -1,11 +1,11 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "1595224018026537665"
+      "templateHash": "213361459342713754"
     }
   },
   "parameters": {
@@ -17,70 +17,86 @@
         "description": "Name of the the environment which is used to generate a short unique hash used in all resources."
       }
     },
-    "openaiApiKey": {
-      "type": "securestring",
-      "minLength": 1,
-      "maxLength": 64,
+    "openAILocation": {
+      "type": "string",
+      "allowedValues": [
+        "canadaeast",
+        "eastus",
+        "francecentral",
+        "japaneast",
+        "northcentralus"
+      ],
       "metadata": {
-        "description": "Azure OpenAI API Key"
+        "azd": {
+          "type": "location"
+        },
+        "description": "Location for the OpenAI resource group"
       }
     },
-    "openaiInstanceName": {
+    "openAISku": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 64,
-      "metadata": {
-        "description": "Azure OpenAI Instance Name e.g. my-openai-instance"
-      }
+      "defaultValue": "S0"
     },
-    "openaiDeploymentName": {
+    "openAIApiVersion": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 64,
-      "metadata": {
-        "description": "Azure OpenAI Deployment Name e.g. gpt3-turbo"
-      }
+      "defaultValue": "2023-03-15-preview"
     },
-    "openaiApiVersion": {
-      "type": "string",
-      "defaultValue": "2023-03-15-preview",
-      "minLength": 1,
-      "maxLength": 64,
-      "metadata": {
-        "description": "Azure OpenAI API Version e.g. 2023-03-15-preview"
-      }
+    "chatGptDeploymentCapacity": {
+      "type": "int",
+      "defaultValue": 30
     },
-    "location": {
+    "chatGptDeploymentName": {
       "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Primary location for all resources"
-      }
+      "defaultValue": "chat-gpt-35-turbo"
     },
-    "resourceGroupName": {
+    "chatGptModelName": {
       "type": "string",
-      "defaultValue": ""
+      "defaultValue": "gpt-35-turbo"
+    },
+    "chatGptModelVersion": {
+      "type": "string",
+      "defaultValue": "0613"
+    },
+    "embeddingDeploymentName": {
+      "type": "string",
+      "defaultValue": "embedding"
+    },
+    "embeddingDeploymentCapacity": {
+      "type": "int",
+      "defaultValue": 10
+    },
+    "embeddingModelName": {
+      "type": "string",
+      "defaultValue": "text-embedding-ada-002"
+    },
+    "formRecognizerSkuName": {
+      "type": "string",
+      "defaultValue": "S0"
+    },
+    "searchServiceIndexName": {
+      "type": "string",
+      "defaultValue": "azure-chat"
+    },
+    "searchServiceSkuName": {
+      "type": "string",
+      "defaultValue": "standard"
+    },
+    "searchServiceAPIVersion": {
+      "type": "string",
+      "defaultValue": "2023-07-01-Preview"
     }
   },
   "variables": {
-    "resourceToken": "[toLower(uniqueString(subscription().id, parameters('name'), parameters('location')))]",
+    "resourceToken": "[toLower(uniqueString(subscription().id, parameters('name')))]",
     "tags": {
-      "azd-env-name": "[parameters('name')]"
+      "intelligent-app": "azure-chat"
     }
   },
   "resources": [
     {
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2021-04-01",
-      "name": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))]",
-      "location": "[parameters('location')]",
-      "tags": "[variables('tags')]"
-    },
-    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('resources-{0}', variables('resourceToken'))]",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -90,26 +106,53 @@
           "name": {
             "value": "[parameters('name')]"
           },
-          "location": {
-            "value": "[parameters('location')]"
-          },
           "resourceToken": {
             "value": "[variables('resourceToken')]"
           },
           "tags": {
             "value": "[variables('tags')]"
           },
-          "openai_api_key": {
-            "value": "[parameters('openaiApiKey')]"
-          },
-          "openai_instance_name": {
-            "value": "[parameters('openaiInstanceName')]"
-          },
-          "openai_deployment_name": {
-            "value": "[parameters('openaiDeploymentName')]"
-          },
           "openai_api_version": {
-            "value": "[parameters('openaiApiVersion')]"
+            "value": "[parameters('openAIApiVersion')]"
+          },
+          "openAiResourceGroupLocation": {
+            "value": "[parameters('openAILocation')]"
+          },
+          "openAiSkuName": {
+            "value": "[parameters('openAISku')]"
+          },
+          "chatGptDeploymentCapacity": {
+            "value": "[parameters('chatGptDeploymentCapacity')]"
+          },
+          "chatGptDeploymentName": {
+            "value": "[parameters('chatGptDeploymentName')]"
+          },
+          "chatGptModelName": {
+            "value": "[parameters('chatGptModelName')]"
+          },
+          "chatGptModelVersion": {
+            "value": "[parameters('chatGptModelVersion')]"
+          },
+          "embeddingDeploymentName": {
+            "value": "[parameters('embeddingDeploymentName')]"
+          },
+          "embeddingDeploymentCapacity": {
+            "value": "[parameters('embeddingDeploymentCapacity')]"
+          },
+          "embeddingModelName": {
+            "value": "[parameters('embeddingModelName')]"
+          },
+          "formRecognizerSkuName": {
+            "value": "[parameters('formRecognizerSkuName')]"
+          },
+          "searchServiceIndexName": {
+            "value": "[parameters('searchServiceIndexName')]"
+          },
+          "searchServiceSkuName": {
+            "value": "[parameters('searchServiceSkuName')]"
+          },
+          "searchServiceAPIVersion": {
+            "value": "[parameters('searchServiceAPIVersion')]"
           }
         },
         "template": {
@@ -119,7 +162,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "9221304704740617924"
+              "templateHash": "8504558990234893711"
             }
           },
           "parameters": {
@@ -130,36 +173,104 @@
             "resourceToken": {
               "type": "string"
             },
-            "openai_api_key": {
-              "type": "securestring"
-            },
-            "openai_instance_name": {
-              "type": "string"
-            },
-            "openai_deployment_name": {
-              "type": "string"
-            },
             "openai_api_version": {
               "type": "string"
+            },
+            "openAiResourceGroupLocation": {
+              "type": "string"
+            },
+            "openAiSkuName": {
+              "type": "string",
+              "defaultValue": "S0"
+            },
+            "chatGptDeploymentCapacity": {
+              "type": "int",
+              "defaultValue": 30
+            },
+            "chatGptDeploymentName": {
+              "type": "string",
+              "defaultValue": "chat-gpt-35-turbo"
+            },
+            "chatGptModelName": {
+              "type": "string",
+              "defaultValue": "gpt-35-turbo"
+            },
+            "chatGptModelVersion": {
+              "type": "string",
+              "defaultValue": "0613"
+            },
+            "embeddingDeploymentName": {
+              "type": "string",
+              "defaultValue": "embedding"
+            },
+            "embeddingDeploymentCapacity": {
+              "type": "int",
+              "defaultValue": 30
+            },
+            "embeddingModelName": {
+              "type": "string",
+              "defaultValue": "text-embedding-ada-002"
+            },
+            "formRecognizerSkuName": {
+              "type": "string",
+              "defaultValue": "S0"
+            },
+            "searchServiceSkuName": {
+              "type": "string",
+              "defaultValue": "standard"
+            },
+            "searchServiceIndexName": {
+              "type": "string",
+              "defaultValue": "azure-chat"
+            },
+            "searchServiceAPIVersion": {
+              "type": "string",
+              "defaultValue": "2023-07-01-Preview"
             },
             "nextAuthHash": {
               "type": "securestring",
               "defaultValue": "[uniqueString(newGuid())]"
-            },
-            "location": {
-              "type": "string"
             },
             "tags": {
               "type": "object",
               "defaultValue": {}
             }
           },
+          "variables": {
+            "openai_name": "[toLower(format('{0}ai{1}', parameters('name'), parameters('resourceToken')))]",
+            "form_recognizer_name": "[toLower(format('{0}-form-{1}', parameters('name'), parameters('resourceToken')))]",
+            "cosmos_name": "[toLower(format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken')))]",
+            "search_name": "[toLower(format('{0}search{1}', parameters('name'), parameters('resourceToken')))]",
+            "deployments": [
+              {
+                "name": "[parameters('chatGptDeploymentName')]",
+                "model": {
+                  "format": "OpenAI",
+                  "name": "[parameters('chatGptModelName')]",
+                  "version": "[parameters('chatGptModelVersion')]"
+                },
+                "sku": {
+                  "name": "Standard",
+                  "capacity": "[parameters('chatGptDeploymentCapacity')]"
+                }
+              },
+              {
+                "name": "[parameters('embeddingDeploymentName')]",
+                "model": {
+                  "format": "OpenAI",
+                  "name": "[parameters('embeddingModelName')]",
+                  "version": "2"
+                },
+                "capacity": "[parameters('embeddingDeploymentCapacity')]"
+              }
+            ]
+          },
           "resources": [
             {
               "type": "Microsoft.Web/serverfarms",
               "apiVersion": "2020-06-01",
               "name": "[format('{0}-app-{1}', parameters('name'), parameters('resourceToken'))]",
-              "location": "[parameters('location')]",
+              "location": "[resourceGroup().location]",
               "tags": "[parameters('tags')]",
               "properties": {
                 "reserved": true
@@ -177,7 +288,7 @@
               "type": "Microsoft.Web/sites",
               "apiVersion": "2020-06-01",
               "name": "[format('{0}-app-{1}', parameters('name'), parameters('resourceToken'))]",
-              "location": "[parameters('location')]",
+              "location": "[resourceGroup().location]",
               "tags": "[union(parameters('tags'), createObject('azd-service-name', 'frontend'))]",
               "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
@@ -190,28 +301,56 @@
                   "minTlsVersion": "1.2",
                   "appSettings": [
                     {
+                      "name": "AZURE_COSMOSDB_KEY",
+                      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name')), '2023-04-15').secondaryMasterKey]"
+                    },
+                    {
+                      "name": "AZURE_OPENAI_API_KEY",
+                      "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('openai_name')), '2023-05-01').key1]"
+                    },
+                    {
+                      "name": "AZURE_DOCUMENT_INTELLIGENCE_KEY",
+                      "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('form_recognizer_name')), '2023-05-01').key1]"
+                    },
+                    {
+                      "name": "AZURE_SEARCH_API_KEY",
+                      "value": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('search_name')), '2022-09-01').secondaryKey]"
+                    },
+                    {
+                      "name": "AZURE_SEARCH_API_VERSION",
+                      "value": "[parameters('searchServiceAPIVersion')]"
+                    },
+                    {
+                      "name": "AZURE_SEARCH_NAME",
+                      "value": "[variables('search_name')]"
+                    },
+                    {
+                      "name": "AZURE_SEARCH_INDEX_NAME",
+                      "value": "[parameters('searchServiceIndexName')]"
+                    },
+                    {
+                      "name": "AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT",
+                      "value": "[format('https://{0}.api.cognitive.microsoft.com/', resourceGroup().location)]"
+                    },
+                    {
                       "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
                       "value": "true"
                     },
                     {
                       "name": "AZURE_COSMOSDB_URI",
-                      "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken'))), '2023-04-15').documentEndpoint]"
-                    },
-                    {
-                      "name": "AZURE_COSMOSDB_KEY",
-                      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken'))), '2023-04-15').primaryMasterKey]"
-                    },
-                    {
-                      "name": "AZURE_OPENAI_API_KEY",
-                      "value": "[parameters('openai_api_key')]"
+                      "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name')), '2023-04-15').documentEndpoint]"
                     },
                     {
                       "name": "AZURE_OPENAI_API_INSTANCE_NAME",
-                      "value": "[parameters('openai_instance_name')]"
+                      "value": "[variables('openai_name')]"
                     },
                     {
                       "name": "AZURE_OPENAI_API_DEPLOYMENT_NAME",
-                      "value": "[parameters('openai_deployment_name')]"
+                      "value": "[parameters('chatGptDeploymentName')]"
+                    },
+                    {
+                      "name": "AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME",
+                      "value": "[parameters('embeddingModelName')]"
                     },
                     {
                       "name": "AZURE_OPENAI_API_VERSION",
@@ -233,25 +372,92 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts', format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken')))]"
+                "[resourceId('Microsoft.CognitiveServices/accounts', variables('openai_name'))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts', variables('form_recognizer_name'))]",
+                "[resourceId('Microsoft.Search/searchServices', variables('search_name'))]"
               ]
             },
             {
               "type": "Microsoft.DocumentDB/databaseAccounts",
               "apiVersion": "2023-04-15",
-              "name": "[format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken'))]",
-              "location": "[parameters('location')]",
+              "name": "[variables('cosmos_name')]",
+              "location": "[resourceGroup().location]",
               "tags": "[parameters('tags')]",
               "kind": "GlobalDocumentDB",
               "properties": {
                 "databaseAccountOfferType": "Standard",
                 "locations": [
                   {
-                    "locationName": "[parameters('location')]",
+                    "locationName": "[resourceGroup().location]",
                     "failoverPriority": 0
                   }
                 ]
               }
+            },
+            {
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2023-05-01",
+              "name": "[variables('form_recognizer_name')]",
+              "location": "[resourceGroup().location]",
+              "tags": "[parameters('tags')]",
+              "kind": "FormRecognizer",
+              "properties": {
+                "customSubDomainName": "[variables('form_recognizer_name')]",
+                "publicNetworkAccess": "Enabled"
+              },
+              "sku": {
+                "name": "[parameters('formRecognizerSkuName')]"
+              }
+            },
+            {
+              "type": "Microsoft.Search/searchServices",
+              "apiVersion": "2022-09-01",
+              "name": "[variables('search_name')]",
+              "location": "[resourceGroup().location]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "partitionCount": 1,
+                "publicNetworkAccess": "enabled",
+                "replicaCount": 1
+              },
+              "sku": {
+                "name": "[parameters('searchServiceSkuName')]"
+              }
+            },
+            {
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2023-05-01",
+              "name": "[variables('openai_name')]",
+              "location": "[parameters('openAiResourceGroupLocation')]",
+              "tags": "[parameters('tags')]",
+              "kind": "OpenAI",
+              "properties": {
+                "customSubDomainName": "[variables('openai_name')]",
+                "publicNetworkAccess": "Enabled"
+              },
+              "sku": {
+                "name": "[parameters('openAiSkuName')]"
+              }
+            },
+            {
+              "copy": {
+                "name": "deployment",
+                "count": "[length(variables('deployments'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.CognitiveServices/accounts/deployments",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', variables('openai_name'), variables('deployments')[copyIndex()].name)]",
+              "properties": {
+                "model": "[variables('deployments')[copyIndex()].model]",
+                "raiPolicyName": "[if(contains(variables('deployments')[copyIndex()], 'raiPolicyName'), variables('deployments')[copyIndex()].raiPolicyName, null())]"
+              },
+              "sku": "[if(contains(variables('deployments')[copyIndex()], 'sku'), variables('deployments')[copyIndex()].sku, createObject('name', 'Standard', 'capacity', variables('deployments')[copyIndex()].capacity))]",
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', variables('openai_name'))]"
+              ]
             }
           ],
           "outputs": {
@@ -261,20 +467,17 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name'))))]"
-      ]
+      }
     }
   ],
   "outputs": {
     "APP_URL": {
       "type": "string",
-      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', format('resources-{0}', variables('resourceToken'))), '2022-09-01').outputs.url.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('resources-{0}', variables('resourceToken'))), '2022-09-01').outputs.url.value]"
     },
     "AZURE_LOCATION": {
       "type": "string",
-      "value": "[parameters('location')]"
+      "value": "[resourceGroup().location]"
     },
     "AZURE_TENANT_ID": {
       "type": "string",
