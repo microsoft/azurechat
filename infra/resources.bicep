@@ -1,6 +1,4 @@
-targetScope = 'resourceGroup'
-
-param name string = 'chatgpt-demo'
+param name string = 'azurechat-demo'
 param resourceToken string
 
 param openai_api_version string
@@ -20,6 +18,8 @@ param searchServiceSkuName string = 'standard'
 param searchServiceIndexName string = 'azure-chat'
 param searchServiceAPIVersion string = '2023-07-01-Preview'
 
+param location string = resourceGroup().location
+
 @secure()
 param nextAuthHash string = uniqueString(newGuid())
 
@@ -29,6 +29,8 @@ var openai_name = toLower('${name}ai${resourceToken}')
 var form_recognizer_name = toLower('${name}-form-${resourceToken}')
 var cosmos_name = toLower('${name}-cosmos-${resourceToken}')
 var search_name = toLower('${name}search${resourceToken}')
+var webapp_name = toLower('${name}-webapp-${resourceToken}')
+var appservice_name = toLower('${name}-app-${resourceToken}')
 
 var deployments = [
   {
@@ -56,8 +58,8 @@ var deployments = [
 
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
-  name: '${name}-app-${resourceToken}'
-  location: resourceGroup().location
+  name: appservice_name
+  location: location
   tags: tags
   properties: {
     reserved: true
@@ -73,8 +75,8 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
 }
 
 resource webApp 'Microsoft.Web/sites@2020-06-01' = {
-  name: '${name}-app-${resourceToken}'
-  location: resourceGroup().location
+  name: webapp_name
+  location: location
   tags: union(tags, { 'azd-service-name': 'frontend' })
   properties: {
     serverFarmId: appServicePlan.id
@@ -116,7 +118,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         { 
           name: 'AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT'
-          value: 'https://${resourceGroup().location}.api.cognitive.microsoft.com/'
+          value: 'https://${location}.api.cognitive.microsoft.com/'
         }
         { 
           name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
@@ -148,7 +150,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'NEXTAUTH_URL'
-          value: 'https://${name}-app-${resourceToken}.azurewebsites.net'
+          value: 'https://${webapp_name}.azurewebsites.net'
         }
       ]
     }
@@ -158,14 +160,14 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: cosmos_name
-  location: resourceGroup().location
+  location: location
   tags: tags
   kind: 'GlobalDocumentDB'
   properties: {
     databaseAccountOfferType: 'Standard'
     locations: [
       {
-        locationName: resourceGroup().location
+        locationName: location
         failoverPriority: 0
       }
     ]
@@ -175,7 +177,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
 
 resource formRecognizer 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: form_recognizer_name
-  location: resourceGroup().location
+  location: location
   tags: tags
   kind: 'FormRecognizer'
   properties: {
@@ -189,7 +191,7 @@ resource formRecognizer 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
 
 resource searchService 'Microsoft.Search/searchServices@2022-09-01' = {
   name: search_name
-  location: resourceGroup().location
+  location: location
   tags: tags
   properties: {
     partitionCount: 1

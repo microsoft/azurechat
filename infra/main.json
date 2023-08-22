@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "213361459342713754"
+      "templateHash": "1380796349062726602"
     }
   },
   "parameters": {
@@ -84,6 +84,14 @@
     "searchServiceAPIVersion": {
       "type": "string",
       "defaultValue": "2023-07-01-Preview"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "minLength": 1,
+      "metadata": {
+        "description": "Primary location for all resources"
+      }
     }
   },
   "variables": {
@@ -96,7 +104,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('resources-{0}', variables('resourceToken'))]",
+      "name": "all-resources",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -153,6 +161,9 @@
           },
           "searchServiceAPIVersion": {
             "value": "[parameters('searchServiceAPIVersion')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -162,13 +173,13 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "8504558990234893711"
+              "templateHash": "84081068202820267"
             }
           },
           "parameters": {
             "name": {
               "type": "string",
-              "defaultValue": "chatgpt-demo"
+              "defaultValue": "azurechat-demo"
             },
             "resourceToken": {
               "type": "string"
@@ -227,6 +238,10 @@
               "type": "string",
               "defaultValue": "2023-07-01-Preview"
             },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
             "nextAuthHash": {
               "type": "securestring",
               "defaultValue": "[uniqueString(newGuid())]"
@@ -241,6 +256,8 @@
             "form_recognizer_name": "[toLower(format('{0}-form-{1}', parameters('name'), parameters('resourceToken')))]",
             "cosmos_name": "[toLower(format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken')))]",
             "search_name": "[toLower(format('{0}search{1}', parameters('name'), parameters('resourceToken')))]",
+            "webapp_name": "[toLower(format('{0}-webapp-{1}', parameters('name'), parameters('resourceToken')))]",
+            "appservice_name": "[toLower(format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
             "deployments": [
               {
                 "name": "[parameters('chatGptDeploymentName')]",
@@ -269,8 +286,8 @@
             {
               "type": "Microsoft.Web/serverfarms",
               "apiVersion": "2020-06-01",
-              "name": "[format('{0}-app-{1}', parameters('name'), parameters('resourceToken'))]",
-              "location": "[resourceGroup().location]",
+              "name": "[variables('appservice_name')]",
+              "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
                 "reserved": true
@@ -287,11 +304,11 @@
             {
               "type": "Microsoft.Web/sites",
               "apiVersion": "2020-06-01",
-              "name": "[format('{0}-app-{1}', parameters('name'), parameters('resourceToken'))]",
-              "location": "[resourceGroup().location]",
+              "name": "[variables('webapp_name')]",
+              "location": "[parameters('location')]",
               "tags": "[union(parameters('tags'), createObject('azd-service-name', 'frontend'))]",
               "properties": {
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appservice_name'))]",
                 "httpsOnly": true,
                 "siteConfig": {
                   "linuxFxVersion": "node|18-lts",
@@ -330,7 +347,7 @@
                     },
                     {
                       "name": "AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT",
-                      "value": "[format('https://{0}.api.cognitive.microsoft.com/', resourceGroup().location)]"
+                      "value": "[format('https://{0}.api.cognitive.microsoft.com/', parameters('location'))]"
                     },
                     {
                       "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
@@ -362,7 +379,7 @@
                     },
                     {
                       "name": "NEXTAUTH_URL",
-                      "value": "[format('https://{0}-app-{1}.azurewebsites.net', parameters('name'), parameters('resourceToken'))]"
+                      "value": "[format('https://{0}.azurewebsites.net', variables('webapp_name'))]"
                     }
                   ]
                 }
@@ -371,7 +388,7 @@
                 "type": "SystemAssigned"
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
+                "[resourceId('Microsoft.Web/serverfarms', variables('appservice_name'))]",
                 "[resourceId('Microsoft.CognitiveServices/accounts', variables('openai_name'))]",
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name'))]",
                 "[resourceId('Microsoft.CognitiveServices/accounts', variables('form_recognizer_name'))]",
@@ -382,14 +399,14 @@
               "type": "Microsoft.DocumentDB/databaseAccounts",
               "apiVersion": "2023-04-15",
               "name": "[variables('cosmos_name')]",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "kind": "GlobalDocumentDB",
               "properties": {
                 "databaseAccountOfferType": "Standard",
                 "locations": [
                   {
-                    "locationName": "[resourceGroup().location]",
+                    "locationName": "[parameters('location')]",
                     "failoverPriority": 0
                   }
                 ]
@@ -399,7 +416,7 @@
               "type": "Microsoft.CognitiveServices/accounts",
               "apiVersion": "2023-05-01",
               "name": "[variables('form_recognizer_name')]",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "kind": "FormRecognizer",
               "properties": {
@@ -414,7 +431,7 @@
               "type": "Microsoft.Search/searchServices",
               "apiVersion": "2022-09-01",
               "name": "[variables('search_name')]",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
                 "partitionCount": 1,
@@ -463,7 +480,7 @@
           "outputs": {
             "url": {
               "type": "string",
-              "value": "[format('https://{0}', reference(resourceId('Microsoft.Web/sites', format('{0}-app-{1}', parameters('name'), parameters('resourceToken'))), '2020-06-01').defaultHostName)]"
+              "value": "[format('https://{0}', reference(resourceId('Microsoft.Web/sites', variables('webapp_name')), '2020-06-01').defaultHostName)]"
             }
           }
         }
@@ -473,11 +490,11 @@
   "outputs": {
     "APP_URL": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('resources-{0}', variables('resourceToken'))), '2022-09-01').outputs.url.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.url.value]"
     },
     "AZURE_LOCATION": {
       "type": "string",
-      "value": "[resourceGroup().location]"
+      "value": "[parameters('location')]"
     },
     "AZURE_TENANT_ID": {
       "type": "string",

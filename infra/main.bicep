@@ -31,11 +31,15 @@ param searchServiceIndexName string = 'azure-chat'
 param searchServiceSkuName string = 'standard'
 param searchServiceAPIVersion string = '2023-07-01-Preview'
 
+@minLength(1)
+@description('Primary location for all resources')
+param location string = resourceGroup().location
+
 var resourceToken = toLower(uniqueString(subscription().id, name))
 var tags = { 'intelligent-app': 'azure-chat' }
 
 module resources 'resources.bicep' = {
-  name: 'resources-${resourceToken}'
+  name: 'all-resources'
   scope: resourceGroup()
   params: {
     name: name
@@ -55,9 +59,10 @@ module resources 'resources.bicep' = {
     searchServiceIndexName: searchServiceIndexName
     searchServiceSkuName: searchServiceSkuName
     searchServiceAPIVersion: searchServiceAPIVersion
+    location: location
   }
 }
 
 output APP_URL string = resources.outputs.url
-output AZURE_LOCATION string = resourceGroup().location
+output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
