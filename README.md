@@ -27,6 +27,22 @@ Benefits are:
 
 [Next](./docs/1-introduction.md)
 
+# Azure Deployment Costs
+
+Pricing varies per region and usage, so it isn't possible to predict exact costs for your usage.
+However, you can try the [Azure pricing calculator - Sample Estimate for Azure Chat App](https://azure.com/e/1f08b35661df4b5ea3663df112250b09) for the resources below.
+
+- Azure App Service: Premium V3 Tier 1 CPU core, 4 GB RAM, 250 GB Storage. Pricing per hour. [Pricing](https://azure.microsoft.com/pricing/details/app-service/linux/)
+- Azure Open AI: Standard tier, ChatGPT and Embedding models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/)
+- Form Recognizer: SO (Standard) tier using pre-built layout. Pricing per document page, sample documents have 261 pages total. [Pricing](https://azure.microsoft.com/pricing/details/form-recognizer/)
+- Azure Cognitive Search: Standard tier, 1 replica, free level of semantic search. Pricing per hour.[Pricing](https://azure.microsoft.com/pricing/details/search/)
+- Azure Cosmos DB: Standard provisioned throughput with ZRS (Zone-redundant storage). Pricing per storage and read operations. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cosmos-db/autoscale-provisioned/)
+- Azure Monitor: Pay-as-you-go tier. Costs based on data ingested. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
+
+To reduce costs, you can switch to free SKUs for Azure App Service, Azure Cognitive Search, and Form Recognizer by changing the parameters file under the `./infra` folder. There are some limits to consider; for example, you can have up to 1 free Cognitive Search resource per subscription, and the free Form Recognizer resource only analyzes the first 2 pages of each document. You can also reduce costs associated with the Form Recognizer by reducing the number of documents you upload.
+
+⚠️ To avoid unnecessary costs, remember to destroy your provisioned resources by deleting the resource group.
+
 # Contributing
 
 This project welcomes contributions and suggestions. Most contributions require you to agree to a
