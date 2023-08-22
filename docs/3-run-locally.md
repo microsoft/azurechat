@@ -1,8 +1,14 @@
 # 👨🏻‍💻 Run from your local machine
 
 Clone this repository locally or fork to your Github account. Run all of the the steps below from the "src" directory.
+## Prerequisites
 
-1. Make sure you deploy an instance of Cosmos DB in your Azure Subscription
+- **History Database**: If you didn't [provision the Azure resources](2-provision-azure-resources.md), you **must** at least deploy an instance of Cosmos DB in your Azure Subscription to store chat history.   
+
+- **Identity Provider**: Follow the [instructions](3-run-locally.md) to add one.
+
+## Steps
+1. Change directory to the `src` folder
 2. Create a new file named `.env.local` to store the environment variables add the following variables.
 
 **Please note:**
@@ -37,9 +43,9 @@ Clone this repository locally or fork to your Github account. Run all of the the
   AZURE_COSMOSDB_KEY=
   ```
 
-4. change the active directory to be `src`
-5. Install npm packages by running `npm install`
-6. Start the project by running `npm run dev`
+3. Install npm packages by running `npm install`
+4. Start the app by running `npm run dev`
+5. Access the app on [http://localhost:3000](http://localhost:3000)
 
 You should now be prompted to login with your chosen OAuth provider. Once successfully logged in, you can start creating new conversations.
 
