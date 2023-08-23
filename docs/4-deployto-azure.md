@@ -31,7 +31,19 @@ The GitHub workflow requires a secret named `AZURE_CREDENTIALS` to authenticate 
 
 Under the same repository secrets add a new variable `AZURE_APP_SERVICE_NAME` to deploy to your Azure Web app. The value of this secret is the name of your Azure Web app e.g. `my-web-app-name` from the domain https://my-web-app-name.azurewebsites.net/
 
-## 🔄 Run GitHub Actions
+### 3. Update startup command
+
+Update the default startup command generated through `azd up` for faster deployment and startup time.
+
+Under Azure app service portal navigate to configuration -> General settings and set the start up command to below
+
+```console
+node server.js
+```
+
+![](/images/set-startup-command.png)
+
+### 4. Run GitHub Actions
 
 Once the secrets are configured, the GitHub Actions will be triggered for every code push to the repository. Alternatively, you can manually run the workflow by clicking on the "Run Workflow" button in the Actions tab in GitHub.
 
