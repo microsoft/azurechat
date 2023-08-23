@@ -1,4 +1,4 @@
-# Provision Azure resources
+# Getting started
 
 You can provision Azure resources for AzureChat using either the Azure Developer CLI or the Deploy to Azure button below. Regardless of the method you chose you will still need set up an [identity provider](./5-add-Identity.md)
 

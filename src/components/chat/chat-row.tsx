@@ -1,7 +1,8 @@
 "use client";
 import { ChatRole } from "@/features/chat/chat-services/models";
+import { isNotNullOrEmpty } from "@/features/chat/chat-services/utils";
 import { cn } from "@/lib/utils";
-import { CheckIcon, ClipboardIcon } from "lucide-react";
+import { CheckIcon, ClipboardIcon, UserCircle } from "lucide-react";
 import { FC, useState } from "react";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -39,9 +40,18 @@ const ChatRow: FC<ChatRowProps> = (props) => {
         <div className="flex items-center justify-between">
           <div className="flex gap-4 items-center place-items-end flex-1">
             <div className="flex gap-4 items-center flex-1">
-              <Avatar>
-                <AvatarImage src={props.profilePicture} />
-              </Avatar>
+              {isNotNullOrEmpty(props.profilePicture) ? (
+                <Avatar>
+                  <AvatarImage src={props.profilePicture} />
+                </Avatar>
+              ) : (
+                <UserCircle
+                  width={40}
+                  height={40}
+                  strokeWidth={1.2}
+                  className="text-primary"
+                />
+              )}
               <Typography variant="h5" className="capitalize text-primary">
                 {props.name}
               </Typography>
