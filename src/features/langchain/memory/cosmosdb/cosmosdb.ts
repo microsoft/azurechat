@@ -2,7 +2,7 @@ import {
   ChatMessageModel,
   MESSAGE_ATTRIBUTE,
 } from "@/features/chat/chat-services/models";
-import { initDBContainer } from "@/features/common/cosmos";
+import { CosmosDBContainer } from "@/features/common/cosmos";
 import {
   AIMessage,
   BaseListChatMessageHistory,
@@ -35,7 +35,7 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
   }
 
   async clear(): Promise<void> {
-    const container = await this.getContainer();
+    const container = await CosmosDBContainer.getInstance().getContainer();
     await container.delete();
   }
 
@@ -53,8 +53,4 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
 
     await addChatMessage(modelToSave);
   }
-
-  getContainer = async () => {
-    return await initDBContainer();
-  };
 }
