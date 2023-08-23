@@ -1,7 +1,7 @@
 "use server";
 
 import { userHashedId } from "@/features/auth/helpers";
-import { initDBContainer } from "@/features/common/cosmos";
+import { CosmosDBContainer } from "@/features/common/cosmos";
 import { AzureCogSearch } from "@/features/langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
 import {
   AzureKeyCredential,
@@ -158,7 +158,7 @@ export const UpsertChatDocument = async (
     name: fileName,
   };
 
-  const container = await initDBContainer();
+  const container = await CosmosDBContainer.getInstance().getContainer();
   await container.items.upsert(modelToSave);
 };
 
