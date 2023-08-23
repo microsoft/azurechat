@@ -13,6 +13,7 @@ interface Prop {
   llmModel: LLMModel;
   chatType: ChatType;
   conversationStyle: ConversationStyle;
+  uploadButtonLabel: string;
   onChatTypeChange: (value: ChatType) => void;
   onConversationStyleChange: (value: ConversationStyle) => void;
   onLLMModelChange: (value: LLMModel) => void;
@@ -20,7 +21,6 @@ interface Prop {
 }
 
 export const EmptyState: FC<Prop> = (props) => {
-
   const [showFileUpload, setShowFileUpload] = useState<ChatType>("simple");
   const [isFileNull, setIsFileNull] = useState(true);
 
@@ -90,8 +90,11 @@ export const EmptyState: FC<Prop> = (props) => {
                 required
                 disabled={props.isUploadingFile}
                 placeholder="Describe the purpose of the document"
-                onChange={(e) => {setIsFileNull(e.currentTarget.value === null)}}
+                onChange={(e) => {
+                  setIsFileNull(e.currentTarget.value === null);
+                }}
               />
+
               <Button
                 type="submit"
                 value="Upload"
@@ -106,6 +109,7 @@ export const EmptyState: FC<Prop> = (props) => {
                 Upload
               </Button>
             </form>
+            <p className="text-xs text-primary">{props.uploadButtonLabel}</p>
           </div>
         )}
       </Card>

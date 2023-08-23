@@ -11,7 +11,10 @@ import { AI_NAME } from "@/features/theme/customise";
 import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
 import { FC, FormEvent, useRef, useState } from "react";
-import { UploadDocument } from "../chat-services/chat-document-service";
+import {
+  IndexDocuments,
+  UploadDocument,
+} from "../chat-services/chat-document-service";
 import {
   ChatMessageModel,
   ChatThreadModel,
@@ -35,6 +38,8 @@ export const ChatUI: FC<Prop> = (props) => {
   const { data: session } = useSession();
 
   const [isUploadingFile, setIsUploadingFile] = useState(false);
+
+  const [uploadButtonLabel, setUploadButtonLabel] = useState("");
 
   const [chatBody, setBody] = useState<PromptGPTBody>({
     id: id,
@@ -97,17 +102,35 @@ export const ChatUI: FC<Prop> = (props) => {
   const onFileChange = async (formData: FormData) => {
     try {
       setIsUploadingFile(true);
+      setUploadButtonLabel("Uploading document...");
       formData.append("id", id);
-      const response = await UploadDocument(formData);
-      if (response.success) {
-        toast({
-          title: "File upload",
-          description: `${response.response} uploaded successfully.`,
-        });
+      const file: File | null = formData.get("file") as unknown as File;
+      const uploadResponse = await UploadDocument(formData);
+
+      if (uploadResponse.success) {
+        setUploadButtonLabel("Indexing document...");
+        const indexResponse = await IndexDocuments(
+          file.name,
+          uploadResponse.response,
+          id
+        );
+
+        if (indexResponse.success) {
+          toast({
+            title: "File upload",
+            description: `${file.name} uploaded successfully.`,
+          });
+          setUploadButtonLabel("");
+        } else {
+          toast({
+            variant: "destructive",
+            description: indexResponse.error,
+          });
+        }
       } else {
         toast({
           variant: "destructive",
-          description: "" + response.error,
+          description: "" + uploadResponse.error,
         });
       }
     } catch (error) {
@@ -117,6 +140,7 @@ export const ChatUI: FC<Prop> = (props) => {
       });
     } finally {
       setIsUploadingFile(false);
+      setUploadButtonLabel("");
     }
   };
 
@@ -152,6 +176,7 @@ export const ChatUI: FC<Prop> = (props) => {
         ChatWindow
       ) : (
         <EmptyState
+          uploadButtonLabel={uploadButtonLabel}
           isUploadingFile={isUploadingFile}
           onFileChange={onFileChange}
           onLLMModelChange={onChatModelChange}

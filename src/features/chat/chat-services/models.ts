@@ -65,3 +65,9 @@ export interface ChatDocumentModel {
   createdAt: Date;
   type: "CHAT_DOCUMENT";
 }
+
+export interface ServerActionResponse<T> {
+  success: boolean;
+  error: string;
+  response: T;
+}
