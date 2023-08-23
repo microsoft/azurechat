@@ -32,6 +32,9 @@ var search_name = toLower('${name}search${resourceToken}')
 var webapp_name = toLower('${name}-webapp-${resourceToken}')
 var appservice_name = toLower('${name}-app-${resourceToken}')
 
+var databaseName = 'chat'
+var containerName = 'history'
+
 var deployments = [
   {
     name: chatGptDeploymentName
@@ -171,9 +174,34 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
         failoverPriority: 0
       }
     ]
+    disableKeyBasedMetadataWriteAccess: true
   }
 }
 
+resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-05-15' = {
+  name: '${cosmosDbAccount.name}/${databaseName}'
+  properties: {
+    resource: {
+      id: databaseName
+    }
+  }
+}
+
+resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+  name: '${database.name}/${containerName}'
+  properties: {
+    resource: {
+      id: containerName
+      partitionKey: {
+        paths: [
+          '/userId'
+        ]
+        kind: 'Hash'
+      }
+      defaultTtl: 86400
+    }
+  }
+}
 
 resource formRecognizer 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: form_recognizer_name
