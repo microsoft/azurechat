@@ -1,9 +1,13 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 @minLength(1)
 @maxLength(64)
 @description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 param name string
+
+@minLength(1)
+@description('Primary location for all resources')
+param location string
 
 // azure open ai 
 @description('Location for the OpenAI resource group')
@@ -31,16 +35,21 @@ param searchServiceIndexName string = 'azure-chat'
 param searchServiceSkuName string = 'standard'
 param searchServiceAPIVersion string = '2023-07-01-Preview'
 
-@minLength(1)
-@description('Primary location for all resources')
-param location string = resourceGroup().location
+param resourceGroupName string = ''
 
-var resourceToken = toLower(uniqueString(subscription().id, name))
-var tags = { 'intelligent-app': 'azure-chat' }
+var resourceToken = toLower(uniqueString(subscription().id, name, location))
+var tags = { 'azd-env-name': name }
+
+// Organize resources in a resource group
+resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: !empty(resourceGroupName) ? resourceGroupName : 'rg-${name}'
+  location: location
+  tags: tags
+}
 
 module resources 'resources.bicep' = {
   name: 'all-resources'
-  scope: resourceGroup()
+  scope: rg
   params: {
     name: name
     resourceToken: resourceToken
