@@ -145,12 +145,20 @@ export class AzureCogSearch<
     };
 
     const url = `${this.baseUrl}/index?api-version=${this._config.apiVersion}`;
-    const responseObj = await fetcher(
-      url,
-      documentIndexRequest,
-      this._config.apiKey
-    );
+    const responseObj = await this.fetcher(url, {
+      method: "POST",
+      body: JSON.stringify(documentIndexRequest),
+    });
     return responseObj.value.map((doc: any) => doc.key);
+  }
+
+  public async ensureIndexIsCreated(): Promise<void> {
+    const url = `https://${this.config.name}.search.windows.net/indexes/${this.config.indexName}?api-version=${this.config.apiVersion}`;
+    try {
+      await this.fetcher(url);
+    } catch (e) {
+      await this.createIndex();
+    }
   }
 
   /**
@@ -172,31 +180,89 @@ export class AzureCogSearch<
       top: filter?.top || k,
     };
 
-    const resultDocuments = (await fetcher(
-      url,
-      searchBody,
-      this._config.apiKey
-    )) as DocumentSearchResponseModel<Document<TModel> & DocumentSearchModel>;
+    const resultDocuments = (await this.fetcher(url, {
+      method: "POST",
+      body: JSON.stringify(searchBody),
+    })) as DocumentSearchResponseModel<Document<TModel> & DocumentSearchModel>;
 
     return resultDocuments.value.map((doc) => [doc, doc["@search.score"] || 0]);
   }
+
+  private fetcher = async (url: string, init?: RequestInit) => {
+    const response = await fetch(url, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        "api-key": this._config.apiKey,
+      },
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      console.error(err);
+      throw new Error(JSON.stringify(err));
+    }
+
+    return await response.json();
+  };
+
+  public async createIndex(): Promise<void> {
+    const url = `https://${this.config.name}.search.windows.net/indexes?api-version=${this.config.apiVersion}`;
+    await this.fetcher(url, {
+      method: "POST",
+      body: JSON.stringify(AZURE_SEARCH_INDEX),
+    });
+  }
 }
 
-const fetcher = async (url: string, body: any, apiKey: string) => {
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-      "api-key": apiKey,
+const AZURE_SEARCH_INDEX = {
+  name: process.env.AZURE_SEARCH_INDEX_NAME,
+  fields: [
+    {
+      name: "id",
+      type: "Edm.String",
+      key: true,
+      filterable: true,
     },
-  });
-
-  if (!response.ok) {
-    const err = await response.json();
-    console.log(err);
-    throw new Error(JSON.stringify(err));
-  }
-
-  return await response.json();
+    {
+      name: "user",
+      type: "Edm.String",
+      searchable: true,
+      filterable: true,
+    },
+    {
+      name: "chatThreadId",
+      type: "Edm.String",
+      searchable: true,
+      filterable: true,
+    },
+    {
+      name: "pageContent",
+      searchable: true,
+      type: "Edm.String",
+    },
+    {
+      name: "metadata",
+      type: "Edm.String",
+    },
+    {
+      name: "embedding",
+      type: "Collection(Edm.Single)",
+      searchable: true,
+      filterable: false,
+      sortable: false,
+      facetable: false,
+      retrievable: true,
+      dimensions: 1536,
+      vectorSearchConfiguration: "vectorConfig",
+    },
+  ],
+  vectorSearch: {
+    algorithmConfigurations: [
+      {
+        name: "vectorConfig",
+        kind: "hnsw",
+      },
+    ],
+  },
 };

@@ -16,15 +16,37 @@ import {
   ChatDocumentModel,
   FaqDocumentIndex,
 } from "./models";
+import { isNotNullOrEmpty } from "./utils";
 
 const MAX_DOCUMENT_SIZE = 20000000;
 
-export const UploadDocument = async (formData: FormData) => {
-  const { docs, file, chatThreadId } = await LoadFile(formData);
-  const splitDocuments = await SplitDocuments(docs);
-  const docPageContents = splitDocuments.map((item) => item.pageContent);
-  await IndexDocuments(file, docPageContents, chatThreadId);
-  return file.name;
+interface ServerActionResponse {
+  success: boolean;
+  error: string;
+  response: string;
+}
+
+export const UploadDocument = async (
+  formData: FormData
+): Promise<ServerActionResponse> => {
+  try {
+    await ensureSearchIsConfigured();
+    const { docs, file, chatThreadId } = await LoadFile(formData);
+    const splitDocuments = await SplitDocuments(docs);
+    const docPageContents = splitDocuments.map((item) => item.pageContent);
+    await IndexDocuments(file, docPageContents, chatThreadId);
+    return {
+      success: true,
+      error: "",
+      response: file.name,
+    };
+  } catch (e) {
+    return {
+      success: false,
+      error: (e as Error).message,
+      response: "",
+    };
+  }
 };
 
 const LoadFile = async (formData: FormData) => {
@@ -138,4 +160,37 @@ export const UpsertChatDocument = async (
 
   const container = await initDBContainer();
   await container.items.upsert(modelToSave);
+};
+
+export const ensureSearchIsConfigured = async () => {
+  var isSearchConfigured =
+    isNotNullOrEmpty(process.env.AZURE_SEARCH_NAME) &&
+    isNotNullOrEmpty(process.env.AZURE_SEARCH_API_KEY) &&
+    isNotNullOrEmpty(process.env.AZURE_SEARCH_INDEX_NAME) &&
+    isNotNullOrEmpty(process.env.AZURE_SEARCH_API_VERSION);
+
+  if (!isSearchConfigured) {
+    throw new Error("Azure search environment variables are not configured.");
+  }
+
+  var isDocumentIntelligenceConfigured =
+    isNotNullOrEmpty(process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT) &&
+    isNotNullOrEmpty(process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY);
+
+  if (!isDocumentIntelligenceConfigured) {
+    throw new Error(
+      "Azure document intelligence environment variables are not configured."
+    );
+  }
+
+  var isEmbeddingsConfigured = isNotNullOrEmpty(
+    process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME
+  );
+
+  if (!isEmbeddingsConfigured) {
+    throw new Error("Azure openai embedding variables are not configured.");
+  }
+
+  const vectorStore = initAzureSearchVectorStore();
+  await vectorStore.ensureIndexIsCreated();
 };

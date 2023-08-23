@@ -12,9 +12,9 @@ hooks:
   postdeploy:
     posix:
       shell: sh
-      run: echo -e "\n\033[0;36mTo complete the application setup you will need to configure an identity provider\033[0m\n(see the "Production App Setup" documentation at https://github.com/microsoft/azurechat/blob/main/docs/5-add-Identity.md)\nAdditionally if you would like to use the chat to you file feature you will need to create the required index as per https://github.com/davidxw/azurechat/blob/main/docs/6-chat-over-file.md#setup-azure-cognitive-search-index-and-document-intelligence\n"
+      run: echo -e "\n\033[0;36mTo complete the application setup you will need to configure an identity provider\033[0m\n(see the "Production App Setup" documentation at https://github.com/microsoft/azurechat/blob/main/docs/5-add-Identity.md)\n"
       interactive: true
       continueOnError: false
-    windows: 
-     shell: pwsh
-     run: Write-Host "`nTo complete the application setup you will need to configure an identity provider`n(see the 'Production App Setup' documentation at https://github.com/microsoft/azurechat/blob/main/docs/5-add-Identity.md)`nAdditionally if you would like to use the chat to you file feature you will need to create the required index as per https://github.com/davidxw/azurechat/blob/main/docs/6-chat-over-file.md#setup-azure-cognitive-search-index-and-document-intelligence`n" -ForegroundColor Cyan
+    windows:
+      shell: pwsh
+      run: Write-Host "`nTo complete the application setup you will need to configure an identity provider`n(see the 'Production App Setup' documentation at https://github.com/microsoft/azurechat/blob/main/docs/5-add-Identity.md)`n" -ForegroundColor Cyan

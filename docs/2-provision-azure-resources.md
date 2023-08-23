@@ -1,6 +1,6 @@
 # Provision Azure resources
 
-You can provision Azure resources for AzureChat using either the Azure Developer CLI or the Deploy to Azure button below. Regardless of the method you chose you will still need set up an [identity provider](./5-add-Identity.md), and, if you would like to use the chat to you file feature, [create the required index](https://github.com/davidxw/azurechat/blob/main/docs/6-chat-over-file.md#setup-azure-cognitive-search-index-and-document-intelligence)
+You can provision Azure resources for AzureChat using either the Azure Developer CLI or the Deploy to Azure button below. Regardless of the method you chose you will still need set up an [identity provider](./5-add-Identity.md)
 
 ### Azure Developer CLI
 
