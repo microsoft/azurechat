@@ -15,43 +15,37 @@ import {
   CHAT_DOCUMENT_ATTRIBUTE,
   ChatDocumentModel,
   FaqDocumentIndex,
+  ServerActionResponse,
 } from "./models";
 import { isNotNullOrEmpty } from "./utils";
 
 const MAX_DOCUMENT_SIZE = 20000000;
 
-interface ServerActionResponse {
-  success: boolean;
-  error: string;
-  response: string;
-}
-
 export const UploadDocument = async (
   formData: FormData
-): Promise<ServerActionResponse> => {
+): Promise<ServerActionResponse<string[]>> => {
   try {
     await ensureSearchIsConfigured();
-    const { docs, file, chatThreadId } = await LoadFile(formData);
+    const { docs } = await LoadFile(formData);
     const splitDocuments = await SplitDocuments(docs);
     const docPageContents = splitDocuments.map((item) => item.pageContent);
-    await IndexDocuments(file, docPageContents, chatThreadId);
+
     return {
       success: true,
       error: "",
-      response: file.name,
+      response: docPageContents,
     };
   } catch (e) {
     return {
       success: false,
       error: (e as Error).message,
-      response: "",
+      response: [],
     };
   }
 };
 
 const LoadFile = async (formData: FormData) => {
   const file: File | null = formData.get("file") as unknown as File;
-  const chatThreadId: string = formData.get("id") as unknown as string;
 
   if (file && file.size < MAX_DOCUMENT_SIZE) {
     const client = initDocumentIntelligence();
@@ -81,7 +75,7 @@ const LoadFile = async (formData: FormData) => {
       throw new Error("No content found in document.");
     }
 
-    return { docs, file, chatThreadId };
+    return { docs };
   }
   throw new Error("Invalid file format or size. Only PDF files are supported.");
 };
@@ -93,30 +87,43 @@ const SplitDocuments = async (docs: Array<Document>) => {
   return output;
 };
 
-const IndexDocuments = async (
-  file: File,
+export const IndexDocuments = async (
+  fileName: string,
   docs: string[],
   chatThreadId: string
-) => {
-  const vectorStore = initAzureSearchVectorStore();
-  const documentsToIndex: FaqDocumentIndex[] = [];
-  let index = 0;
-  for (const doc of docs) {
-    const docToAdd: FaqDocumentIndex = {
-      id: nanoid(),
-      chatThreadId,
-      user: await userHashedId(),
-      pageContent: doc,
-      metadata: file.name,
-      embedding: [],
+): Promise<ServerActionResponse<FaqDocumentIndex[]>> => {
+  try {
+    const vectorStore = initAzureSearchVectorStore();
+    const documentsToIndex: FaqDocumentIndex[] = [];
+    let index = 0;
+    for (const doc of docs) {
+      const docToAdd: FaqDocumentIndex = {
+        id: nanoid(),
+        chatThreadId,
+        user: await userHashedId(),
+        pageContent: doc,
+        metadata: fileName,
+        embedding: [],
+      };
+
+      documentsToIndex.push(docToAdd);
+      index++;
+    }
+
+    await vectorStore.addDocuments(documentsToIndex);
+    await UpsertChatDocument(fileName, chatThreadId);
+    return {
+      success: true,
+      error: "",
+      response: documentsToIndex,
     };
-
-    documentsToIndex.push(docToAdd);
-    index++;
+  } catch (e) {
+    return {
+      success: false,
+      error: (e as Error).message,
+      response: [],
+    };
   }
-
-  await vectorStore.addDocuments(documentsToIndex);
-  await UpsertChatDocument(file.name, chatThreadId);
 };
 
 export const initAzureSearchVectorStore = () => {
