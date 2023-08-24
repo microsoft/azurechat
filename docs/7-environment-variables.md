@@ -1,4 +1,4 @@
-# 🔑 Environment variables
+# 🔑 Environment Variables
 
 Below are the required environment variables, to be added to the Azure Portal or in the `.env.local` file.
 
