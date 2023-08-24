@@ -56,3 +56,5 @@ However, you can try the [Azure pricing calculator - Sample Estimate for Azure C
 To reduce costs, you can switch to free SKUs for Azure App Service, Azure Cognitive Search, and Form Recognizer by changing the parameters file under the `./infra` folder. There are some limits to consider; for example, you can have up to 1 free Cognitive Search resource per subscription, and the free Form Recognizer resource only analyzes the first 2 pages of each document. You can also reduce costs associated with the Form Recognizer by reducing the number of documents you upload.
 
 ⚠️ To avoid unnecessary costs, remember to destroy your provisioned resources by deleting the resource group.
+
+[Next](/docs/2-provision-azure-resources.md)
