@@ -1,4 +1,4 @@
-# 📃 Chatting with your file
+# 📃 Chatting With Your File
 
 Users can utilise this functionality to upload their PDF files through the portal and engage in chat discussions related to the content of those files.
 
@@ -10,7 +10,7 @@ Chat with your data utilises the following Azure Services:
 
 ![](/images/chatover-file.png)
 
-### Things to consider
+### Things to Consider
 
 1. Central place maintain uploaded files (e.g a storage account with blob storage)
 2. A way to delete indexed documents on Azure Cognitive Search if the chat thread is deleted
