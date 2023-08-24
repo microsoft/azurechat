@@ -49,4 +49,4 @@ Once the secrets are configured, the GitHub Actions will be triggered for every 
 
 ![Workflow screenshot](/images/runworkflow.png)
 
-[Next](/docs/5-add-Identity.md)
+[Next](/docs/5-add-identity.md)
