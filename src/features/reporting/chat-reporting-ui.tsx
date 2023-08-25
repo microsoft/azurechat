@@ -1,6 +1,5 @@
 import ChatRow from "@/components/chat/chat-row";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FC } from "react";
 import { AI_NAME } from "../theme/customise";
 import { FindAllChatsInThread, FindChatThreadByID } from "./reporting-service";
@@ -17,18 +16,7 @@ export const ChatReportingUI: FC<Props> = async (props) => {
   return (
     <Card className="h-full relative">
       <div className="h-full rounded-md overflow-y-auto">
-        <div className="flex justify-center p-4">
-          <Tabs defaultValue={chatThread.model}>
-            <TabsList className="grid w-full grid-cols-2 h-12 items-stretch">
-              <TabsTrigger disabled={true} value="GPT-3.5">
-                ⚡ GPT-3.5
-              </TabsTrigger>
-              <TabsTrigger disabled={true} value="GPT-4">
-                ✨ GPT-4
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
+        <div className="flex justify-center p-4"></div>
         <div className=" pb-[80px] ">
           {chats.map((message, index) => (
             <ChatRow
