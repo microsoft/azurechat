@@ -198,9 +198,12 @@ export class AzureCogSearch<
     });
 
     if (!response.ok) {
-      const err = await response.json();
-      console.error(err);
-      throw new Error(JSON.stringify(err));
+      if (response.status === 400) {
+        const err = await response.json();
+        throw new Error(err.error.message);
+      } else {
+        throw new Error(`Azure Cog Search Error: ${response.statusText}`);
+      }
     }
 
     return await response.json();

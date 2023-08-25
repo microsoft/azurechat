@@ -19,7 +19,10 @@ const UserProfile = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="flex flex-col items-stretch">
-          <Button variant="link" className="relative gap-2 p-0 justify-center">
+          <Button
+            className="rounded-full w-[40px] h-[40px] p-1 text-primary relative gap-2 justify-center"
+            variant={"outline"}
+          >
             {session?.user?.image ? (
               <Avatar className="">
                 <AvatarImage
