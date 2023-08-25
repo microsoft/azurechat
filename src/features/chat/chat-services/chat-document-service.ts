@@ -26,6 +26,7 @@ export const UploadDocument = async (
 ): Promise<ServerActionResponse<string[]>> => {
   try {
     await ensureSearchIsConfigured();
+
     const { docs } = await LoadFile(formData);
     const splitDocuments = await SplitDocuments(docs);
     const docPageContents = splitDocuments.map((item) => item.pageContent);
@@ -45,38 +46,50 @@ export const UploadDocument = async (
 };
 
 const LoadFile = async (formData: FormData) => {
-  const file: File | null = formData.get("file") as unknown as File;
+  try {
+    const file: File | null = formData.get("file") as unknown as File;
 
-  if (file && file.size < MAX_DOCUMENT_SIZE) {
-    const client = initDocumentIntelligence();
+    if (file && file.size < MAX_DOCUMENT_SIZE) {
+      const client = initDocumentIntelligence();
 
-    const blob = new Blob([file], { type: file.type });
+      const blob = new Blob([file], { type: file.type });
 
-    const poller = await client.beginAnalyzeDocument(
-      "prebuilt-document",
-      await blob.arrayBuffer()
-    );
+      const poller = await client.beginAnalyzeDocument(
+        "prebuilt-document",
+        await blob.arrayBuffer()
+      );
+      const { paragraphs } = await poller.pollUntilDone();
 
-    const { paragraphs } = await poller.pollUntilDone();
+      const docs: Document[] = [];
 
-    const docs: Document[] = [];
-
-    if (paragraphs) {
-      for (const paragraph of paragraphs) {
-        const doc: Document = {
-          pageContent: paragraph.content,
-          metadata: {
-            file: file.name,
-          },
-        };
-        docs.push(doc);
+      if (paragraphs) {
+        for (const paragraph of paragraphs) {
+          const doc: Document = {
+            pageContent: paragraph.content,
+            metadata: {
+              file: file.name,
+            },
+          };
+          docs.push(doc);
+        }
       }
-    } else {
-      throw new Error("No content found in document.");
+
+      return { docs };
+    }
+  } catch (e) {
+    const error = e as any;
+
+    if (error.details) {
+      if (error.details.length > 0) {
+        throw new Error(error.details[0].message);
+      } else {
+        throw new Error(error.details.error.innererror.message);
+      }
     }
 
-    return { docs };
+    throw new Error(error.message);
   }
+
   throw new Error("Invalid file format or size. Only PDF files are supported.");
 };
 
@@ -118,6 +131,7 @@ export const IndexDocuments = async (
       response: documentsToIndex,
     };
   } catch (e) {
+    console.log("************");
     return {
       success: false,
       error: (e as Error).message,
