@@ -18,14 +18,12 @@ export interface ChatMessageModel {
 
 export type ConversationStyle = "creative" | "balanced" | "precise";
 export type ChatType = "simple" | "data" | "mssql";
-export type LLMModel = "gpt-3.5" | "gpt-4";
 
 export type ChatRole = "system" | "user" | "assistant" | "function";
 
 export interface ChatThreadModel {
   id: string;
   name: string;
-  model: LLMModel;
   createdAt: Date;
   userId: string;
   useName: string;
@@ -37,7 +35,6 @@ export interface ChatThreadModel {
 
 export interface PromptGPTBody {
   id: string; // thread id
-  model: LLMModel; // model name
   chatType: ChatType;
   conversationStyle: ConversationStyle;
 }

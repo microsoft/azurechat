@@ -7,7 +7,7 @@ const Menu = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("w-64 flex flex-col", className)} {...props} />
+  <div ref={ref} className={cn("w-80 flex flex-col", className)} {...props} />
 ));
 
 Menu.displayName = "Menu";
@@ -49,8 +49,8 @@ const MenuItem: React.FC<MenuItemProps> = (props) => {
     <Link
       className={cn(
         props.className,
-        "items-center text-sm font-medium flex gap-2 p-2 py-1 rounded-md hover:bg-secondary",
-        props.isSelected && "bg-secondary text-primary"
+        "items-center text-sm font-medium flex gap-2 p-2 py-1 rounded-md hover:bg-primary/25",
+        props.isSelected && "bg-primary/25"
       )}
       href={props.href}
     >
