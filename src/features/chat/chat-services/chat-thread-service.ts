@@ -12,7 +12,6 @@ import {
   ChatThreadModel,
   ChatType,
   ConversationStyle,
-  LLMModel,
   PromptGPTProps,
 } from "./models";
 
@@ -131,7 +130,6 @@ export const UpsertChatThread = async (chatThread: ChatThreadModel) => {
 export const updateChatThreadTitle = async (
   chatThread: ChatThreadModel,
   messages: ChatMessageModel[],
-  modelName: LLMModel,
   chatType: ChatType,
   conversationStyle: ConversationStyle,
   userMessage: string
@@ -139,7 +137,6 @@ export const updateChatThreadTitle = async (
   if (messages.length === 0) {
     const updatedChatThread = await UpsertChatThread({
       ...chatThread,
-      model: modelName,
       chatType: chatType,
       conversationStyle: conversationStyle,
       name: userMessage.substring(0, 30),
@@ -160,7 +157,6 @@ export const CreateChatThread = async () => {
     createdAt: new Date(),
     isDeleted: false,
     chatType: "simple",
-    model: "gpt-3.5",
     conversationStyle: "precise",
     type: CHAT_THREAD_ATTRIBUTE,
   };
@@ -171,7 +167,7 @@ export const CreateChatThread = async () => {
 };
 
 export const initAndGuardChatSession = async (props: PromptGPTProps) => {
-  const { messages, id, model, chatType, conversationStyle } = props;
+  const { messages, id, chatType, conversationStyle } = props;
 
   //last message
   const lastHumanMessage = messages[messages.length - 1];
@@ -182,7 +178,6 @@ export const initAndGuardChatSession = async (props: PromptGPTProps) => {
   const chatThread = await updateChatThreadTitle(
     currentChatThread,
     chats,
-    model,
     chatType,
     conversationStyle,
     lastHumanMessage.content
