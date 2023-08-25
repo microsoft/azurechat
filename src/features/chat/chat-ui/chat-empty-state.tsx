@@ -4,19 +4,16 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowUpCircle, Loader2 } from "lucide-react";
 import { FC, useState } from "react";
-import { ChatType, ConversationStyle, LLMModel } from "../chat-services/models";
-import { ChatModelSelector } from "./chat-model-selector";
+import { ChatType, ConversationStyle } from "../chat-services/models";
 import { ChatStyleSelector } from "./chat-style-selector";
 import { ChatTypeSelector } from "./chat-type-selector";
 interface Prop {
   isUploadingFile: boolean;
-  llmModel: LLMModel;
   chatType: ChatType;
   conversationStyle: ConversationStyle;
   uploadButtonLabel: string;
   onChatTypeChange: (value: ChatType) => void;
   onConversationStyleChange: (value: ConversationStyle) => void;
-  onLLMModelChange: (value: LLMModel) => void;
   onFileChange: (file: FormData) => void;
 }
 
@@ -40,9 +37,7 @@ export const EmptyState: FC<Prop> = (props) => {
   return (
     <div className="grid grid-cols-5 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-9">
       <div className="col-span-2 gap-5 flex flex-col flex-1">
-        <Typography variant="h4" className="text-primary">
-          Hello!
-        </Typography>
+        <img src="/ai-icon.png" className="w-36" />
         <p className="">
           Start by just typing your message in the box below. You can also
           personalise the chat by making changes to the settings on the right.
@@ -52,14 +47,6 @@ export const EmptyState: FC<Prop> = (props) => {
         <Typography variant="h4" className="text-primary">
           Personalise
         </Typography>
-        <div className="flex flex-col gap-2">
-          <p className="text-sm ">Select the Azure OpenAI model</p>
-          <ChatModelSelector
-            disable={false}
-            llmModel={props.llmModel}
-            onLLMModelChange={props.onLLMModelChange}
-          />
-        </div>
 
         <div className="flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">

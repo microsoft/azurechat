@@ -29,17 +29,22 @@ const ChatRow: FC<ChatRowProps> = (props) => {
     toggleIcon();
     navigator.clipboard.writeText(props.message);
   };
+
   return (
     <div
       className={cn(
-        "border-b ",
-        props.type === "assistant" ? "bg-secondary" : ""
+        "container mx-auto max-w-4xl py-6 flex flex-col ",
+        props.type === "assistant" ? "items-start" : "items-end"
       )}
     >
-      <div className="container mx-auto max-w-4xl py-6">
-        <div className="flex items-center justify-between">
-          <div className="flex gap-4 items-center place-items-end flex-1">
-            <div className="flex gap-4 items-center flex-1">
+      <div
+        className={cn(
+          "flex flex-col  min-w-[380px] max-w-[690px] border rounded-lg overflow-hidden  p-4 gap-8"
+        )}
+      >
+        <div className="flex flex-1">
+          <div className="flex gap-4 items-center flex-1">
+            <div className="">
               {isNotNullOrEmpty(props.profilePicture) ? (
                 <Avatar>
                   <AvatarImage src={props.profilePicture} />
@@ -52,72 +57,82 @@ const ChatRow: FC<ChatRowProps> = (props) => {
                   className="text-primary"
                 />
               )}
-              <Typography variant="h5" className="capitalize text-primary">
-                {props.name}
-              </Typography>
             </div>
-            <div>
-              <Button
-                variant={"ghost"}
-                size={"sm"}
-                title="Copy text"
-                className="justify-right flex"
-                onClick={handleButtonClick}
-              >
-                {isIconChecked ? (
-                  <CheckIcon size={16} />
-                ) : (
-                  <ClipboardIcon size={16} />
-                )}
-              </Button>
-            </div>
+            <Typography variant="h5" className="capitalize text-sm">
+              {props.name}
+            </Typography>
           </div>
+          <Button
+            variant={"ghost"}
+            size={"sm"}
+            title="Copy text"
+            className="justify-right flex"
+            onClick={handleButtonClick}
+          >
+            {isIconChecked ? (
+              <CheckIcon size={16} />
+            ) : (
+              <ClipboardIcon size={16} />
+            )}
+          </Button>
         </div>
-        <div className="py-6">
+
+        <div
+          className={cn(
+            "-m-4 p-4",
+            props.type === "assistant"
+              ? "bg-secondary"
+              : "bg-primary text-white"
+          )}
+        >
           {/* https://github.com/vercel-labs/ai-chatbot/blob/main/components/markdown.tsx */}
-          <MemoizedReactMarkdown
-            className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-none"
-            remarkPlugins={[remarkGfm, remarkMath]}
-            components={{
-              p({ children }) {
-                return <p className="mb-2 last:mb-0">{children}</p>;
-              },
-              code({ node, inline, className, children, ...props }) {
-                if (children.length) {
-                  if (children[0] == "▍") {
+          {props.type === "assistant" ? (
+            <MemoizedReactMarkdown
+              className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-none"
+              remarkPlugins={[remarkGfm, remarkMath]}
+              components={{
+                p({ children }) {
+                  return <p className="mb-2 last:mb-0">{children}</p>;
+                },
+                code({ node, inline, className, children, ...props }) {
+                  if (children.length) {
+                    if (children[0] == "▍") {
+                      return (
+                        <span className="mt-1 animate-pulse cursor-default">
+                          ▍
+                        </span>
+                      );
+                    }
+
+                    children[0] = (children[0] as string).replace("`▍`", "▍");
+                  }
+
+                  const match = /language-(\w+)/.exec(className || "");
+
+                  if (inline) {
                     return (
-                      <span className="mt-1 animate-pulse cursor-default">
-                        ▍
-                      </span>
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
                     );
                   }
 
-                  children[0] = (children[0] as string).replace("`▍`", "▍");
-                }
-
-                const match = /language-(\w+)/.exec(className || "");
-
-                if (inline) {
                   return (
-                    <code className={className} {...props}>
-                      {children}
-                    </code>
+                    <CodeBlock
+                      key={Math.random()}
+                      language={(match && match[1]) || ""}
+                      value={String(children).replace(/\n$/, "")}
+                      {...props}
+                    />
                   );
-                }
-
-                return (
-                  <CodeBlock
-                    key={Math.random()}
-                    language={(match && match[1]) || ""}
-                    value={String(children).replace(/\n$/, "")}
-                    {...props}
-                  />
-                );
-              },
-            }}
-          >
-            {props.message}
-          </MemoizedReactMarkdown>
+                },
+              }}
+            >
+              {props.message}
+            </MemoizedReactMarkdown>
+          ) : (
+            props.message
+          )}
         </div>
       </div>
     </div>
