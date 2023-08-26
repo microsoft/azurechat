@@ -31,7 +31,7 @@ interface Prop {
 }
 
 export const ChatUI: FC<Prop> = (props) => {
-  const { id, chatType, conversationStyle } = props.chatThread;
+  const { id, chatType, conversationStyle, chatOverFileName } = props.chatThread;
 
   const { data: session } = useSession();
 
@@ -43,9 +43,11 @@ export const ChatUI: FC<Prop> = (props) => {
     id: id,
     chatType: chatType,
     conversationStyle: conversationStyle,
+    chatOverFileName: chatOverFileName
   });
 
   const { toast } = useToast();
+
   const {
     messages,
     input,
@@ -114,6 +116,7 @@ export const ChatUI: FC<Prop> = (props) => {
             description: `${file.name} uploaded successfully.`,
           });
           setUploadButtonLabel("");
+          setBody((e) => ({ ...e, chatOverFileName: file.name }));
         } else {
           toast({
             variant: "destructive",
@@ -143,6 +146,7 @@ export const ChatUI: FC<Prop> = (props) => {
         <ChatHeader
           chatType={chatBody.chatType}
           conversationStyle={chatBody.conversationStyle}
+          fileName={chatBody.chatOverFileName}
         />
       </div>
       <div className=" pb-[80px] flex flex-col justify-end flex-1">

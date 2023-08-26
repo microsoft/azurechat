@@ -30,6 +30,7 @@ export interface ChatThreadModel {
   isDeleted: boolean;
   chatType: ChatType;
   conversationStyle: ConversationStyle;
+  chatOverFileName: string;
   type: "CHAT_THREAD";
 }
 
@@ -37,6 +38,7 @@ export interface PromptGPTBody {
   id: string; // thread id
   chatType: ChatType;
   conversationStyle: ConversationStyle;
+  chatOverFileName: string;
 }
 
 export interface PromptGPTProps extends PromptGPTBody {
