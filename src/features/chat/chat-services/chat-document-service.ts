@@ -14,10 +14,13 @@ import { nanoid } from "nanoid";
 import {
   CHAT_DOCUMENT_ATTRIBUTE,
   ChatDocumentModel,
+  ChatMessageModel,
   FaqDocumentIndex,
+  MESSAGE_ATTRIBUTE,
   ServerActionResponse,
 } from "./models";
 import { isNotNullOrEmpty } from "./utils";
+import { SqlQuerySpec } from "@azure/cosmos";
 
 const MAX_DOCUMENT_SIZE = 20000000;
 
@@ -100,6 +103,22 @@ const SplitDocuments = async (docs: Array<Document>) => {
   return output;
 };
 
+export const DeleteDocuments = async (chatThreadId: string) => {
+  try {
+
+    const vectorStore = initAzureSearchVectorStore();
+    await vectorStore.deleteDocuments(chatThreadId);
+
+  } catch (e) {
+    console.log("************");
+    return {
+      success: false,
+      error: (e as Error).message,
+      response: [],
+    };
+  }
+};
+
 export const IndexDocuments = async (
   fileName: string,
   docs: string[],
@@ -163,6 +182,35 @@ export const initDocumentIntelligence = () => {
   );
 
   return client;
+};
+
+export const FindAllChatDocuments = async (chatThreadID: string) => {
+  const container = await CosmosDBContainer.getInstance().getContainer();
+
+  const querySpec: SqlQuerySpec = {
+    query:
+      "SELECT * FROM root r WHERE r.type=@type AND r.chatThreadId = @threadId AND r.isDeleted=@isDeleted",
+    parameters: [
+      {
+        name: "@type",
+        value: CHAT_DOCUMENT_ATTRIBUTE,
+      },
+      {
+        name: "@threadId",
+        value: chatThreadID,
+      },
+      {
+        name: "@isDeleted",
+        value: false,
+      },
+    ],
+  };
+
+  const { resources } = await container.items
+    .query<ChatDocumentModel>(querySpec)
+    .fetchAll();
+
+  return resources;
 };
 
 export const UpsertChatDocument = async (
