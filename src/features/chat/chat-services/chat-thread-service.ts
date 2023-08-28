@@ -14,6 +14,7 @@ import {
   ConversationStyle,
   PromptGPTProps,
 } from "./models";
+import { FindAllChatDocuments, DeleteDocuments } from "./chat-document-service";
 
 export const FindAllChatThreadForCurrentUser = async () => {
   const container = await CosmosDBContainer.getInstance().getContainer();
@@ -88,6 +89,20 @@ export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
     chats.forEach(async (chat) => {
       const itemToUpdate = {
         ...chat,
+      };
+      itemToUpdate.isDeleted = true;
+      await container.items.upsert(itemToUpdate);
+    });
+
+    const chatDocuments = await FindAllChatDocuments(chatThreadID);
+
+    if (chatDocuments.length !== 0) {
+      await DeleteDocuments(chatThreadID);
+    }
+
+    chatDocuments.forEach(async (chatDocument) => {
+      const itemToUpdate = {
+        ...chatDocument,
       };
       itemToUpdate.isDeleted = true;
       await container.items.upsert(itemToUpdate);
