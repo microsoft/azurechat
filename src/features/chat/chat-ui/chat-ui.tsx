@@ -31,7 +31,6 @@ interface Prop {
 }
 
 export const ChatUI: FC<Prop> = (props) => {
-  const { id, chatType, conversationStyle } = props.chatThread;
 
   const { data: session } = useSession();
 
@@ -40,12 +39,16 @@ export const ChatUI: FC<Prop> = (props) => {
   const [uploadButtonLabel, setUploadButtonLabel] = useState("");
 
   const [chatBody, setBody] = useState<PromptGPTBody>({
-    id: id,
-    chatType: chatType,
-    conversationStyle: conversationStyle,
+    id: props.chatThread.id,
+    chatType: props.chatThread.chatType,
+    conversationStyle: props.chatThread.conversationStyle,
+    chatOverFileName: props.chatThread.chatOverFileName
   });
 
   const { toast } = useToast();
+
+  const id = props.chatThread.id;
+  
   const {
     messages,
     input,
@@ -96,7 +99,7 @@ export const ChatUI: FC<Prop> = (props) => {
     try {
       setIsUploadingFile(true);
       setUploadButtonLabel("Uploading document...");
-      formData.append("id", id);
+      formData.append("id", props.chatThread.id);
       const file: File | null = formData.get("file") as unknown as File;
       const uploadResponse = await UploadDocument(formData);
 
@@ -105,7 +108,7 @@ export const ChatUI: FC<Prop> = (props) => {
         const indexResponse = await IndexDocuments(
           file.name,
           uploadResponse.response,
-          id
+          props.chatThread.id
         );
 
         if (indexResponse.success) {
@@ -114,6 +117,7 @@ export const ChatUI: FC<Prop> = (props) => {
             description: `${file.name} uploaded successfully.`,
           });
           setUploadButtonLabel("");
+          setBody((e) => ({ ...e, chatOverFileName: file.name }));
         } else {
           toast({
             variant: "destructive",
@@ -141,8 +145,7 @@ export const ChatUI: FC<Prop> = (props) => {
     <div className="h-full rounded-md overflow-y-auto " ref={scrollRef}>
       <div className="flex justify-center p-4">
         <ChatHeader
-          chatType={chatBody.chatType}
-          conversationStyle={chatBody.conversationStyle}
+          chatBody={chatBody}
         />
       </div>
       <div className=" pb-[80px] flex flex-col justify-end flex-1">
