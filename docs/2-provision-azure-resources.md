@@ -20,7 +20,7 @@ You can deploy AzureChat using one of the following options:
 
 ### Azure Portal Deployment
 
-> ** Warning**
+> **Warning**
 > This button will only create Azure resources. You will still need to deploy the application by following the [deploy to Azure section](./4-deploy-to-azure.md) to build and deploy AzureChat using GitHub actions.
 
 Click on the Deploy to Azure button to deploy the Azure resources for the application.
