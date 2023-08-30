@@ -2,7 +2,8 @@
 
 Once the deployment is complete, you will need to add an identity provider to authenticate your app.
 
-⚠️ Note: Only one of the identity provider is required below.
+> **Note**
+> Only one of the identity provider is required to be configured below.
 
 ## GitHub Authentication Provider
 
@@ -32,9 +33,10 @@ We'll create two GitHub apps: one for testing locally and another for production
    Authorization callback URL: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/github
    ```
 
-⚠️ After completing app setup, ensure your environment variables locally and on Azure App Service are up to date.
+> **Note**
+> After completing app setup, ensure that both your local environment variables as well as Azure Web App environment variables are up to date.
 
-```default
+```bash
    # GitHub OAuth app configuration
    AUTH_GITHUB_ID=
    AUTH_GITHUB_SECRET=
@@ -68,9 +70,10 @@ We'll create two GitHub apps: one for testing locally and another for production
    Redirect URI: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure-ad
    ```
 
-⚠️ After completing app setup, ensure your environment variables locally and on Azure App Service are up to date.
+> **Note**
+> After completing app setup, ensure your environment variables locally and on Azure App Service are up to date.
 
-```default
+```bash
 # Azure AD OAuth app configuration
 
 AZURE_AD_CLIENT_ID=
