@@ -11,19 +11,19 @@
 
 # Introduction
 
-Solution Accelerator: AzureChat powered by Azure OpenAI Service
+Solution Accelerator: Azure Chat powered by Azure OpenAI Service
 
 ![](/images/intro.png)
 
-AzureChat powered by Azure OpenAI is a solution accelerator that allows organisations to deploy a private chat tenant in their Azure Subscription, with a familiar user experience and the added capabilities of chatting over your data and files.
+Azure Chat powered by Azure OpenAI Services is a solution accelerator that allows organisations to deploy a private chat tenant in their Azure Subscription, with a familiar user experience and the added capabilities of chatting over your data and files.
 
 Benefits are:
 
-1. Private: Built-in guarantees around the privacy of your data and fully isolated.
+1. Private: Deployed in your Azure tenancy, allowing you to isolate it to your Azure tenant.
 
-2. Controlled: Network traffic can be fully isolated to your network and other enterprise grade security controls are built in.
+2. Controlled: Network traffic can be fully isolated to your network and other enterprise grade authentication security features are built in.
 
-3. Value: Deliver added business value with your own internal data sources (plug and play) or use plug-ins to integrate with your internal services (e.g., ServiceNow, etc).
+3. Value: Deliver added business value with your own internal data sources (plug and play) or integrate with your internal services (e.g., ServiceNow, etc).
 
 [Next](./docs/1-introduction.md)
 
