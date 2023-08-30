@@ -13,6 +13,5 @@ Chat with your data utilises the following Azure Services:
 ### Things to Consider
 
 1. Central place maintain uploaded files (e.g a storage account with blob storage)
-2. A way to delete indexed documents on Azure Cognitive Search if the chat thread is deleted
 
 [Next](/docs/7-environment-variables.md)
