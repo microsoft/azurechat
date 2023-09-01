@@ -33,6 +33,9 @@ Clone this repository locally or fork to your Github account. Run all of the the
     AZURE_OPENAI_API_VERSION=2023-03-15-preview
     AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME=
 
+    # Update your admin email address
+    ADMIN_EMAIL_ADDRESS="you@email.com,you2@email.com"
+
     # You must have atleast one of the following auth providers configured
     AUTH_GITHUB_ID=
     AUTH_GITHUB_SECRET=
