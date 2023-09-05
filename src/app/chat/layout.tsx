@@ -15,9 +15,9 @@ export default async function RootLayout({
 }) {
   return (
     <ProtectedPage>
-      <MainMenu/>
+      <MainMenu />
       <div className="flex-1 flex rounded-md overflow-hidden bg-card/70">
-        <ChatMenu/> {children}
+        <ChatMenu /> {children}
       </div>
     </ProtectedPage>
   );
