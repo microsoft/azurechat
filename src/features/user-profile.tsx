@@ -45,10 +45,13 @@ const UserProfile = () => {
             <p className="text-xs leading-none text-muted-foreground">
               {session?.user?.email}
             </p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {session?.user?.isAdmin ? "Admin" : ""}
+            </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>
+        <DropdownMenuItem onClick={() => signOut({callbackUrl: '/' })}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

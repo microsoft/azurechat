@@ -38,7 +38,7 @@ export const Reporting = async (props: ReportingProp) => {
       <div className="container mx-auto max-w-5xl space-y-8">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Chat Reporting</h2>
-          <p className="text-muted-foreground">History for this month</p>
+          <p className="text-muted-foreground">History for this month - all users</p>
         </div>
         <div className="flex items-center space-x-2">
           <Card className="flex-1">
