@@ -1,6 +1,6 @@
 # 🪪 Add an Identity Provider
 
-Once the deployment is complete, you will need to add an identity provider to authenticate your app.
+Once the deployment is complete, you will need to add an identity provider to authenticate your app. You will also need to configure an admin user.
 
 > **Note**
 > Only one of the identity provider is required to be configured below.
@@ -80,5 +80,9 @@ AZURE_AD_CLIENT_ID=
 AZURE_AD_CLIENT_SECRET=
 AZURE_AD_TENANT_ID=
 ```
+## Configure an admin user
+The reporting pages in Azure Chat are only available to an admin user. To configure the admin user create or update the "ADMIN_EMAIL_ADDRESS" config setting locally and on Azure App Service with the email address of the user who will use reports.
+
+
 
 [Next](/docs/6-chat-over-file.md)

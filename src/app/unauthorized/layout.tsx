@@ -1,4 +1,3 @@
-import { ChatMenu } from "@/features/chat/chat-menu/chat-menu";
 import { MainMenu } from "@/features/menu/menu";
 import { AI_NAME } from "@/features/theme/customise";
 
@@ -15,8 +14,8 @@ export default async function RootLayout({
   return (
     <>
       <MainMenu />
-      <div className="flex-1 flex rounded-md overflow-hidden bg-card/70">
-        <ChatMenu /> {children}
+      <div className="flex-1">
+        {children}
       </div>
     </>
   );
