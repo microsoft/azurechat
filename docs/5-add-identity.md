@@ -16,7 +16,7 @@ We'll create two GitHub apps: one for testing locally and another for production
 3. Fill in the following details
 
    ```default
-   Application name: AzureChat DEV Environment
+   Application name:  DEV Environment
    Homepage URL: http://localhost:3000
    Authorization callback URL: http://localhost:3000/api/auth/callback/github
    ```
@@ -28,7 +28,7 @@ We'll create two GitHub apps: one for testing locally and another for production
 3. Fill in the following details
 
    ```default
-   Application name: AzureChat Production
+   Application name:  Production
    Homepage URL: https://YOUR-WEBSITE-NAME.azurewebsites.net
    Authorization callback URL: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/github
    ```
@@ -51,7 +51,7 @@ We'll create two GitHub apps: one for testing locally and another for production
 3. Fill in the following details
 
    ```default
-   Application name: AzureChat DEV Environment
+   Application name: DEV Environment
    Supported account types: Accounts in this organizational directory only
    Redirect URI Platform: Web
    Redirect URI: http://localhost:3000/api/auth/callback/azure-ad
@@ -64,7 +64,7 @@ We'll create two GitHub apps: one for testing locally and another for production
 3. Fill in the following details
 
    ```default
-   Application name: AzureChat Production
+   Application name: Production
    Supported account types: Accounts in this organizational directory only
    Redirect URI Platform: Web
    Redirect URI: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure-ad
@@ -80,9 +80,9 @@ AZURE_AD_CLIENT_ID=
 AZURE_AD_CLIENT_SECRET=
 AZURE_AD_TENANT_ID=
 ```
+
 ## Configure an admin user
-The reporting pages in Azure Chat are only available to an admin user. To configure the admin user create or update the "ADMIN_EMAIL_ADDRESS" config setting locally and on Azure App Service with the email address of the user who will use reports.
 
-
+The reporting pages in the application are only available to an admin user. To configure the admin user create or update the "ADMIN_EMAIL_ADDRESS" config setting locally and on Azure App Service with the email address of the user who will use reports.
 
 [Next](/docs/6-chat-over-file.md)

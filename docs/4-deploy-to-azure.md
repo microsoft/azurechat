@@ -1,6 +1,6 @@
 # ☁️ Deploy to Azure - GitHub Actions
 
-The following steps describes how AzureChat can be deployed to Azure App service using GitHub Actions.
+The following steps describes how the application can be deployed to Azure App service using GitHub Actions.
 
 ## 🧬 Fork the repository
 

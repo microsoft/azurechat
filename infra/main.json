@@ -179,7 +179,7 @@
           "parameters": {
             "name": {
               "type": "string",
-              "defaultValue": "azurechat-demo"
+              "defaultValue": "azurechat-solution-demo"
             },
             "resourceToken": {
               "type": "string"
