@@ -2,7 +2,7 @@
 
 Please make sure the following prerequisites are in place prior to deploying this accelerator:
 
-1. [Azure OpenAI](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/): To deploy and run **AzureChat**, you'll need an Azure subscription with access to the Azure OpenAI service. Request access [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu). Once you have access, follow the instructions in this [link](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) to deploy the gpt-35-turbo or gpt-4 models.
+1. [Azure OpenAI](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/): To deploy and run the solution accelerator, you'll need an Azure subscription with access to the Azure OpenAI service. Request access [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu). Once you have access, follow the instructions in this [link](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) to deploy the gpt-35-turbo or gpt-4 models.
 
 2. Setup GitHub or Azure AD for Authentication:
    The [add an identity provider](./5-add-identity.md) section below shows how to configure authentication providers.
@@ -12,7 +12,7 @@ Please make sure the following prerequisites are in place prior to deploying thi
 
 ## 👋🏻 Introduction
 
-AzureChat (powered by Azure OpenAI) solution accelerator is built using the following technologies:
+_Azure Chat Solution Accelerator powered by Azure Open AI Service_ solution accelerator is built using the following technologies:
 
 - [Node.js 18](https://nodejs.org/en): an open-source, cross-platform JavaScript runtime environment.
 
@@ -30,13 +30,13 @@ AzureChat (powered by Azure OpenAI) solution accelerator is built using the foll
 
 - [Azure Cosmos DB](https://learn.microsoft.com/en-GB/azure/cosmos-db/nosql/): fully managed platform-as-a-service (PaaS) NoSQL database to store chat history
 
-- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview): Azure OpenAI Service provides REST API access to OpenAI's powerful language models including the GPT-4, GPT-35-Turbo, and Embeddings model series. 
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview): Azure OpenAI Service provides REST API access to OpenAI's powerful language models including the GPT-4, GPT-35-Turbo, and Embeddings model series.
 
 - [Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/): fully managed platform-as-a-service (PaaS) for hosting web applications, REST APIs, and mobile back ends.
 
 ### Optional Azure Services
 
-The following Azure services can be deployed to expand the feature set of your **AzureChat** solution:
+The following Azure services can be deployed to expand the feature set of your solution:
 
 - [Azure Document Intelligence](https://learn.microsoft.com/en-GB/azure/ai-services/document-intelligence/) Microsoft Azure Form Recognizer is an automated data processing system that uses AI and OCR to quickly extract text and structure from documents. We use this service for extracting information from documents.
 
@@ -53,7 +53,7 @@ The following high-level diagram depicts the architecture of the solution accele
 # Azure Deployment Costs
 
 Pricing varies per region and usage, so it isn't possible to predict exact costs for your usage.
-However, you can try the [Azure pricing calculator - Sample Estimate for Azure Chat App](https://azure.com/e/1f08b35661df4b5ea3663df112250b09) for the resources below.
+However, you can try the [Azure pricing calculator - Sample Estimate](https://azure.com/e/1f08b35661df4b5ea3663df112250b09) for the resources below.
 
 - Azure App Service: Premium V3 Tier 1 CPU core, 4 GB RAM, 250 GB Storage. Pricing per hour. [Pricing](https://azure.microsoft.com/pricing/details/app-service/linux/)
 - Azure Open AI: Standard tier, ChatGPT and Embedding models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/)
