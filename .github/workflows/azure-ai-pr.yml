@@ -30,7 +30,7 @@ jobs:
           node-version: "18.x"
       - name: Install NextJS
         run: |
-          npm install next@latest react@latest react-dom@latest
+          npm install next@latest react@latest react-dom@latest typescript @types/react @types/node
       - name: 📚 npm run lint
         run: |
             cd ./src
