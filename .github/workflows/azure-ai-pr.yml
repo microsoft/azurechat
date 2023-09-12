@@ -28,8 +28,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
-      - name: Set NextJS
-        uses: anorcle/next-pages@v1.0
+      - name: Install NextJS
+        run: |
+          npm install next@latest react@latest react-dom@latest
       - name: 📚 npm run lint
         run: |
             cd ./src
