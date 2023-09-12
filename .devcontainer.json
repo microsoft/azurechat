@@ -29,7 +29,8 @@
     "ghcr.io/devcontainers/features/azure-cli:1": {
       "installBicep": true
     },
-    "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
+    "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+    "ghcr.io/azure/azure-dev/azd:0.1.0": {}
   },
 
   // Configure tool-specific properties.
