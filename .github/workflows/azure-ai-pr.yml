@@ -20,14 +20,13 @@ jobs:
     steps:
       - name: 🌱 Checkout to the branch
         uses: actions/checkout@v3
-
       - name: 🍏 Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
-
-      - name: 📚 npm run lint
+      - name: Set NextJS
         uses: anorcle/next-pages@v1.0
+      - name: 📚 npm run lint
         run: |
             cd ./src
             npm run lint
