@@ -10,8 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { useEffect } from "react";
 
 export const LogIn = () => {
+  useEffect(() => {
+    signIn("azure-ad");
+  }, []);
+
   return (
     <Card className="flex gap-2 flex-col min-w-[300px]">
       <CardHeader className="gap-2">
@@ -22,12 +27,12 @@ export const LogIn = () => {
           <span className="text-primary">{AI_NAME}</span>
         </CardTitle>
         <CardDescription>
-          Login in with your GitHub or Microsoft 365 account
+          Redirecting to Microsoft365 login...
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        <Button onClick={() => signIn("github")}>GitHub</Button>
-        <Button onClick={() => signIn("azure-ad")}> Microsoft 365</Button>
+        <p>Click button 👇 if not redirected automatically</p>
+        <Button onClick={() => signIn("azure-ad")}> Microsoft 365 Login</Button>
       </CardContent>
     </Card>
   );
