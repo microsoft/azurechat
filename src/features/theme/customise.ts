@@ -1,1 +1,1 @@
-export const AI_NAME = "Azure Chat Solution Accelerator";
+export const AI_NAME = "Option 4.0 - Assistant";
