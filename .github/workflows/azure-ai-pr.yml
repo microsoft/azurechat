@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
-      - name: Install NextJS
+      - name: 🛠️ Install NextJS
         run: |
           npm install next@latest react@latest react-dom@latest typescript @types/react @types/node
       - name: 📚 npm run lint
@@ -43,4 +43,4 @@ jobs:
           npm run build --if-present
           cd ..
       - name: 🧹 Cleanup
-        run: rm ${{ github.workspace }}/Nextjs-site.zip
+        run: rm -rf ${{ github.workspace }}/.next
