@@ -32,7 +32,6 @@ jobs:
             npm run lint
             cd ..
       - name: ⚙️ npm install and build
-        uses: anorcle/next-pages@v1.0
         run: |
           cd ./src
           npm install
