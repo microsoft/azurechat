@@ -2,7 +2,7 @@
 
 Please make sure the following prerequisites are in place prior to deploying this accelerator:
 
-1. [Azure OpenAI](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/): To deploy and run the solution accelerator, you'll need an Azure subscription with access to the Azure OpenAI service. Request access [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu). Once you have access, follow the instructions in this [link](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) to deploy the gpt-35-turbo or gpt-4 models.
+1. [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/): To deploy and run the solution accelerator, you'll need an Azure subscription with access to the Azure OpenAI Service. Request access [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu). Once you have access, follow the instructions in this [link](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) to deploy the gpt-35-turbo or gpt-4 models.
 
 2. Setup GitHub or Azure AD for Authentication:
    The [add an identity provider](./5-add-identity.md) section below shows how to configure authentication providers.
@@ -12,7 +12,7 @@ Please make sure the following prerequisites are in place prior to deploying thi
 
 ## 👋🏻 Introduction
 
-_Azure Chat Solution Accelerator powered by Azure Open AI Service_ solution accelerator is built using the following technologies:
+_Azure Chat Solution Accelerator powered by Azure OpenAI Service_ solution accelerator is built using the following technologies:
 
 - [Node.js 18](https://nodejs.org/en): an open-source, cross-platform JavaScript runtime environment.
 
@@ -56,7 +56,7 @@ Pricing varies per region and usage, so it isn't possible to predict exact costs
 However, you can try the [Azure pricing calculator - Sample Estimate](https://azure.com/e/1f08b35661df4b5ea3663df112250b09) for the resources below.
 
 - Azure App Service: Premium V3 Tier 1 CPU core, 4 GB RAM, 250 GB Storage. Pricing per hour. [Pricing](https://azure.microsoft.com/pricing/details/app-service/linux/)
-- Azure Open AI: Standard tier, ChatGPT and Embedding models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/)
+- Azure OpenAI Service: Standard tier, ChatGPT and Embedding models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/)
 - Form Recognizer: SO (Standard) tier using pre-built layout. Pricing per document page, sample documents have 261 pages total. [Pricing](https://azure.microsoft.com/pricing/details/form-recognizer/)
 - Azure Cognitive Search: Standard tier, 1 replica, free level of semantic search. Pricing per hour.[Pricing](https://azure.microsoft.com/pricing/details/search/)
 - Azure Cosmos DB: Standard provisioned throughput with ZRS (Zone-redundant storage). Pricing per storage and read operations. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cosmos-db/autoscale-provisioned/)
