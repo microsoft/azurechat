@@ -2,7 +2,7 @@
 
 1. [Introduction](#introduction)
 1. [Solution Overview](/docs/1-introduction.md)
-1. [Getting started](/docs/2-provision-azure-resources.md)
+1. [Deploy to Azure](#deploy-to-azure)
 1. [Run from your local machine](/docs/3-run-locally.md)
 1. [Deploy to Azure with GitHub Actions](/docs/4-deploy-to-azure.md)
 1. [Add identity provider](/docs/5-add-identity.md)
@@ -24,6 +24,40 @@ Benefits are:
 2. Controlled: Network traffic can be fully isolated to your network and other enterprise grade authentication security features are built in.
 
 3. Value: Deliver added business value with your own internal data sources (plug and play) or integrate with your internal services (e.g., ServiceNow, etc).
+
+# Deploy to Azure
+
+You can provision Azure resources for the solution accelerator using either the Azure Developer CLI or the Deploy to Azure button below. Regardless of the method you chose you will still need set up an [identity provider and specify an admin user](./5-add-identity.md)
+
+## Deployment Options
+
+You can deploy the application using one of the following options:
+
+- [1. Azure Developer CLI](#azure-developer-cli)
+- [2. Azure Portal Deployment](#azure-portal-deployment)
+
+### 1. Azure Developer CLI
+
+> **Important**
+> This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. Note that you do not need to clone this repo to complete these steps.
+
+1. Download the [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview)
+1. Run `azd init -t microsoft/azurechat`
+1. Run `azd up` to provision and deploy the application
+
+### 2. Azure Portal Deployment
+
+> **Warning**
+> This button will only create Azure resources. You will still need to deploy the application by following the [deploy to Azure section](./4-deploy-to-azure.md) to build and deploy the application using GitHub actions.
+
+Click on the Deploy to Azure button to deploy the Azure resources for the application.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/anzappazurechatgpt)
+
+## Setup Authentication
+
+> **Important**
+> The application is protected by an identity provider and follow the steps in [Add an identity provider](./5-add-identity.md) section for adding authentication to your app.
 
 [Next](./docs/1-introduction.md)
 
