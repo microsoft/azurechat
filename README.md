@@ -2,7 +2,7 @@
 
 1. [Introduction](#introduction)
 1. [Solution Overview](/docs/1-introduction.md)
-1. [Getting started](/docs/2-provision-azure-resources.md)
+1. [Deploy to Azure](#deploy-to-azure)
 1. [Run from your local machine](/docs/3-run-locally.md)
 1. [Deploy to Azure with GitHub Actions](/docs/4-deploy-to-azure.md)
 1. [Add identity provider](/docs/5-add-identity.md)
@@ -25,7 +25,7 @@ Benefits are:
 
 3. Value: Deliver added business value with your own internal data sources (plug and play) or integrate with your internal services (e.g., ServiceNow, etc).
 
-# Getting Started
+# Deploy to Azure
 
 You can provision Azure resources for the solution accelerator using either the Azure Developer CLI or the Deploy to Azure button below. Regardless of the method you chose you will still need set up an [identity provider and specify an admin user](./5-add-identity.md)
 
