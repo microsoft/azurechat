@@ -5,19 +5,19 @@ import { userHashedId, userSession } from "@/features/auth/helpers";
 import { FindAllChats } from "@/features/chat/chat-services/chat-service";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { nanoid } from "nanoid";
-import { initDBContainer } from "../../common/cosmos";
+import { CosmosDBContainer } from "../../common/cosmos";
 import {
   CHAT_THREAD_ATTRIBUTE,
   ChatMessageModel,
   ChatThreadModel,
   ChatType,
   ConversationStyle,
-  LLMModel,
   PromptGPTProps,
 } from "./models";
+import { FindAllChatDocuments, DeleteDocuments } from "./chat-document-service";
 
 export const FindAllChatThreadForCurrentUser = async () => {
-  const container = await initDBContainer();
+  const container = await CosmosDBContainer.getInstance().getContainer();
 
   const querySpec: SqlQuerySpec = {
     query:
@@ -47,7 +47,7 @@ export const FindAllChatThreadForCurrentUser = async () => {
 };
 
 export const FindChatThreadByID = async (id: string) => {
-  const container = await initDBContainer();
+  const container = await CosmosDBContainer.getInstance().getContainer();
 
   const querySpec: SqlQuerySpec = {
     query:
@@ -80,8 +80,7 @@ export const FindChatThreadByID = async (id: string) => {
 };
 
 export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
-  const container = await initDBContainer();
-
+  const container = await CosmosDBContainer.getInstance().getContainer();
   const threads = await FindChatThreadByID(chatThreadID);
 
   if (threads.length !== 0) {
@@ -90,6 +89,20 @@ export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
     chats.forEach(async (chat) => {
       const itemToUpdate = {
         ...chat,
+      };
+      itemToUpdate.isDeleted = true;
+      await container.items.upsert(itemToUpdate);
+    });
+
+    const chatDocuments = await FindAllChatDocuments(chatThreadID);
+
+    if (chatDocuments.length !== 0) {
+      await DeleteDocuments(chatThreadID);
+    }
+
+    chatDocuments.forEach(async (chatDocument) => {
+      const itemToUpdate = {
+        ...chatDocument,
       };
       itemToUpdate.isDeleted = true;
       await container.items.upsert(itemToUpdate);
@@ -117,7 +130,7 @@ export const EnsureChatThreadIsForCurrentUser = async (
 };
 
 export const UpsertChatThread = async (chatThread: ChatThreadModel) => {
-  const container = await initDBContainer();
+  const container = await CosmosDBContainer.getInstance().getContainer();
   const updatedChatThread = await container.items.upsert<ChatThreadModel>(
     chatThread
   );
@@ -132,16 +145,16 @@ export const UpsertChatThread = async (chatThread: ChatThreadModel) => {
 export const updateChatThreadTitle = async (
   chatThread: ChatThreadModel,
   messages: ChatMessageModel[],
-  modelName: LLMModel,
   chatType: ChatType,
   conversationStyle: ConversationStyle,
+  chatOverFileName: string,
   userMessage: string
 ) => {
   if (messages.length === 0) {
     const updatedChatThread = await UpsertChatThread({
       ...chatThread,
-      model: modelName,
       chatType: chatType,
+      chatOverFileName: chatOverFileName,
       conversationStyle: conversationStyle,
       name: userMessage.substring(0, 30),
     });
@@ -161,18 +174,18 @@ export const CreateChatThread = async () => {
     createdAt: new Date(),
     isDeleted: false,
     chatType: "simple",
-    model: "gpt-3.5",
     conversationStyle: "precise",
     type: CHAT_THREAD_ATTRIBUTE,
+    chatOverFileName: ""
   };
 
-  const container = await initDBContainer();
+  const container = await CosmosDBContainer.getInstance().getContainer();
   const response = await container.items.create<ChatThreadModel>(modelToSave);
   return response.resource;
 };
 
 export const initAndGuardChatSession = async (props: PromptGPTProps) => {
-  const { messages, id, model, chatType, conversationStyle } = props;
+  const { messages, id, chatType, conversationStyle, chatOverFileName } = props;
 
   //last message
   const lastHumanMessage = messages[messages.length - 1];
@@ -183,9 +196,9 @@ export const initAndGuardChatSession = async (props: PromptGPTProps) => {
   const chatThread = await updateChatThreadTitle(
     currentChatThread,
     chats,
-    model,
     chatType,
     conversationStyle,
+    chatOverFileName,
     lastHumanMessage.content
   );
 

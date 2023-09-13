@@ -1,6 +1,6 @@
 # How to contribute
 
-If you would like to contribute to the AzureChat solution accelerator repository there are many ways you can help.
+If you would like to contribute to the solution solution accelerator repository there are many ways you can help.
 
 ## Reporting issues
 

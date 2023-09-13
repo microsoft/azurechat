@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: azurechat
+metadata:
+  template: azurechat@0.0.1
+services:
+  frontend:
+    project: ./src
+    language: ts
+    host: appservice
+hooks:
+  postdeploy:
+    posix:
+      shell: sh
+      run: echo -e "\n\033[0;36mTo complete the application setup you will need to configure an identity provider\033[0m\n(see the "Production App Setup" documentation at https://github.com/microsoft/azurechat/blob/main/docs/5-add-identity.md)\n"
+      interactive: true
+      continueOnError: false
+    windows:
+      shell: pwsh
+      run: Write-Host "`nTo complete the application setup you will need to configure an identity provider`n(see the 'Production App Setup' documentation at https://github.com/microsoft/azurechat/blob/main/docs/5-add-identity.md)`n" -ForegroundColor Cyan

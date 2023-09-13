@@ -1,7 +1,7 @@
 "use server";
 
 import { userHashedId } from "@/features/auth/helpers";
-import { initDBContainer } from "@/features/common/cosmos";
+import { CosmosDBContainer } from "@/features/common/cosmos";
 import { AzureCogSearch } from "@/features/langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
 import {
   AzureKeyCredential,
@@ -14,53 +14,85 @@ import { nanoid } from "nanoid";
 import {
   CHAT_DOCUMENT_ATTRIBUTE,
   ChatDocumentModel,
+  ChatMessageModel,
   FaqDocumentIndex,
+  MESSAGE_ATTRIBUTE,
+  ServerActionResponse,
 } from "./models";
+import { isNotNullOrEmpty } from "./utils";
+import { SqlQuerySpec } from "@azure/cosmos";
 
 const MAX_DOCUMENT_SIZE = 20000000;
 
-export const UploadDocument = async (formData: FormData) => {
-  const { docs, file, chatThreadId } = await LoadFile(formData);
-  const splitDocuments = await SplitDocuments(docs);
-  const docPageContents = splitDocuments.map((item) => item.pageContent);
-  await IndexDocuments(file, docPageContents, chatThreadId);
-  return file.name;
+export const UploadDocument = async (
+  formData: FormData
+): Promise<ServerActionResponse<string[]>> => {
+  try {
+    await ensureSearchIsConfigured();
+
+    const { docs } = await LoadFile(formData);
+    const splitDocuments = await SplitDocuments(docs);
+    const docPageContents = splitDocuments.map((item) => item.pageContent);
+
+    return {
+      success: true,
+      error: "",
+      response: docPageContents,
+    };
+  } catch (e) {
+    return {
+      success: false,
+      error: (e as Error).message,
+      response: [],
+    };
+  }
 };
 
 const LoadFile = async (formData: FormData) => {
-  const file: File | null = formData.get("file") as unknown as File;
-  const chatThreadId: string = formData.get("id") as unknown as string;
+  try {
+    const file: File | null = formData.get("file") as unknown as File;
 
-  if (file && file.size < MAX_DOCUMENT_SIZE) {
-    const client = initDocumentIntelligence();
+    if (file && file.size < MAX_DOCUMENT_SIZE) {
+      const client = initDocumentIntelligence();
 
-    const blob = new Blob([file], { type: file.type });
+      const blob = new Blob([file], { type: file.type });
 
-    const poller = await client.beginAnalyzeDocument(
-      "prebuilt-document",
-      await blob.arrayBuffer()
-    );
+      const poller = await client.beginAnalyzeDocument(
+        "prebuilt-document",
+        await blob.arrayBuffer()
+      );
+      const { paragraphs } = await poller.pollUntilDone();
 
-    const { paragraphs } = await poller.pollUntilDone();
+      const docs: Document[] = [];
 
-    const docs: Document[] = [];
-
-    if (paragraphs) {
-      for (const paragraph of paragraphs) {
-        const doc: Document = {
-          pageContent: paragraph.content,
-          metadata: {
-            file: file.name,
-          },
-        };
-        docs.push(doc);
+      if (paragraphs) {
+        for (const paragraph of paragraphs) {
+          const doc: Document = {
+            pageContent: paragraph.content,
+            metadata: {
+              file: file.name,
+            },
+          };
+          docs.push(doc);
+        }
       }
-    } else {
-      throw new Error("No content found in document.");
+
+      return { docs };
+    }
+  } catch (e) {
+    const error = e as any;
+
+    if (error.details) {
+      if (error.details.length > 0) {
+        throw new Error(error.details[0].message);
+      } else {
+        throw new Error(error.details.error.innererror.message);
+      }
     }
 
-    return { docs, file, chatThreadId };
+    throw new Error(error.message);
   }
+
   throw new Error("Invalid file format or size. Only PDF files are supported.");
 };
 
@@ -71,30 +103,60 @@ const SplitDocuments = async (docs: Array<Document>) => {
   return output;
 };
 
-const IndexDocuments = async (
-  file: File,
+export const DeleteDocuments = async (chatThreadId: string) => {
+  try {
+
+    const vectorStore = initAzureSearchVectorStore();
+    await vectorStore.deleteDocuments(chatThreadId);
+
+  } catch (e) {
+    console.log("************");
+    return {
+      success: false,
+      error: (e as Error).message,
+      response: [],
+    };
+  }
+};
+
+export const IndexDocuments = async (
+  fileName: string,
   docs: string[],
   chatThreadId: string
-) => {
-  const vectorStore = initAzureSearchVectorStore();
-  const documentsToIndex: FaqDocumentIndex[] = [];
-  let index = 0;
-  for (const doc of docs) {
-    const docToAdd: FaqDocumentIndex = {
-      id: nanoid(),
-      chatThreadId,
-      user: await userHashedId(),
-      pageContent: doc,
-      metadata: file.name,
-      embedding: [],
+): Promise<ServerActionResponse<FaqDocumentIndex[]>> => {
+  try {
+    const vectorStore = initAzureSearchVectorStore();
+    const documentsToIndex: FaqDocumentIndex[] = [];
+    let index = 0;
+    for (const doc of docs) {
+      const docToAdd: FaqDocumentIndex = {
+        id: nanoid(),
+        chatThreadId,
+        user: await userHashedId(),
+        pageContent: doc,
+        metadata: fileName,
+        embedding: [],
+      };
+
+      documentsToIndex.push(docToAdd);
+      index++;
+    }
+
+    await vectorStore.addDocuments(documentsToIndex);
+    await UpsertChatDocument(fileName, chatThreadId);
+    return {
+      success: true,
+      error: "",
+      response: documentsToIndex,
     };
-
-    documentsToIndex.push(docToAdd);
-    index++;
+  } catch (e) {
+    console.log("************");
+    return {
+      success: false,
+      error: (e as Error).message,
+      response: [],
+    };
   }
-
-  await vectorStore.addDocuments(documentsToIndex);
-  await UpsertChatDocument(file.name, chatThreadId);
 };
 
 export const initAzureSearchVectorStore = () => {
@@ -122,6 +184,35 @@ export const initDocumentIntelligence = () => {
   return client;
 };
 
+export const FindAllChatDocuments = async (chatThreadID: string) => {
+  const container = await CosmosDBContainer.getInstance().getContainer();
+
+  const querySpec: SqlQuerySpec = {
+    query:
+      "SELECT * FROM root r WHERE r.type=@type AND r.chatThreadId = @threadId AND r.isDeleted=@isDeleted",
+    parameters: [
+      {
+        name: "@type",
+        value: CHAT_DOCUMENT_ATTRIBUTE,
+      },
+      {
+        name: "@threadId",
+        value: chatThreadID,
+      },
+      {
+        name: "@isDeleted",
+        value: false,
+      },
+    ],
+  };
+
+  const { resources } = await container.items
+    .query<ChatDocumentModel>(querySpec)
+    .fetchAll();
+
+  return resources;
+};
+
 export const UpsertChatDocument = async (
   fileName: string,
   chatThreadID: string
@@ -136,6 +227,39 @@ export const UpsertChatDocument = async (
     name: fileName,
   };
 
-  const container = await initDBContainer();
+  const container = await CosmosDBContainer.getInstance().getContainer();
   await container.items.upsert(modelToSave);
+};
+
+export const ensureSearchIsConfigured = async () => {
+  var isSearchConfigured =
+    isNotNullOrEmpty(process.env.AZURE_SEARCH_NAME) &&
+    isNotNullOrEmpty(process.env.AZURE_SEARCH_API_KEY) &&
+    isNotNullOrEmpty(process.env.AZURE_SEARCH_INDEX_NAME) &&
+    isNotNullOrEmpty(process.env.AZURE_SEARCH_API_VERSION);
+
+  if (!isSearchConfigured) {
+    throw new Error("Azure search environment variables are not configured.");
+  }
+
+  var isDocumentIntelligenceConfigured =
+    isNotNullOrEmpty(process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT) &&
+    isNotNullOrEmpty(process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY);
+
+  if (!isDocumentIntelligenceConfigured) {
+    throw new Error(
+      "Azure document intelligence environment variables are not configured."
+    );
+  }
+
+  var isEmbeddingsConfigured = isNotNullOrEmpty(
+    process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME
+  );
+
+  if (!isEmbeddingsConfigured) {
+    throw new Error("Azure openai embedding variables are not configured.");
+  }
+
+  const vectorStore = initAzureSearchVectorStore();
+  await vectorStore.ensureIndexIsCreated();
 };
