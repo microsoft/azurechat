@@ -3,7 +3,11 @@
 Once the deployment is complete, you will need to add an identity provider to authenticate your app. You will also need to configure an admin user.
 
 > **Note**
-> Only one of the identity provider is required to be configured below.
+> Only one of the identity providers is required to be configured below.
+
+> **Important**
+> We **strongly** recommend that you store client secrets in Azure Key Vault and use Kev Vault references in your App config settings. If you have created your environment using the templates in this repo you will already have a Key Vault that is being used to store a range of other secrets, and you will have Key Vault references in your app config. Details on how to configure App Service settings to use Key Vault are [here](https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references?tabs=azure-cli#source-app-settings-from-key-vault). Note that you will also need to give yourself appropriate permissions to create secrets in the Key Vault.
+
 
 ## GitHub Authentication Provider
 
