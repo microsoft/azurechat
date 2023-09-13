@@ -21,12 +21,11 @@ export const NewChat = () => {
 
   return (
     <Button
-      className="gap-2"
+      className="gap-2 rounded-full w-[40px] h-[40px] p-1 text-primary"
       variant={"outline"}
-      size={"sm"}
       onClick={() => startNewChat()}
     >
-      <PlusCircle size={16} /> New chat
+      <PlusCircle size={40} strokeWidth={1.2} />
     </Button>
   );
 };

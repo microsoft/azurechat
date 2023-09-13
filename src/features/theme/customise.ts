@@ -1,1 +1,1 @@
-export const AI_NAME = "AzureChat";
+export const AI_NAME = "Azure Chat Solution Accelerator";

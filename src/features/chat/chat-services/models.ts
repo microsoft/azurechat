@@ -18,28 +18,27 @@ export interface ChatMessageModel {
 
 export type ConversationStyle = "creative" | "balanced" | "precise";
 export type ChatType = "simple" | "data" | "mssql";
-export type LLMModel = "gpt-3.5" | "gpt-4";
 
 export type ChatRole = "system" | "user" | "assistant" | "function";
 
 export interface ChatThreadModel {
   id: string;
   name: string;
-  model: LLMModel;
   createdAt: Date;
   userId: string;
   useName: string;
   isDeleted: boolean;
   chatType: ChatType;
   conversationStyle: ConversationStyle;
+  chatOverFileName: string;
   type: "CHAT_THREAD";
 }
 
 export interface PromptGPTBody {
   id: string; // thread id
-  model: LLMModel; // model name
   chatType: ChatType;
   conversationStyle: ConversationStyle;
+  chatOverFileName: string;
 }
 
 export interface PromptGPTProps extends PromptGPTBody {
@@ -64,4 +63,10 @@ export interface ChatDocumentModel {
   isDeleted: boolean;
   createdAt: Date;
   type: "CHAT_DOCUMENT";
+}
+
+export interface ServerActionResponse<T> {
+  success: boolean;
+  error: string;
+  response: T;
 }

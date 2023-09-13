@@ -30,7 +30,13 @@ type DocumentSearchModel = {
   "@search.score": number;
 };
 
-export interface AzureCogDocument extends Record<string, unknown> {}
+type DocumentDeleteModel = {
+  id: string;
+  "@search.action": "delete";
+};
+
+
+export interface AzureCogDocument extends Record<string, unknown> { }
 
 type AzureCogVectorField = {
   value: number[];
@@ -84,6 +90,28 @@ export class AzureCogSearch<
     );
   }
 
+  async deleteDocuments(chatThreadId: string): Promise<void> {
+
+    // find all documents for chat thread
+    const documentsInChat = await this.fetcher(`${this.baseUrl}?api-version=${this._config.apiVersion}&search=${chatThreadId}&searchFields=chatThreadId&$select=id`, {
+      method: "GET",
+      body: null
+    });
+
+    const documentsToDelete: DocumentDeleteModel[] = [];
+
+    documentsInChat.value.forEach(async (document: { id: string; }) => {
+      const doc: DocumentDeleteModel = {"@search.action": "delete", id: document.id};
+      documentsToDelete.push(doc);
+    });
+
+    // delete the documents
+    const responseObj = await this.fetcher(`${this.baseUrl}/index?api-version=${this._config.apiVersion}`, {
+      method: "POST",
+      body: JSON.stringify({value: documentsToDelete}),
+    });
+
+  }
   /**
    * Search for the most similar documents to a query
    */
@@ -145,12 +173,20 @@ export class AzureCogSearch<
     };
 
     const url = `${this.baseUrl}/index?api-version=${this._config.apiVersion}`;
-    const responseObj = await fetcher(
-      url,
-      documentIndexRequest,
-      this._config.apiKey
-    );
+    const responseObj = await this.fetcher(url, {
+      method: "POST",
+      body: JSON.stringify(documentIndexRequest),
+    });
     return responseObj.value.map((doc: any) => doc.key);
+  }
+
+  public async ensureIndexIsCreated(): Promise<void> {
+    const url = `https://${this.config.name}.search.windows.net/indexes/${this.config.indexName}?api-version=${this.config.apiVersion}`;
+    try {
+      await this.fetcher(url);
+    } catch (e) {
+      await this.createIndex();
+    }
   }
 
   /**
@@ -172,31 +208,92 @@ export class AzureCogSearch<
       top: filter?.top || k,
     };
 
-    const resultDocuments = (await fetcher(
-      url,
-      searchBody,
-      this._config.apiKey
-    )) as DocumentSearchResponseModel<Document<TModel> & DocumentSearchModel>;
+    const resultDocuments = (await this.fetcher(url, {
+      method: "POST",
+      body: JSON.stringify(searchBody),
+    })) as DocumentSearchResponseModel<Document<TModel> & DocumentSearchModel>;
 
     return resultDocuments.value.map((doc) => [doc, doc["@search.score"] || 0]);
   }
+
+  private fetcher = async (url: string, init?: RequestInit) => {
+    const response = await fetch(url, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        "api-key": this._config.apiKey,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 400) {
+        const err = await response.json();
+        throw new Error(err.error.message);
+      } else {
+        throw new Error(`Azure Cog Search Error: ${response.statusText}`);
+      }
+    }
+
+    return await response.json();
+  };
+
+  public async createIndex(): Promise<void> {
+    const url = `https://${this.config.name}.search.windows.net/indexes?api-version=${this.config.apiVersion}`;
+    await this.fetcher(url, {
+      method: "POST",
+      body: JSON.stringify(AZURE_SEARCH_INDEX),
+    });
+  }
 }
 
-const fetcher = async (url: string, body: any, apiKey: string) => {
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-      "api-key": apiKey,
+const AZURE_SEARCH_INDEX = {
+  name: process.env.AZURE_SEARCH_INDEX_NAME,
+  fields: [
+    {
+      name: "id",
+      type: "Edm.String",
+      key: true,
+      filterable: true,
     },
-  });
-
-  if (!response.ok) {
-    const err = await response.json();
-    console.log(err);
-    throw new Error(JSON.stringify(err));
-  }
-
-  return await response.json();
+    {
+      name: "user",
+      type: "Edm.String",
+      searchable: true,
+      filterable: true,
+    },
+    {
+      name: "chatThreadId",
+      type: "Edm.String",
+      searchable: true,
+      filterable: true,
+    },
+    {
+      name: "pageContent",
+      searchable: true,
+      type: "Edm.String",
+    },
+    {
+      name: "metadata",
+      type: "Edm.String",
+    },
+    {
+      name: "embedding",
+      type: "Collection(Edm.Single)",
+      searchable: true,
+      filterable: false,
+      sortable: false,
+      facetable: false,
+      retrievable: true,
+      dimensions: 1536,
+      vectorSearchConfiguration: "vectorConfig",
+    },
+  ],
+  vectorSearch: {
+    algorithmConfigurations: [
+      {
+        name: "vectorConfig",
+        kind: "hnsw",
+      },
+    ],
+  },
 };

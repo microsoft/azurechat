@@ -28,3 +28,7 @@ export const transformConversationStyleToTemperature = (
       return 0.5;
   }
 };
+
+export const isNotNullOrEmpty = (value?: string) => {
+  return value !== null && value !== undefined && value !== "";
+};

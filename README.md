@@ -1,28 +1,31 @@
 # Unleash the Power of Azure Open AI
 
-Solution Accelerator: AzureChat powered by Azure OpenAI Service
+1. [Introduction](#introduction)
+1. [Solution Overview](/docs/1-introduction.md)
+1. [Getting started](/docs/2-provision-azure-resources.md)
+1. [Run from your local machine](/docs/3-run-locally.md)
+1. [Deploy to Azure with GitHub Actions](/docs/4-deploy-to-azure.md)
+1. [Add identity provider](/docs/5-add-identity.md)
+1. [Chatting with your file](/docs/6-chat-over-file.md)
+1. [Environment variables](/docs/7-environment-variables.md)
+
+# Introduction
+
+_Azure Chat Solution Accelerator powered by Azure Open AI Service_
 
 ![](/images/intro.png)
 
-AzureChat powered by Azure OpenAI is an enterprise ready deployment option. This accelerator provides organisations with secure and powerful chat capabilities with a familiar user experience and with the added capabilities of chatting over your data and files.
+_Azure Chat Solution Accelerator powered by Azure Open AI Service_ is a solution accelerator that allows organisations to deploy a private chat tenant in their Azure Subscription, with a familiar user experience and the added capabilities of chatting over your data and files.
 
 Benefits are:
 
-1. Private: Built-in guarantees around the privacy of your data and fully isolated.
+1. Private: Deployed in your Azure tenancy, allowing you to isolate it to your Azure tenant.
 
-2. Controlled: Network traffic can be fully isolated to your network and other enterprise grade security controls are built in.
+2. Controlled: Network traffic can be fully isolated to your network and other enterprise grade authentication security features are built in.
 
-3. Value: Deliver added business value with your own internal data sources (plug and play) or use plug-ins to integrate with your internal services (e.g., ServiceNow, etc).
+3. Value: Deliver added business value with your own internal data sources (plug and play) or integrate with your internal services (e.g., ServiceNow, etc).
 
-# Getting Started
-
-1. [Introduction](/docs/1-introduction.md)
-1. [Provision Azure Resources](/docs/2-provision-azure-resources.md)
-1. [Run AzureChat from your local machine](/docs/3-run-locally.md)
-1. [Deploy AzureChat to Azure](/docs/4-deployto-azure.md)
-1. [Add identity provider](/docs/5-add-Identity.md)
-1. [Chatting with your file](/docs/6-chat-over-file.md)
-1. [Environment variables](/docs/7-environment-variables.md)
+[Next](./docs/1-introduction.md)
 
 # Contributing
 
