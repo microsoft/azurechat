@@ -1,11 +1,11 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.20.4.51522",
-      "templateHash": "1380796349062726602"
+      "version": "0.21.1.54444",
+      "templateHash": "18067428240031110120"
     }
   },
   "parameters": {
@@ -15,6 +15,13 @@
       "maxLength": 64,
       "metadata": {
         "description": "Name of the the environment which is used to generate a short unique hash used in all resources."
+      }
+    },
+    "location": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Primary location for all resources"
       }
     },
     "openAILocation": {
@@ -85,26 +92,30 @@
       "type": "string",
       "defaultValue": "2023-07-01-Preview"
     },
-    "location": {
+    "resourceGroupName": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "minLength": 1,
-      "metadata": {
-        "description": "Primary location for all resources"
-      }
+      "defaultValue": ""
     }
   },
   "variables": {
-    "resourceToken": "[toLower(uniqueString(subscription().id, parameters('name')))]",
+    "resourceToken": "[toLower(uniqueString(subscription().id, parameters('name'), parameters('location')))]",
     "tags": {
-      "intelligent-app": "azure-chat"
+      "azd-env-name": "[parameters('name')]"
     }
   },
   "resources": [
     {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2021-04-01",
+      "name": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]"
+    },
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "all-resources",
+      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -172,14 +183,14 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "84081068202820267"
+              "version": "0.21.1.54444",
+              "templateHash": "3970654296971990539"
             }
           },
           "parameters": {
             "name": {
               "type": "string",
-              "defaultValue": "azurechat-solution-demo"
+              "defaultValue": "azurechat-demo"
             },
             "resourceToken": {
               "type": "string"
@@ -204,7 +215,7 @@
             },
             "chatGptModelName": {
               "type": "string",
-              "defaultValue": "gpt-35-turbo"
+              "defaultValue": "chat-gpt-35-turbo"
             },
             "chatGptModelVersion": {
               "type": "string",
@@ -212,7 +223,7 @@
             },
             "embeddingDeploymentName": {
               "type": "string",
-              "defaultValue": "embedding"
+              "defaultValue": "text-embedding-ada-002"
             },
             "embeddingDeploymentCapacity": {
               "type": "int",
@@ -258,6 +269,11 @@
             "search_name": "[toLower(format('{0}search{1}', parameters('name'), parameters('resourceToken')))]",
             "webapp_name": "[toLower(format('{0}-webapp-{1}', parameters('name'), parameters('resourceToken')))]",
             "appservice_name": "[toLower(format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
+            "kv_prefix": "[take(parameters('name'), 7)]",
+            "keyVaultName": "[toLower(format('{0}-kv-{1}', variables('kv_prefix'), parameters('resourceToken')))]",
+            "keyVaultSecretsUserRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]",
+            "databaseName": "chat",
+            "containerName": "history",
             "deployments": [
               {
                 "name": "[parameters('chatGptDeploymentName')]",
@@ -283,6 +299,70 @@
             ]
           },
           "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2021-06-01-preview",
+              "name": "[format('{0}/{1}', variables('keyVaultName'), 'AZURE-COSMOSDB-KEY')]",
+              "properties": {
+                "contentType": "text/plain",
+                "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name')), '2023-04-15').secondaryMasterKey]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name'))]",
+                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2021-06-01-preview",
+              "name": "[format('{0}/{1}', variables('keyVaultName'), 'AZURE-OPENAI-API-KEY')]",
+              "properties": {
+                "contentType": "text/plain",
+                "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('openai_name')), '2023-05-01').key1]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', variables('openai_name'))]",
+                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2021-06-01-preview",
+              "name": "[format('{0}/{1}', variables('keyVaultName'), 'AZURE-DOCUMENT-INTELLIGENCE-KEY')]",
+              "properties": {
+                "contentType": "text/plain",
+                "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('form_recognizer_name')), '2023-05-01').key1]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', variables('form_recognizer_name'))]",
+                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2021-06-01-preview",
+              "name": "[format('{0}/{1}', variables('keyVaultName'), 'AZURE-SEARCH-API-KEY')]",
+              "properties": {
+                "contentType": "text/plain",
+                "value": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('search_name')), '2022-09-01').secondaryKey]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+                "[resourceId('Microsoft.Search/searchServices', variables('search_name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2021-06-01-preview",
+              "name": "[format('{0}/{1}', variables('keyVaultName'), 'NEXTAUTH-SECRET')]",
+              "properties": {
+                "contentType": "text/plain",
+                "value": "[parameters('nextAuthHash')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
+              ]
+            },
             {
               "type": "Microsoft.Web/serverfarms",
               "apiVersion": "2020-06-01",
@@ -319,19 +399,19 @@
                   "appSettings": [
                     {
                       "name": "AZURE_COSMOSDB_KEY",
-                      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name')), '2023-04-15').secondaryMasterKey]"
+                      "value": "[format('@Microsoft.KeyVault(VaultName={0};SecretName={1})', variables('keyVaultName'), 'AZURE-COSMOSDB-KEY')]"
                     },
                     {
                       "name": "AZURE_OPENAI_API_KEY",
-                      "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('openai_name')), '2023-05-01').key1]"
+                      "value": "[format('@Microsoft.KeyVault(VaultName={0};SecretName={1})', variables('keyVaultName'), 'AZURE-OPENAI-API-KEY')]"
                     },
                     {
                       "name": "AZURE_DOCUMENT_INTELLIGENCE_KEY",
-                      "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('form_recognizer_name')), '2023-05-01').key1]"
+                      "value": "[format('@Microsoft.KeyVault(VaultName={0};SecretName={1})', variables('keyVaultName'), 'AZURE-DOCUMENT-INTELLIGENCE-KEY')]"
                     },
                     {
                       "name": "AZURE_SEARCH_API_KEY",
-                      "value": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('search_name')), '2022-09-01').secondaryKey]"
+                      "value": "[format('@Microsoft.KeyVault(VaultName={0};SecretName={1})', variables('keyVaultName'), 'AZURE-SEARCH-API-KEY')]"
                     },
                     {
                       "name": "AZURE_SEARCH_API_VERSION",
@@ -367,7 +447,7 @@
                     },
                     {
                       "name": "AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME",
-                      "value": "[parameters('embeddingModelName')]"
+                      "value": "[parameters('embeddingDeploymentName')]"
                     },
                     {
                       "name": "AZURE_OPENAI_API_VERSION",
@@ -375,7 +455,7 @@
                     },
                     {
                       "name": "NEXTAUTH_SECRET",
-                      "value": "[parameters('nextAuthHash')]"
+                      "value": "[format('@Microsoft.KeyVault(VaultName={0};SecretName={1})', variables('keyVaultName'), 'NEXTAUTH-SECRET')]"
                     },
                     {
                       "name": "NEXTAUTH_URL",
@@ -389,11 +469,46 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('appservice_name'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts', variables('openai_name'))]",
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-COSMOSDB-KEY')]",
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-DOCUMENT-INTELLIGENCE-KEY')]",
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-OPENAI-API-KEY')]",
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-SEARCH-API-KEY')]",
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts', variables('form_recognizer_name'))]",
-                "[resourceId('Microsoft.Search/searchServices', variables('search_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+                "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'NEXTAUTH-SECRET')]"
               ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-04-01-preview",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('keyVaultName'))]",
+              "name": "[guid(resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName')), variables('webapp_name'), variables('keyVaultSecretsUserRole'))]",
+              "properties": {
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('webapp_name')), '2020-06-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionId": "[variables('keyVaultSecretsUserRole')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]",
+                "[resourceId('Microsoft.Web/sites', variables('webapp_name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2021-06-01-preview",
+              "name": "[variables('keyVaultName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "sku": {
+                  "family": "A",
+                  "name": "standard"
+                },
+                "tenantId": "[subscription().tenantId]",
+                "enableRbacAuthorization": true,
+                "enabledForDeployment": false,
+                "enabledForDiskEncryption": true,
+                "enabledForTemplateDeployment": false
+              }
             },
             {
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -409,8 +524,42 @@
                     "locationName": "[parameters('location')]",
                     "failoverPriority": 0
                   }
-                ]
+                ],
+                "disableKeyBasedMetadataWriteAccess": true
               }
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+              "apiVersion": "2022-05-15",
+              "name": "[format('{0}/{1}', variables('cosmos_name'), variables('databaseName'))]",
+              "properties": {
+                "resource": {
+                  "id": "[variables('databaseName')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+              "apiVersion": "2022-05-15",
+              "name": "[format('{0}/{1}', format('{0}/{1}', variables('cosmos_name'), variables('databaseName')), variables('containerName'))]",
+              "properties": {
+                "resource": {
+                  "id": "[variables('containerName')]",
+                  "partitionKey": {
+                    "paths": [
+                      "/userId"
+                    ],
+                    "kind": "Hash"
+                  },
+                  "defaultTtl": 86400
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', split(format('{0}/{1}', variables('cosmos_name'), variables('databaseName')), '/')[0], split(format('{0}/{1}', variables('cosmos_name'), variables('databaseName')), '/')[1])]"
+              ]
             },
             {
               "type": "Microsoft.CognitiveServices/accounts",
@@ -484,13 +633,16 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name'))))]"
+      ]
     }
   ],
   "outputs": {
     "APP_URL": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.url.value]"
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.url.value]"
     },
     "AZURE_LOCATION": {
       "type": "string",
