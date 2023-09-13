@@ -31,6 +31,11 @@ var cosmos_name = toLower('${name}-cosmos-${resourceToken}')
 var search_name = toLower('${name}search${resourceToken}')
 var webapp_name = toLower('${name}-webapp-${resourceToken}')
 var appservice_name = toLower('${name}-app-${resourceToken}')
+// keyvault name must be less than 24 chars - token is 13
+var kv_prefix = take(name, 7)
+var keyVaultName = toLower('${kv_prefix}-kv-${resourceToken}')
+
+var keyVaultSecretsUserRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
 
 var databaseName = 'chat'
 var containerName = 'history'
@@ -93,19 +98,19 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
       appSettings: [ 
         {
           name: 'AZURE_COSMOSDB_KEY'
-          value: cosmosDbAccount.listKeys().secondaryMasterKey
+          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_COSMOSDB_KEY.name})'
         }
         {
           name: 'AZURE_OPENAI_API_KEY'
-          value: azureopenai.listKeys().key1
+          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_OPENAI_API_KEY.name})'
         }
         {
           name: 'AZURE_DOCUMENT_INTELLIGENCE_KEY'
-          value: formRecognizer.listKeys().key1
+          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_DOCUMENT_INTELLIGENCE_KEY.name})'
         }
         {
           name: 'AZURE_SEARCH_API_KEY'
-          value: searchService.listAdminKeys().secondaryKey
+          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_SEARCH_API_KEY.name})'
         }
         { 
           name: 'AZURE_SEARCH_API_VERSION'
@@ -149,7 +154,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'NEXTAUTH_SECRET'
-          value: nextAuthHash
+          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::NEXTAUTH_SECRET.name})'
         }
         {
           name: 'NEXTAUTH_URL'
@@ -159,6 +164,72 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
     }
   }
   identity: { type: 'SystemAssigned'}
+}
+
+resource kvFunctionAppPermissions 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(kv.id, webApp.name, keyVaultSecretsUserRole)
+  scope: kv
+  properties: {
+    principalId: webApp.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: keyVaultSecretsUserRole
+  }
+}
+
+resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: subscription().tenantId
+    enableRbacAuthorization: true
+    enabledForDeployment: false
+    enabledForDiskEncryption: true
+    enabledForTemplateDeployment: false
+  }
+
+  resource AZURE_COSMOSDB_KEY 'secrets' = {
+    name: 'AZURE-COSMOSDB-KEY'
+    properties: {
+      contentType: 'text/plain'
+      value: cosmosDbAccount.listKeys().secondaryMasterKey
+    }
+  }
+
+  resource AZURE_OPENAI_API_KEY 'secrets' = {
+    name: 'AZURE-OPENAI-API-KEY'
+    properties: {
+      contentType: 'text/plain'
+      value: azureopenai.listKeys().key1
+    }
+  }
+
+  resource AZURE_DOCUMENT_INTELLIGENCE_KEY 'secrets' = {
+    name: 'AZURE-DOCUMENT-INTELLIGENCE-KEY'
+    properties: {
+      contentType: 'text/plain'
+      value: formRecognizer.listKeys().key1
+    }
+  }
+
+  resource AZURE_SEARCH_API_KEY 'secrets' = {
+    name: 'AZURE-SEARCH-API-KEY'
+    properties: {
+      contentType: 'text/plain'
+      value: searchService.listAdminKeys().secondaryKey
+    }
+  }
+
+  resource NEXTAUTH_SECRET 'secrets' = {
+    name: 'NEXTAUTH-SECRET'
+    properties: {
+      contentType: 'text/plain'
+      value: nextAuthHash
+    }
+  }
 }
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
