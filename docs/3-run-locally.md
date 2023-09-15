@@ -1,6 +1,6 @@
 # 👨🏻‍💻 Run Locally
 
-Clone this repository locally or fork to your Github account. Run all of the the steps below from the `src` directory.
+Clone this repository locally or fork to your GitHub account. Run all of the the steps below from the `src` directory.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ Clone this repository locally or fork to your Github account. Run all of the the
 > **Note**
 > Make sure that `NEXTAUTH_URL=http://localhost:3000` has no comments in the same line.
   
-3. <details><summary>Set the following environmnet variables</summary>
+3. <details><summary>Set the following environment variables</summary>
     
     ```bash
     # Set your environment details
