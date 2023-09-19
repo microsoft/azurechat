@@ -20,6 +20,8 @@ import {
   ChatType,
   ConversationStyle,
   PromptGPTBody,
+  ChatLength,
+  ChatPersona,
 } from "../chat-services/models";
 import { transformCosmosToAIModel } from "../chat-services/utils";
 import { EmptyState } from "./chat-empty-state";
@@ -42,13 +44,15 @@ export const ChatUI: FC<Prop> = (props) => {
     id: props.chatThread.id,
     chatType: props.chatThread.chatType,
     conversationStyle: props.chatThread.conversationStyle,
-    chatOverFileName: props.chatThread.chatOverFileName
+    chatOverFileName: props.chatThread.chatOverFileName,
+    chatLength: props.chatThread.chatLength,
+    chatPersona: props.chatThread.chatPersona,
   });
 
   const { toast } = useToast();
 
   const id = props.chatThread.id;
-  
+
   const {
     messages,
     input,
@@ -86,6 +90,14 @@ export const ChatUI: FC<Prop> = (props) => {
   const onChatTypeChange = (value: ChatType) => {
     setBody((e) => ({ ...e, chatType: value }));
   };
+
+  const onChatLengthChange = (value: ChatLength) => {
+    setBody((e) => ({ ...e, chatLength: value }));
+  }
+
+  const onChatPersonaChange = (value: ChatPersona) => {
+    setBody((e) => ({ ...e, chatPersona: value }));
+  }
 
   const onConversationStyleChange = (value: ConversationStyle) => {
     setBody((e) => ({ ...e, conversationStyle: value }));
@@ -176,8 +188,12 @@ export const ChatUI: FC<Prop> = (props) => {
           onFileChange={onFileChange}
           onConversationStyleChange={onConversationStyleChange}
           onChatTypeChange={onChatTypeChange}
+          onChatLengthChange={onChatLengthChange}
+          onChatPersonaChange={onChatPersonaChange}
           chatType={chatBody.chatType}
           conversationStyle={chatBody.conversationStyle}
+          chatLength={chatBody.chatLength}
+          chatPersona={chatBody.chatPersona}
         />
       )}
 

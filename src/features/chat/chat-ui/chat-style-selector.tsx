@@ -24,6 +24,7 @@ export const ChatStyleSelector: FC<Prop> = (props) => {
           value="creative"
           className="flex gap-2"
           disabled={props.disable}
+          title="Responses of the bot will be more creative and less precise"
         >
           <Brush size={20} /> Creative
         </TabsTrigger>
@@ -31,6 +32,7 @@ export const ChatStyleSelector: FC<Prop> = (props) => {
           value="balanced"
           className="flex gap-2"
           disabled={props.disable}
+          title="Responses of the bot will be balanced between creative and precise"
         >
           <Scale size={20} /> Balanced
         </TabsTrigger>
@@ -38,6 +40,7 @@ export const ChatStyleSelector: FC<Prop> = (props) => {
           value="precise"
           className="flex gap-2"
           disabled={props.disable}
+          title="Responses of the bot will be more precise and less creative"
         >
           <CircleDot size={20} /> Precise
         </TabsTrigger>

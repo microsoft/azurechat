@@ -13,7 +13,7 @@ import {
 } from "langchain/prompts";
 import { initAndGuardChatSession } from "../chat-services/chat-thread-service";
 import { PromptGPTProps } from "../chat-services/models";
-import { transformConversationStyleToTemperature } from "../chat-services/utils";
+import { transformConversationStyleToTemperature, transformConversationLengthToMaxTokens, transformConversationPersonaToSystemPrompt } from "../chat-services/utils";
 
 export const ChatSimple = async (props: PromptGPTProps) => {
   const { lastHumanMessage, id, chatThread } = await initAndGuardChatSession(
@@ -28,6 +28,7 @@ export const ChatSimple = async (props: PromptGPTProps) => {
     temperature: transformConversationStyleToTemperature(
       chatThread.conversationStyle
     ),
+    maxTokens: transformConversationLengthToMaxTokens(chatThread.chatLength),
     streaming: true,
   });
 
@@ -41,12 +42,9 @@ export const ChatSimple = async (props: PromptGPTProps) => {
     }),
   });
 
+  const systemPrompt = transformConversationPersonaToSystemPrompt(chatThread.chatPersona);
   const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-    SystemMessagePromptTemplate.fromTemplate(
-      `-You are ${AI_NAME} who is a helpful AI Assistant.
-      - You will provide clear and concise queries, and you will respond with polite and professional answers.
-      - You will answer questions truthfully and accurately.`
-    ),
+    SystemMessagePromptTemplate.fromTemplate(systemPrompt),
     new MessagesPlaceholder("history"),
     HumanMessagePromptTemplate.fromTemplate("{input}"),
   ]);

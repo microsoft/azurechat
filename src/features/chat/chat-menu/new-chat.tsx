@@ -24,6 +24,7 @@ export const NewChat = () => {
       className="gap-2 rounded-full w-[40px] h-[40px] p-1 text-primary"
       variant={"outline"}
       onClick={() => startNewChat()}
+      title="Start a new chat"
     >
       <PlusCircle size={40} strokeWidth={1.2} />
     </Button>
