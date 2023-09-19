@@ -4,9 +4,9 @@ Clone this repository locally or fork to your Github account. Run all of the the
 
 ## Prerequisites
 
-- **History Database**: If you didn't [provision the Azure resources](2-provision-azure-resources.md), you **must** at least deploy an instance of Cosmos DB in your Azure Subscription to store chat history.
+- **History Database**: If you didn't [provision all the Azure resources](/README.md#deploy-to-azure), you **must** at least deploy an instance of Cosmos DB in your Azure Subscription to store chat history.
 
-- **Identity Provider**: Follow the [instructions](3-run-locally.md) to add one.
+- **Identity Provider**: Follow the [instructions](5-add-identity.md) to add one.
 
 ## Steps
 
@@ -19,7 +19,7 @@ Clone this repository locally or fork to your Github account. Run all of the the
 > **Note**
 > Make sure that `NEXTAUTH_URL=http://localhost:3000` has no comments in the same line.
   
-3. <details><summary>Set the following environmnet variables</summary>
+3. <details><summary>Set the following environment variables</summary>
     
     ```bash
     # Set your environment details
