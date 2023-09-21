@@ -6,8 +6,8 @@ param openai_api_version string
 param openAiResourceGroupLocation string
 param openAiSkuName string = 'S0'
 param chatGptDeploymentCapacity int = 30
-param chatGptDeploymentName string = 'chat-gpt-35-turbo'
-param chatGptModelName string = 'chat-gpt-35-turbo'
+param chatGptDeploymentName string = 'chat-gpt-4'
+param chatGptModelName string = 'chat-gpt-4'
 param chatGptModelVersion string = '0613'
 param embeddingDeploymentName string = 'text-embedding-ada-002'
 param embeddingDeploymentCapacity int = 30

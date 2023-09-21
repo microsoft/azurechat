@@ -2,7 +2,7 @@
 
 Please make sure the following prerequisites are in place prior to deploying this accelerator:
 
-1. [Azure OpenAI](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/): To deploy and run the solution accelerator, you'll need an Azure subscription with access to the Azure OpenAI service. Request access [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu). Once you have access, follow the instructions in this [link](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) to deploy the gpt-35-turbo or gpt-4 models.
+1. [Azure OpenAI](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service/): To deploy and run the solution accelerator, you'll need an Azure subscription with access to the Azure OpenAI service. Request access [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu). Once you have access, follow the instructions in this [link](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) to deploy the gpt-4 or gpt-4 models.
 
 2. Setup GitHub or Azure AD for Authentication:
    The [add an identity provider](./5-add-identity.md) section below shows how to configure authentication providers.
@@ -30,7 +30,7 @@ _Azure Chat Solution Accelerator powered by Azure Open AI Service_ solution acce
 
 - [Azure Cosmos DB](https://learn.microsoft.com/en-GB/azure/cosmos-db/nosql/): fully managed platform-as-a-service (PaaS) NoSQL database to store chat history
 
-- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview): Azure OpenAI Service provides REST API access to OpenAI's powerful language models including the GPT-4, GPT-35-Turbo, and Embeddings model series.
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview): Azure OpenAI Service provides REST API access to OpenAI's powerful language models including the GPT-4, gpt-4, and Embeddings model series.
 
 - [Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/): fully managed platform-as-a-service (PaaS) for hosting web applications, REST APIs, and mobile back ends.
 

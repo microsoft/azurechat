@@ -31,7 +31,8 @@
         "eastus",
         "francecentral",
         "japaneast",
-        "northcentralus"
+        "northcentralus",
+        "eastus2"
       ],
       "metadata": {
         "azd": {
@@ -54,11 +55,11 @@
     },
     "chatGptDeploymentName": {
       "type": "string",
-      "defaultValue": "chat-gpt-35-turbo"
+      "defaultValue": "chat-gpt-4"
     },
     "chatGptModelName": {
       "type": "string",
-      "defaultValue": "gpt-35-turbo"
+      "defaultValue": "gpt-4"
     },
     "chatGptModelVersion": {
       "type": "string",
@@ -211,11 +212,11 @@
             },
             "chatGptDeploymentName": {
               "type": "string",
-              "defaultValue": "chat-gpt-35-turbo"
+              "defaultValue": "chat-gpt-4"
             },
             "chatGptModelName": {
               "type": "string",
-              "defaultValue": "chat-gpt-35-turbo"
+              "defaultValue": "chat-gpt-4"
             },
             "chatGptModelVersion": {
               "type": "string",
