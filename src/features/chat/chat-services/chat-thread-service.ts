@@ -142,6 +142,23 @@ export const UpsertChatThread = async (chatThread: ChatThreadModel) => {
   return updatedChatThread;
 };
 
+export const userUpdateThreadTitle = async (
+  chatThreadID: string,
+  userTitle: string
+) => {
+
+  const threads = await FindChatThreadByID(chatThreadID);
+
+  if (threads.length === 1) {
+    const chatThread = threads[0]
+    await UpsertChatThread({
+      ...chatThread,
+      name: userTitle.substring(0, 30),
+    });
+  }
+
+};
+
 export const updateChatThreadTitle = async (
   chatThread: ChatThreadModel,
   messages: ChatMessageModel[],
