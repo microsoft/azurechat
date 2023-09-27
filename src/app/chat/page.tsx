@@ -1,5 +1,3 @@
-"use client";
-import { useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { StartNewChat } from "@/features/chat/chat-ui/start-new-chat";
 
