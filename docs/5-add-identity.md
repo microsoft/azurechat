@@ -83,6 +83,7 @@ We'll create two GitHub apps: one for testing locally and another for production
 AZURE_AD_CLIENT_ID=
 AZURE_AD_CLIENT_SECRET=
 AZURE_AD_TENANT_ID=
+AZURE_AD_ALLOWED_PRINCIPALS=
 ```
 
 ## Configure an admin user
