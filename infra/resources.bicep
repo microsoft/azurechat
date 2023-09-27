@@ -34,6 +34,8 @@ var appservice_name = toLower('${name}-app-${resourceToken}')
 // keyvault name must be less than 24 chars - token is 13
 var kv_prefix = take(name, 7)
 var keyVaultName = toLower('${kv_prefix}-kv-${resourceToken}')
+var la_workspace_name = toLower('${name}-la-${resourceToken}')
+var diagnostic_setting_name = 'AppServiceConsoleLogs'
 
 var keyVaultSecretsUserRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
 
@@ -63,7 +65,6 @@ var deployments = [
     capacity: embeddingDeploymentCapacity
   }
 ]
-
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: appservice_name
@@ -164,6 +165,26 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
     }
   }
   identity: { type: 'SystemAssigned'}
+}
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
+  name: la_workspace_name
+  location: location
+}
+
+resource webDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: diagnostic_setting_name
+  scope: webApp
+  properties: {
+    workspaceId: logAnalyticsWorkspace.id
+    logs: [
+      {
+        category: 'AppServiceConsoleLogs'
+        enabled: true
+      }
+    ]
+    metrics: []
+  }
 }
 
 resource kvFunctionAppPermissions 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {

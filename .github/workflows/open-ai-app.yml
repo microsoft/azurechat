@@ -78,8 +78,10 @@ jobs:
         with:
           inlineScript: |
             rg=$(az webapp list --query "[?name=='${{ secrets.AZURE_APP_SERVICE_NAME }}'].resourceGroup" --output tsv)
-            az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false
-            az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg
+            echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
+            az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
+            echo Setting --startup-file=\"node server.js\" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
+            az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg -o none
             sleep 10
 
       - name: 🚀 Deploy to Azure Web App
