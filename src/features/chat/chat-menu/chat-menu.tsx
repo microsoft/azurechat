@@ -6,8 +6,10 @@ import { FindAllChatThreadForCurrentUser } from "@/features/chat/chat-services/c
 import { MenuItems } from "./menu-items";
 import { NewChat } from "./new-chat";
 import { ChatThreadModel } from '../chat-services/models';
+import { useRouter } from 'next/navigation';
 
 export const ChatMenu = () => {
+  const router = useRouter();
   const [items, setItems] = useState<ChatThreadModel[]>([]);
 
   const [refresh, setRefresh] = useState(true);
@@ -20,6 +22,10 @@ export const ChatMenu = () => {
     };
 
     fetchData();
+    if (items.length > 0) {
+      router.refresh();
+      router.replace(`/chat/${items[0].id}`);
+    }
   }, [refresh]);
 
   const doRefresh = () => {
