@@ -12,6 +12,7 @@ declare module "next-auth" {
 
     interface User {
         isAdmin: string
+        isAllowed: boolean
     }
 
 }
