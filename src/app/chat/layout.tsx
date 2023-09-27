@@ -3,6 +3,8 @@ import { ChatMenuContainer } from "@/features/chat/chat-menu/chat-menu-container
 import { MainMenu } from "@/features/menu/menu";
 import { AI_NAME } from "@/features/theme/customise";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: AI_NAME,
   description: AI_NAME,
