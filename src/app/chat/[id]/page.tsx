@@ -3,10 +3,12 @@ import { FindChatThreadByID } from "@/features/chat/chat-services/chat-thread-se
 import { ChatUI } from "@/features/chat/chat-ui/chat-ui";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home({ params }: { params: { id: string } }) {
   const [items, thread] = await Promise.all([
     FindAllChats(params.id),
-    FindChatThreadByID(params.id)
+    FindChatThreadByID(params.id),
   ]);
 
   if (thread.length === 0) {
