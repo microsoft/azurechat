@@ -39,7 +39,7 @@ const ChatRow: FC<ChatRowProps> = (props) => {
     >
       <div
         className={cn(
-          "flex flex-col  min-w-[380px] max-w-[690px] border rounded-lg overflow-hidden  p-4 gap-8"
+          "flex flex-col  max-w-[690px] border rounded-lg overflow-hidden  p-4 gap-8"
         )}
       >
         <div className="flex flex-1">
