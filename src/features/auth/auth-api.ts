@@ -59,7 +59,7 @@ const configureIdentityProvider = () => {
       CredentialsProvider({
         name: "localdev",
         credentials: {
-          username: { label: "Username", type: "text", placeholder: "dev user" },
+          username: { label: "Username", type: "text", placeholder: "dev" },
           password: { label: "Password", type: "password" },
         },    
         async authorize(credentials, req): Promise<any> {
