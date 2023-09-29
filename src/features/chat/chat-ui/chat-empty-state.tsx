@@ -4,16 +4,23 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowUpCircle, Loader2 } from "lucide-react";
 import { FC, useState } from "react";
-import { ChatType, ConversationStyle } from "../chat-services/models";
+import { ChatType, ConversationStyle, ChatLength, ChatPersona } from "../chat-services/models";
 import { ChatStyleSelector } from "./chat-style-selector";
 import { ChatTypeSelector } from "./chat-type-selector";
+import { ChatLengthSelector } from "./chat-length-selector";
+import { ChatPersonaSelector } from "./chat-persona-selector";
+
 interface Prop {
   isUploadingFile: boolean;
   chatType: ChatType;
   conversationStyle: ConversationStyle;
+  chatLength: ChatLength;
+  chatPersona: ChatPersona;
   uploadButtonLabel: string;
   onChatTypeChange: (value: ChatType) => void;
   onConversationStyleChange: (value: ConversationStyle) => void;
+  onChatLengthChange: (value: ChatLength) => void;
+  onChatPersonaChange: (value: ChatPersona) => void;
   onFileChange: (file: FormData) => void;
 }
 
@@ -35,15 +42,15 @@ export const EmptyState: FC<Prop> = (props) => {
   };
 
   return (
-    <div className="grid grid-cols-5 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-9">
-      <div className="col-span-2 gap-5 flex flex-col flex-1">
+    <div className="grid grid-cols-10 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-9">
+      <div className="col-span-4 gap-5 flex flex-col flex-1">
         <img src="/ai-icon.png" className="w-36" />
         <p className="">
           Start by just typing your message in the box below. You can also
           personalise the chat by making changes to the settings on the right.
         </p>
       </div>
-      <Card className="col-span-3 flex flex-col gap-5 p-5 ">
+      <Card className="col-span-6 flex flex-col gap-5 p-5 ">
         <Typography variant="h4" className="text-primary">
           Personalise
         </Typography>
@@ -55,6 +62,26 @@ export const EmptyState: FC<Prop> = (props) => {
           <ChatStyleSelector
             conversationStyle={props.conversationStyle}
             onChatStyleChange={props.onConversationStyleChange}
+            disable={false}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">
+            How long should the replies be?
+          </p>
+          <ChatLengthSelector
+            chatlength={props.chatLength}
+            onChatLengthChange={props.onChatLengthChange}
+            disable={false}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">
+            Which personas should the bot imitate?
+          </p>
+          <ChatPersonaSelector
+            chatPersona={props.chatPersona}
+            onChatPersonaChange={props.onChatPersonaChange}
             disable={false}
           />
         </div>
