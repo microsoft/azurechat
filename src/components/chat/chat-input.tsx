@@ -1,3 +1,4 @@
+import { SpeechButton } from "@/features/chat/chat-speech/speech-button";
 import { Loader, Send } from "lucide-react";
 import { FC, FormEvent, useRef, useState } from "react";
 import { Button } from "../ui/button";
@@ -5,13 +6,14 @@ import { Textarea } from "../ui/textarea";
 
 interface Props {
   value: string;
+  setInput: (value: string) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  handleInputChange: (e: any) => void;
   isLoading: boolean;
 }
 
 const ChatInput: FC<Props> = (props) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [rows, setRows] = useState(1);
   const maxRows = 6;
   const [keysPressed, setKeysPressed] = useState(new Set());
@@ -47,7 +49,7 @@ const ChatInput: FC<Props> = (props) => {
 
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setRowsToMax(event.target.value.split("\n").length - 1);
-    props.handleInputChange(event);
+    props.setInput(event.target.value);
   };
 
   const setRowsToMax = (rows: number) => {
@@ -63,6 +65,7 @@ const ChatInput: FC<Props> = (props) => {
     >
       <div className="container mx-auto max-w-4xl relative py-2 flex gap-2 items-end">
         <Textarea
+          ref={textAreaRef}
           rows={rows}
           placeholder="Send a message"
           className="min-h-fit bg-background shadow-sm resize-none py-4"
@@ -72,6 +75,13 @@ const ChatInput: FC<Props> = (props) => {
           onChange={onChange}
         ></Textarea>
         <div className="absolute right-0 bottom-0 px-8 flex items-end h-full mr-2 mb-4">
+          <SpeechButton
+            disabled={props.isLoading}
+            onSpeech={(text) => {
+              textAreaRef.current!.value = text;
+              props.setInput(text);
+            }}
+          />
           <Button
             size="icon"
             type="submit"

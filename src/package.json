@@ -30,6 +30,7 @@
     "eslint-config-next": "^13.4.12",
     "langchain": "^0.0.123",
     "lucide-react": "^0.264.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.32.0",
     "nanoid": "^4.0.2",
     "next": "^13.5.3",
     "next-auth": "^4.22.4",

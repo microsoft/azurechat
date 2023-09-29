@@ -31,7 +31,6 @@ interface Prop {
 }
 
 export const ChatUI: FC<Prop> = (props) => {
-
   const { data: session } = useSession();
 
   const [isUploadingFile, setIsUploadingFile] = useState(false);
@@ -42,26 +41,20 @@ export const ChatUI: FC<Prop> = (props) => {
     id: props.chatThread.id,
     chatType: props.chatThread.chatType,
     conversationStyle: props.chatThread.conversationStyle,
-    chatOverFileName: props.chatThread.chatOverFileName
+    chatOverFileName: props.chatThread.chatOverFileName,
   });
 
   const { toast } = useToast();
 
   const id = props.chatThread.id;
-  
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    reload,
-    isLoading,
-  } = useChat({
-    onError,
-    id,
-    body: chatBody,
-    initialMessages: transformCosmosToAIModel(props.chats),
-  });
+
+  const { messages, input, setInput, handleSubmit, reload, isLoading } =
+    useChat({
+      onError,
+      id,
+      body: chatBody,
+      initialMessages: transformCosmosToAIModel(props.chats),
+    });
 
   const scrollRef = useRef<HTMLDivElement>(null);
   useChatScrollAnchor(messages, scrollRef);
@@ -83,7 +76,7 @@ export const ChatUI: FC<Prop> = (props) => {
     });
   }
 
-  const onChatTypeChange = (value: ChatType) => {
+  const onChatTypeChange = async (value: ChatType) => {
     setBody((e) => ({ ...e, chatType: value }));
   };
 
@@ -144,9 +137,7 @@ export const ChatUI: FC<Prop> = (props) => {
   const ChatWindow = (
     <div className="h-full rounded-md overflow-y-auto " ref={scrollRef}>
       <div className="flex justify-center p-4">
-        <ChatHeader
-          chatBody={chatBody}
-        />
+        <ChatHeader chatBody={chatBody} />
       </div>
       <div className=" pb-[80px] flex flex-col justify-end flex-1">
         {messages.map((message, index) => (
@@ -184,7 +175,7 @@ export const ChatUI: FC<Prop> = (props) => {
       <ChatInput
         isLoading={isLoading}
         value={input}
-        handleInputChange={handleInputChange}
+        setInput={setInput}
         handleSubmit={onHandleSubmit}
       />
     </div>
