@@ -1,4 +1,4 @@
-import { SpeechButton } from "@/features/chat/chat-speech/speech-button";
+import { Microphone } from "@/features/chat/chat-speech/microphone";
 import { Loader, Send } from "lucide-react";
 import { FC, FormEvent, useRef, useState } from "react";
 import { Button } from "../ui/button";
@@ -15,7 +15,9 @@ const ChatInput: FC<Props> = (props) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [rows, setRows] = useState(1);
+
   const maxRows = 6;
+
   const [keysPressed, setKeysPressed] = useState(new Set());
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -75,7 +77,7 @@ const ChatInput: FC<Props> = (props) => {
           onChange={onChange}
         ></Textarea>
         <div className="absolute right-0 bottom-0 px-8 flex items-end h-full mr-2 mb-4">
-          <SpeechButton
+          <Microphone
             disabled={props.isLoading}
             onSpeech={(text) => {
               textAreaRef.current!.value = text;

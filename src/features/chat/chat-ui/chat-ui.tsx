@@ -7,6 +7,7 @@ import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { AI_NAME } from "@/features/theme/customise";
+import { Message } from "ai";
 import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
 import { FC, FormEvent, useRef, useState } from "react";
@@ -22,6 +23,7 @@ import {
   PromptGPTBody,
 } from "../chat-services/models";
 import { transformCosmosToAIModel } from "../chat-services/utils";
+import { useSpeechContext } from "../chat-speech/speech-context";
 import { EmptyState } from "./chat-empty-state";
 import { ChatHeader } from "./chat-header";
 
@@ -45,7 +47,7 @@ export const ChatUI: FC<Prop> = (props) => {
   });
 
   const { toast } = useToast();
-
+  const { textToSpeech } = useSpeechContext();
   const id = props.chatThread.id;
 
   const { messages, input, setInput, handleSubmit, reload, isLoading } =
@@ -54,6 +56,9 @@ export const ChatUI: FC<Prop> = (props) => {
       id,
       body: chatBody,
       initialMessages: transformCosmosToAIModel(props.chats),
+      onFinish: async (lastMessage: Message) => {
+        await textToSpeech(lastMessage.content);
+      },
     });
 
   const scrollRef = useRef<HTMLDivElement>(null);
