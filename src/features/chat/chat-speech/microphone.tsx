@@ -5,7 +5,6 @@ import { StopSpeech } from "./stop-speech";
 
 interface MicrophoneProps {
   disabled: boolean;
-  onSpeech: (text: string) => void;
 }
 
 export const Microphone: FC<MicrophoneProps> = (props) => {
@@ -15,7 +14,7 @@ export const Microphone: FC<MicrophoneProps> = (props) => {
       {isPlaying ? (
         <StopSpeech disabled={props.disabled} />
       ) : (
-        <RecordSpeech disabled={props.disabled} onSpeech={props.onSpeech} />
+        <RecordSpeech disabled={props.disabled} />
       )}
     </>
   );
