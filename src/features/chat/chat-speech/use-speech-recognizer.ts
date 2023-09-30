@@ -7,12 +7,13 @@ import {
 import { useRef } from "react";
 import { GetSpeechToken } from "./speech-service";
 
-interface SpeechRecognizerProps {
-  onSpeech: (text: string) => void;
-}
-
-export const useSpeechRecognizer = (props: SpeechRecognizerProps) => {
+export const useSpeechRecognizer = () => {
   const recognizerRef = useRef<SpeechRecognizer>();
+  const onSpeechRef = useRef<(speech: string) => void>();
+
+  const onSpeech = (onSpeech: (speech: string) => void) => {
+    onSpeechRef.current = onSpeech;
+  };
 
   const startRecognition = async () => {
     const token = await GetSpeechToken();
@@ -39,7 +40,9 @@ export const useSpeechRecognizer = (props: SpeechRecognizerProps) => {
     recognizerRef.current = recognizer;
 
     recognizer.recognizing = (s, e) => {
-      props.onSpeech(e.result.text);
+      if (onSpeechRef.current) {
+        onSpeechRef.current(e.result.text);
+      }
     };
 
     recognizer.startContinuousRecognitionAsync();
@@ -49,5 +52,5 @@ export const useSpeechRecognizer = (props: SpeechRecognizerProps) => {
     recognizerRef.current?.stopContinuousRecognitionAsync();
   };
 
-  return { startRecognition, stopRecognition };
+  return { startRecognition, stopRecognition, onSpeech };
 };

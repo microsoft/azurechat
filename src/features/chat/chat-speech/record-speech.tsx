@@ -1,19 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Mic } from "lucide-react";
 import { FC, useState } from "react";
-import { useSpeechRecognizer } from "./use-speech-recognizer";
+import { useSpeechContext } from "./speech-context";
 
 interface Prop {
-  onSpeech: (text: string) => void;
   disabled: boolean;
 }
 
 export const RecordSpeech: FC<Prop> = (props) => {
   const [isPressed, setIsPressed] = useState(false);
 
-  const { startRecognition, stopRecognition } = useSpeechRecognizer({
-    onSpeech: props.onSpeech,
-  });
+  const { startRecognition, stopRecognition } = useSpeechContext();
 
   const handleMouseDown = async () => {
     await startRecognition();

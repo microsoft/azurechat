@@ -1,72 +1,33 @@
-import {
-  AudioConfig,
-  ResultReason,
-  SpeakerAudioDestination,
-  SpeechConfig,
-  SpeechSynthesizer,
-} from "microsoft-cognitiveservices-speech-sdk";
-import React, { createContext, useRef, useState } from "react";
-import { GetSpeechToken } from "./speech-service";
+import React, { createContext } from "react";
+import { useSpeechRecognizer } from "./use-speech-recognizer";
+import { useSpeechSynthesizer } from "./use-speech-synthesizer";
 
 interface SpeechContextProps {
   textToSpeech: (textToSpeak: string) => Promise<void>;
   stopPlaying: () => void;
   isPlaying: boolean;
+  startRecognition: () => void;
+  stopRecognition: () => void;
+  onSpeech: (onSpeech: (speech: string) => void) => void;
 }
 
 const SpeechContext = createContext<SpeechContextProps | null>(null);
 
 export const SpeechProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const playerRef = useRef<SpeakerAudioDestination>();
-
-  const stopPlaying = () => {
-    setIsPlaying(false);
-    if (playerRef.current) {
-      playerRef.current.pause();
-    }
-  };
-
-  const textToSpeech = async (textToSpeak: string) => {
-    if (isPlaying) {
-      stopPlaying();
-    }
-
-    const tokenObj = await GetSpeechToken();
-    const speechConfig = SpeechConfig.fromAuthorizationToken(
-      tokenObj.token,
-      tokenObj.region
-    );
-    playerRef.current = new SpeakerAudioDestination();
-
-    var audioConfig = AudioConfig.fromSpeakerOutput(playerRef.current);
-    let synthesizer = new SpeechSynthesizer(speechConfig, audioConfig);
-
-    playerRef.current.onAudioEnd = () => {
-      setIsPlaying(false);
-    };
-
-    synthesizer.speakTextAsync(
-      textToSpeak,
-      (result) => {
-        if (result.reason === ResultReason.SynthesizingAudioCompleted) {
-          console.log("synthesis finished.");
-          setIsPlaying(true);
-        } else {
-          console.error("Speech synthesis canceled, " + result.errorDetails);
-          setIsPlaying(false);
-        }
-        synthesizer.close();
-      },
-      function (err) {
-        console.log("err - " + err);
-        synthesizer.close();
-      }
-    );
-  };
+  const { isPlaying, stopPlaying, textToSpeech } = useSpeechSynthesizer();
+  const { startRecognition, stopRecognition, onSpeech } = useSpeechRecognizer();
 
   return (
-    <SpeechContext.Provider value={{ textToSpeech, stopPlaying, isPlaying }}>
+    <SpeechContext.Provider
+      value={{
+        textToSpeech,
+        stopPlaying,
+        isPlaying,
+        startRecognition,
+        stopRecognition,
+        onSpeech,
+      }}
+    >
       {children}
     </SpeechContext.Provider>
   );

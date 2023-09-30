@@ -1,4 +1,5 @@
 import { Microphone } from "@/features/chat/chat-speech/microphone";
+import { useSpeechContext } from "@/features/chat/chat-speech/speech-context";
 import { Loader, Send } from "lucide-react";
 import { FC, FormEvent, useRef, useState } from "react";
 import { Button } from "../ui/button";
@@ -19,6 +20,8 @@ const ChatInput: FC<Props> = (props) => {
   const maxRows = 6;
 
   const [keysPressed, setKeysPressed] = useState(new Set());
+
+  const { onSpeech } = useSpeechContext();
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     setKeysPressed(keysPressed.add(event.key));
@@ -60,6 +63,11 @@ const ChatInput: FC<Props> = (props) => {
     }
   };
 
+  onSpeech((text) => {
+    textAreaRef.current!.value = text;
+    props.setInput(text);
+  });
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -77,13 +85,7 @@ const ChatInput: FC<Props> = (props) => {
           onChange={onChange}
         ></Textarea>
         <div className="absolute right-0 bottom-0 px-8 flex items-end h-full mr-2 mb-4">
-          <Microphone
-            disabled={props.isLoading}
-            onSpeech={(text) => {
-              textAreaRef.current!.value = text;
-              props.setInput(text);
-            }}
-          />
+          <Microphone disabled={props.isLoading} />
           <Button
             size="icon"
             type="submit"
