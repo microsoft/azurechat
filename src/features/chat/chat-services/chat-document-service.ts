@@ -2,13 +2,12 @@
 
 import { userHashedId } from "@/features/auth/helpers";
 import { CosmosDBContainer } from "@/features/common/cosmos";
-import { AzureCogSearch } from "@/features/langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
+import { initVectorStore } from "@/features/langchain/vector-stores/store";
 import {
   AzureKeyCredential,
   DocumentAnalysisClient,
 } from "@azure/ai-form-recognizer";
 import { Document } from "langchain/document";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { nanoid } from "nanoid";
 import {
@@ -105,10 +104,8 @@ const SplitDocuments = async (docs: Array<Document>) => {
 
 export const DeleteDocuments = async (chatThreadId: string) => {
   try {
-
-    const vectorStore = initAzureSearchVectorStore();
+    const vectorStore = await initVectorStore();
     await vectorStore.deleteDocuments(chatThreadId);
-
   } catch (e) {
     console.log("************");
     return {
@@ -125,7 +122,7 @@ export const IndexDocuments = async (
   chatThreadId: string
 ): Promise<ServerActionResponse<FaqDocumentIndex[]>> => {
   try {
-    const vectorStore = initAzureSearchVectorStore();
+    const vectorStore = await initVectorStore();
     const documentsToIndex: FaqDocumentIndex[] = [];
     let index = 0;
     for (const doc of docs) {
@@ -157,19 +154,6 @@ export const IndexDocuments = async (
       response: [],
     };
   }
-};
-
-export const initAzureSearchVectorStore = () => {
-  const embedding = new OpenAIEmbeddings();
-  const azureSearch = new AzureCogSearch<FaqDocumentIndex>(embedding, {
-    name: process.env.AZURE_SEARCH_NAME,
-    indexName: process.env.AZURE_SEARCH_INDEX_NAME,
-    apiKey: process.env.AZURE_SEARCH_API_KEY,
-    apiVersion: process.env.AZURE_SEARCH_API_VERSION,
-    vectorFieldName: "embedding",
-  });
-
-  return azureSearch;
 };
 
 export const initDocumentIntelligence = () => {
@@ -260,6 +244,6 @@ export const ensureSearchIsConfigured = async () => {
     throw new Error("Azure openai embedding variables are not configured.");
   }
 
-  const vectorStore = initAzureSearchVectorStore();
+  const vectorStore = await initVectorStore();
   await vectorStore.ensureIndexIsCreated();
 };

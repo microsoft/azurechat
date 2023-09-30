@@ -1,19 +1,18 @@
 import { userHashedId } from "@/features/auth/helpers";
 import { CosmosDBChatMessageHistory } from "@/features/langchain/memory/cosmosdb/cosmosdb";
+import { initVectorStore } from "@/features/langchain/vector-stores/store";
 import { LangChainStream, StreamingTextResponse } from "ai";
 import { loadQAMapReduceChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { BufferWindowMemory } from "langchain/memory";
 import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
   SystemMessagePromptTemplate,
 } from "langchain/prompts";
-import { AzureCogSearch } from "../../langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
 import { insertPromptAndResponse } from "../chat-services/chat-service";
 import { initAndGuardChatSession } from "../chat-services/chat-thread-service";
-import { FaqDocumentIndex, PromptGPTProps } from "../chat-services/models";
+import { PromptGPTProps } from "../chat-services/models";
 import { transformConversationStyleToTemperature } from "../chat-services/utils";
 
 export const ChatData = async (props: PromptGPTProps) => {
@@ -68,12 +67,15 @@ export const ChatData = async (props: PromptGPTProps) => {
 };
 
 const findRelevantDocuments = async (query: string, chatThreadId: string) => {
-  const vectorStore = initVectorStore();
+  const vectorStore = await initVectorStore();
+  const userId = await userHashedId();
 
-  const relevantDocuments = await vectorStore.similaritySearch(query, 10, {
-    vectorFields: vectorStore.config.vectorFieldName,
-    filter: `user eq '${await userHashedId()}' and chatThreadId eq '${chatThreadId}'`,
-  });
+  const relevantDocuments = await vectorStore.similaritySearch(
+    query,
+    10,
+    userId,
+    chatThreadId
+  );
 
   return relevantDocuments;
 };
@@ -92,17 +94,4 @@ const defineSystemPrompt = () => {
     ChatPromptTemplate.fromPromptMessages(combine_messages);
 
   return CHAT_COMBINE_PROMPT;
-};
-
-const initVectorStore = () => {
-  const embedding = new OpenAIEmbeddings();
-  const azureSearch = new AzureCogSearch<FaqDocumentIndex>(embedding, {
-    name: process.env.AZURE_SEARCH_NAME,
-    indexName: process.env.AZURE_SEARCH_INDEX_NAME,
-    apiKey: process.env.AZURE_SEARCH_API_KEY,
-    apiVersion: process.env.AZURE_SEARCH_API_VERSION,
-    vectorFieldName: "embedding",
-  });
-
-  return azureSearch;
 };

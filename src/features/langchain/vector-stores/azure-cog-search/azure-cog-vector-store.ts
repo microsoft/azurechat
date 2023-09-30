@@ -82,12 +82,9 @@ export class AzureCogSearch<
     return `https://${this._config.name}.search.windows.net/indexes/${this._config.indexName}/docs`;
   }
 
-  async addDocuments(documents: Document<TModel>[]): Promise<string[]> {
+  async addDocuments(documents: Document<TModel>[]): Promise<void> {
     const texts = documents.map(({ pageContent }) => pageContent);
-    return this.addVectors(
-      await this.embeddings.embedDocuments(texts),
-      documents
-    );
+    this.addVectors(await this.embeddings.embedDocuments(texts), documents);
   }
 
   async deleteDocuments(chatThreadId: string): Promise<void> {
