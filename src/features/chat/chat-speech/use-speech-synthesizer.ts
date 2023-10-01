@@ -42,7 +42,6 @@ export const useSpeechSynthesizer = () => {
       textToSpeak,
       (result) => {
         if (result.reason === ResultReason.SynthesizingAudioCompleted) {
-          console.log("synthesis finished.");
           setIsPlaying(true);
         } else {
           console.error("Speech synthesis canceled, " + result.errorDetails);

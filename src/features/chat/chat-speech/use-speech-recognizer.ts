@@ -17,7 +17,6 @@ export const useSpeechRecognizer = () => {
 
   const startRecognition = async () => {
     const token = await GetSpeechToken();
-    console.log(token);
     const speechConfig = SpeechConfig.fromAuthorizationToken(
       token.token,
       token.region
