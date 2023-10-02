@@ -1,4 +1,4 @@
-import { useGlobalErrorContext } from "@/features/global-error/global-error-context";
+import { useGlobalMessageContext } from "@/features/global-message/global-message-context";
 import {
   AudioConfig,
   ResultReason,
@@ -13,7 +13,7 @@ export const useSpeechSynthesizer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const playerRef = useRef<SpeakerAudioDestination>();
 
-  const { showError } = useGlobalErrorContext();
+  const { showError } = useGlobalMessageContext();
 
   const stopPlaying = () => {
     setIsPlaying(false);

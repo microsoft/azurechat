@@ -1,4 +1,4 @@
-import { useGlobalErrorContext } from "@/features/global-error/global-error-context";
+import { useGlobalMessageContext } from "@/features/global-message/global-message-context";
 import {
   AudioConfig,
   AutoDetectSourceLanguageConfig,
@@ -14,7 +14,7 @@ export const useSpeechRecognizer = () => {
   const [speech, setSpeech] = useState("");
   const [isMicrophoneUsed, setIsMicrophoneUsed] = useState(false);
 
-  const { showError } = useGlobalErrorContext();
+  const { showError } = useGlobalMessageContext();
 
   const startRecognition = async () => {
     const token = await GetSpeechToken();

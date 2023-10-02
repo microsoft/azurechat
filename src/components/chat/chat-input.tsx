@@ -1,18 +1,16 @@
 import { Microphone } from "@/features/chat/chat-speech/microphone";
 import { useSpeechContext } from "@/features/chat/chat-speech/speech-context";
+import { useChatContext } from "@/features/chat/chat-ui/chat-context";
 import { Loader, Send } from "lucide-react";
 import { FC, FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
-interface Props {
-  value: string;
-  setInput: (value: string) => void;
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  isLoading: boolean;
-}
+interface Props {}
 
 const ChatInput: FC<Props> = (props) => {
+  const { setInput, handleSubmit, isLoading } = useChatContext();
+
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [rows, setRows] = useState(1);
 
@@ -40,9 +38,9 @@ const ChatInput: FC<Props> = (props) => {
     }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    props.handleSubmit(e);
+    handleSubmit(e);
     setRows(1);
     setSpeechText("");
   };
@@ -54,7 +52,7 @@ const ChatInput: FC<Props> = (props) => {
 
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setRowsToMax(event.target.value.split("\n").length - 1);
-    props.setInput(event.target.value);
+    setInput(event.target.value);
     setSpeechText(event.target.value);
   };
 
@@ -66,12 +64,12 @@ const ChatInput: FC<Props> = (props) => {
 
   // TODO: this is a temp fix. Move the useChat into a context and reuse that context here
   useEffect(() => {
-    props.setInput(speech);
+    setInput(speech);
   }, [speech]);
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={submit}
       className="absolute bottom-0 w-full flex items-center"
     >
       <div className="container mx-auto max-w-4xl relative py-2 flex gap-2 items-end">
@@ -85,15 +83,15 @@ const ChatInput: FC<Props> = (props) => {
           onChange={onChange}
         ></Textarea>
         <div className="absolute right-0 bottom-0 px-8 flex items-end h-full mr-2 mb-4">
-          <Microphone disabled={props.isLoading} />
+          <Microphone disabled={isLoading} />
           <Button
             size="icon"
             type="submit"
             variant={"ghost"}
             ref={buttonRef}
-            disabled={props.isLoading}
+            disabled={isLoading}
           >
-            {props.isLoading ? (
+            {isLoading ? (
               <Loader className="animate-spin" size={16} />
             ) : (
               <Send size={16} />
