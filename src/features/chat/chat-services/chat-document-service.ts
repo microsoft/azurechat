@@ -121,6 +121,7 @@ export const IndexDocuments = async (
 ): Promise<ServerActionResponse<FaqDocumentIndex[]>> => {
   try {
     const vectorStore = initAzureSearchVectorStore();
+
     const documentsToIndex: FaqDocumentIndex[] = [];
     let index = 0;
     for (const doc of docs) {
@@ -138,6 +139,7 @@ export const IndexDocuments = async (
     }
 
     await vectorStore.addDocuments(documentsToIndex);
+
     await UpsertChatDocument(fileName, chatThreadId);
     return {
       success: true,
@@ -169,10 +171,7 @@ export const initAzureSearchVectorStore = () => {
 export const initDocumentIntelligence = () => {
   const client = new DocumentAnalysisClient(
     process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT,
-    new AzureKeyCredential(process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY),
-    {
-      apiVersion: "2022-08-31",
-    }
+    new AzureKeyCredential(process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY)
   );
 
   return client;

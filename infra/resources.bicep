@@ -127,7 +127,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         { 
           name: 'AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT'
-          value: 'https://${location}.api.cognitive.microsoft.com/'
+          value: 'https://${form_recognizer_name}.cognitiveservices.azure.com/'
         }
         { 
           name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
