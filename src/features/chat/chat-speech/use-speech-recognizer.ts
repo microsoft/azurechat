@@ -12,6 +12,7 @@ export const useSpeechRecognizer = () => {
   const recognizerRef = useRef<SpeechRecognizer>();
 
   const [speech, setSpeech] = useState("");
+  const [isMicrophoneUsed, setIsMicrophoneUsed] = useState(false);
 
   const { showError } = useGlobalErrorContext();
 
@@ -19,6 +20,7 @@ export const useSpeechRecognizer = () => {
     const token = await GetSpeechToken();
 
     if (!token.error) {
+      setIsMicrophoneUsed(true);
       const speechConfig = SpeechConfig.fromAuthorizationToken(
         token.token,
         token.region
@@ -62,5 +64,16 @@ export const useSpeechRecognizer = () => {
     recognizerRef.current?.stopContinuousRecognitionAsync();
   };
 
-  return { startRecognition, stopRecognition, speech, setSpeechText };
+  const resetMicrophoneUsed = () => {
+    setIsMicrophoneUsed(false);
+  };
+
+  return {
+    startRecognition,
+    stopRecognition,
+    speech,
+    setSpeechText,
+    isMicrophoneUsed,
+    resetMicrophoneUsed,
+  };
 };
