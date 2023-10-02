@@ -1,7 +1,7 @@
 import { Microphone } from "@/features/chat/chat-speech/microphone";
 import { useSpeechContext } from "@/features/chat/chat-speech/speech-context";
 import { Loader, Send } from "lucide-react";
-import { FC, FormEvent, useRef, useState } from "react";
+import { FC, FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
@@ -44,7 +44,6 @@ const ChatInput: FC<Props> = (props) => {
     e.preventDefault();
     props.handleSubmit(e);
     setRows(1);
-    props.setInput(speech);
     setSpeechText("");
   };
 
@@ -64,6 +63,11 @@ const ChatInput: FC<Props> = (props) => {
       setRows(rows + 1);
     }
   };
+
+  // TODO: this is a temp fix. Move the useChat into a context and reuse that context here
+  useEffect(() => {
+    props.setInput(speech);
+  }, [speech]);
 
   return (
     <form

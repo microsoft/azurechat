@@ -47,7 +47,8 @@ export const ChatUI: FC<Prop> = (props) => {
   });
 
   const { toast } = useToast();
-  const { textToSpeech } = useSpeechContext();
+  const { textToSpeech, isMicrophoneUsed, resetMicrophoneUsed } =
+    useSpeechContext();
   const { showError } = useGlobalErrorContext();
   const id = props.chatThread.id;
 
@@ -58,7 +59,10 @@ export const ChatUI: FC<Prop> = (props) => {
       body: chatBody,
       initialMessages: transformCosmosToAIModel(props.chats),
       onFinish: async (lastMessage: Message) => {
-        await textToSpeech(lastMessage.content);
+        if (isMicrophoneUsed) {
+          await textToSpeech(lastMessage.content);
+          resetMicrophoneUsed();
+        }
       },
     });
 
