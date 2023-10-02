@@ -1,3 +1,4 @@
+import { useGlobalErrorContext } from "@/features/global-error/global-error-context";
 import {
   AudioConfig,
   AutoDetectSourceLanguageConfig,
@@ -11,6 +12,8 @@ export const useSpeechRecognizer = () => {
   const recognizerRef = useRef<SpeechRecognizer>();
 
   const [speech, setSpeech] = useState("");
+
+  const { showError } = useGlobalErrorContext();
 
   const startRecognition = async () => {
     const token = await GetSpeechToken();
@@ -44,7 +47,7 @@ export const useSpeechRecognizer = () => {
       };
 
       recognizer.canceled = (s, e) => {
-        console.log(e.errorDetails);
+        showError(e.errorDetails);
       };
 
       recognizer.startContinuousRecognitionAsync();

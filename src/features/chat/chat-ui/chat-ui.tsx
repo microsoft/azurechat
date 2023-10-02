@@ -4,8 +4,8 @@ import ChatInput from "@/components/chat/chat-input";
 import ChatLoading from "@/components/chat/chat-loading";
 import ChatRow from "@/components/chat/chat-row";
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor";
-import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { useGlobalErrorContext } from "@/features/global-error/global-error-context";
 import { AI_NAME } from "@/features/theme/customise";
 import { Message } from "ai";
 import { useChat } from "ai/react";
@@ -48,6 +48,7 @@ export const ChatUI: FC<Prop> = (props) => {
 
   const { toast } = useToast();
   const { textToSpeech } = useSpeechContext();
+  const { showError } = useGlobalErrorContext();
   const id = props.chatThread.id;
 
   const { messages, input, setInput, handleSubmit, reload, isLoading } =
@@ -65,20 +66,7 @@ export const ChatUI: FC<Prop> = (props) => {
   useChatScrollAnchor(messages, scrollRef);
 
   function onError(error: Error) {
-    toast({
-      variant: "destructive",
-      description: error.message,
-      action: (
-        <ToastAction
-          altText="Try again"
-          onClick={() => {
-            reload();
-          }}
-        >
-          Try again
-        </ToastAction>
-      ),
-    });
+    showError(error.message, reload);
   }
 
   const onChatTypeChange = async (value: ChatType) => {

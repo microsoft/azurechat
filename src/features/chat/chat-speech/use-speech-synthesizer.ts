@@ -1,3 +1,4 @@
+import { useGlobalErrorContext } from "@/features/global-error/global-error-context";
 import {
   AudioConfig,
   ResultReason,
@@ -11,6 +12,8 @@ import { GetSpeechToken } from "./speech-service";
 export const useSpeechSynthesizer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const playerRef = useRef<SpeakerAudioDestination>();
+
+  const { showError } = useGlobalErrorContext();
 
   const stopPlaying = () => {
     setIsPlaying(false);
@@ -44,7 +47,7 @@ export const useSpeechSynthesizer = () => {
         if (result.reason === ResultReason.SynthesizingAudioCompleted) {
           setIsPlaying(true);
         } else {
-          console.error("Speech synthesis canceled, " + result.errorDetails);
+          showError(result.errorDetails);
           setIsPlaying(false);
         }
         synthesizer.close();
