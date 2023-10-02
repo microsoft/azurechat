@@ -8,6 +8,7 @@ export const GetSpeechToken = async () => {
       headers: {
         "Ocp-Apim-Subscription-Key": process.env.AZURE_SPEECH_KEY!,
       },
+      cache: "no-store",
     }
   );
 
