@@ -1,180 +1,25 @@
 "use client";
 
 import ChatInput from "@/components/chat/chat-input";
-import ChatLoading from "@/components/chat/chat-loading";
-import ChatRow from "@/components/chat/chat-row";
-import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor";
-import { useToast } from "@/components/ui/use-toast";
-import { useGlobalErrorContext } from "@/features/global-error/global-error-context";
-import { AI_NAME } from "@/features/theme/customise";
-import { Message } from "ai";
-import { useChat } from "ai/react";
-import { useSession } from "next-auth/react";
-import { FC, FormEvent, useRef, useState } from "react";
-import {
-  IndexDocuments,
-  UploadDocument,
-} from "../chat-services/chat-document-service";
-import {
-  ChatMessageModel,
-  ChatThreadModel,
-  ChatType,
-  ConversationStyle,
-  PromptGPTBody,
-} from "../chat-services/models";
-import { transformCosmosToAIModel } from "../chat-services/utils";
-import { useSpeechContext } from "../chat-speech/speech-context";
-import { EmptyState } from "./chat-empty-state";
-import { ChatHeader } from "./chat-header";
+import { FC } from "react";
+import { useChatContext } from "./chat-context";
+import { ChatMessageContainer } from "./chat-message-container";
+import { ChatMessageEmptyState } from "./chat-message-empty-state";
 
-interface Prop {
-  chats: Array<ChatMessageModel>;
-  chatThread: ChatThreadModel;
-}
+interface Prop {}
 
-export const ChatUI: FC<Prop> = (props) => {
-  const { data: session } = useSession();
-
-  const [isUploadingFile, setIsUploadingFile] = useState(false);
-
-  const [uploadButtonLabel, setUploadButtonLabel] = useState("");
-
-  const [chatBody, setBody] = useState<PromptGPTBody>({
-    id: props.chatThread.id,
-    chatType: props.chatThread.chatType,
-    conversationStyle: props.chatThread.conversationStyle,
-    chatOverFileName: props.chatThread.chatOverFileName,
-  });
-
-  const { toast } = useToast();
-  const { textToSpeech, isMicrophoneUsed, resetMicrophoneUsed } =
-    useSpeechContext();
-  const { showError } = useGlobalErrorContext();
-  const id = props.chatThread.id;
-
-  const { messages, input, setInput, handleSubmit, reload, isLoading } =
-    useChat({
-      onError,
-      id,
-      body: chatBody,
-      initialMessages: transformCosmosToAIModel(props.chats),
-      onFinish: async (lastMessage: Message) => {
-        if (isMicrophoneUsed) {
-          await textToSpeech(lastMessage.content);
-          resetMicrophoneUsed();
-        }
-      },
-    });
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-  useChatScrollAnchor(messages, scrollRef);
-
-  function onError(error: Error) {
-    showError(error.message, reload);
-  }
-
-  const onChatTypeChange = async (value: ChatType) => {
-    setBody((e) => ({ ...e, chatType: value }));
-  };
-
-  const onConversationStyleChange = (value: ConversationStyle) => {
-    setBody((e) => ({ ...e, conversationStyle: value }));
-  };
-
-  const onHandleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    handleSubmit(e);
-  };
-
-  const onFileChange = async (formData: FormData) => {
-    try {
-      setIsUploadingFile(true);
-      setUploadButtonLabel("Uploading document...");
-      formData.append("id", props.chatThread.id);
-      const file: File | null = formData.get("file") as unknown as File;
-      const uploadResponse = await UploadDocument(formData);
-
-      if (uploadResponse.success) {
-        setUploadButtonLabel("Indexing document...");
-        const indexResponse = await IndexDocuments(
-          file.name,
-          uploadResponse.response,
-          props.chatThread.id
-        );
-
-        if (indexResponse.success) {
-          toast({
-            title: "File upload",
-            description: `${file.name} uploaded successfully.`,
-          });
-          setUploadButtonLabel("");
-          setBody((e) => ({ ...e, chatOverFileName: file.name }));
-        } else {
-          toast({
-            variant: "destructive",
-            description: indexResponse.error,
-          });
-        }
-      } else {
-        toast({
-          variant: "destructive",
-          description: "" + uploadResponse.error,
-        });
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        description: "" + error,
-      });
-    } finally {
-      setIsUploadingFile(false);
-      setUploadButtonLabel("");
-    }
-  };
-
-  const ChatWindow = (
-    <div className="h-full rounded-md overflow-y-auto " ref={scrollRef}>
-      <div className="flex justify-center p-4">
-        <ChatHeader chatBody={chatBody} />
-      </div>
-      <div className=" pb-[80px] flex flex-col justify-end flex-1">
-        {messages.map((message, index) => (
-          <ChatRow
-            name={message.role === "user" ? session?.user?.name! : AI_NAME}
-            profilePicture={
-              message.role === "user" ? session?.user?.image! : "/ai-icon.png"
-            }
-            message={message.content}
-            type={message.role}
-            key={index}
-          />
-        ))}
-        {isLoading && <ChatLoading />}
-      </div>
-    </div>
-  );
+export const ChatUI: FC<Prop> = () => {
+  const { messages } = useChatContext();
 
   return (
     <div className="h-full relative overflow-hidden flex-1 bg-card rounded-md shadow-md">
       {messages.length !== 0 ? (
-        ChatWindow
+        <ChatMessageContainer />
       ) : (
-        <EmptyState
-          uploadButtonLabel={uploadButtonLabel}
-          isUploadingFile={isUploadingFile}
-          onFileChange={onFileChange}
-          onConversationStyleChange={onConversationStyleChange}
-          onChatTypeChange={onChatTypeChange}
-          chatType={chatBody.chatType}
-          conversationStyle={chatBody.conversationStyle}
-        />
+        <ChatMessageEmptyState />
       )}
 
-      <ChatInput
-        isLoading={isLoading}
-        value={input}
-        setInput={setInput}
-        handleSubmit={onHandleSubmit}
-      />
+      <ChatInput />
     </div>
   );
 };

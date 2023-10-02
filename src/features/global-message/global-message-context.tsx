@@ -2,13 +2,19 @@ import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
 import { createContext, useContext } from "react";
 
-interface GlobalErrorProps {
+interface GlobalMessageProps {
   showError: (error: string, reload?: () => void) => void;
+  showSuccess: (message: MessageProp) => void;
 }
 
-const GlobalErrorContext = createContext<GlobalErrorProps | null>(null);
+const GlobalMessageContext = createContext<GlobalMessageProps | null>(null);
 
-export const GlobalErrorProvider = ({
+interface MessageProp {
+  title: string;
+  description: string;
+}
+
+export const GlobalMessageProvider = ({
   children,
 }: {
   children: React.ReactNode;
@@ -30,19 +36,24 @@ export const GlobalErrorProvider = ({
     });
   };
 
+  const showSuccess = (message: MessageProp) => {
+    toast(message);
+  };
+
   return (
-    <GlobalErrorContext.Provider
+    <GlobalMessageContext.Provider
       value={{
+        showSuccess,
         showError,
       }}
     >
       {children}
-    </GlobalErrorContext.Provider>
+    </GlobalMessageContext.Provider>
   );
 };
 
-export const useGlobalErrorContext = () => {
-  const context = useContext(GlobalErrorContext);
+export const useGlobalMessageContext = () => {
+  const context = useContext(GlobalMessageContext);
   if (!context) {
     throw new Error("GlobalErrorContext is null");
   }
