@@ -14,14 +14,13 @@ interface Props {
 
 const ChatInput: FC<Props> = (props) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [rows, setRows] = useState(1);
 
   const maxRows = 6;
 
   const [keysPressed, setKeysPressed] = useState(new Set());
 
-  const { onSpeech } = useSpeechContext();
+  const { speech, setSpeechText } = useSpeechContext();
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     setKeysPressed(keysPressed.add(event.key));
@@ -45,6 +44,8 @@ const ChatInput: FC<Props> = (props) => {
     e.preventDefault();
     props.handleSubmit(e);
     setRows(1);
+    props.setInput(speech);
+    setSpeechText("");
   };
 
   const onKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -55,6 +56,7 @@ const ChatInput: FC<Props> = (props) => {
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setRowsToMax(event.target.value.split("\n").length - 1);
     props.setInput(event.target.value);
+    setSpeechText(event.target.value);
   };
 
   const setRowsToMax = (rows: number) => {
@@ -63,11 +65,6 @@ const ChatInput: FC<Props> = (props) => {
     }
   };
 
-  onSpeech((text) => {
-    textAreaRef.current!.value = text;
-    props.setInput(text);
-  });
-
   return (
     <form
       onSubmit={handleSubmit}
@@ -75,11 +72,10 @@ const ChatInput: FC<Props> = (props) => {
     >
       <div className="container mx-auto max-w-4xl relative py-2 flex gap-2 items-end">
         <Textarea
-          ref={textAreaRef}
           rows={rows}
+          value={speech}
           placeholder="Send a message"
-          className="min-h-fit bg-background shadow-sm resize-none py-4"
-          value={props.value}
+          className="min-h-fit bg-background shadow-sm resize-none py-4 pr-[80px]"
           onKeyUp={onKeyUp}
           onKeyDown={onKeyDown}
           onChange={onChange}

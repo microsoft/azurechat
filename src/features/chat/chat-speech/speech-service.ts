@@ -12,6 +12,8 @@ export const GetSpeechToken = async () => {
   );
 
   return {
+    error: response.status !== 200,
+    errorMessage: response.statusText,
     token: await response.text(),
     region: process.env.AZURE_SPEECH_REGION,
   };

@@ -4,52 +4,60 @@ import {
   SpeechConfig,
   SpeechRecognizer,
 } from "microsoft-cognitiveservices-speech-sdk";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { GetSpeechToken } from "./speech-service";
 
 export const useSpeechRecognizer = () => {
   const recognizerRef = useRef<SpeechRecognizer>();
-  const onSpeechRef = useRef<(speech: string) => void>();
 
-  const onSpeech = (onSpeech: (speech: string) => void) => {
-    onSpeechRef.current = onSpeech;
-  };
+  const [speech, setSpeech] = useState("");
 
   const startRecognition = async () => {
     const token = await GetSpeechToken();
-    const speechConfig = SpeechConfig.fromAuthorizationToken(
-      token.token,
-      token.region
-    );
 
-    const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
-    const autoDetectSourceLanguageConfig =
-      AutoDetectSourceLanguageConfig.fromLanguages([
-        "en-US",
-        "zh-CN",
-        "it-IT",
-        "pt-BR",
-      ]);
-    const recognizer = SpeechRecognizer.FromConfig(
-      speechConfig,
-      autoDetectSourceLanguageConfig,
-      audioConfig
-    );
+    if (!token.error) {
+      const speechConfig = SpeechConfig.fromAuthorizationToken(
+        token.token,
+        token.region
+      );
 
-    recognizerRef.current = recognizer;
+      const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
 
-    recognizer.recognizing = (s, e) => {
-      if (onSpeechRef.current) {
-        onSpeechRef.current(e.result.text);
-      }
-    };
+      const autoDetectSourceLanguageConfig =
+        AutoDetectSourceLanguageConfig.fromLanguages([
+          "en-US",
+          "zh-CN",
+          "it-IT",
+          "pt-BR",
+        ]);
 
-    recognizer.startContinuousRecognitionAsync();
+      const recognizer = SpeechRecognizer.FromConfig(
+        speechConfig,
+        autoDetectSourceLanguageConfig,
+        audioConfig
+      );
+
+      recognizerRef.current = recognizer;
+
+      recognizer.recognizing = (s, e) => {
+        setSpeech(e.result.text);
+      };
+
+      recognizer.canceled = (s, e) => {
+        console.log(e.errorDetails);
+      };
+
+      recognizer.startContinuousRecognitionAsync();
+    }
+  };
+
+  const setSpeechText = (text: string) => {
+    setSpeech(text);
   };
 
   const stopRecognition = () => {
     recognizerRef.current?.stopContinuousRecognitionAsync();
   };
 
-  return { startRecognition, stopRecognition, onSpeech };
+  return { startRecognition, stopRecognition, speech, setSpeechText };
 };
