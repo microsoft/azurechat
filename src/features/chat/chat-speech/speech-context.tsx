@@ -8,14 +8,16 @@ interface SpeechContextProps {
   isPlaying: boolean;
   startRecognition: () => void;
   stopRecognition: () => void;
-  onSpeech: (onSpeech: (speech: string) => void) => void;
+  speech: string;
+  setSpeechText: (text: string) => void;
 }
 
 const SpeechContext = createContext<SpeechContextProps | null>(null);
 
 export const SpeechProvider = ({ children }: { children: React.ReactNode }) => {
   const { isPlaying, stopPlaying, textToSpeech } = useSpeechSynthesizer();
-  const { startRecognition, stopRecognition, onSpeech } = useSpeechRecognizer();
+  const { startRecognition, stopRecognition, speech, setSpeechText } =
+    useSpeechRecognizer();
 
   return (
     <SpeechContext.Provider
@@ -25,7 +27,8 @@ export const SpeechProvider = ({ children }: { children: React.ReactNode }) => {
         isPlaying,
         startRecognition,
         stopRecognition,
-        onSpeech,
+        speech,
+        setSpeechText,
       }}
     >
       {children}
