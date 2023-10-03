@@ -3,36 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowUpCircle, Loader2 } from "lucide-react";
-import { FC, useState } from "react";
-import { ChatType, ConversationStyle } from "../chat-services/models";
+import { FC } from "react";
+import { useChatContext } from "./chat-context";
+import { useFileSelection } from "./chat-file/use-file-selection";
 import { ChatStyleSelector } from "./chat-style-selector";
 import { ChatTypeSelector } from "./chat-type-selector";
-interface Prop {
-  isUploadingFile: boolean;
-  chatType: ChatType;
-  conversationStyle: ConversationStyle;
-  uploadButtonLabel: string;
-  onChatTypeChange: (value: ChatType) => void;
-  onConversationStyleChange: (value: ConversationStyle) => void;
-  onFileChange: (file: FormData) => void;
-}
 
-export const EmptyState: FC<Prop> = (props) => {
-  const [showFileUpload, setShowFileUpload] = useState<ChatType>("simple");
-  const [isFileNull, setIsFileNull] = useState(true);
+interface Prop {}
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+export const ChatMessageEmptyState: FC<Prop> = (props) => {
+  const { id, fileState, chatBody } = useChatContext();
 
-    const formData = new FormData(e.target as HTMLFormElement);
-    props.onFileChange(formData);
-  };
+  const {
+    showFileUpload,
+    isFileNull,
+    setIsFileNull,
+    uploadButtonLabel,
+    isUploadingFile,
+  } = fileState;
 
-  const onChatTypeChange = (value: ChatType) => {
-    setShowFileUpload(value);
-    setIsFileNull(true);
-    props.onChatTypeChange(value);
-  };
+  const { onSubmit } = useFileSelection({ id });
 
   return (
     <div className="grid grid-cols-5 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-9">
@@ -52,21 +42,13 @@ export const EmptyState: FC<Prop> = (props) => {
           <p className="text-sm text-muted-foreground">
             Choose a conversation style
           </p>
-          <ChatStyleSelector
-            conversationStyle={props.conversationStyle}
-            onChatStyleChange={props.onConversationStyleChange}
-            disable={false}
-          />
+          <ChatStyleSelector disable={false} />
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">
             How would you like to chat?
           </p>
-          <ChatTypeSelector
-            chatType={props.chatType}
-            onChatTypeChange={onChatTypeChange}
-            disable={false}
-          />
+          <ChatTypeSelector disable={false} />
         </div>
         {showFileUpload === "data" && (
           <div className="flex flex-col gap-2">
@@ -75,7 +57,7 @@ export const EmptyState: FC<Prop> = (props) => {
                 name="file"
                 type="file"
                 required
-                disabled={props.isUploadingFile}
+                disabled={isUploadingFile}
                 placeholder="Describe the purpose of the document"
                 onChange={(e) => {
                   setIsFileNull(e.currentTarget.value === null);
@@ -85,10 +67,10 @@ export const EmptyState: FC<Prop> = (props) => {
               <Button
                 type="submit"
                 value="Upload"
-                disabled={!(!isFileNull && !props.isUploadingFile)}
+                disabled={!(!isFileNull && !isUploadingFile)}
                 className="flex items-center gap-1"
               >
-                {props.isUploadingFile ? (
+                {isUploadingFile ? (
                   <Loader2 className="animate-spin" size={20} />
                 ) : (
                   <ArrowUpCircle size={20} />
@@ -96,7 +78,7 @@ export const EmptyState: FC<Prop> = (props) => {
                 Upload
               </Button>
             </form>
-            <p className="text-xs text-primary">{props.uploadButtonLabel}</p>
+            <p className="text-xs text-primary">{uploadButtonLabel}</p>
           </div>
         )}
       </Card>

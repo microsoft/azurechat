@@ -35,8 +35,7 @@ type DocumentDeleteModel = {
   "@search.action": "delete";
 };
 
-
-export interface AzureCogDocument extends Record<string, unknown> { }
+export interface AzureCogDocument extends Record<string, unknown> {}
 
 type AzureCogVectorField = {
   value: number[];
@@ -91,26 +90,33 @@ export class AzureCogSearch<
   }
 
   async deleteDocuments(chatThreadId: string): Promise<void> {
-
     // find all documents for chat thread
-    const documentsInChat = await this.fetcher(`${this.baseUrl}?api-version=${this._config.apiVersion}&search=${chatThreadId}&searchFields=chatThreadId&$select=id`, {
-      method: "GET",
-      body: null
-    });
+    const documentsInChat = await this.fetcher(
+      `${this.baseUrl}?api-version=${this._config.apiVersion}&search=${chatThreadId}&searchFields=chatThreadId&$select=id`,
+      {
+        method: "GET",
+        body: null,
+      }
+    );
 
     const documentsToDelete: DocumentDeleteModel[] = [];
 
-    documentsInChat.value.forEach(async (document: { id: string; }) => {
-      const doc: DocumentDeleteModel = {"@search.action": "delete", id: document.id};
+    documentsInChat.value.forEach(async (document: { id: string }) => {
+      const doc: DocumentDeleteModel = {
+        "@search.action": "delete",
+        id: document.id,
+      };
       documentsToDelete.push(doc);
     });
 
     // delete the documents
-    const responseObj = await this.fetcher(`${this.baseUrl}/index?api-version=${this._config.apiVersion}`, {
-      method: "POST",
-      body: JSON.stringify({value: documentsToDelete}),
-    });
-
+    const responseObj = await this.fetcher(
+      `${this.baseUrl}/index?api-version=${this._config.apiVersion}`,
+      {
+        method: "POST",
+        body: JSON.stringify({ value: documentsToDelete }),
+      }
+    );
   }
   /**
    * Search for the most similar documents to a query
@@ -223,6 +229,7 @@ export class AzureCogSearch<
         "Content-Type": "application/json",
         "api-key": this._config.apiKey,
       },
+      cache: "no-cache",
     });
 
     if (!response.ok) {
