@@ -19,41 +19,44 @@ export const useSpeechRecognizer = () => {
   const startRecognition = async () => {
     const token = await GetSpeechToken();
 
-    if (!token.error) {
-      setIsMicrophoneUsed(true);
-      const speechConfig = SpeechConfig.fromAuthorizationToken(
-        token.token,
-        token.region
-      );
-
-      const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
-
-      const autoDetectSourceLanguageConfig =
-        AutoDetectSourceLanguageConfig.fromLanguages([
-          "en-US",
-          "zh-CN",
-          "it-IT",
-          "pt-BR",
-        ]);
-
-      const recognizer = SpeechRecognizer.FromConfig(
-        speechConfig,
-        autoDetectSourceLanguageConfig,
-        audioConfig
-      );
-
-      recognizerRef.current = recognizer;
-
-      recognizer.recognizing = (s, e) => {
-        setSpeech(e.result.text);
-      };
-
-      recognizer.canceled = (s, e) => {
-        showError(e.errorDetails);
-      };
-
-      recognizer.startContinuousRecognitionAsync();
+    if (token.error) {
+      showError(token.errorMessage);
+      return;
     }
+
+    setIsMicrophoneUsed(true);
+    const speechConfig = SpeechConfig.fromAuthorizationToken(
+      token.token,
+      token.region
+    );
+
+    const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+
+    const autoDetectSourceLanguageConfig =
+      AutoDetectSourceLanguageConfig.fromLanguages([
+        "en-US",
+        "zh-CN",
+        "it-IT",
+        "pt-BR",
+      ]);
+
+    const recognizer = SpeechRecognizer.FromConfig(
+      speechConfig,
+      autoDetectSourceLanguageConfig,
+      audioConfig
+    );
+
+    recognizerRef.current = recognizer;
+
+    recognizer.recognizing = (s, e) => {
+      setSpeech(e.result.text);
+    };
+
+    recognizer.canceled = (s, e) => {
+      showError(e.errorDetails);
+    };
+
+    recognizer.startContinuousRecognitionAsync();
   };
 
   const setSpeechText = (text: string) => {

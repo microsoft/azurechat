@@ -28,6 +28,12 @@ export const useSpeechSynthesizer = () => {
     }
 
     const tokenObj = await GetSpeechToken();
+
+    if (tokenObj.error) {
+      showError(tokenObj.errorMessage);
+      return;
+    }
+
     const speechConfig = SpeechConfig.fromAuthorizationToken(
       tokenObj.token,
       tokenObj.region
