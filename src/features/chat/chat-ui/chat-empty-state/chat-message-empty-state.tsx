@@ -1,8 +1,8 @@
 import Typography from "@/components/typography";
 import { Card } from "@/components/ui/card";
 import { FC } from "react";
-import { useChatContext } from "./chat-context";
-import { ChatFileUI } from "./chat-file/chat-file-ui";
+import { useChatContext } from "../chat-context";
+import { ChatFileUI } from "../chat-file/chat-file-ui";
 import { ChatStyleSelector } from "./chat-style-selector";
 import { ChatTypeSelector } from "./chat-type-selector";
 

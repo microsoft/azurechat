@@ -1,8 +1,8 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, MessageCircle } from "lucide-react";
 import { FC } from "react";
-import { ChatType } from "../chat-services/models";
-import { useChatContext } from "./chat-context";
+import { ChatType } from "../../chat-services/models";
+import { useChatContext } from "../chat-context";
 
 interface Prop {
   disable: boolean;

@@ -11,12 +11,12 @@ import {
   SystemMessagePromptTemplate,
 } from "langchain/prompts";
 import { AzureCogSearch } from "../../langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
-import { insertPromptAndResponse } from "../chat-services/chat-service";
-import { initAndGuardChatSession } from "../chat-services/chat-thread-service";
-import { FaqDocumentIndex, PromptGPTProps } from "../chat-services/models";
-import { transformConversationStyleToTemperature } from "../chat-services/utils";
+import { insertPromptAndResponse } from "./chat-service";
+import { initAndGuardChatSession } from "./chat-thread-service";
+import { FaqDocumentIndex, PromptGPTProps } from "./models";
+import { transformConversationStyleToTemperature } from "./utils";
 
-export const ChatData = async (props: PromptGPTProps) => {
+export const ChatAPIData = async (props: PromptGPTProps) => {
   const { lastHumanMessage, id, chatThread } = await initAndGuardChatSession(
     props
   );
