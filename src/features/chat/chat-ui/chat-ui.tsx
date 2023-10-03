@@ -1,8 +1,8 @@
 "use client";
 
-import ChatInput from "@/components/chat/chat-input";
 import { FC } from "react";
 import { useChatContext } from "./chat-context";
+import ChatInput from "./chat-input/chat-input";
 import { ChatMessageContainer } from "./chat-message-container";
 import { ChatMessageEmptyState } from "./chat-message-empty-state";
 

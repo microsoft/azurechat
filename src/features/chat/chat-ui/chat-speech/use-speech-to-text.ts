@@ -8,11 +8,23 @@ import {
 import { useRef, useState } from "react";
 import { GetSpeechToken } from "./speech-service";
 
-export const useSpeechRecognizer = () => {
+export interface SpeechToTextProps {
+  startRecognition: () => void;
+  stopRecognition: () => void;
+  isMicrophoneUsed: boolean;
+  resetMicrophoneUsed: () => void;
+  isMicrophonePressed: boolean;
+}
+
+interface Props {
+  onSpeech: (value: string) => void;
+}
+
+export const useSpeechToText = (props: Props): SpeechToTextProps => {
   const recognizerRef = useRef<SpeechRecognizer>();
 
-  const [speech, setSpeech] = useState("");
   const [isMicrophoneUsed, setIsMicrophoneUsed] = useState(false);
+  const [isMicrophonePressed, setIsMicrophonePressed] = useState(false);
 
   const { showError } = useGlobalMessageContext();
 
@@ -25,6 +37,7 @@ export const useSpeechRecognizer = () => {
     }
 
     setIsMicrophoneUsed(true);
+    setIsMicrophonePressed(true);
     const speechConfig = SpeechConfig.fromAuthorizationToken(
       token.token,
       token.region
@@ -49,7 +62,7 @@ export const useSpeechRecognizer = () => {
     recognizerRef.current = recognizer;
 
     recognizer.recognizing = (s, e) => {
-      setSpeech(e.result.text);
+      props.onSpeech(e.result.text);
     };
 
     recognizer.canceled = (s, e) => {
@@ -59,12 +72,9 @@ export const useSpeechRecognizer = () => {
     recognizer.startContinuousRecognitionAsync();
   };
 
-  const setSpeechText = (text: string) => {
-    setSpeech(text);
-  };
-
   const stopRecognition = () => {
     recognizerRef.current?.stopContinuousRecognitionAsync();
+    setIsMicrophonePressed(false);
   };
 
   const resetMicrophoneUsed = () => {
@@ -74,9 +84,8 @@ export const useSpeechRecognizer = () => {
   return {
     startRecognition,
     stopRecognition,
-    speech,
-    setSpeechText,
     isMicrophoneUsed,
     resetMicrophoneUsed,
+    isMicrophonePressed,
   };
 };
