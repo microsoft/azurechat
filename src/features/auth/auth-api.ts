@@ -2,6 +2,8 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import { Provider } from "next-auth/providers";
 import AzureADProvider from "next-auth/providers/azure-ad";
 import GitHubProvider from "next-auth/providers/github";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { hashValue } from "./helpers";
 
 const configureIdentityProvider = () => {
   const providers: Array<Provider> = [];
@@ -47,6 +49,39 @@ const configureIdentityProvider = () => {
       })
     );
   }
+
+  // If we're in local dev, add a basic credential provider option as well
+  // (Useful when a dev doesn't have access to create app registration in their tenant)
+  // This currently takes any username and makes a user with it, ignores password
+  // Refer to: https://next-auth.js.org/configuration/providers/credentials
+  if (process.env.NODE_ENV === "development") {
+    providers.push(
+      CredentialsProvider({
+        name: "localdev",
+        credentials: {
+          username: { label: "Username", type: "text", placeholder: "dev" },
+          password: { label: "Password", type: "password" },
+        },    
+        async authorize(credentials, req): Promise<any> {
+          // You can put logic here to validate the credentials and return a user.
+          // We're going to take any username and make a new user with it
+          // Create the id as the hash of the email as per userHashedId (helpers.ts)
+          const username = credentials?.username || "dev";
+          const email = username + "@localhost";
+          const user = {
+              id: hashValue(email),
+              name: username,
+              email: email,
+              isAdmin: false,
+              image: "",
+            };
+          console.log("=== DEV USER LOGGED IN:\n", JSON.stringify(user, null, 2));
+          return user;
+        }
+      })
+    );
+  }
+
   return providers;
 };
 
