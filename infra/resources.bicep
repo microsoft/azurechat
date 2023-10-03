@@ -13,6 +13,7 @@ param embeddingDeploymentName string = 'text-embedding-ada-002'
 param embeddingDeploymentCapacity int = 30
 param embeddingModelName string = 'text-embedding-ada-002'
 
+param speechServiceSkuName string = 'S0'
 param formRecognizerSkuName string = 'S0'
 param searchServiceSkuName string = 'standard'
 param searchServiceIndexName string = 'azure-chat'
@@ -27,6 +28,7 @@ param tags object = {}
 
 var openai_name = toLower('${name}ai${resourceToken}')
 var form_recognizer_name = toLower('${name}-form-${resourceToken}')
+var speech_service_name = toLower('${name}-speech-${resourceToken}')
 var cosmos_name = toLower('${name}-cosmos-${resourceToken}')
 var search_name = toLower('${name}search${resourceToken}')
 var webapp_name = toLower('${name}-webapp-${resourceToken}')
@@ -161,6 +163,14 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
           name: 'NEXTAUTH_URL'
           value: 'https://${webapp_name}.azurewebsites.net'
         }
+        {
+          name: 'AZURE_SPEECH_REGION'
+          value: resourceGroup().location
+        }
+        {
+          name: 'AZURE_SPEECH_KEY'
+          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_SPEECH_KEY.name})'
+        }
       ]
     }
   }
@@ -235,6 +245,15 @@ resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
       value: formRecognizer.listKeys().key1
     }
   }
+
+  resource AZURE_SPEECH_KEY 'secrets' = {
+    name: 'AZURE-SPEECH-KEY'
+    properties: {
+      contentType: 'text/plain'
+      value: speechService.listKeys().key1
+    }
+  }
+
 
   resource AZURE_SEARCH_API_KEY 'secrets' = {
     name: 'AZURE-SEARCH-API-KEY'
@@ -351,5 +370,18 @@ resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01
   }
 }]
 
+resource speechService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
+  name: speech_service_name
+  location: location
+  tags: tags
+  kind: 'SpeechServices'
+  properties: {
+    customSubDomainName: speech_service_name
+    publicNetworkAccess: 'Enabled'
+  }
+  sku: {
+    name: speechServiceSkuName
+  }
+}
 
 output url string = 'https://${webApp.properties.defaultHostName}'
