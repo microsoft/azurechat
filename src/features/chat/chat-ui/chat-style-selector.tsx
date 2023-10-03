@@ -9,16 +9,14 @@ interface Prop {
 }
 
 export const ChatStyleSelector: FC<Prop> = (props) => {
-  const { setChatBody, chatBody } = useChatContext();
-
-  const onChange = (value: ConversationStyle) => {
-    setChatBody({ ...chatBody, conversationStyle: value });
-  };
+  const { onConversationStyleChange, chatBody } = useChatContext();
 
   return (
     <Tabs
       defaultValue={chatBody.conversationStyle}
-      onValueChange={(value) => onChange(value as ConversationStyle)}
+      onValueChange={(value) =>
+        onConversationStyleChange(value as ConversationStyle)
+      }
     >
       <TabsList className="grid w-full grid-cols-3 h-12 items-stretch">
         <TabsTrigger
