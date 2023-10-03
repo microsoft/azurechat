@@ -7,17 +7,29 @@ import React, { FC, createContext, useState } from "react";
 import {
   ChatMessageModel,
   ChatThreadModel,
+  ChatType,
+  ConversationStyle,
   PromptGPTBody,
 } from "../chat-services/models";
 import { transformCosmosToAIModel } from "../chat-services/utils";
-import { useSpeechContext } from "../chat-speech/speech-context";
 import { FileState, useFileState } from "./chat-file/use-file-state";
+import {
+  SpeechToTextProps,
+  useSpeechToText,
+} from "./chat-speech/use-speech-to-text";
+import {
+  TextToSpeechProps,
+  useTextToSpeech,
+} from "./chat-speech/use-text-to-speech";
 
 interface ChatContextProps extends UseChatHelpers {
   id: string;
   setChatBody: (body: PromptGPTBody) => void;
   chatBody: PromptGPTBody;
   fileState: FileState;
+  onChatTypeChange: (value: ChatType) => void;
+  onConversationStyleChange: (value: ConversationStyle) => void;
+  speech: TextToSpeechProps & SpeechToTextProps;
 }
 
 const ChatContext = createContext<ChatContextProps | null>(null);
@@ -31,6 +43,14 @@ interface Prop {
 
 export const ChatProvider: FC<Prop> = (props) => {
   const { showError } = useGlobalMessageContext();
+
+  const speechSynthesizer = useTextToSpeech();
+  const speechRecognizer = useSpeechToText({
+    onSpeech(value) {
+      response.setInput(value);
+    },
+  });
+
   const fileState = useFileState();
 
   const [chatBody, setBody] = useState<PromptGPTBody>({
@@ -40,13 +60,14 @@ export const ChatProvider: FC<Prop> = (props) => {
     chatOverFileName: props.chatThread.chatOverFileName,
   });
 
-  const { textToSpeech, isMicrophoneUsed, resetMicrophoneUsed } =
-    useSpeechContext();
+  const { textToSpeech } = speechSynthesizer;
+  const { isMicrophoneUsed, resetMicrophoneUsed } = speechRecognizer;
 
   const response = useChat({
     onError,
     id: props.id,
     body: chatBody,
+
     initialMessages: transformCosmosToAIModel(props.chats),
     onFinish: async (lastMessage: Message) => {
       if (isMicrophoneUsed) {
@@ -60,13 +81,35 @@ export const ChatProvider: FC<Prop> = (props) => {
     setBody(body);
   };
 
+  const onChatTypeChange = (value: ChatType) => {
+    fileState.setShowFileUpload(value);
+    fileState.setIsFileNull(true);
+    setChatBody({ ...chatBody, chatType: value });
+  };
+
+  const onConversationStyleChange = (value: ConversationStyle) => {
+    setChatBody({ ...chatBody, conversationStyle: value });
+  };
+
   function onError(error: Error) {
     showError(error.message, response.reload);
   }
 
   return (
     <ChatContext.Provider
-      value={{ ...response, setChatBody, chatBody, fileState, id: props.id }}
+      value={{
+        ...response,
+        setChatBody,
+        chatBody,
+        onChatTypeChange,
+        onConversationStyleChange,
+        fileState,
+        id: props.id,
+        speech: {
+          ...speechSynthesizer,
+          ...speechRecognizer,
+        },
+      }}
     >
       {props.children}
     </ChatContext.Provider>
