@@ -9,20 +9,12 @@ interface Prop {
 }
 
 export const ChatTypeSelector: FC<Prop> = (props) => {
-  const { setChatBody, chatBody, fileState } = useChatContext();
-
-  const { setShowFileUpload, setIsFileNull } = fileState;
-
-  const onChange = (value: ChatType) => {
-    setShowFileUpload(value);
-    setIsFileNull(true);
-    setChatBody({ ...chatBody, chatType: value });
-  };
+  const { chatBody, onChatTypeChange } = useChatContext();
 
   return (
     <Tabs
       defaultValue={chatBody.chatType}
-      onValueChange={(value) => onChange(value as ChatType)}
+      onValueChange={(value) => onChatTypeChange(value as ChatType)}
     >
       <TabsList className="grid w-full grid-cols-2 h-12 items-stretch">
         <TabsTrigger

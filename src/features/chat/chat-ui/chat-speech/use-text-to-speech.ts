@@ -9,7 +9,13 @@ import {
 import { useRef, useState } from "react";
 import { GetSpeechToken } from "./speech-service";
 
-export const useSpeechSynthesizer = () => {
+export interface TextToSpeechProps {
+  stopPlaying: () => void;
+  textToSpeech: (textToSpeak: string) => void;
+  isPlaying: boolean;
+}
+
+export const useTextToSpeech = (): TextToSpeechProps => {
   const [isPlaying, setIsPlaying] = useState(false);
   const playerRef = useRef<SpeakerAudioDestination>();
 

@@ -1,25 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Mic } from "lucide-react";
-import { FC, useState } from "react";
-import { useSpeechContext } from "./speech-context";
+import { FC } from "react";
+import { useChatContext } from "../chat-context";
 
 interface Prop {
   disabled: boolean;
 }
 
 export const RecordSpeech: FC<Prop> = (props) => {
-  const [isPressed, setIsPressed] = useState(false);
-
-  const { startRecognition, stopRecognition } = useSpeechContext();
+  const { speech } = useChatContext();
+  const { startRecognition, stopRecognition, isMicrophonePressed } = speech;
 
   const handleMouseDown = async () => {
     await startRecognition();
-    setIsPressed(true);
   };
 
   const handleMouseUp = () => {
     stopRecognition();
-    setIsPressed(false);
   };
 
   return (
@@ -31,7 +28,7 @@ export const RecordSpeech: FC<Prop> = (props) => {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      className={isPressed ? "bg-red-400 hover:bg-red-400" : ""}
+      className={isMicrophonePressed ? "bg-red-400 hover:bg-red-400" : ""}
     >
       <Mic size={18} />
     </Button>

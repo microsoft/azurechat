@@ -1,6 +1,6 @@
 import { FC } from "react";
+import { useChatContext } from "../chat-context";
 import { RecordSpeech } from "./record-speech";
-import { useSpeechContext } from "./speech-context";
 import { StopSpeech } from "./stop-speech";
 
 interface MicrophoneProps {
@@ -8,10 +8,10 @@ interface MicrophoneProps {
 }
 
 export const Microphone: FC<MicrophoneProps> = (props) => {
-  const { isPlaying } = useSpeechContext();
+  const { speech } = useChatContext();
   return (
     <>
-      {isPlaying ? (
+      {speech.isPlaying ? (
         <StopSpeech disabled={props.disabled} />
       ) : (
         <RecordSpeech disabled={props.disabled} />
