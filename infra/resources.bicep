@@ -309,7 +309,6 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
         ]
         kind: 'Hash'
       }
-      defaultTtl: 86400
     }
   }
 }
