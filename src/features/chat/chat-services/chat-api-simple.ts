@@ -3,6 +3,7 @@ import { CosmosDBChatMessageHistory } from "@/features/langchain/memory/cosmosdb
 import { AI_NAME } from "@/features/theme/customise";
 import { LangChainStream, StreamingTextResponse } from "ai";
 import { ConversationChain } from "langchain/chains";
+import { createOpenAPIChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { BufferWindowMemory } from "langchain/memory";
 import {
@@ -22,6 +23,7 @@ import {
   AIPluginTool,
 } from "langchain/tools";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
+
 
 import plugin from "@tailwindcss/typography";
 
@@ -51,7 +53,8 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
     }),
   });
 
-  const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+  // The following code creates a chat prompt template
+  const chatPrompt = ChatPromptTemplate.fromMessages([
     SystemMessagePromptTemplate.fromTemplate(
       `-You are ${AI_NAME} who is a helpful AI Assistant.
       - You will provide clear and concise queries, and you will respond with polite and professional answers.
@@ -60,6 +63,16 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
     new MessagesPlaceholder("history"),
     HumanMessagePromptTemplate.fromTemplate("{input}"),
   ]);
+
+
+  // TESTING OPENAPI FUNCTIONS CHAIN
+
+
+
+  const chain = await createOpenAPIChain("https://api.speak.com/openapi.yaml", {llm: chat, verbose: true});
+  const result = await chain.run(`How would you say no thanks in Russian?`);
+  console.log(JSON.stringify(result, null, 2));
+
 
 
   // PLUGIN DEV JASON
