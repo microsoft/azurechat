@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Weather Data API",
+  "name_for_model": "Weather_Data",
+  "description_for_human": "Retrieve weather data for a given location.",
+  "description_for_model": "Assistant uses this to retrieve weather data for a given location.",
+  "auth": {
+      "type": "none"
+  },
+  "api": {
+      "type": "openapi",
+      "url": "https://example.com/openapi.yaml"
+  },
+  "logo_url": "https://example.com/logo.png",
+  "contact_email": "support@example.com",
+  "legal_info_url": "https://example.com/legal"
+}

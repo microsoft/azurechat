@@ -83,6 +83,9 @@ dependencies:
   next-themes:
     specifier: ^0.2.1
     version: 0.2.1(next@13.5.4)(react-dom@18.2.0)(react@18.2.0)
+  openai:
+    specifier: ^4.12.1
+    version: 4.12.1(encoding@0.1.13)
   postcss:
     specifier: ^8.4.27
     version: 8.4.31
@@ -4498,6 +4501,22 @@ packages:
       define-lazy-prop: 2.0.0
       is-docker: 2.2.1
       is-wsl: 2.2.0
+    dev: false
+
+  /openai@4.12.1(encoding@0.1.13):
+    resolution: {integrity: sha512-EAoUwm4dtiWvFwBhOCK/VfF8sj1ZU8+aAIJnfT4NyeTfrt1DM/6Gdd6fOZWTjBYryTAqu9Vpb5+9Wu6JMtm/gA==}
+    hasBin: true
+    dependencies:
+      '@types/node': 18.18.5
+      '@types/node-fetch': 2.6.6
+      abort-controller: 3.0.0
+      agentkeepalive: 4.5.0
+      digest-fetch: 1.3.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /openai@4.4.0(encoding@0.1.13):

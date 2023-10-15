@@ -1,0 +1,42 @@
+openapi: 3.0.1
+info:
+  title: Weather Plugin
+  description: A plugin that can provide weather data for a given location.
+  version: "v1"
+servers:
+  - url: https://echo-22222.azurewebsites.net/api
+paths:
+  /weather:
+    post:
+      operationId: getWeather
+      summary: Get the weather for the location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - location
+                - format
+              properties:
+                location:
+                  type: string
+                  description: The city and state, e.g. San Francisco, CA
+                format:
+                  type: string
+                  description: The temperature unit to use. Infer this from the users location.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  temperature:
+                    type: number
+                    description: The temperature in degrees Celsius.
+                  unit:
+                    type: string
+                    description: The unit of the temperature.
