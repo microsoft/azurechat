@@ -32,33 +32,41 @@ const ChatInput: FC<Props> = (props) => {
       onSubmit={submit}
       className="absolute bottom-0 w-full flex items-center"
     >
-      <div className="container mx-auto max-w-4xl relative py-2 flex gap-2 items-end">
-        <Textarea
-          rows={rows}
-          value={input}
-          placeholder="Send a message"
-          className="min-h-fit bg-background shadow-sm resize-none py-4 pr-[80px]"
-          onKeyUp={onKeyUp}
-          onKeyDown={onKeyDown}
-          onChange={onChange}
-        ></Textarea>
-        <div className="absolute right-0 bottom-0 px-8 flex items-end h-full mr-2 mb-4">
-          <Microphone disabled={isLoading} />
-          <Button
-            size="icon"
-            type="submit"
-            variant={"ghost"}
-            ref={buttonRef}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader className="animate-spin" size={16} />
-            ) : (
-              <Send size={16} />
-            )}
-          </Button>
+      <div className="grid grid-cols-1 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-2">
+        <div className="container">
+          <p className="text-sm text-muted-foreground">
+            DISCLAIMER: This is a demo app. Do not share any sensitive information.
+          </p>
         </div>
+        <div className="container mx-auto max-w-4xl relative py-2 flex gap-2 items-end">
+          <Textarea
+            rows={rows}
+            value={input}
+            placeholder="Send a message"
+            className="min-h-fit bg-background shadow-sm resize-none py-4 pr-[80px]"
+            onKeyUp={onKeyUp}
+            onKeyDown={onKeyDown}
+            onChange={onChange}
+          ></Textarea>
+          <div className="absolute right-0 bottom-0 px-8 flex items-end h-full mr-2 mb-4">
+            <Microphone disabled={isLoading} />
+            <Button
+              size="icon"
+              type="submit"
+              variant={"ghost"}
+              ref={buttonRef}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader className="animate-spin" size={16} />
+              ) : (
+                <Send size={16} />
+              )}
+            </Button>
+          </div>
+        </div>      
       </div>
+
     </form>
   );
 };
