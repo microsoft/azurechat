@@ -56,7 +56,7 @@ const LoadFile = async (formData: FormData) => {
       const blob = new Blob([file], { type: file.type });
 
       const poller = await client.beginAnalyzeDocument(
-        "prebuilt-document",
+        "prebuilt-read",
         await blob.arrayBuffer()
       );
       const { paragraphs } = await poller.pollUntilDone();
