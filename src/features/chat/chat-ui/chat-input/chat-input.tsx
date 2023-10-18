@@ -11,6 +11,8 @@ interface Props {}
 const ChatInput: FC<Props> = (props) => {
   const { setInput, handleSubmit, isLoading, input } = useChatContext();
 
+  const speechEnabled = process.env.NEXT_PUBLIC_SPEECH_ENABLED == "Y";
+
   const buttonRef = useRef<HTMLButtonElement>(null);
   const { rows, resetRows, onKeyDown, onKeyUp } = useChatInputDynamicHeight({
     buttonRef,
@@ -43,7 +45,7 @@ const ChatInput: FC<Props> = (props) => {
           onChange={onChange}
         ></Textarea>
         <div className="absolute right-0 bottom-0 px-8 flex items-end h-full mr-2 mb-4">
-          <Microphone disabled={isLoading} />
+          { speechEnabled && <Microphone disabled={isLoading} /> }
           <Button
             size="icon"
             type="submit"

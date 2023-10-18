@@ -62,6 +62,12 @@ Clone this repository locally or fork to your Github account. Run all of the the
     # Azure AI Document Intelligence to extract content from your data
     AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT="https://REGION.api.cognitive.microsoft.com/"
     AZURE_DOCUMENT_INTELLIGENCE_KEY=
+
+    # Azure Speech to Text to convert audio to text
+    # Enabled must be set to "Y" any other value will disable the feature
+    NEXT_PUBLIC_SPEECH_ENABLED=Y
+    AZURE_SPEECH_REGION=<region, e.g. australiaeast>
+    AZURE_SPEECH_KEY=
       ```
   </details>
   
