@@ -18,8 +18,8 @@ export const ChatMessageEmptyState: FC<Prop> = (props) => {
       <div className="col-span-2 gap-5 flex flex-col flex-1">
         <img src="/ai-icon.png" className="w-36" />
         <p className="">
-          Start by just typing your message in the box below. You can also
-          personalise the chat by making changes to the settings on the right.
+          Start by selecting the scenario you want to engage on. <br/>
+          Then introduce yourself in the message box below.
         </p>
       </div>
       <Card className="col-span-3 flex flex-col gap-5 p-5 ">
@@ -29,17 +29,17 @@ export const ChatMessageEmptyState: FC<Prop> = (props) => {
 
         <div className="flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">
-            Choose a conversation style
+            Choose a conversation scenario
           </p>
-          <ChatStyleSelector disable={false} />
+          <ChatStyleSelector disable={false} orientation="vertical" />
         </div>
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">
             How would you like to chat?
           </p>
           <ChatTypeSelector disable={false} />
         </div>
-        {showFileUpload === "data" && <ChatFileUI />}
+        {showFileUpload === "data" && <ChatFileUI />} */}
       </Card>
     </div>
   );

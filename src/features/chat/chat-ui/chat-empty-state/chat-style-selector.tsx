@@ -1,25 +1,59 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brush, CircleDot, Scale } from "lucide-react";
+// import { Brush, CircleDot, Scale } from "lucide-react";
+import { Award, FileText, SearchCheck, Target } from "lucide-react";
 import { FC } from "react";
-import { ConversationStyle } from "../../chat-services/models";
+import { cn } from "@/lib/utils";
+import { ChatScenario } from "../../chat-services/models";
 import { useChatContext } from "../chat-context";
 
 interface Prop {
   disable: boolean;
+  orientation: string;
 }
 
 export const ChatStyleSelector: FC<Prop> = (props) => {
-  const { onConversationStyleChange, chatBody } = useChatContext();
+  const { onChatScenarioChange, chatBody } = useChatContext();
 
   return (
     <Tabs
-      defaultValue={chatBody.conversationStyle}
+      defaultValue={chatBody.chatScenario}
       onValueChange={(value) =>
-        onConversationStyleChange(value as ConversationStyle)
+        onChatScenarioChange(value as ChatScenario)
       }
     >
-      <TabsList className="grid w-full grid-cols-3 h-12 items-stretch">
+      <TabsList className={cn(
+        "grid w-full items-stretch ",
+        props.orientation === "vertical" ? "grid-cols-1 h-40" : "grid-cols-4 h-12"
+      )}>
+      <TabsTrigger
+          value="career-planner-full"
+          className="flex gap-2"
+          disabled={props.disable}
+        >
+          <Award size={20} /> Full Career Planner
+        </TabsTrigger>
         <TabsTrigger
+          value="career-planner-resume"
+          className="flex gap-2"
+          disabled={props.disable}
+        >
+          <FileText size={20} /> Resume Career Planner
+        </TabsTrigger>
+        <TabsTrigger
+          value="role-finder"
+          className="flex gap-2"
+          disabled={props.disable}
+        >
+          <SearchCheck size={20} /> Role Finder
+        </TabsTrigger>
+        <TabsTrigger
+          value="skills-assessment"
+          className="flex gap-2"
+          disabled={props.disable}
+        >
+          <Target size={20} /> Skills Assessment
+        </TabsTrigger>
+        {/* <TabsTrigger
           value="creative"
           className="flex gap-2"
           disabled={props.disable}
@@ -39,7 +73,7 @@ export const ChatStyleSelector: FC<Prop> = (props) => {
           disabled={props.disable}
         >
           <CircleDot size={20} /> Precise
-        </TabsTrigger>
+        </TabsTrigger> */}
       </TabsList>
     </Tabs>
   );

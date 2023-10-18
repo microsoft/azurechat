@@ -10,8 +10,8 @@ export const ChatHeader: FC<Prop> = (props) => {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2">
-        <ChatTypeSelector disable={true} />
-        <ChatStyleSelector disable={true} />
+        {/* <ChatTypeSelector disable={true} /> */}
+        <ChatStyleSelector disable={true} orientation="horiztonal" />
       </div>
       <div className="flex gap-2 h-2">
         <p className="text-xs">{chatBody.chatOverFileName}</p>

@@ -19,6 +19,9 @@ export const ChatUI: FC<Prop> = () => {
         <ChatMessageEmptyState />
       )}
 
+      <div className="absolute bottom-0 w-full flex justify-center text-sm text-muted-foreground">
+        Chat powered by Azure Open AI. It may produce inaccurate information. Treat information provided as talking points only.
+      </div>
       <ChatInput />
     </div>
   );

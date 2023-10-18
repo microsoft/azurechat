@@ -38,7 +38,7 @@ const ChatInput: FC<Props> = (props) => {
   return (
     <form
       onSubmit={submit}
-      className="absolute bottom-0 w-full flex items-center"
+      className="absolute bottom-5 w-full flex items-center"
     >
       <div className="container mx-auto max-w-4xl relative py-2 flex gap-2 items-center">
         {fileCHatVisible && <ChatFileSlider />}
