@@ -35,9 +35,12 @@ param searchServiceIndexName string = 'azure-chat'
 param searchServiceSkuName string = 'standard'
 param searchServiceAPIVersion string = '2023-07-01-Preview'
 
-param resourceGroupName string = ''
+param envName string
+param resourceGroupName string = '${name}-${envName}-rg'
 
-var resourceToken = toLower(uniqueString(subscription().id, name, location))
+var resourceToken = envName
+// toLower(uniqueString(subscription().id, name, location))
+
 var tags = { 'azd-env-name': name }
 
 // Organize resources in a resource group
