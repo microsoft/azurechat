@@ -100,9 +100,9 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
       minTlsVersion: '1.2'
       appSettings: [
         {
-          name: 'SCM_DO_BUILD_DURING_DEPLOYMENT',
+          name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
           value: 'false'
-        },
+        }
         {
           name: 'AZURE_COSMOSDB_KEY'
           value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_COSMOSDB_KEY.name})'

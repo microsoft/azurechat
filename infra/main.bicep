@@ -17,7 +17,7 @@ param location string
     type: 'location'
   }
 })
-param openAILocation string
+param openAILocation string = 'northcentralus'
 
 param openAISku string = 'S0'
 param openAIApiVersion string = '2023-03-15-preview'
@@ -35,7 +35,7 @@ param searchServiceIndexName string = 'azure-chat'
 param searchServiceSkuName string = 'standard'
 param searchServiceAPIVersion string = '2023-07-01-Preview'
 
-param envName string
+param envName string = 'dev'
 param resourceGroupName string = '${name}-${envName}-rg'
 
 var resourceToken = envName
