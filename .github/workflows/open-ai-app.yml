@@ -96,6 +96,7 @@ jobs:
         with:
           app-name: ${{ secrets.WUIT_AZURE_NONPROD_GPT_AZURE_APP_SERVICE_NAME }}
           package: ${{ github.workspace }}/Nextjs-site.zip
+          publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: 🧹 Cleanup
         run: rm ${{ github.workspace }}/Nextjs-site.zip
