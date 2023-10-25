@@ -11,7 +11,7 @@ param location string
 
 // azure open ai 
 @description('Location for the OpenAI resource group')
-@allowed(['canadaeast', 'eastus', 'francecentral', 'japaneast', 'northcentralus'])
+@allowed(['canadaeast', 'eastus', 'francecentral', 'japaneast', 'northcentralus', 'australieast'])
 @metadata({
   azd: {
     type: 'location'
