@@ -87,49 +87,53 @@ const ChatRow: FC<ChatRowProps> = (props) => {
         >
           {/* https://github.com/vercel-labs/ai-chatbot/blob/main/components/markdown.tsx */}
           {props.type === "assistant" ? (
-            <MemoizedReactMarkdown
-              className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-none"
-              remarkPlugins={[remarkGfm, remarkMath]}
-              components={{
-                p({ children }) {
-                  return <p className="mb-2 last:mb-0">{children}</p>;
-                },
-                code({ node, inline, className, children, ...props }) {
-                  if (children.length) {
-                    if (children[0] == "▍") {
+            <>
+              <MemoizedReactMarkdown
+                className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-none"
+                remarkPlugins={[remarkGfm, remarkMath]}
+                components={{
+                  p({ children }) {
+                    return <p className="mb-2 last:mb-0">{children}</p>;
+                  },
+                  code({ node, inline, className, children, ...props }) {
+                    if (children.length) {
+                      if (children[0] == "▍") {
+                        return (
+                          <span className="mt-1 animate-pulse cursor-default">
+                            ▍
+                          </span>
+                        );
+                      }
+
+                      children[0] = (children[0] as string).replace("`▍`", "▍");
+                    }
+
+                    const match = /language-(\w+)/.exec(className || "");
+
+                    if (inline) {
                       return (
-                        <span className="mt-1 animate-pulse cursor-default">
-                          ▍
-                        </span>
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
                       );
                     }
 
-                    children[0] = (children[0] as string).replace("`▍`", "▍");
-                  }
-
-                  const match = /language-(\w+)/.exec(className || "");
-
-                  if (inline) {
                     return (
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
+                      <CodeBlock
+                        key={Math.random()}
+                        language={(match && match[1]) || ""}
+                        value={String(children).replace(/\n$/, "")}
+                        {...props}
+                      />
                     );
-                  }
+                  },
+                }}
+              >
+                {props.message}
+              </MemoizedReactMarkdown>
 
-                  return (
-                    <CodeBlock
-                      key={Math.random()}
-                      language={(match && match[1]) || ""}
-                      value={String(children).replace(/\n$/, "")}
-                      {...props}
-                    />
-                  );
-                },
-              }}
-            >
-              {props.message}
-            </MemoizedReactMarkdown>
+              <p className="text-xs text-gray-400 mt-2">AI-generated content may be incorrect.</p>
+            </>
           ) : (
             props.message
           )}
