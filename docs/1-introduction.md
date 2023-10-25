@@ -44,6 +44,8 @@ The following Azure services can be deployed to expand the feature set of your s
 
 - [Azure OpenAI Embeddings](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/embeddings?tabs=console) for embed content extracted from files.
 
+- [Azure Speech Service](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/): Speech recognition and generation with multi-lingual support and the ability to select and create custom voices.
+
 # Solution Architecture
 
 The following high-level diagram depicts the architecture of the solution accelerator:
