@@ -48,7 +48,7 @@ You can deploy the application using one of the following options:
 ### 2. Azure Portal Deployment
 
 > **Warning**
-> This button will only create Azure resources. You will still need to deploy the application by following the [deploy to Azure section](./azurechat/docs/4-deploy-to-azure.md) to build and deploy the application using GitHub actions.
+> This button will only create Azure resources. You will still need to deploy the application by following the [deploy to Azure section](docs/4-deploy-to-azure.md) to build and deploy the application using GitHub actions.
 
 Click on the Deploy to Azure button to deploy the Azure resources for the application.
 
@@ -57,7 +57,7 @@ Click on the Deploy to Azure button to deploy the Azure resources for the applic
 ## Setup Authentication
 
 > **Important**
-> The application is protected by an identity provider and follow the steps in [Add an identity provider](./azurechat/docs/5-add-identity.md) section for adding authentication to your app.
+> The application is protected by an identity provider and follow the steps in [Add an identity provider](docs/5-add-identity.md) section for adding authentication to your app.
 
 [Next](./docs/1-introduction.md)
 
