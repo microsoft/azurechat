@@ -1,10 +1,8 @@
 import { userHashedId } from "@/features/auth/helpers";
-import { CosmosDBChatMessageHistory } from "@/features/langchain/memory/cosmosdb/cosmosdb";
 import { LangChainStream, StreamingTextResponse } from "ai";
 import { loadQAMapReduceChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { BufferWindowMemory } from "langchain/memory";
 import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
@@ -45,21 +43,21 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
 
   const userId = await userHashedId();
 
-  const memory = new BufferWindowMemory({
-    k: 100,
-    returnMessages: true,
-    memoryKey: "history",
-    chatHistory: new CosmosDBChatMessageHistory({
-      sessionId: id,
-      userId: userId,
-    }),
-  });
+  // const memory = new BufferWindowMemory({
+  //   k: 100,
+  //   returnMessages: true,
+  //   memoryKey: "history",
+  //   chatHistory: new CosmosDBChatMessageHistory({
+  //     sessionId: id,
+  //     userId: userId,
+  //   }),
+  // });
 
   chain.call(
     {
       input_documents: relevantDocuments,
       question: lastHumanMessage.content,
-      memory: memory,
+      // memory: memory,
     },
     [handlers]
   );

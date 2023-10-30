@@ -1,37 +1,33 @@
 import {
+  FindAllChats,
+  UpsertChat,
+} from "@/features/chat/chat-services/chat-service";
+import {
   ChatMessageModel,
   MESSAGE_ATTRIBUTE,
 } from "@/features/chat/chat-services/models";
 import { CosmosDBContainer } from "@/features/common/cosmos";
-import {
-  AIMessage,
-  BaseListChatMessageHistory,
-  BaseMessage,
-} from "langchain/schema";
 import { nanoid } from "nanoid";
-import { mapStoredMessagesToChatMessages } from "../utils";
-import { addChatMessage, getChatMessages } from "./cosmosdb-chat-service";
+import { ChatCompletionMessage } from "openai/resources";
+import { mapOpenAIChatMessages } from "../utils";
 
 export interface CosmosDBChatMessageHistoryFields {
   sessionId: string;
   userId: string;
 }
 
-export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
-  lc_namespace = ["langchain", "stores", "message", "cosmosdb"];
-
+export class CosmosDBChatMessageHistory {
   private sessionId: string;
   private userId: string;
 
   constructor({ sessionId, userId }: CosmosDBChatMessageHistoryFields) {
-    super();
     this.sessionId = sessionId;
     this.userId = userId;
   }
 
-  async getMessages(): Promise<BaseMessage[]> {
-    const resources = await getChatMessages(this.sessionId);
-    return mapStoredMessagesToChatMessages(resources);
+  async getMessages(): Promise<ChatCompletionMessage[]> {
+    const chats = await FindAllChats(this.sessionId);
+    return mapOpenAIChatMessages(chats);
   }
 
   async clear(): Promise<void> {
@@ -39,18 +35,18 @@ export class CosmosDBChatMessageHistory extends BaseListChatMessageHistory {
     await container.delete();
   }
 
-  async addMessage(message: BaseMessage) {
+  async addMessage(message: ChatCompletionMessage) {
     const modelToSave: ChatMessageModel = {
       id: nanoid(),
       createdAt: new Date(),
       type: MESSAGE_ATTRIBUTE,
       isDeleted: false,
-      content: message.content,
-      role: message instanceof AIMessage ? "assistant" : "user",
+      content: message.content ?? "",
+      role: message.role,
       threadId: this.sessionId,
       userId: this.userId,
     };
 
-    await addChatMessage(modelToSave);
+    await UpsertChat(modelToSave);
   }
 }
