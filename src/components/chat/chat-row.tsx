@@ -94,7 +94,7 @@ const ChatRow: FC<ChatRowProps> = (props) => {
                 p({ children }) {
                   return <p className="mb-2 last:mb-0">{children}</p>;
                 },
-                code({ node, inline, className, children, ...props }) {
+                code({ node, inline, className, children, ...props }: any) {
                   if (children.length) {
                     if (children[0] == "▍") {
                       return (
