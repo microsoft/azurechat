@@ -12,6 +12,7 @@ export interface ChatMessageModel {
   userId: string;
   content: string;
   role: ChatRole;
+  context: string;
   type: "CHAT_MESSAGE";
 }
 

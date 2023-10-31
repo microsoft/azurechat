@@ -77,5 +77,6 @@ export const newChatModel = (): ChatMessageModel => {
     createdAt: new Date(),
     type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
+    context: "",
   };
 };

@@ -22,7 +22,7 @@ const CONTEXT_PROMPT = ({
   - You must always include markdown formatted *references* separated by newline. \n
   - The format of the reference is:\n
   *References:*  \n
-  [1].[name](url)  \n [2].[name](url)  \n [3].[name](url)\n 
+  [1].[file name](url)  \n [2].[file name](url)  \n
   - You must always return markdown formatted response.\n 
   ----------------\n 
   context:\n 
@@ -94,10 +94,13 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
           role: "user",
         });
 
-        await chatHistory.addMessage({
-          content: completion,
-          role: "assistant",
-        });
+        await chatHistory.addMessage(
+          {
+            content: completion,
+            role: "assistant",
+          },
+          context
+        );
       },
     });
 
