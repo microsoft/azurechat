@@ -1,25 +1,12 @@
-import { Callbacks } from "langchain/callbacks";
-import { Document } from "langchain/document";
-import { Embeddings } from "langchain/embeddings/base";
-import { VectorStore } from "langchain/vectorstores/base";
-import { nanoid } from "nanoid";
+import { OpenAIEmbeddingInstance } from "@/features/common/openai";
 
-// example index model below
-// export interface AzureCogDocumentIndex extends Record<string, unknown> {
-//     id: string;
-//     content: string;
-//     user: string;
-//     embedding?: number[];
-//     pageContent: string;
-//     metadata: any;
-//   }
-
-interface AzureSearchConfig {
-  name: string;
-  indexName: string;
-  apiKey: string;
-  apiVersion: string;
-  vectorFieldName: string;
+export interface AzureCogDocumentIndex {
+  id: string;
+  pageContent: string;
+  embedding?: number[];
+  user: string;
+  chatThreadId: string;
+  metadata: string;
 }
 
 interface DocumentSearchResponseModel<TModel> {
@@ -35,7 +22,7 @@ type DocumentDeleteModel = {
   "@search.action": "delete";
 };
 
-export interface AzureCogDocument extends Record<string, unknown> {}
+export interface AzureCogDocument {}
 
 type AzureCogVectorField = {
   value: number[];
@@ -48,7 +35,6 @@ type AzureCogFilter = {
   facets?: string[];
   filter?: string;
   top?: number;
-  vectorFields: string;
 };
 
 type AzureCogRequestObject = {
@@ -59,199 +45,190 @@ type AzureCogRequestObject = {
   top: number;
 };
 
-export class AzureCogSearch<
-  TModel extends Record<string, unknown>
-> extends VectorStore {
-  private _config: AzureSearchConfig;
+export const search = async (
+  filter?: AzureCogFilter
+): Promise<Array<AzureCogDocumentIndex & DocumentSearchModel>> => {
+  const url = `${baseIndexUrl()}/docs/search?api-version=${
+    process.env.AZURE_SEARCH_API_VERSION
+  }`;
 
-  constructor(embeddings: Embeddings, dbConfig: AzureSearchConfig) {
-    super(embeddings, dbConfig);
-    this._config = dbConfig;
-  }
-
-  _vectorstoreType(): string {
-    return "azure-cog-search";
-  }
-
-  get config(): AzureSearchConfig {
-    return this._config;
-  }
-
-  get baseUrl(): string {
-    return `https://${this._config.name}.search.windows.net/indexes/${this._config.indexName}/docs`;
-  }
-
-  async addDocuments(documents: Document<TModel>[]): Promise<string[]> {
-    const texts = documents.map(({ pageContent }) => pageContent);
-    return this.addVectors(
-      await this.embeddings.embedDocuments(texts),
-      documents
-    );
-  }
-
-  async deleteDocuments(chatThreadId: string): Promise<void> {
-    // find all documents for chat thread
-    const documentsInChat = await this.fetcher(
-      `${this.baseUrl}?api-version=${this._config.apiVersion}&search=${chatThreadId}&searchFields=chatThreadId&$select=id`,
-      {
-        method: "GET",
-        body: null,
-      }
-    );
-
-    const documentsToDelete: DocumentDeleteModel[] = [];
-
-    documentsInChat.value.forEach(async (document: { id: string }) => {
-      const doc: DocumentDeleteModel = {
-        "@search.action": "delete",
-        id: document.id,
-      };
-      documentsToDelete.push(doc);
-    });
-
-    // delete the documents
-    const responseObj = await this.fetcher(
-      `${this.baseUrl}/index?api-version=${this._config.apiVersion}`,
-      {
-        method: "POST",
-        body: JSON.stringify({ value: documentsToDelete }),
-      }
-    );
-  }
-  /**
-   * Search for the most similar documents to a query
-   */
-  async similaritySearch(
-    query: string,
-    k?: number,
-    filter?: AzureCogFilter
-  ): Promise<Document<TModel>[]> {
-    const results = await this.similaritySearchVectorWithScore(
-      await this.embeddings.embedQuery(query),
-      k || 4,
-      filter
-    );
-
-    return results.map(([doc, _score]) => doc);
-  }
-
-  /**
-   * Search for the most similar documents to a query,
-   * and return their similarity score
-   */
-  async similaritySearchWithScore(
-    query: string,
-    k?: number,
-    filter?: AzureCogFilter,
-    _callbacks: Callbacks | undefined = undefined
-  ): Promise<[Document<TModel>, number][]> {
-    const embeddings = await this.embeddings.embedQuery(query);
-    return this.similaritySearchVectorWithScore(embeddings, k || 5, filter);
-  }
-
-  /**
-   * Advanced: Add more documents to an existing VectorStore,
-   * when you already have their embeddings
-   */
-  async addVectors(
-    vectors: number[][],
-    documents: Document<TModel>[]
-  ): Promise<string[]> {
-    const indexes: Array<any> = [];
-
-    documents.forEach((document, i) => {
-      indexes.push({
-        id: nanoid().replace("_", ""),
-        ...document,
-        [this._config.vectorFieldName]: vectors[i],
-      });
-    });
-
-    // run through indexes and if the id has _ then remove it
-    indexes.forEach((index) => {
-      if (index.id.includes("_")) {
-        index.id = index.id.replace("_", "");
-      }
-    });
-
-    const documentIndexRequest: DocumentSearchResponseModel<TModel> = {
-      value: indexes,
-    };
-
-    const url = `${this.baseUrl}/index?api-version=${this._config.apiVersion}`;
-    const responseObj = await this.fetcher(url, {
-      method: "POST",
-      body: JSON.stringify(documentIndexRequest),
-    });
-    return responseObj.value.map((doc: any) => doc.key);
-  }
-
-  public async ensureIndexIsCreated(): Promise<void> {
-    const url = `https://${this.config.name}.search.windows.net/indexes/${this.config.indexName}?api-version=${this.config.apiVersion}`;
-    try {
-      await this.fetcher(url);
-    } catch (e) {
-      await this.createIndex();
-    }
-  }
-
-  /**
-   * Advanced: Search for the most similar documents to a query,
-   * when you already have the embedding of the query
-   */
-  async similaritySearchVectorWithScore(
-    query: number[],
-    k: number,
-    filter?: AzureCogFilter
-  ): Promise<[Document<TModel>, number][]> {
-    const url = `${this.baseUrl}/search?api-version=${this._config.apiVersion}`;
-
-    const searchBody: AzureCogRequestObject = {
-      search: filter?.search || "*",
-      facets: filter?.facets || [],
-      filter: filter?.filter || "",
-      vectors: [{ value: query, fields: filter?.vectorFields || "", k: k }],
-      top: filter?.top || k,
-    };
-
-    const resultDocuments = (await this.fetcher(url, {
-      method: "POST",
-      body: JSON.stringify(searchBody),
-    })) as DocumentSearchResponseModel<Document<TModel> & DocumentSearchModel>;
-
-    return resultDocuments.value.map((doc) => [doc, doc["@search.score"] || 0]);
-  }
-
-  private fetcher = async (url: string, init?: RequestInit) => {
-    const response = await fetch(url, {
-      ...init,
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": this._config.apiKey,
-      },
-      cache: "no-cache",
-    });
-
-    if (!response.ok) {
-      if (response.status === 400) {
-        const err = await response.json();
-        throw new Error(err.error.message);
-      } else {
-        throw new Error(`Azure Cog Search Error: ${response.statusText}`);
-      }
-    }
-
-    return await response.json();
+  const searchBody: AzureCogRequestObject = {
+    search: filter?.search || "*",
+    facets: filter?.facets || [],
+    filter: filter?.filter || "",
+    vectors: [],
+    top: filter?.top || 10,
   };
 
-  public async createIndex(): Promise<void> {
-    const url = `https://${this.config.name}.search.windows.net/indexes?api-version=${this.config.apiVersion}`;
-    await this.fetcher(url, {
+  const resultDocuments = (await fetcher(url, {
+    method: "POST",
+    body: JSON.stringify(searchBody),
+  })) as DocumentSearchResponseModel<
+    AzureCogDocumentIndex & DocumentSearchModel
+  >;
+
+  return resultDocuments.value;
+};
+
+export const similaritySearchVectorWithScore = async (
+  query: string,
+  k: number,
+  filter?: AzureCogFilter
+): Promise<Array<AzureCogDocumentIndex & DocumentSearchModel>> => {
+  const openai = OpenAIEmbeddingInstance();
+
+  const embeddings = await openai.embeddings.create({
+    input: query,
+    model: process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
+  });
+
+  const url = `${baseIndexUrl()}/docs/search?api-version=${
+    process.env.AZURE_SEARCH_API_VERSION
+  }`;
+
+  const searchBody: AzureCogRequestObject = {
+    search: filter?.search || "*",
+    facets: filter?.facets || [],
+    filter: filter?.filter || "",
+    vectors: [
+      { value: embeddings.data[0].embedding, fields: "embedding", k: k },
+    ],
+    top: filter?.top || k,
+  };
+
+  const resultDocuments = (await fetcher(url, {
+    method: "POST",
+    body: JSON.stringify(searchBody),
+  })) as DocumentSearchResponseModel<
+    AzureCogDocumentIndex & DocumentSearchModel
+  >;
+
+  return resultDocuments.value;
+};
+
+export const indexDocuments = async (
+  documents: Array<AzureCogDocumentIndex>
+): Promise<void> => {
+  const url = `${baseIndexUrl()}/docs/index?api-version=${
+    process.env.AZURE_SEARCH_API_VERSION
+  }`;
+
+  await embedDocuments(documents);
+  const documentIndexRequest: DocumentSearchResponseModel<AzureCogDocumentIndex> =
+    {
+      value: documents,
+    };
+
+  await fetcher(url, {
+    method: "POST",
+    body: JSON.stringify(documentIndexRequest),
+  });
+};
+
+export const deleteDocuments = async (chatThreadId: string): Promise<void> => {
+  // find all documents for chat thread
+
+  const documentsInChat = await search({
+    filter: `chatThreadId eq '${chatThreadId}'`,
+  });
+
+  const documentsToDelete: DocumentDeleteModel[] = [];
+
+  documentsInChat.forEach(async (document: { id: string }) => {
+    const doc: DocumentDeleteModel = {
+      "@search.action": "delete",
+      id: document.id,
+    };
+    documentsToDelete.push(doc);
+  });
+
+  // delete the documents
+  await fetcher(
+    `${baseIndexUrl()}/docs/index?api-version=${
+      process.env.AZURE_SEARCH_API_VERSION
+    }`,
+    {
       method: "POST",
-      body: JSON.stringify(AZURE_SEARCH_INDEX),
+      body: JSON.stringify({ value: documentsToDelete }),
+    }
+  );
+};
+
+export const embedDocuments = async (
+  documents: Array<AzureCogDocumentIndex>
+) => {
+  const openai = OpenAIEmbeddingInstance();
+
+  try {
+    const contentsToEmbed = documents.map((d) => d.pageContent);
+
+    const embeddings = await openai.embeddings.create({
+      input: contentsToEmbed,
+      model: process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
     });
+
+    embeddings.data.forEach((embedding, index) => {
+      documents[index].embedding = embedding.embedding;
+    });
+  } catch (e) {
+    console.log(e);
+    const error = e as any;
+    throw new Error(`${e} with code ${error.status}`);
   }
-}
+};
+
+const baseUrl = (): string => {
+  return `https://${process.env.AZURE_SEARCH_NAME}.search.windows.net/indexes`;
+};
+
+const baseIndexUrl = (): string => {
+  return `https://${process.env.AZURE_SEARCH_NAME}.search.windows.net/indexes/${process.env.AZURE_SEARCH_INDEX_NAME}`;
+};
+
+const fetcher = async (url: string, init?: RequestInit) => {
+  const response = await fetch(url, {
+    ...init,
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": process.env.AZURE_SEARCH_API_KEY,
+    },
+  });
+
+  if (!response.ok) {
+    if (response.status === 400) {
+      const err = await response.json();
+      throw new Error(err.error.message);
+    } else {
+      throw new Error(`Azure Cog Search Error: ${response.statusText}`);
+    }
+  }
+
+  return await response.json();
+};
+
+export const ensureIndexIsCreated = async (): Promise<void> => {
+  const url = `${baseIndexUrl()}?api-version=${
+    process.env.AZURE_SEARCH_API_VERSION
+  }`;
+
+  try {
+    await fetcher(url);
+  } catch (e) {
+    await createCogSearchIndex();
+  }
+};
+
+const createCogSearchIndex = async (): Promise<void> => {
+  const url = `${baseUrl()}?api-version=${
+    process.env.AZURE_SEARCH_API_VERSION
+  }`;
+
+  await fetcher(url, {
+    method: "POST",
+    body: JSON.stringify(AZURE_SEARCH_INDEX),
+  });
+};
 
 const AZURE_SEARCH_INDEX = {
   name: process.env.AZURE_SEARCH_INDEX_NAME,
