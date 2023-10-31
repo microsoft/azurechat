@@ -34,7 +34,7 @@ export class CosmosDBChatMessageHistory {
     await container.delete();
   }
 
-  async addMessage(message: ChatCompletionMessage) {
+  async addMessage(message: ChatCompletionMessage, citations: string = "") {
     const modelToSave: ChatMessageModel = {
       id: uniqueId(),
       createdAt: new Date(),
@@ -44,6 +44,7 @@ export class CosmosDBChatMessageHistory {
       role: message.role,
       threadId: this.sessionId,
       userId: this.userId,
+      context: citations,
     };
 
     await UpsertChat(modelToSave);
