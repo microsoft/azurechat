@@ -3,8 +3,8 @@ import "server-only";
 
 import { userHashedId, userSession } from "@/features/auth/helpers";
 import { FindAllChats } from "@/features/chat/chat-services/chat-service";
+import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
-import { nanoid } from "nanoid";
 import { CosmosDBContainer } from "../../common/cosmos";
 import { deleteDocuments } from "../vector-stores/azure-cog-search/azure-cog-vector-store";
 import { FindAllChatDocuments } from "./chat-document-service";
@@ -171,7 +171,7 @@ export const CreateChatThread = async () => {
     name: "new chat",
     useName: (await userSession())!.name,
     userId: await userHashedId(),
-    id: nanoid(),
+    id: uniqueId(),
     createdAt: new Date(),
     isDeleted: false,
     chatType: "simple",

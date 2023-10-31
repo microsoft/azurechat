@@ -3,6 +3,7 @@
 import { userHashedId } from "@/features/auth/helpers";
 import { CosmosDBContainer } from "@/features/common/cosmos";
 
+import { uniqueId } from "@/features/common/util";
 import {
   AzureKeyCredential,
   DocumentAnalysisClient,
@@ -10,7 +11,6 @@ import {
 import { SqlQuerySpec } from "@azure/cosmos";
 import { Document } from "langchain/document";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { nanoid } from "nanoid";
 import {
   AzureCogDocumentIndex,
   ensureIndexIsCreated,
@@ -111,9 +111,10 @@ export const IndexDocuments = async (
 ): Promise<ServerActionResponse<AzureCogDocumentIndex[]>> => {
   try {
     const documentsToIndex: AzureCogDocumentIndex[] = [];
+
     for (const doc of docs) {
       const docToAdd: AzureCogDocumentIndex = {
-        id: nanoid(),
+        id: uniqueId(),
         chatThreadId,
         user: await userHashedId(),
         pageContent: doc,
@@ -133,6 +134,7 @@ export const IndexDocuments = async (
       response: documentsToIndex,
     };
   } catch (e) {
+    console.log(e);
     return {
       success: false,
       error: (e as Error).message,
@@ -185,7 +187,7 @@ export const UpsertChatDocument = async (
 ) => {
   const modelToSave: ChatDocumentModel = {
     chatThreadId: chatThreadID,
-    id: nanoid(),
+    id: uniqueId(),
     userId: await userHashedId(),
     createdAt: new Date(),
     type: CHAT_DOCUMENT_ATTRIBUTE,

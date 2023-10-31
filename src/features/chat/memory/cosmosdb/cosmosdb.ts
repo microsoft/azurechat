@@ -7,7 +7,7 @@ import {
   MESSAGE_ATTRIBUTE,
 } from "@/features/chat/chat-services/models";
 import { CosmosDBContainer } from "@/features/common/cosmos";
-import { nanoid } from "nanoid";
+import { uniqueId } from "@/features/common/util";
 import { ChatCompletionMessage } from "openai/resources";
 
 export interface CosmosDBChatMessageHistoryFields {
@@ -36,7 +36,7 @@ export class CosmosDBChatMessageHistory {
 
   async addMessage(message: ChatCompletionMessage) {
     const modelToSave: ChatMessageModel = {
-      id: nanoid(),
+      id: uniqueId(),
       createdAt: new Date(),
       type: MESSAGE_ATTRIBUTE,
       isDeleted: false,
