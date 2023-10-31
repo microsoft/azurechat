@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { VersionDisplay } from "@/features/update/version-display";
+import { VersionDisplay } from "@/features/change-log/version-display";
 import { promises as fs } from "fs";
 import { Suspense } from "react";
 import ReactMarkdown from "react-markdown";
