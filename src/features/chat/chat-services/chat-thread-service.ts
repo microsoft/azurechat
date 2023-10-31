@@ -3,9 +3,11 @@ import "server-only";
 
 import { userHashedId, userSession } from "@/features/auth/helpers";
 import { FindAllChats } from "@/features/chat/chat-services/chat-service";
+import { deleteDocuments } from "@/features/langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { nanoid } from "nanoid";
 import { CosmosDBContainer } from "../../common/cosmos";
+import { FindAllChatDocuments } from "./chat-document-service";
 import {
   CHAT_THREAD_ATTRIBUTE,
   ChatMessageModel,
@@ -14,7 +16,6 @@ import {
   ConversationStyle,
   PromptGPTProps,
 } from "./models";
-import { FindAllChatDocuments, DeleteDocuments } from "./chat-document-service";
 
 export const FindAllChatThreadForCurrentUser = async () => {
   const container = await CosmosDBContainer.getInstance().getContainer();
@@ -97,7 +98,7 @@ export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
     const chatDocuments = await FindAllChatDocuments(chatThreadID);
 
     if (chatDocuments.length !== 0) {
-      await DeleteDocuments(chatThreadID);
+      await deleteDocuments(chatThreadID);
     }
 
     chatDocuments.forEach(async (chatDocument) => {
@@ -176,7 +177,7 @@ export const CreateChatThread = async () => {
     chatType: "simple",
     conversationStyle: "precise",
     type: CHAT_THREAD_ATTRIBUTE,
-    chatOverFileName: ""
+    chatOverFileName: "",
   };
 
   const container = await CosmosDBContainer.getInstance().getContainer();

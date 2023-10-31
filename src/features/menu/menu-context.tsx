@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 interface MenuContextProps {
   isMenuOpen: boolean;
@@ -24,4 +24,4 @@ export const MenuProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useMenuContext = () => React.useContext(MenuContext);
+export const useMenuContext = () => useContext(MenuContext);
