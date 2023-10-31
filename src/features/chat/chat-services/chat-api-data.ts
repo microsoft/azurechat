@@ -21,11 +21,6 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
     userId: userId,
   });
 
-  await chatHistory.addMessage({
-    content: lastHumanMessage.content,
-    role: "user",
-  });
-
   const history = await chatHistory.getMessages();
   const topHistory = history.slice(history.length - 30, history.length);
 
@@ -37,33 +32,41 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
   const context = relevantDocuments
     .map(
       (result, index) =>
-        `Document content: ${result.pageContent.replace(
+        `[${result.metadata}]. ${result.pageContent.replace(
           /(\r\n|\n|\r)/gm,
           ""
-        )}\n Reference: [${encodeURIComponent(
+        )}\n\n [${
+          index + 1
+        }]. https://YOUR_FILE_LOCATION.com/${encodeURIComponent(
           result.metadata
-        )}] (https://YOUR_FILE_LOCATION.com/${encodeURIComponent(
-          result.metadata
-        )})`
+        )}\n`
     )
-    .join("\n\n");
+    .join("\n\n ------------------ \n\n");
 
   try {
     const response = await openAI.chat.completions.create({
       messages: [
         {
           role: "system",
-          content: `-You are ${AI_NAME} who is a helpful AI Assistant.
-- Given the following extracted parts of a long document, create a final answer. 
-- If you don't know the answer, just say that you don't know. Don't try to make up an answer.
-- In your answer, you must always include a *reference* section at the bottom. 
-- You must always include *reference* from the context you are using, add its link to the reference e.g. 1. [Document name](https://YOUR_FILE_LOCATION.com/)
-- You must always return markdown formatted response.
-----------------
-context:
-${context}`,
+          content: `You are ${AI_NAME} who is a helpful AI Assistant.`,
         },
         ...topHistory,
+        {
+          role: "user",
+          content: `
+- Given the following extracted parts of a long document, create a final answer. \n
+- If you don't know the answer, just say that you don't know. Don't try to make up an answer.\n
+- You must always include markdown formatted *references* separated by newline. \n
+- The format of the reference is:\n
+*References:*  \n
+[1].[name](url)  \n [2].[name](url)  \n [3].[name](url)\n 
+- You must always return markdown formatted response.\n 
+----------------\n 
+context:\n 
+${context}
+----------------\n 
+question: ${lastHumanMessage.content}`,
+        },
       ],
       model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
       stream: true,
@@ -72,11 +75,17 @@ ${context}`,
     const stream = OpenAIStream(response, {
       async onCompletion(completion) {
         await chatHistory.addMessage({
+          content: lastHumanMessage.content,
+          role: "user",
+        });
+
+        await chatHistory.addMessage({
           content: completion,
           role: "assistant",
         });
       },
     });
+
     return new StreamingTextResponse(stream);
   } catch (e: unknown) {
     if (e instanceof Error) {
