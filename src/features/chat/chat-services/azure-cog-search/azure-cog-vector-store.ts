@@ -166,7 +166,7 @@ export const embedDocuments = async (
       input: contentsToEmbed,
       model: process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
     });
-    console.log(embeddings);
+
     embeddings.data.forEach((embedding, index) => {
       documents[index].embedding = embedding.embedding;
     });
