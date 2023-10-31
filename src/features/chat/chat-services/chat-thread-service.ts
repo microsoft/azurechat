@@ -6,7 +6,7 @@ import { FindAllChats } from "@/features/chat/chat-services/chat-service";
 import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { CosmosDBContainer } from "../../common/cosmos";
-import { deleteDocuments } from "../vector-stores/azure-cog-search/azure-cog-vector-store";
+import { deleteDocuments } from "./azure-cog-search/azure-cog-vector-store";
 import { FindAllChatDocuments } from "./chat-document-service";
 import {
   CHAT_THREAD_ATTRIBUTE,

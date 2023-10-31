@@ -28,7 +28,6 @@
     "clsx": "^2.0.0",
     "eslint": "^8.52.0",
     "eslint-config-next": "^14.0.0",
-    "langchain": "^0.0.175",
     "lucide-react": "^0.290.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.32.0",
     "nanoid": "^5.0.2",

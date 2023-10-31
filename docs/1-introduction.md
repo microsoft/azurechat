@@ -20,8 +20,6 @@ _Azure Chat Solution Accelerator powered by Azure Open AI Service_ solution acce
 
 - [NextAuth.js](https://next-auth.js.org/): configurable authentication framework for Next.js 13
 
-- [LangChain JS](https://www.langchain.com/): AI orchestration layer to build intelligent apps
-
 - [ai sdk](https://sdk.vercel.ai/docs) Open-source library that simplifies building conversational UI on top Next.js and JavaScript
 
 - [Tailwind CSS](https://tailwindcss.com/): is a utility-first CSS framework that provides a series of predefined classes that can be used to style each element by mixing and matching

@@ -9,18 +9,17 @@ import {
   DocumentAnalysisClient,
 } from "@azure/ai-form-recognizer";
 import { SqlQuerySpec } from "@azure/cosmos";
-import { Document } from "langchain/document";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import {
   AzureCogDocumentIndex,
   ensureIndexIsCreated,
   indexDocuments,
-} from "../vector-stores/azure-cog-search/azure-cog-vector-store";
+} from "./azure-cog-search/azure-cog-vector-store";
 import {
   CHAT_DOCUMENT_ATTRIBUTE,
   ChatDocumentModel,
   ServerActionResponse,
 } from "./models";
+import { chunkDocumentWithOverlap } from "./text-chunk";
 import { isNotNullOrEmpty } from "./utils";
 
 const MAX_DOCUMENT_SIZE = 20000000;
@@ -32,13 +31,12 @@ export const UploadDocument = async (
     await ensureSearchIsConfigured();
 
     const { docs } = await LoadFile(formData);
-    const splitDocuments = await SplitDocuments(docs);
-    const docPageContents = splitDocuments.map((item) => item.pageContent);
+    const splitDocuments = chunkDocumentWithOverlap(docs.join("\n"));
 
     return {
       success: true,
       error: "",
-      response: docPageContents,
+      response: splitDocuments,
     };
   } catch (e) {
     return {
@@ -64,17 +62,11 @@ const LoadFile = async (formData: FormData) => {
       );
       const { paragraphs } = await poller.pollUntilDone();
 
-      const docs: Document[] = [];
+      const docs: Array<string> = [];
 
       if (paragraphs) {
         for (const paragraph of paragraphs) {
-          const doc: Document = {
-            pageContent: paragraph.content,
-            metadata: {
-              file: file.name,
-            },
-          };
-          docs.push(doc);
+          docs.push(paragraph.content);
         }
       }
 
@@ -95,13 +87,6 @@ const LoadFile = async (formData: FormData) => {
   }
 
   throw new Error("Invalid file format or size. Only PDF files are supported.");
-};
-
-const SplitDocuments = async (docs: Array<Document>) => {
-  const allContent = docs.map((doc) => doc.pageContent).join("\n");
-  const splitter = new RecursiveCharacterTextSplitter();
-  const output = await splitter.createDocuments([allContent]);
-  return output;
 };
 
 export const IndexDocuments = async (
