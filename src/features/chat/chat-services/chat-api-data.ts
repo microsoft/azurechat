@@ -7,6 +7,30 @@ import { similaritySearchVectorWithScore } from "../vector-stores/azure-cog-sear
 import { initAndGuardChatSession } from "./chat-thread-service";
 import { PromptGPTProps } from "./models";
 
+const SYSTEM_PROMPT = `You are ${AI_NAME} who is a helpful AI Assistant.`;
+
+const CONTEXT_PROMPT = ({
+  context,
+  userQuestion,
+}: {
+  context: string;
+  userQuestion: string;
+}) => {
+  return `
+  - Given the following extracted parts of a long document, create a final answer. \n
+  - If you don't know the answer, just say that you don't know. Don't try to make up an answer.\n
+  - You must always include markdown formatted *references* separated by newline. \n
+  - The format of the reference is:\n
+  *References:*  \n
+  [1].[name](url)  \n [2].[name](url)  \n [3].[name](url)\n 
+  - You must always return markdown formatted response.\n 
+  ----------------\n 
+  context:\n 
+  ${context}
+  ----------------\n 
+  question: ${userQuestion}`;
+};
+
 export const ChatAPIData = async (props: PromptGPTProps) => {
   const { lastHumanMessage, id, chatThread } = await initAndGuardChatSession(
     props
@@ -48,24 +72,15 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
       messages: [
         {
           role: "system",
-          content: `You are ${AI_NAME} who is a helpful AI Assistant.`,
+          content: SYSTEM_PROMPT,
         },
         ...topHistory,
         {
           role: "user",
-          content: `
-- Given the following extracted parts of a long document, create a final answer. \n
-- If you don't know the answer, just say that you don't know. Don't try to make up an answer.\n
-- You must always include markdown formatted *references* separated by newline. \n
-- The format of the reference is:\n
-*References:*  \n
-[1].[name](url)  \n [2].[name](url)  \n [3].[name](url)\n 
-- You must always return markdown formatted response.\n 
-----------------\n 
-context:\n 
-${context}
-----------------\n 
-question: ${lastHumanMessage.content}`,
+          content: CONTEXT_PROMPT({
+            context,
+            userQuestion: lastHumanMessage.content,
+          }),
         },
       ],
       model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
