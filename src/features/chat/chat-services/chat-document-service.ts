@@ -2,11 +2,7 @@
 
 import { userHashedId } from "@/features/auth/helpers";
 import { CosmosDBContainer } from "@/features/common/cosmos";
-import {
-  AzureCogDocumentIndex,
-  ensureIndexIsCreated,
-  indexDocuments,
-} from "@/features/langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
+
 import {
   AzureKeyCredential,
   DocumentAnalysisClient,
@@ -15,6 +11,11 @@ import { SqlQuerySpec } from "@azure/cosmos";
 import { Document } from "langchain/document";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { nanoid } from "nanoid";
+import {
+  AzureCogDocumentIndex,
+  ensureIndexIsCreated,
+  indexDocuments,
+} from "../vector-stores/azure-cog-search/azure-cog-vector-store";
 import {
   CHAT_DOCUMENT_ATTRIBUTE,
   ChatDocumentModel,

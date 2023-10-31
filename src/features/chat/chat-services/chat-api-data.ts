@@ -1,9 +1,9 @@
 import { userHashedId } from "@/features/auth/helpers";
 import { OpenAIInstance } from "@/features/common/openai";
-import { CosmosDBChatMessageHistory } from "@/features/langchain/memory/cosmosdb/cosmosdb";
-import { similaritySearchVectorWithScore } from "@/features/langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
 import { AI_NAME } from "@/features/theme/customise";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+import { CosmosDBChatMessageHistory } from "../memory/cosmosdb/cosmosdb";
+import { similaritySearchVectorWithScore } from "../vector-stores/azure-cog-search/azure-cog-vector-store";
 import { initAndGuardChatSession } from "./chat-thread-service";
 import { PromptGPTProps } from "./models";
 

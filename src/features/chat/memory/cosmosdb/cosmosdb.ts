@@ -9,7 +9,6 @@ import {
 import { CosmosDBContainer } from "@/features/common/cosmos";
 import { nanoid } from "nanoid";
 import { ChatCompletionMessage } from "openai/resources";
-import { mapOpenAIChatMessages } from "../utils";
 
 export interface CosmosDBChatMessageHistoryFields {
   sessionId: string;
@@ -49,4 +48,15 @@ export class CosmosDBChatMessageHistory {
 
     await UpsertChat(modelToSave);
   }
+}
+
+function mapOpenAIChatMessages(
+  messages: ChatMessageModel[]
+): ChatCompletionMessage[] {
+  return messages.map((message) => {
+    return {
+      role: message.role,
+      content: message.content,
+    };
+  });
 }
