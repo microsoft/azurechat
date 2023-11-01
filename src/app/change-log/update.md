@@ -2,6 +2,12 @@
 
 Below are the updates for the Azure Chat Solution accelerator
 
+## Environment variable change
+
+Please note that the solution has been upgraded to utilise the most recent version of the OpenAI JavaScript SDK, necessitating the use of the `OPENAI_API_KEY` environment variable.
+
+Ensure that you update the variable name in both your '.env' file and the configuration within Azure App Service or Key Vault, changing it from `AZURE_OPENAI_API_KEY` to `OPENAI_API_KEY`.
+
 ## Citations
 
 In the chat with file feature, you can now see citations within the responses. Simply click on the citation to access the related context.
