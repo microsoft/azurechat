@@ -1,4 +1,4 @@
-import { InteractiveMarkdown } from "@/components/chat/interactive-markdown";
+import { Markdown } from "@/components/chat/markdown";
 import { Card } from "@/components/ui/card";
 import { VersionDisplay } from "@/features/change-log/version-display";
 import { promises as fs } from "fs";
@@ -20,7 +20,7 @@ export default async function Home() {
           <VersionDisplay />
         </Suspense>
         <div className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-4xl">
-          <InteractiveMarkdown content={file} />
+          <Markdown content={file} />
         </div>
       </div>
     </Card>
