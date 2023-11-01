@@ -17,18 +17,15 @@ const CONTEXT_PROMPT = ({
   userQuestion: string;
 }) => {
   return `
-  - Given the following extracted parts of a long document, create a final answer. \n
-  - If you don't know the answer, just say that you don't know. Don't try to make up an answer.\n
-  - You must always include markdown formatted *references* separated by newline. \n
-  - The format of the reference is:\n
-  *References:*  \n
-  [1].[file name](url)  \n [2].[file name](url)  \n
-  - You must always return markdown formatted response.\n 
-  ----------------\n 
-  context:\n 
-  ${context}
-  ----------------\n 
-  question: ${userQuestion}`;
+- Given the following extracted parts of a long document, create a final answer. \n
+- If you don't know the answer, just say that you don't know. Don't try to make up an answer.\n
+- You must always include a citation at the end of your answer.\n
+- Use the format for your citation {% citation items=[{name:"filename 1",url:"file url 1"}, {name:"filename 2",url:"file url 2"}] /%}\n 
+----------------\n 
+context:\n 
+${context}
+----------------\n 
+question: ${userQuestion}`;
 };
 
 export const ChatAPIData = async (props: PromptGPTProps) => {
@@ -53,18 +50,36 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
     id
   );
 
+  // const context = relevantDocuments
+  //   .map(
+  //     (result, index) =>
+  //       `[${result.metadata}]. ${result.pageContent.replace(
+  //         /(\r\n|\n|\r)/gm,
+  //         ""
+  //       )}\n\n [${
+  //         index + 1
+  //       }]. https://YOUR_FILE_LOCATION.com/${encodeURIComponent(
+  //         result.metadata
+  //       )}\n
+  //        file name: ${
+  //          result.metadata
+  //        } \n file url: https://YOUR_FILE_LOCATION.com/${encodeURIComponent(
+  //         result.metadata
+  //       )}`
+  //   )
+  //   .join("\n\n ------------------ \n\n");
+
   const context = relevantDocuments
-    .map(
-      (result, index) =>
-        `[${result.metadata}]. ${result.pageContent.replace(
-          /(\r\n|\n|\r)/gm,
-          ""
-        )}\n\n [${
-          index + 1
-        }]. https://YOUR_FILE_LOCATION.com/${encodeURIComponent(
-          result.metadata
-        )}\n`
-    )
+    .map((result, index) => {
+      const url = `https://YOUR_FILE_LOCATION.com/${encodeURIComponent(
+        result.metadata
+      )}`;
+      const content = result.pageContent.replace(/(\r\n|\n|\r)/gm, "");
+
+      const context = `file name: ${result.metadata} \n file url: ${url} \n ${content}`;
+
+      return context;
+    })
     .join("\n\n ------------------ \n\n");
 
   try {
