@@ -104,7 +104,11 @@ const ChatRow: FC<ChatRowProps> = (props) => {
                       );
                     }
 
-                    children[0] = (children[0] as string).replace("`▍`", "▍");
+                    if (Array.isArray(children)) {
+                        children[0] = (children[0] as string).replace("`▍`", "▍");
+                    } else {
+                        children = (children as string).replace("`▍`", "▍");
+                    }
                   }
 
                   const match = /language-(\w+)/.exec(className || "");
