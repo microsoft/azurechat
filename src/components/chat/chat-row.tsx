@@ -4,13 +4,10 @@ import { isNotNullOrEmpty } from "@/features/chat/chat-services/utils";
 import { cn } from "@/lib/utils";
 import { CheckIcon, ClipboardIcon, UserCircle } from "lucide-react";
 import { FC, useState } from "react";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
 import Typography from "../typography";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { CodeBlock } from "./code-block";
-import { MemoizedReactMarkdown } from "./memoized-react-markdown";
+import { InteractiveMarkdown } from "./interactive-markdown";
 
 interface ChatRowProps {
   name: string;
@@ -24,6 +21,7 @@ const ChatRow: FC<ChatRowProps> = (props) => {
   const toggleIcon = () => {
     setIsIconChecked((prevState) => !prevState);
   };
+  console.log(props.message);
 
   const handleButtonClick = () => {
     toggleIcon();
@@ -79,47 +77,13 @@ const ChatRow: FC<ChatRowProps> = (props) => {
 
         <div
           className={cn(
-            "-m-4 p-4",
+            "-m-4 p-4 prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-non",
             props.type === "assistant"
               ? "bg-secondary"
               : "bg-primary text-white"
           )}
         >
-          {/* https://github.com/vercel-labs/ai-chatbot/blob/main/components/markdown.tsx */}
-          {props.type === "assistant" ? (
-            <MemoizedReactMarkdown
-              className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-none"
-              remarkPlugins={[remarkGfm, remarkMath]}
-              components={{
-                p({ children }) {
-                  return <p className="mb-2 last:mb-0">{children}</p>;
-                },
-                code({ node, className, children, ...props }) {
-                  const match = /language-(\w+)/.exec(className || "");
-
-                  if (!match) {
-                    return (
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
-                    );
-                  }
-
-                  return (
-                    <CodeBlock
-                      language={(match && match[1]) || ""}
-                      value={String(children).replace(/\n$/, "")}
-                      {...props}
-                    />
-                  );
-                },
-              }}
-            >
-              {props.message}
-            </MemoizedReactMarkdown>
-          ) : (
-            props.message
-          )}
+          <InteractiveMarkdown content={props.message} />
         </div>
       </div>
     </div>
