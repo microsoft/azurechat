@@ -25,12 +25,12 @@ export const CitationSlider: FC<SliderProps> = (props) => {
         <SheetTrigger>
           <input type="hidden" name="id" value={props.id} />
           <Button
-            variant="default"
+            variant="outline"
             size="sm"
             formAction={formAction}
             value={22}
           >
-            {props.index}. {props.name}
+            {props.index}
           </Button>
         </SheetTrigger>
         <SheetContent>

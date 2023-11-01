@@ -27,12 +27,35 @@ export const citationConfig: Config = {
 };
 
 export const Citation: FC<Props> = (props: Props) => {
+  // group citations by name
+  const citations = props.items.reduce((acc, citation) => {
+    const { name } = citation;
+    if (!acc[name]) {
+      acc[name] = [];
+    }
+    acc[name].push(citation);
+    return acc;
+  }, {} as Record<string, Citation[]>);
+
   return (
     <div className="interactive-citation p-4 border mt-4 flex flex-col rounded-md gap-2">
-      {props.items.map((item, index: number) => {
+      {Object.entries(citations).map(([name, items], index: number) => {
         return (
-          <div key={index}>
-            <CitationSlider index={index + 1} name={item.name} id={item.id} />
+          <div key={index} className="flex flex-col gap-2">
+            <div className="font-semibold text-sm">{name}</div>
+            <div className="flex gap-2">
+              {items.map((item, index: number) => {
+                return (
+                  <div key={index}>
+                    <CitationSlider
+                      index={index + 1}
+                      name={item.name}
+                      id={item.id}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         );
       })}
