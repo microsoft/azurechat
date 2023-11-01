@@ -7,7 +7,7 @@ import { FC, useState } from "react";
 import Typography from "../typography";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { InteractiveMarkdown } from "./interactive-markdown";
+import { Markdown } from "./markdown";
 
 interface ChatRowProps {
   name: string;
@@ -21,7 +21,6 @@ const ChatRow: FC<ChatRowProps> = (props) => {
   const toggleIcon = () => {
     setIsIconChecked((prevState) => !prevState);
   };
-  console.log(props.message);
 
   const handleButtonClick = () => {
     toggleIcon();
@@ -83,7 +82,7 @@ const ChatRow: FC<ChatRowProps> = (props) => {
               : "bg-primary text-white"
           )}
         >
-          <InteractiveMarkdown content={props.message} />
+          <Markdown content={props.message} />
         </div>
       </div>
     </div>

@@ -45,7 +45,7 @@ type AzureCogRequestObject = {
   top: number;
 };
 
-export const search = async (
+export const simpleSearch = async (
   filter?: AzureCogFilter
 ): Promise<Array<AzureCogDocumentIndex & DocumentSearchModel>> => {
   const url = `${baseIndexUrl()}/docs/search?api-version=${
@@ -128,7 +128,7 @@ export const indexDocuments = async (
 export const deleteDocuments = async (chatThreadId: string): Promise<void> => {
   // find all documents for chat thread
 
-  const documentsInChat = await search({
+  const documentsInChat = await simpleSearch({
     filter: `chatThreadId eq '${chatThreadId}'`,
   });
 
