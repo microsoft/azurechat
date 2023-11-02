@@ -10,6 +10,7 @@ interface Prop {}
 
 export const ChatMessageEmptyState: FC<Prop> = (props) => {
   const { fileState } = useChatContext();
+  const CHAT_START_MESSAGE =  process.env.NEXT_PUBLIC_CHAT_START_MESSAGE ?? '';
 
   const { showFileUpload } = fileState;
 
@@ -18,8 +19,14 @@ export const ChatMessageEmptyState: FC<Prop> = (props) => {
       <div className="col-span-2 gap-5 flex flex-col flex-1">
         <img src="/ai-icon.png" className="w-36" />
         <p className="">
-          Start by just typing your message in the box below. You can also
-          personalise the chat by making changes to the settings on the right.
+          {CHAT_START_MESSAGE ? (
+            <div dangerouslySetInnerHTML={{ __html: CHAT_START_MESSAGE}} />
+          ) : (
+            <p>
+              Start by just typing your message in the box below. You can also
+              personalise the chat by making changes to the settings on the right.
+            </p>
+          )}
         </p>
       </div>
       <Card className="col-span-3 flex flex-col gap-5 p-5 ">
