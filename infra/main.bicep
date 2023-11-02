@@ -59,7 +59,7 @@ param searchServiceSkuName string = 'standard'
 param storageServiceSku object = { name: 'Standard_LRS' } 
 param storageServiceImageContainerName string = 'images'
 
-param resourceGroupName string = ''
+param resourceGroupName string = 'buhler-alm-chatgpt'
 
 var resourceToken = toLower(uniqueString(subscription().id, name, location))
 var tags = { 'azd-env-name': name }
