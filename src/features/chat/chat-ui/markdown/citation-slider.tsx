@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -21,13 +20,14 @@ export const CitationSlider: FC<SliderProps> = (props) => {
   const [node, formAction] = useFormState(CitationAction, null);
   return (
     <form>
+      <input type="hidden" name="id" value={props.id} />
       <Sheet>
-        <SheetTrigger>
-          <input type="hidden" name="id" value={props.id} />
+        <SheetTrigger asChild>
           <Button
             variant="outline"
             size="sm"
             formAction={formAction}
+            type="submit"
             value={22}
           >
             {props.index}
@@ -36,8 +36,8 @@ export const CitationSlider: FC<SliderProps> = (props) => {
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Citation</SheetTitle>
-            <SheetDescription>{node}</SheetDescription>
           </SheetHeader>
+          <div className="text-sm text-muted-foreground">{node}</div>
         </SheetContent>
       </Sheet>
     </form>
