@@ -1,5 +1,4 @@
 "use client";
-import { Config } from "@markdoc/markdoc";
 import { FC } from "react";
 import { CitationSlider } from "./citation-slider";
 
@@ -12,16 +11,12 @@ interface Props {
   items: Citation[];
 }
 
-export const citationConfig: Config = {
-  tags: {
-    citation: {
-      render: "Citation",
-      selfClosing: true,
-      attributes: {
-        items: {
-          type: Array,
-        },
-      },
+export const citation = {
+  render: "Citation",
+  selfClosing: true,
+  attributes: {
+    items: {
+      type: Array,
     },
   },
 };

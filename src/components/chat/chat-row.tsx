@@ -4,10 +4,10 @@ import { isNotNullOrEmpty } from "@/features/chat/chat-services/utils";
 import { cn } from "@/lib/utils";
 import { CheckIcon, ClipboardIcon, UserCircle } from "lucide-react";
 import { FC, useState } from "react";
+import { Markdown } from "../markdown/markdown";
 import Typography from "../typography";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { Markdown } from "./markdown";
 
 interface ChatRowProps {
   name: string;
