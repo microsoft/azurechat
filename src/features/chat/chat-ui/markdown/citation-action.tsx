@@ -1,6 +1,6 @@
 "use server";
 
-import { simpleSearch } from "../../chat-services/azure-cog-search/azure-cog-vector-store";
+import { simpleSearch } from "@/features/chat/chat-services/azure-cog-search/azure-cog-vector-store";
 
 export const CitationAction = async (
   previousState: any,
