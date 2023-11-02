@@ -91,7 +91,6 @@ jobs:
           resource-group-name: buhler-alm-chatgpt
           app-name: ${{ secrets.AZURE_APP_SERVICE_NAME }}
           package: ${{ github.workspace }}/Nextjs-site.zip
-          restart: true
 
       - name: 🧹 Cleanup
         run: rm ${{ github.workspace }}/Nextjs-site.zip
