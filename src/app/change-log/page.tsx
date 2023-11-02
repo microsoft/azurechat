@@ -14,12 +14,12 @@ export default async function Home() {
   );
 
   return (
-    <Card className="h-full flex justify-center flex-1">
+    <Card className="h-full flex justify-center flex-1 overflow-y-scroll">
       <div className="flex flex-col gap-8 py-8">
         <Suspense fallback={"Getting version"}>
           <VersionDisplay />
         </Suspense>
-        <div className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-4xl">
+        <div className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-4xl ">
           <Markdown content={file} />
         </div>
       </div>
