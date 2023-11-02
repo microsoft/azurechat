@@ -35,7 +35,7 @@ param searchServiceIndexName string = 'azure-chat'
 param searchServiceSkuName string = 'standard'
 param searchServiceAPIVersion string = '2023-07-01-Preview'
 
-param resourceGroupName string = ''
+param resourceGroupName string = 'buhler-alm-chatgpt'
 
 var resourceToken = toLower(uniqueString(subscription().id, name, location))
 var tags = { 'azd-env-name': name }

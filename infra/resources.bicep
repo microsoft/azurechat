@@ -1,4 +1,4 @@
-param name string = 'azurechat-demo'
+param name string = 'azurechat'
 param resourceToken string
 
 param openai_api_version string
@@ -35,7 +35,7 @@ var webapp_name = toLower('${name}-webapp-${resourceToken}')
 var appservice_name = toLower('${name}-app-${resourceToken}')
 // keyvault name must be less than 24 chars - token is 13
 var kv_prefix = take(name, 7)
-var keyVaultName = toLower('${kv_prefix}-kv-${resourceToken}')
+var keyVaultName = toLower('balm-chat-${resourceToken}')
 var la_workspace_name = toLower('${name}-la-${resourceToken}')
 var diagnostic_setting_name = 'AppServiceConsoleLogs'
 
