@@ -127,6 +127,5 @@ jobs:
           resource-group-name: ${{ secrets.AZURE_APP_SERVICE_RG_NAME_PROD }}
           app-name: ${{ secrets.AZURE_APP_SERVICE_NAME_PROD }}
           package: ${{ github.workspace }}/Nextjs-site.zip
-          restart: true
 
     
