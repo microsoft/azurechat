@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -14,7 +13,7 @@ export const ChatFileSlider = () => {
   return (
     <div>
       <Sheet>
-        <SheetTrigger>
+        <SheetTrigger asChild>
           <Button size="icon" variant={"ghost"}>
             <FileText size={16} />
           </Button>
@@ -22,10 +21,10 @@ export const ChatFileSlider = () => {
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Upload File</SheetTitle>
-            <SheetDescription>
-              <ChatFileUI />
-            </SheetDescription>
           </SheetHeader>
+          <div className="py-4">
+            <ChatFileUI />
+          </div>
         </SheetContent>
       </Sheet>
     </div>

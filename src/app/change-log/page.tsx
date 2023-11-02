@@ -1,4 +1,4 @@
-import { Markdown } from "@/components/chat/markdown";
+import { Markdown } from "@/components/markdown/markdown";
 import { Card } from "@/components/ui/card";
 import { VersionDisplay } from "@/features/change-log/version-display";
 import { promises as fs } from "fs";
