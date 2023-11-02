@@ -20,8 +20,6 @@ _Azure Chat Solution Accelerator powered by Azure Open AI Service_ solution acce
 
 - [NextAuth.js](https://next-auth.js.org/): configurable authentication framework for Next.js 13
 
-- [LangChain JS](https://www.langchain.com/): AI orchestration layer to build intelligent apps
-
 - [ai sdk](https://sdk.vercel.ai/docs) Open-source library that simplifies building conversational UI on top Next.js and JavaScript
 
 - [Tailwind CSS](https://tailwindcss.com/): is a utility-first CSS framework that provides a series of predefined classes that can be used to style each element by mixing and matching
@@ -43,6 +41,8 @@ The following Azure services can be deployed to expand the feature set of your s
 - [Azure Cognitive Search](https://learn.microsoft.com/en-GB/azure/search/) Azure Cognitive Search is an AI-powered platform as a service (PaaS) that helps developers build rich search experiences for applications. We use this service for indexing and retrieving information.
 
 - [Azure OpenAI Embeddings](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/embeddings?tabs=console) for embed content extracted from files.
+
+- [Azure Speech Service](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/): Speech recognition and generation with multi-lingual support and the ability to select and create custom voices.
 
 # Solution Architecture
 
