@@ -402,7 +402,7 @@
                       "value": "[format('@Microsoft.KeyVault(VaultName={0};SecretName={1})', variables('keyVaultName'), 'AZURE-COSMOSDB-KEY')]"
                     },
                     {
-                      "name": "AZURE_OPENAI_API_KEY",
+                      "name": "OPENAI_API_KEY",
                       "value": "[format('@Microsoft.KeyVault(VaultName={0};SecretName={1})', variables('keyVaultName'), 'AZURE-OPENAI-API-KEY')]"
                     },
                     {
@@ -549,9 +549,7 @@
                 "resource": {
                   "id": "[variables('containerName')]",
                   "partitionKey": {
-                    "paths": [
-                      "/userId"
-                    ],
+                    "paths": ["/userId"],
                     "kind": "Hash"
                   },
                   "defaultTtl": 86400

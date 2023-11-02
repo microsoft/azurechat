@@ -13,7 +13,7 @@ import { ThemeToggle } from "../theme/theme-toggle";
 import { UserProfile } from "../user-profile";
 
 import { useSession } from "next-auth/react";
-import { UpdateIndicator } from "../update/update-indicator";
+import { UpdateIndicator } from "../change-log/update-indicator";
 import { useMenuContext } from "./menu-context";
 
 export const MainMenu = () => {
@@ -65,7 +65,7 @@ export const MainMenu = () => {
           className="rounded-full w-[40px] h-[40px] p-2 text-primary"
           variant={"outline"}
         >
-          <Link href="/update" title="update" className="relative">
+          <Link href="/change-log" title="change log" className="relative">
             <Triangle />
             <UpdateIndicator />
           </Link>
