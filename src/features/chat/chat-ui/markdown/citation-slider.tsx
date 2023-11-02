@@ -20,19 +20,18 @@ export const CitationSlider: FC<SliderProps> = (props) => {
   const [node, formAction] = useFormState(CitationAction, null);
   return (
     <form>
+      <input type="hidden" name="id" value={props.id} />
       <Sheet>
         <SheetTrigger asChild>
-          <div>
-            <input type="hidden" name="id" value={props.id} />
-            <Button
-              variant="outline"
-              size="sm"
-              formAction={formAction}
-              value={22}
-            >
-              {props.index}
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            formAction={formAction}
+            type="submit"
+            value={22}
+          >
+            {props.index}
+          </Button>
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
