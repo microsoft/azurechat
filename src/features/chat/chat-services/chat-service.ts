@@ -1,8 +1,8 @@
 "use server";
 import "server-only";
 
+import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
-import { nanoid } from "nanoid";
 import { CosmosDBContainer } from "../../common/cosmos";
 import { ChatMessageModel, MESSAGE_ATTRIBUTE } from "./models";
 
@@ -38,7 +38,7 @@ export const FindAllChats = async (chatThreadID: string) => {
 export const UpsertChat = async (chatModel: ChatMessageModel) => {
   const modelToSave: ChatMessageModel = {
     ...chatModel,
-    id: nanoid(),
+    id: uniqueId(),
     createdAt: new Date(),
     type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
@@ -73,9 +73,10 @@ export const newChatModel = (): ChatMessageModel => {
     threadId: "",
     role: "user",
     userId: "",
-    id: nanoid(),
+    id: uniqueId(),
     createdAt: new Date(),
     type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
+    context: "",
   };
 };

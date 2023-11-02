@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full overflow-hidden">
+    <html lang="en" className="h-full overflow-hidden light">
       <body className={cn(inter.className, "flex w-full h-full")}>
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

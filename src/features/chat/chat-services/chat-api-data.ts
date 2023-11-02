@@ -1,108 +1,120 @@
 import { userHashedId } from "@/features/auth/helpers";
-import { CosmosDBChatMessageHistory } from "@/features/langchain/memory/cosmosdb/cosmosdb";
-import { LangChainStream, StreamingTextResponse } from "ai";
-import { loadQAMapReduceChain } from "langchain/chains";
-import { ChatOpenAI } from "langchain/chat_models/openai";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { BufferWindowMemory } from "langchain/memory";
-import {
-  ChatPromptTemplate,
-  HumanMessagePromptTemplate,
-  SystemMessagePromptTemplate,
-} from "langchain/prompts";
-import { AzureCogSearch } from "../../langchain/vector-stores/azure-cog-search/azure-cog-vector-store";
-import { insertPromptAndResponse } from "./chat-service";
+import { OpenAIInstance } from "@/features/common/openai";
+import { AI_NAME } from "@/features/theme/customise";
+import { OpenAIStream, StreamingTextResponse } from "ai";
+import { similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-vector-store";
 import { initAndGuardChatSession } from "./chat-thread-service";
-import { FaqDocumentIndex, PromptGPTProps } from "./models";
-import { transformConversationStyleToTemperature } from "./utils";
+import { CosmosDBChatMessageHistory } from "./cosmosdb/cosmosdb";
+import { PromptGPTProps } from "./models";
+
+const SYSTEM_PROMPT = `You are ${AI_NAME} who is a helpful AI Assistant.`;
+
+const CONTEXT_PROMPT = ({
+  context,
+  userQuestion,
+}: {
+  context: string;
+  userQuestion: string;
+}) => {
+  return `
+- Given the following extracted parts of a long document, create a final answer. \n
+- If you don't know the answer, just say that you don't know. Don't try to make up an answer.\n
+- You must always include a citation at the end of your answer and don't include full stop.\n
+- Use the format for your citation {% citation items=[{name:"filename 1",id:"file id"}, {name:"filename 2",id:"file id"}] /%}\n 
+----------------\n 
+context:\n 
+${context}
+----------------\n 
+question: ${userQuestion}`;
+};
 
 export const ChatAPIData = async (props: PromptGPTProps) => {
   const { lastHumanMessage, id, chatThread } = await initAndGuardChatSession(
     props
   );
 
-  const chatModel = new ChatOpenAI({
-    temperature: transformConversationStyleToTemperature(
-      chatThread.conversationStyle
-    ),
-    streaming: true,
+  const openAI = OpenAIInstance();
+
+  const userId = await userHashedId();
+
+  const chatHistory = new CosmosDBChatMessageHistory({
+    sessionId: chatThread.id,
+    userId: userId,
   });
+
+  const history = await chatHistory.getMessages();
+  const topHistory = history.slice(history.length - 30, history.length);
 
   const relevantDocuments = await findRelevantDocuments(
     lastHumanMessage.content,
     id
   );
 
-  const chain = loadQAMapReduceChain(chatModel, {
-    combinePrompt: defineSystemPrompt(),
-  });
+  const context = relevantDocuments
+    .map((result, index) => {
+      const content = result.pageContent.replace(/(\r\n|\n|\r)/gm, "");
+      const context = `[${index}]. file name: ${result.metadata} \n file id: ${result.id} \n ${content}`;
+      return context;
+    })
+    .join("\n------\n");
 
-  const { stream, handlers } = LangChainStream({
-    onCompletion: async (completion: string) => {
-      await insertPromptAndResponse(id, lastHumanMessage.content, completion);
-    },
-  });
+  try {
+    const response = await openAI.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: SYSTEM_PROMPT,
+        },
+        ...topHistory,
+        {
+          role: "user",
+          content: CONTEXT_PROMPT({
+            context,
+            userQuestion: lastHumanMessage.content,
+          }),
+        },
+      ],
+      model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+      stream: true,
+    });
 
-  const userId = await userHashedId();
+    const stream = OpenAIStream(response, {
+      async onCompletion(completion) {
+        await chatHistory.addMessage({
+          content: lastHumanMessage.content,
+          role: "user",
+        });
 
-  const memory = new BufferWindowMemory({
-    k: 100,
-    returnMessages: true,
-    memoryKey: "history",
-    chatHistory: new CosmosDBChatMessageHistory({
-      sessionId: id,
-      userId: userId,
-    }),
-  });
+        await chatHistory.addMessage(
+          {
+            content: completion,
+            role: "assistant",
+          },
+          context
+        );
+      },
+    });
 
-  chain.call(
-    {
-      input_documents: relevantDocuments,
-      question: lastHumanMessage.content,
-      memory: memory,
-    },
-    [handlers]
-  );
-
-  return new StreamingTextResponse(stream);
+    return new StreamingTextResponse(stream);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      return new Response(e.message, {
+        status: 500,
+        statusText: e.toString(),
+      });
+    } else {
+      return new Response("An unknown error occurred.", {
+        status: 500,
+        statusText: "Unknown Error",
+      });
+    }
+  }
 };
 
 const findRelevantDocuments = async (query: string, chatThreadId: string) => {
-  const vectorStore = initVectorStore();
-
-  const relevantDocuments = await vectorStore.similaritySearch(query, 10, {
-    vectorFields: vectorStore.config.vectorFieldName,
+  const relevantDocuments = await similaritySearchVectorWithScore(query, 10, {
     filter: `user eq '${await userHashedId()}' and chatThreadId eq '${chatThreadId}'`,
   });
 
   return relevantDocuments;
-};
-
-const defineSystemPrompt = () => {
-  const system_combine_template = `Given the following context and a question, create a final answer. 
-  If the context is empty or If you don't know the answer, politely decline to answer the question. Don't try to make up an answer.
-  ----------------
-  context: {summaries}`;
-
-  const combine_messages = [
-    SystemMessagePromptTemplate.fromTemplate(system_combine_template),
-    HumanMessagePromptTemplate.fromTemplate("{question}"),
-  ];
-  const CHAT_COMBINE_PROMPT =
-    ChatPromptTemplate.fromPromptMessages(combine_messages);
-
-  return CHAT_COMBINE_PROMPT;
-};
-
-const initVectorStore = () => {
-  const embedding = new OpenAIEmbeddings();
-  const azureSearch = new AzureCogSearch<FaqDocumentIndex>(embedding, {
-    name: process.env.AZURE_SEARCH_NAME,
-    indexName: process.env.AZURE_SEARCH_INDEX_NAME,
-    apiKey: process.env.AZURE_SEARCH_API_KEY,
-    apiVersion: process.env.AZURE_SEARCH_API_VERSION,
-    vectorFieldName: "embedding",
-  });
-
-  return azureSearch;
 };

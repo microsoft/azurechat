@@ -3,7 +3,7 @@
 import { useGlobalMessageContext } from "@/features/global-message/global-message-context";
 import { Message } from "ai";
 import { UseChatHelpers, useChat } from "ai/react";
-import React, { FC, createContext, useState } from "react";
+import React, { FC, createContext, useContext, useState } from "react";
 import {
   ChatMessageModel,
   ChatThreadModel,
@@ -117,7 +117,7 @@ export const ChatProvider: FC<Prop> = (props) => {
 };
 
 export const useChatContext = () => {
-  const context = React.useContext(ChatContext);
+  const context = useContext(ChatContext);
   if (!context) {
     throw new Error("ChatContext is null");
   }

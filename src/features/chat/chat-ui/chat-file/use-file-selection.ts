@@ -30,15 +30,33 @@ export const useFileSelection = (props: Props) => {
       const uploadResponse = await UploadDocument(formData);
 
       if (uploadResponse.success) {
-        setUploadButtonLabel("Indexing document...");
+        let index = 0;
 
-        const indexResponse = await IndexDocuments(
-          file.name,
-          uploadResponse.response,
-          props.id
-        );
+        for (const doc of uploadResponse.response) {
+          setUploadButtonLabel(
+            `Indexing document [${index + 1}]/[${
+              uploadResponse.response.length
+            }]`
+          );
+          try {
+            const indexResponse = await IndexDocuments(
+              file.name,
+              [doc],
+              props.id
+            );
 
-        if (indexResponse.success) {
+            if (!indexResponse.success) {
+              showError(indexResponse.error);
+              break;
+            }
+          } catch (e) {
+            alert(e);
+          }
+
+          index++;
+        }
+
+        if (index === uploadResponse.response.length) {
           showSuccess({
             title: "File upload",
             description: `${file.name} uploaded successfully.`,
@@ -46,7 +64,9 @@ export const useFileSelection = (props: Props) => {
           setUploadButtonLabel("");
           setChatBody({ ...chatBody, chatOverFileName: file.name });
         } else {
-          showError(indexResponse.error);
+          showError(
+            "Looks like not all documents were indexed. Please try again."
+          );
         }
       } else {
         showError(uploadResponse.error);

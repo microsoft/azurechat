@@ -1,9 +1,9 @@
 {
   "name": "azure-open-ai-accelerator",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -12,7 +12,9 @@
     "@azure/ai-form-recognizer": "^5.0.0",
     "@azure/cosmos": "^4.0.0",
     "@azure/identity": "^3.3.2",
+    "@markdoc/markdoc": "^0.3.4",
     "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
@@ -28,26 +30,24 @@
     "clsx": "^2.0.0",
     "eslint": "^8.52.0",
     "eslint-config-next": "^14.0.0",
-    "langchain": "^0.0.175",
     "lucide-react": "^0.290.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.32.0",
     "nanoid": "^5.0.2",
     "next": "^14.0.0",
     "next-auth": "^4.24.4",
     "next-themes": "^0.2.1",
+    "openai": "^4.14.2",
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-markdown": "^9.0.0",
     "react-syntax-highlighter": "^15.5.0",
-    "remark-gfm": "^4.0.0",
-    "remark-math": "^6.0.0",
     "tailwind-merge": "^2.0.0",
     "tailwindcss": "^3.3.5",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.2.2"
   },
   "devDependencies": {
+    "@types/prismjs": "^1.26.2",
     "@types/react-syntax-highlighter": "^15.5.7"
   }
 }

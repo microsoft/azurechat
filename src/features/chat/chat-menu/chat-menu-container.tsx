@@ -1,6 +1,6 @@
 "use client";
 
-import { useMenuContext } from "@/features/menu/menu-context";
+import { useMenuContext } from "@/features/main-menu/menu-context";
 
 export const ChatMenuContainer = ({
   children,

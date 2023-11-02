@@ -1,16 +1,9 @@
-import { APP_VERSION } from "@/app-global";
+import { appVersionDetails } from "./app-version";
 
 export const UpdateIndicatorAction = async () => {
-  const appVersion = await fetch(
-    "https://raw.githubusercontent.com/microsoft/azurechat/main/src/package.json",
-    {
-      cache: "no-cache",
-    }
-  );
+  const appVersion = await appVersionDetails();
 
-  const version = (await appVersion.json()).version as string;
-
-  if (APP_VERSION === version) {
+  if (!appVersion.isOutdated) {
     return null;
   } else {
     return (
