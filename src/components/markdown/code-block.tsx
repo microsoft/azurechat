@@ -1,4 +1,3 @@
-"use client";
 import { FC, memo } from "react";
 import { Prism } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
