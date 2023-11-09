@@ -1,6 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // import { Brush, CircleDot, Scale } from "lucide-react";
-import { Award, FileText, SearchCheck, Target } from "lucide-react";
+import { Award, FileText, SearchCheck, Hammer } from "lucide-react";
 import { FC } from "react";
 import { cn } from "@/lib/utils";
 import { ChatScenario } from "../../chat-services/models";
@@ -30,28 +30,28 @@ export const ChatStyleSelector: FC<Prop> = (props) => {
           className="flex gap-2"
           disabled={props.disable}
         >
-          <Award size={20} /> Full Career Planner
+          <Award size={20} /> Build my career plan
         </TabsTrigger>
         <TabsTrigger
           value="career-planner-resume"
           className="flex gap-2"
           disabled={props.disable}
         >
-          <FileText size={20} /> Resume Career Planner
+          <FileText size={20} /> Find my next role
         </TabsTrigger>
         <TabsTrigger
           value="role-finder"
           className="flex gap-2"
           disabled={props.disable}
         >
-          <SearchCheck size={20} /> Role Finder
+          <SearchCheck size={20} /> Assess my strengths
         </TabsTrigger>
         <TabsTrigger
           value="skills-assessment"
           className="flex gap-2"
           disabled={props.disable}
         >
-          <Target size={20} /> Skills Assessment
+          <Hammer size={20} /> Forge my brand
         </TabsTrigger>
         {/* <TabsTrigger
           value="creative"

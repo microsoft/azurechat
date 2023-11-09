@@ -18,8 +18,8 @@ export const ChatMessageEmptyState: FC<Prop> = (props) => {
       <div className="col-span-2 gap-5 flex flex-col flex-1">
         <img src="/ai-icon.png" className="w-36" />
         <p className="">
-          Start by selecting the scenario you want to engage on. <br/>
-          Then introduce yourself in the message box below.
+          What would you like to do today?<br/>&nbsp;<br/>
+          Choose an option on the right and then introduce yourself in the box below.
         </p>
       </div>
       <Card className="col-span-3 flex flex-col gap-5 p-5 ">
