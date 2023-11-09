@@ -33,21 +33,21 @@ export const ChatStyleSelector: FC<Prop> = (props) => {
           <Award size={20} /> Build my career plan
         </TabsTrigger>
         <TabsTrigger
-          value="career-planner-resume"
+          value="role-finder"
           className="flex gap-2"
           disabled={props.disable}
         >
           <FileText size={20} /> Find my next role
         </TabsTrigger>
         <TabsTrigger
-          value="role-finder"
+          value="skills-assessment"
           className="flex gap-2"
           disabled={props.disable}
         >
           <SearchCheck size={20} /> Assess my strengths
         </TabsTrigger>
         <TabsTrigger
-          value="skills-assessment"
+          value="brand-forge"
           className="flex gap-2"
           disabled={props.disable}
         >

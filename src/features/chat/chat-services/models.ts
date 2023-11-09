@@ -18,7 +18,7 @@ export interface ChatMessageModel {
 
 export type ConversationStyle = "creative" | "balanced" | "precise";
 export type ChatType = "simple" | "data" | "mssql";
-export type ChatScenario = "career-planner-full" | "career-planner-resume" | "role-finder" | "skills-assessment" | "general";
+export type ChatScenario = "career-planner-full" | "brand-forge" | "role-finder" | "skills-assessment" | "general";
 
 export type ChatRole = "system" | "user" | "assistant" | "function";
 
