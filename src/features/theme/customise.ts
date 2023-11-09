@@ -1,1 +1,1 @@
-export const AI_NAME = "Mirvac Chatbot POC";
+export const AI_NAME = "Mirvac Gen-AI Virtual Agent";
