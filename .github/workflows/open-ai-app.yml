@@ -73,7 +73,7 @@ jobs:
           TENANT_ID: ${{ secrets.WUIT_AZURE_NONPROD_GPT_SERVICE_PRINCIPAL_TENANT_ID }}
           CLIENT_ID: ${{ secrets.WUIT_AZURE_NONPROD_GPT_SERVICE_PRINCIPAL_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.WUIT_AZURE_NONPROD_GPT_SERVICE_PRINCIPAL_CLIENT_SECRET }}
-          SUBSCRIPTION: ${{ variable.WUIT_AZURE_DEV_GPT_SUBSCRIPTION }}
+          SUBSCRIPTION: ${{ vars.WUIT_AZURE_DEV_GPT_SUBSCRIPTION }}
         run: |
           # Login to Azure
           az login --service-principal --username $CLIENT_ID --password $CLIENT_SECRET --tenant $TENANT_ID
