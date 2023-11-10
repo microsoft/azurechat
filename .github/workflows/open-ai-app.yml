@@ -77,7 +77,7 @@ jobs:
         run: |
           # Login to Azure
           az login --service-principal --username $CLIENT_ID --password $CLIENT_SECRET --tenant $TENANT_ID
-          az account set -s $SUBSCRIPTION
+          az account set -s e03bd027-5a6b-427c-81e5-5a510fa1edb2
       # Set the build during deployment setting to false. This setting was added in the templates to all azd to work, but breaks deployment via webapps-deploy 
       - name: Azure CLI script
         uses: azure/CLI@v1
