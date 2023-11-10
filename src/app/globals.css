@@ -2,15 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 @layer base {
+
+
+
   :root {
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foregroud: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 170 90% 29%;
+    --primary: 10 95% 39%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -34,7 +39,9 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 169 74% 22%;
+    --primary: 359 78% 36%;
     --primary-foreground: 240 5.9% 10%;
+    --primary-foreground: 0 0 100%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
@@ -53,7 +60,19 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/*Adjust size of Wash U shield in menu*/
+a[title="Home"] > img{
+  max-width: 80%;
+  max-height: 100%;
+}
+
+/*Custom style for the welcome message*/
+.welcome-message a {
+  color:hsl(var(--primary));
 }

@@ -1,1 +1,2 @@
-export const AI_NAME = "Azure Chat Solution Accelerator";
+export const AI_NAME = "Washington University Chatbot";
+export const HOME_MESSAGE = "You should interact in a friendly manner with the AI assistant and refrain from participating in any harmful or offensive activities. Please review our <a href=\"https://wustl.edu/about/compliance-policies/\" target=\"_blank\" >compliance policies</a> for more information.";    
