@@ -83,20 +83,19 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            rg=$(az webapp list --query "[?name=='${{ secrets.WUIT_AZURE_NONPROD_GPT_AZURE_APP_SERVICE_NAME }}'].resourceGroup" --output tsv)
-            echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.WUIT_AZURE_NONPROD_GPT_AZURE_APP_SERVICE_NAME }}
-            az webapp config appsettings set -n ${{ secrets.WUIT_AZURE_NONPROD_GPT_AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
-            echo Setting --startup-file=\"node server.js\" on app service ${{ secrets.WUIT_AZURE_NONPROD_GPT_AZURE_APP_SERVICE_NAME }}
-            az webapp config set --startup-file="node server.js" -n ${{ secrets.WUIT_AZURE_NONPROD_GPT_AZURE_APP_SERVICE_NAME }} -g $rg -o none
+            rg=$(az webapp list --query "[?name=='${{ vars.WUIT_AZURE_DEV_GPT_AZURE_APP_SERVICE_NAME }}'].resourceGroup" --output tsv)
+            echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ vars.WUIT_AZURE_DEV_GPT_AZURE_APP_SERVICE_NAME }}
+            az webapp config appsettings set -n ${{ vars.WUIT_AZURE_DEV_GPT_AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
+            echo Setting --startup-file=\"node server.js\" on app service ${{ vars.WUIT_AZURE_DEV_GPT_AZURE_APP_SERVICE_NAME }}
+            az webapp config set --startup-file="node server.js" -n ${{ vars.WUIT_AZURE_DEV_GPT_AZURE_APP_SERVICE_NAME }} -g $rg -o none
             sleep 10
 
       - name: 🚀 Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ secrets.WUIT_AZURE_NONPROD_GPT_AZURE_APP_SERVICE_NAME }}
+          app-name: ${{ vars.WUIT_AZURE_DEV_GPT_AZURE_APP_SERVICE_NAME }}
           package: ${{ github.workspace }}/Nextjs-site.zip
-          publish-profile: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: 🧹 Cleanup
         run: rm ${{ github.workspace }}/Nextjs-site.zip

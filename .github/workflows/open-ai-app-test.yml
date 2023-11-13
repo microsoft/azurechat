@@ -1,0 +1,101 @@
+name: Build & deploy Next.js app to Azure Web App
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: [test]
+
+  # Allow manual workflow trigger
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🌱 Checkout to the branch
+        uses: actions/checkout@v3
+
+      - name: 🍏 Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+
+      - name: ⚙️ npm install and build
+        run: |
+          cd ./src
+          npm install
+          npm run build --if-present
+          cd ..
+
+      - name: 📂 Copy standalone into the root
+        run: cp -R ./src/.next/standalone ./site-deploy
+
+      - name: 📂 Copy static into the .next folder
+        run: cp -R ./src/.next/static ./site-deploy/.next/static
+
+      - name: 📂 Copy Public folder
+        run: cp -R ./src/public ./site-deploy/public
+
+      - name: 📦 Package Next application
+        run: |
+          cd ./site-deploy
+          zip Nextjs-site.zip ./* .next -qr      
+          
+      - name: 🔍 Diagnostics
+        run: |
+          ls ./src
+          ls ./src/.next
+          ls ./site-deploy
+
+      - name: ⬆️ Publish Next Application artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Nextjs-site
+          path: ./site-deploy/Nextjs-site.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: "Production"
+
+    steps:
+      - name: ⬇️ Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: Nextjs-site
+
+      - name: Log into Azure
+        shell: bash --noprofile --norc -e -o pipefail -o verbose {0}
+        env:
+          TENANT_ID: ${{ secrets.WUIT_AZURE_NONPROD_GPT_SERVICE_PRINCIPAL_TENANT_ID }}
+          CLIENT_ID: ${{ secrets.WUIT_AZURE_NONPROD_GPT_SERVICE_PRINCIPAL_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.WUIT_AZURE_NONPROD_GPT_SERVICE_PRINCIPAL_CLIENT_SECRET }}
+          SUBSCRIPTION: ${{ vars.WUIT_AZURE_TEST_GPT_SUBSCRIPTION }}
+        run: |
+          # Login to Azure
+          az login --service-principal --username $CLIENT_ID --password $CLIENT_SECRET --tenant $TENANT_ID
+          az account set -s $SUBSCRIPTION
+      # Set the build during deployment setting to false. This setting was added in the templates to all azd to work, but breaks deployment via webapps-deploy 
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            rg=$(az webapp list --query "[?name=='${{ vars.WUIT_AZURE_TEST_GPT_AZURE_APP_SERVICE_NAME }}'].resourceGroup" --output tsv)
+            echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ vars.WUIT_AZURE_TEST_GPT_AZURE_APP_SERVICE_NAME }}
+            az webapp config appsettings set -n ${{ vars.WUIT_AZURE_TEST_GPT_AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
+            echo Setting --startup-file=\"node server.js\" on app service ${{ vars.WUIT_AZURE_TEST_GPT_AZURE_APP_SERVICE_NAME }}
+            az webapp config set --startup-file="node server.js" -n ${{ vars.WUIT_AZURE_TEST_GPT_AZURE_APP_SERVICE_NAME }} -g $rg -o none
+            sleep 10
+
+      - name: 🚀 Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ vars.WUIT_AZURE_TEST_GPT_AZURE_APP_SERVICE_NAME }}
+          package: ${{ github.workspace }}/Nextjs-site.zip
+
+      - name: 🧹 Cleanup
+        run: rm ${{ github.workspace }}/Nextjs-site.zip
