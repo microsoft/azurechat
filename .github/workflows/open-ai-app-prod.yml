@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: "Production"
+      name: "Prod"
 
     steps:
       - name: ⬇️ Download artifact from build job
