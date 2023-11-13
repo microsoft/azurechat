@@ -1,4 +1,4 @@
-name: Build & deploy Next.js app to Azure Web App
+name: Build & deploy Prod
 
 # When this action will be executed
 on:
