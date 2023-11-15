@@ -24,6 +24,7 @@ const azureEnvVars = [
   "ADMIN_EMAIL_ADDRESS",
   "AZURE_SPEECH_REGION",
   "AZURE_SPEECH_KEY",
+  "PUBLIC_PUBLIC_NEXT_SPEECH_ENABLED",
 ] as const;
 
 type RequiredServerEnvKeys = (typeof azureEnvVars)[number];
