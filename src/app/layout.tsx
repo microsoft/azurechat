@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { GlobalConfigProvider } from "@/features/global-config/global-client-config-context";
 import { Providers } from "@/features/providers";
 import { AI_NAME } from "@/features/theme/customise";
 import { cn } from "@/lib/utils";
@@ -23,20 +24,24 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full overflow-hidden">
       <body className={cn(inter.className, "flex w-full h-full")}>
-        <Providers>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div
-              className={cn(
-                inter.className,
-                "flex w-full p-2 h-full gap-2 bg-primary"
-              )}
-            >
-              {children}
-            </div>
+        <GlobalConfigProvider
+          config={{ speechEnabled: process.env.PUBLIC_SPEECH_ENABLED }}
+        >
+          <Providers>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <div
+                className={cn(
+                  inter.className,
+                  "flex w-full p-2 h-full gap-2 bg-primary"
+                )}
+              >
+                {children}
+              </div>
 
-            <Toaster />
-          </ThemeProvider>
-        </Providers>
+              <Toaster />
+            </ThemeProvider>
+          </Providers>
+        </GlobalConfigProvider>
       </body>
     </html>
   );

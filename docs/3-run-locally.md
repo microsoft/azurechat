@@ -75,13 +75,16 @@ Clone this repository locally or fork to your Github account. Run all of the the
 
    # Azure Speech to Text to convert audio to text
 
-   # Enabled must be set to "Y" any other value will disable the feature
+   # Enabled must be set to "true" any other value will disable the feature
 
-   NEXT_PUBLIC_SPEECH_ENABLED=Y
+   PUBLIC_SPEECH_ENABLED=true
    AZURE_SPEECH_REGION=<region, e.g. australiaeast>
    AZURE_SPEECH_KEY=
+
    ```
    </details>
+
+   ```
 
 4. Install npm packages by running `npm install`
 5. Start the app by running `npm run dev`

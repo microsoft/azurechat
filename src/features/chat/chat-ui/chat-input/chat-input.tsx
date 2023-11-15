@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useChatContext } from "@/features/chat/chat-ui/chat-context";
+import { useGlobalConfigContext } from "@/features/global-config/global-client-config-context";
 import { Loader, Send } from "lucide-react";
 import { FC, FormEvent, useRef } from "react";
 import { ChatFileSlider } from "../chat-file/chat-file-slider";
@@ -13,7 +14,7 @@ const ChatInput: FC<Props> = (props) => {
   const { setInput, handleSubmit, isLoading, input, chatBody } =
     useChatContext();
 
-  const speechEnabled = process.env.NEXT_PUBLIC_SPEECH_ENABLED;
+  const { speechEnabled } = useGlobalConfigContext();
 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const { rows, resetRows, onKeyDown, onKeyUp } = useChatInputDynamicHeight({
