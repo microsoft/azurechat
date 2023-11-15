@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en" className="h-full overflow-hidden">
       <body className={cn(inter.className, "flex w-full h-full")}>
         <GlobalConfigProvider
-          config={{ speechEnabled: process.env.PUBLIC_NEXT_SPEECH_ENABLED }}
+          config={{ speechEnabled: process.env.PUBLIC_SPEECH_ENABLED }}
         >
           <Providers>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

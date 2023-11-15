@@ -77,7 +77,7 @@ Clone this repository locally or fork to your Github account. Run all of the the
 
    # Enabled must be set to "true" any other value will disable the feature
 
-   PUBLIC_NEXT_SPEECH_ENABLED=true
+   PUBLIC_SPEECH_ENABLED=true
    AZURE_SPEECH_REGION=<region, e.g. australiaeast>
    AZURE_SPEECH_KEY=
 
