@@ -38,6 +38,16 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
         ...topHistory,
       ],
       model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+      top_p: Number.parseFloat(process.env.AZURE_OPENAI_API_TOP_P ?? "1"),
+      frequency_penalty: Number.parseFloat(
+        process.env.AZURE_OPENAI_API_FREQUENCY_PENALTY ?? "0"
+      ),
+      presence_penalty: Number.parseFloat(
+        process.env.OPENAI_API_PRESENCE_PENALTY ?? "0"
+      ),
+      max_tokens: Number.parseFloat(
+        process.env.OPENAI_API_MAX_TOKENS ?? Number.POSITIVE_INFINITY.toString()
+      ),
       stream: true,
     });
 
