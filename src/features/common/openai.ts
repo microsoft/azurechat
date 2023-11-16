@@ -7,7 +7,6 @@ export const OpenAIInstance = () => {
     defaultQuery: { "api-version": process.env.AZURE_OPENAI_API_VERSION },
     defaultHeaders: { 
       "api-key": process.env.OPENAI_API_KEY, 
-      "deployment-id": process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
       "Ocp-Apim-Subscription-Key": process.env.OCP_APIM_SUBSCRIPTION_KEY
     },
   });
@@ -21,7 +20,6 @@ export const OpenAIEmbeddingInstance = () => {
     defaultQuery: { "api-version": process.env.AZURE_OPENAI_API_VERSION },
     defaultHeaders: { 
       "api-key": process.env.OPENAI_API_KEY, 
-      "deployment-id": process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
       "Ocp-Apim-Subscription-Key": process.env.OCP_APIM_SUBSCRIPTION_KEY
     },
   });
