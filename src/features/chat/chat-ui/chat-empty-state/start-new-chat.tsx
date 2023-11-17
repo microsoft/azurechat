@@ -8,7 +8,7 @@ interface Prop {}
 
 export const StartNewChat: FC<Prop> = (props) => {
   return (
-    <div className="grid grid-cols-5 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-9">
+    <div className="grid grid-cols-5 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-9 welcome-card">
       <div className="col-span-2 gap-5 flex flex-col flex-1">
         <img src="/ai-icon.png" className="w-36" />
       </div>
@@ -20,7 +20,7 @@ export const StartNewChat: FC<Prop> = (props) => {
           <p className="">
             Welcome to {AI_NAME}. 
           </p>
-          <p className="welcome-message" dangerouslySetInnerHTML={{ __html: HOME_MESSAGE}}></p>
+          <p dangerouslySetInnerHTML={{ __html: HOME_MESSAGE}}></p>
           <p>You can start a new chat with me by clicking the button below.</p>
         </div>
         <div className="-mx-5 -mb-5 p-5 flex flex-col border-t bg-muted">

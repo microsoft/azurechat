@@ -4,19 +4,31 @@
 
 
 
+
 @layer base {
 
-
-
   :root {
+    /** Wash U Colors */
+    --red: rgb(165, 20, 23);
+    --gray: rgb(108, 115, 115);
+    --gray-light: rgb(200, 200, 200);
+    --gray-dark: rgb(61, 61, 61);
+    --gray-extra-light: rgb(238, 238, 238);
+
+    --gray: 180, 3%, 44%;
+    --gray-dark: 0, 0%, 24%;
+    --gray-extra-light: 0, 0%, 93%;
+    --red: 359, 78%, 36%;
+    /** **/
+
     --background: 0 0% 100%;
-    --foregroud: 240 10% 3.9%;
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 10 95% 39%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 359 78% 36%;
+    --primary-foreground: 0 0% 93%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
@@ -33,25 +45,43 @@
 
   .dark {
     --background: 240 10% 3.9%;
+
     --foreground: 0 0% 98%;
+    --foreground: 359 78% 36%;
+
     --card: 240 10% 3.9%;
+    --card: 0, 0%, 41%;
+    --card:  180, 3%, 44%;
+    --card: 0 0% 24%;
+
     --card-foreground: 0 0% 98%;
+    --card-foreground: 0 0% 93%;
+
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 169 74% 22%;
     --primary: 359 78% 36%;
+    --primary:  0 0% 24%;
+
     --primary-foreground: 240 5.9% 10%;
     --primary-foreground: 0 0 100%;
+
     --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 0 0% 24%;
+    --secondary: 180, 3%, 44%;
+    --secondary-forground: 0 0% 93%;
+
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    --border: 0 0% 93%;
+    --border:  359, 78%, 36%;
+    --border: var(--secondary);
+   
+    --input: 240 10% 3.9%;
     --ring: 169 74% 22%;
   }
 }
@@ -66,13 +96,69 @@
   }
 }
 
-/*Adjust size of Wash U shield in menu*/
-a[title="Home"] > img{
-  max-width: 80%;
-  max-height: 100%;
+/**
+
+Wash U CSS Overrides
+**/
+
+/*fix aspect ratio for shield */
+img,
+img.asepct-square {
+  aspect-ratio: 275/313 !important;
 }
 
+span>img.w-full {
+  width: auto !important;
+}
+
+
 /*Custom style for the welcome message*/
-.welcome-message a {
-  color:hsl(var(--primary));
+
+.dark img[src="/ai-icon.png"] {
+  content: url('/ai-icon-dark.png');
+}
+.dark .welcome-card h4 {
+  color: hsl(var(--muted));
+}
+
+/*  fix menu in dark mode*/
+.dark .w-80.flex.flex-col.p-2 {
+  background-color: hsl(var(--background));
+  color: hsl(var(--secondary-foreground));
+}
+
+
+.dark .w-80.flex.flex-col.p-2 a {
+  color: hsl(var(--gray-extra-light)) !important;
+}
+
+/* fix the color of the tablist in dark mode */
+.dark [role=tablist] {
+  --muted-foreground: var(--foreground);
+
+}
+
+.dark [role=tablist] button[aria-selected=true] {
+  color: hsl(var(--card-foreground));
+}
+
+/* fix the color of the chat cards in dark mode */
+.dark h5 {
+  color: hsl(var(--secondary));
+}
+
+.dark svg.text-primary {
+  color: hsl(var(--secondary));
+}
+
+.dark button {
+  color: hsl(var(--card-foreground));
+}
+
+.dark .items-end .prose {
+  background-color: hsl(var(--secondary));
+}
+
+.dark:prose-invert .bg-primary {
+  background-color: hsl(var(--secondary));
 }
