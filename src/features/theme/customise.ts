@@ -9,3 +9,5 @@ export let HOME_MESSAGE = `
 <p>You should interact in a friendly manner with the AI assistant and refrain from participating in any harmful or offensive activities. Please review the university's compliance policies for more information.</p>
 
 `;
+
+export const FEEDBACK_LINK = "https://wustl.edu/chatbot-feedback";
