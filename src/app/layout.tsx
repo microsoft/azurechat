@@ -1,7 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "@/features/providers";
-import { AI_NAME } from "@/features/theme/customise";
+import { AI_NAME, PROVIDED_BY_TEXT } from "@/features/theme/customise";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -34,6 +34,7 @@ export default function RootLayout({
               {children}
             </div>
 
+            <div className="powered-by"><small>{PROVIDED_BY_TEXT}</small></div>
             <Toaster />
           </ThemeProvider>
         </Providers>

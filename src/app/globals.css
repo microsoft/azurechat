@@ -111,6 +111,20 @@ span>img.w-full {
   width: auto !important;
 }
 
+.flex.w-full.p-2.h-full.gap-2.bg-primary {
+  padding-bottom: 1.25em;
+}
+.powered-by{
+  position: absolute;
+  bottom: -1px;
+  font-size: 12pt;
+  font-weight: bold;
+  right: 50%;
+  left: 50%;
+  width: max-content;
+  white-space: nowrap;
+  color: hsl(var(--secondary));
+}
 
 /*Custom style for the welcome message*/
 
