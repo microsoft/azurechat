@@ -7,12 +7,7 @@ import { Suspense } from "react";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  // read local file from src/app/update/page.tsx
-  const file = await fs.readFile(
-    process.cwd() + "/app/change-log/update.md",
-    "utf8"
-  );
-
+  const content = await loadContent();
   return (
     <Card className="h-full flex justify-center flex-1 overflow-y-scroll">
       <div className="flex flex-col gap-8 py-8">
@@ -20,9 +15,26 @@ export default async function Home() {
           <VersionDisplay />
         </Suspense>
         <div className="prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-4xl ">
-          <Markdown content={file} />
+          <Markdown content={content} />
         </div>
       </div>
     </Card>
   );
 }
+
+const loadContent = async () => {
+  if (process.env.NODE_ENV === "production") {
+    const response = await fetch(
+      "https://raw.githubusercontent.com/microsoft/azurechat/main/src/app/change-log/update.md",
+      {
+        cache: "no-cache",
+      }
+    );
+    return await response.text();
+  } else {
+    return await fs.readFile(
+      process.cwd() + "/app/change-log/update.md",
+      "utf8"
+    );
+  }
+};
