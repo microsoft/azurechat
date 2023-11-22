@@ -7,7 +7,7 @@ import { initAndGuardChatSession } from "./chat-thread-service";
 import { CosmosDBChatMessageHistory } from "./cosmosdb/cosmosdb";
 import { PromptGPTProps } from "./models";
 
-const SYSTEM_PROMPT = `You are ${AI_NAME} who is a helpful AI Assistant.`;
+const SYSTEM_PROMPT = `あなたは役に立つAIアシスタントの ${AI_NAME} さんです。`;
 
 const CONTEXT_PROMPT = ({
   context,
