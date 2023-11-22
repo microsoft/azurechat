@@ -1,3 +1,6 @@
+
+//Chatの1つのメッセージを表示するコンポーネント
+
 "use client";
 import { ChatRole } from "@/features/chat/chat-services/models";
 import { isNotNullOrEmpty } from "@/features/chat/chat-services/utils";
@@ -62,7 +65,7 @@ const ChatRow: FC<ChatRowProps> = (props) => {
           <Button
             variant={"ghost"}
             size={"sm"}
-            title="Copy text"
+            title="テキストをコピー"
             className="justify-right flex"
             onClick={handleButtonClick}
           >

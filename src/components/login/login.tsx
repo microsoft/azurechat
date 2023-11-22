@@ -22,7 +22,7 @@ export const LogIn = () => {
           <span className="text-primary">{AI_NAME}</span>
         </CardTitle>
         <CardDescription>
-          Login in with your GitHub or Microsoft 365 account
+          GitHubもしくはMicrosoft365アカウントでログインしてください。
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
