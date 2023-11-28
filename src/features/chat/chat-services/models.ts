@@ -43,6 +43,7 @@ export interface PromptGPTBody {
 
 export interface PromptGPTProps extends PromptGPTBody {
   messages: Message[];
+  model: string;
 }
 
 export interface ChatDocumentModel {

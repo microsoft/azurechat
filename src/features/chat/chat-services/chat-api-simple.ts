@@ -37,7 +37,7 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
         },
         ...topHistory,
       ],
-      model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+      model: props.model,
       stream: true,
     });
 
