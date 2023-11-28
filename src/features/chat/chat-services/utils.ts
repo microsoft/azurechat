@@ -1,8 +1,9 @@
 import { Message } from "ai";
-import { ChatMessageModel, ConversationStyle } from "./models";
+import { ConversationStyle } from "./models";
+import { ChatMessage } from "@prisma/client";
 
 export const transformCosmosToAIModel = (
-  chats: Array<ChatMessageModel>
+  chats: Array<ChatMessage>
 ): Array<Message> => {
   return chats.map((chat) => {
     return {

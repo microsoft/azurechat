@@ -21,6 +21,7 @@ import {
   TextToSpeechProps,
   useTextToSpeech,
 } from "./chat-speech/use-text-to-speech";
+import { ChatMessage, ChatThread } from "@prisma/client";
 
 interface ChatContextProps extends UseChatHelpers {
   id: string;
@@ -37,8 +38,8 @@ const ChatContext = createContext<ChatContextProps | null>(null);
 interface Prop {
   children: React.ReactNode;
   id: string;
-  chats: Array<ChatMessageModel>;
-  chatThread: ChatThreadModel;
+  chats: Array<ChatMessage>;
+  chatThread: ChatThread;
 }
 
 export const ChatProvider: FC<Prop> = (props) => {

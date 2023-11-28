@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ChatRole {
+  system
+  user
+  assistant
+  function
+}
+
+enum ChatType {
+  simple
+  data
+  mssql
+}
+
+enum ConversationStyle {
+  creative
+  balanced
+  precise
+}
+
+model ChatMessage {
+  id         String          @id @default(uuid())
+  createdAt  DateTime        @default(now())
+  isDeleted  Boolean         @default(false)
+  threadId   String
+  userId     String
+  content    String
+  role       ChatRole
+  type       String          @default("CHAT_MESSAGE")
+
+  thread     ChatThread      @relation(fields: [threadId], references: [id])
+}
+
+model ChatThread {
+  id                String            @id @default(uuid())
+  name              String
+  createdAt         DateTime          @default(now())
+  userId            String
+  useName           String
+  isDeleted         Boolean           @default(false)
+  chatType          ChatType
+  conversationStyle ConversationStyle
+  chatOverFileName  String
+  type              String            @default("CHAT_THREAD")
+
+  messages          ChatMessage[]
+  documents         ChatDocument[]
+}
+
+model ChatDocument {
+  id          String    @id @default(uuid())
+  name        String
+  createdAt   DateTime  @default(now())
+  userId      String
+  isDeleted   Boolean   @default(false)
+  chatThreadId String
+  type       String    @default("CHAT_DOCUMENT")
+
+  thread      ChatThread @relation(fields: [chatThreadId], references: [id])
+}

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "ChatDocument" ADD COLUMN     "type" TEXT NOT NULL DEFAULT 'CHAT_DOCUMENT';

@@ -1,7 +1,6 @@
 "use server";
 
 import { userHashedId } from "@/features/auth/helpers";
-import { CosmosDBContainer } from "@/features/common/cosmos";
 
 import { uniqueId } from "@/features/common/util";
 import {
@@ -21,6 +20,8 @@ import {
 } from "./models";
 import { chunkDocumentWithOverlap } from "./text-chunk";
 import { isNotNullOrEmpty } from "./utils";
+import database from "@/features/common/database";
+import { ChatDocument } from "@prisma/client";
 
 const MAX_DOCUMENT_SIZE = 20000000;
 
@@ -138,39 +139,24 @@ export const initDocumentIntelligence = () => {
 };
 
 export const FindAllChatDocuments = async (chatThreadID: string) => {
-  const container = await CosmosDBContainer.getInstance().getContainer();
-
-  const querySpec: SqlQuerySpec = {
-    query:
-      "SELECT * FROM root r WHERE r.type=@type AND r.chatThreadId = @threadId AND r.isDeleted=@isDeleted",
-    parameters: [
-      {
-        name: "@type",
-        value: CHAT_DOCUMENT_ATTRIBUTE,
-      },
-      {
-        name: "@threadId",
-        value: chatThreadID,
-      },
-      {
-        name: "@isDeleted",
-        value: false,
-      },
-    ],
-  };
-
-  const { resources } = await container.items
-    .query<ChatDocumentModel>(querySpec)
-    .fetchAll();
-
-  return resources;
+  const response = await database.chatDocument.findMany({
+    where: {
+      chatThreadId: chatThreadID,
+      isDeleted: false,
+      type: CHAT_DOCUMENT_ATTRIBUTE,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+  return response;
 };
 
 export const UpsertChatDocument = async (
   fileName: string,
   chatThreadID: string
 ) => {
-  const modelToSave: ChatDocumentModel = {
+  const modelToSave: ChatDocument = {
     chatThreadId: chatThreadID,
     id: uniqueId(),
     userId: await userHashedId(),
@@ -180,8 +166,9 @@ export const UpsertChatDocument = async (
     name: fileName,
   };
 
-  const container = await CosmosDBContainer.getInstance().getContainer();
-  await container.items.upsert(modelToSave);
+  await database.chatDocument.create({
+    data: modelToSave,
+  });
 };
 
 export const ensureSearchIsConfigured = async () => {

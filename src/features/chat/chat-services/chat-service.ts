@@ -5,34 +5,20 @@ import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { CosmosDBContainer } from "../../common/cosmos";
 import { ChatMessageModel, MESSAGE_ATTRIBUTE } from "./models";
+import database from "@/features/common/database";
 
 export const FindAllChats = async (chatThreadID: string) => {
-  const container = await CosmosDBContainer.getInstance().getContainer();
-
-  const querySpec: SqlQuerySpec = {
-    query:
-      "SELECT * FROM root r WHERE r.type=@type AND r.threadId = @threadId AND r.isDeleted=@isDeleted",
-    parameters: [
-      {
-        name: "@type",
-        value: MESSAGE_ATTRIBUTE,
-      },
-      {
-        name: "@threadId",
-        value: chatThreadID,
-      },
-      {
-        name: "@isDeleted",
-        value: false,
-      },
-    ],
-  };
-
-  const { resources } = await container.items
-    .query<ChatMessageModel>(querySpec)
-    .fetchAll();
-
-  return resources;
+  const response = await database.chatMessage.findMany({
+    where: {
+      threadId: chatThreadID,
+      isDeleted: false,
+      type: MESSAGE_ATTRIBUTE,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+  return response;
 };
 
 export const UpsertChat = async (chatModel: ChatMessageModel) => {
@@ -44,8 +30,9 @@ export const UpsertChat = async (chatModel: ChatMessageModel) => {
     isDeleted: false,
   };
 
-  const container = await CosmosDBContainer.getInstance().getContainer();
-  await container.items.upsert(modelToSave);
+  await database.chatMessage.create({
+    data: modelToSave,
+  });
 };
 
 export const insertPromptAndResponse = async (

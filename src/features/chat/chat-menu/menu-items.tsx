@@ -6,10 +6,10 @@ import { useGlobalMessageContext } from "@/features/global-message/global-messag
 import { FileText, MessageCircle, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { FC } from "react";
-import { ChatThreadModel } from "../chat-services/models";
+import { ChatThread } from "@prisma/client"
 
 interface Prop {
-  menuItems: Array<ChatThreadModel>;
+  menuItems: Array<ChatThread>;
 }
 
 export const MenuItems: FC<Prop> = (props) => {
