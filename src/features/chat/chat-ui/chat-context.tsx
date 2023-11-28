@@ -5,8 +5,6 @@ import { Message } from "ai";
 import { UseChatHelpers, useChat } from "ai/react";
 import React, { FC, createContext, useContext, useState } from "react";
 import {
-  ChatMessageModel,
-  ChatThreadModel,
   ChatType,
   ConversationStyle,
   PromptGPTBody,

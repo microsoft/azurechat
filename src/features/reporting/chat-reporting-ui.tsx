@@ -11,7 +11,7 @@ interface Props {
 export const ChatReportingUI: FC<Props> = async (props) => {
   const chatThreads = await FindChatThreadByID(props.chatId);
   const chats = await FindAllChatsInThread(props.chatId);
-  const chatThread = chatThreads[0];
+  const chatThread = chatThreads;
 
   return (
     <Card className="h-full relative">
