@@ -38,6 +38,7 @@ model ChatMessage {
   content    String
   role       ChatRole
   type       String          @default("CHAT_MESSAGE")
+  context           String?
 
   thread     ChatThread      @relation(fields: [threadId], references: [id])
 }
@@ -53,6 +54,7 @@ model ChatThread {
   conversationStyle ConversationStyle
   chatOverFileName  String
   type              String            @default("CHAT_THREAD")
+  
 
   messages          ChatMessage[]
   documents         ChatDocument[]

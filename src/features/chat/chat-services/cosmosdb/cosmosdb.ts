@@ -6,8 +6,9 @@ import {
   ChatMessageModel,
   MESSAGE_ATTRIBUTE,
 } from "@/features/chat/chat-services/models";
-import { CosmosDBContainer } from "@/features/common/cosmos";
+import database from "@/features/common/database";
 import { uniqueId } from "@/features/common/util";
+import { ChatMessage } from "@prisma/client";
 import { ChatCompletionMessage } from "openai/resources";
 
 export interface CosmosDBChatMessageHistoryFields {
@@ -30,12 +31,15 @@ export class CosmosDBChatMessageHistory {
   }
 
   async clear(): Promise<void> {
-    const container = await CosmosDBContainer.getInstance().getContainer();
-    await container.delete();
+    await database.chatMessage.deleteMany({
+      where: {
+        threadId: this.sessionId,
+      },
+    });
   }
 
   async addMessage(message: ChatCompletionMessage, citations: string = "") {
-    const modelToSave: ChatMessageModel = {
+    const modelToSave: ChatMessage = {
       id: uniqueId(),
       createdAt: new Date(),
       type: MESSAGE_ATTRIBUTE,
@@ -52,7 +56,7 @@ export class CosmosDBChatMessageHistory {
 }
 
 function mapOpenAIChatMessages(
-  messages: ChatMessageModel[]
+  messages: ChatMessage[]
 ): ChatCompletionMessage[] {
   return messages.map((message) => {
     return {

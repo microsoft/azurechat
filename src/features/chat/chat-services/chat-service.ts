@@ -3,9 +3,9 @@ import "server-only";
 
 import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
-import { CosmosDBContainer } from "../../common/cosmos";
 import { ChatMessageModel, MESSAGE_ATTRIBUTE } from "./models";
 import database from "@/features/common/database";
+import { ChatMessage } from "@prisma/client";
 
 export const FindAllChats = async (chatThreadID: string) => {
   const response = await database.chatMessage.findMany({
@@ -21,8 +21,8 @@ export const FindAllChats = async (chatThreadID: string) => {
   return response;
 };
 
-export const UpsertChat = async (chatModel: ChatMessageModel) => {
-  const modelToSave: ChatMessageModel = {
+export const UpsertChat = async (chatModel: ChatMessage) => {
+  const modelToSave: ChatMessage = {
     ...chatModel,
     id: uniqueId(),
     createdAt: new Date(),
