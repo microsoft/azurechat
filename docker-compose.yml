@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   lexical-database:
-    image: postgres:14
+    image: ankane/pgvector:latest
     environment:
       POSTGRES_DB: lexical
       POSTGRES_USER: lexical
@@ -14,5 +14,21 @@ services:
     expose:
       - 5432
 
+  parsr:
+    image: axarev/parsr
+    ports:
+      - 3001:3001
+    environment:
+      ABBYY_SERVER_URL:
+    volumes:
+      -  parsr-storage:/opt/app-root/src/api/server/dist/output
+  
+  parsr-ui:
+    image: axarev/parsr-ui-localhost
+    ports:
+      - 8080:80
+
+
 volumes:
   lexical-database:
+  parsr-storage:

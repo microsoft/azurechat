@@ -72,7 +72,7 @@ const configureIdentityProvider = () => {
               id: hashValue(email),
               name: username,
               email: email,
-              isAdmin: false,
+              isAdmin: true,
               image: "",
             };
           console.log("=== DEV USER LOGGED IN:\n", JSON.stringify(user, null, 2));

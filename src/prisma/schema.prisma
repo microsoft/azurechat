@@ -1,13 +1,12 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  extensions = [vector]
 }
 
 enum ChatRole {
@@ -31,43 +30,66 @@ enum ConversationStyle {
 
 model ChatMessage {
   id         String          @id @default(uuid())
-  createdAt  DateTime        @default(now())
-  isDeleted  Boolean         @default(false)
-  threadId   String
-  userId     String
+  createdAt  DateTime        @default(now()) @map("created_at")
+  isDeleted  Boolean         @default(false) @map("is_deleted")
+  threadId   String          @map("thread_id")
+  userId     String          @map("user_id")
   content    String
   role       ChatRole
   type       String          @default("CHAT_MESSAGE")
-  context           String?
+  context    String?
 
   thread     ChatThread      @relation(fields: [threadId], references: [id])
+
+  @@map("chat_message")
 }
 
 model ChatThread {
   id                String            @id @default(uuid())
   name              String
-  createdAt         DateTime          @default(now())
-  userId            String
-  useName           String
-  isDeleted         Boolean           @default(false)
+  createdAt         DateTime          @default(now()) @map("created_at")
+  userId            String            @map("user_id")
+  useName           String            @map("use_name")
+  isDeleted         Boolean           @default(false) @map("is_deleted")
   chatType          ChatType
   conversationStyle ConversationStyle
-  chatOverFileName  String
+  chatOverFileName  String            @map("chat_over_file_name")
   type              String            @default("CHAT_THREAD")
-  
 
   messages          ChatMessage[]
   documents         ChatDocument[]
+
+  @@map("chat_thread")
 }
 
 model ChatDocument {
   id          String    @id @default(uuid())
   name        String
-  createdAt   DateTime  @default(now())
-  userId      String
-  isDeleted   Boolean   @default(false)
-  chatThreadId String
-  type       String    @default("CHAT_DOCUMENT")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  userId      String    @map("user_id")
+  isDeleted   Boolean   @default(false) @map("is_deleted")
+  chatThreadId String    @map("chat_thread_id")
+  type        String    @default("CHAT_DOCUMENT") @map("type")
+
+  blob        Bytes
+  textContent String    @map("text_content")
 
   thread      ChatThread @relation(fields: [chatThreadId], references: [id])
+  embeddings  DocumentEmbedding[]
+
+  @@map("chat_document")
+}
+
+model DocumentEmbedding {
+  id            String    @id @default(uuid())
+  content       String
+  contentLength Int       @map("content_length")
+  contentTokens Int       @map("content_tokens")
+  embedding     Unsupported("vector(1536)")?
+  fileName     String    @map("file_name")
+
+  document      ChatDocument @relation(fields: [documentId], references: [id])
+  documentId    String       @map("document_id")
+
+  @@map("document_embedding")
 }

@@ -1,4 +1,6 @@
-import { OpenAIEmbeddingInstance } from "@/features/common/openai";
+import database from "@/features/common/database";
+import { OpenAIEmbeddingInstance, OpenAIInstance } from "@/features/common/openai";
+import { ChatDocument, DocumentEmbedding } from "@prisma/client";
 
 export interface AzureCogDocumentIndex {
   id: string;
@@ -46,238 +48,102 @@ type AzureCogRequestObject = {
 };
 
 export const simpleSearch = async (
-  filter?: AzureCogFilter
-): Promise<Array<AzureCogDocumentIndex & DocumentSearchModel>> => {
-  const url = `${baseIndexUrl()}/docs/search?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
-
-  const searchBody: AzureCogRequestObject = {
-    search: filter?.search || "*",
-    facets: filter?.facets || [],
-    filter: filter?.filter || "",
-    vectors: [],
-    top: filter?.top || 10,
-  };
-
-  const resultDocuments = (await fetcher(url, {
-    method: "POST",
-    body: JSON.stringify(searchBody),
-  })) as DocumentSearchResponseModel<
-    AzureCogDocumentIndex & DocumentSearchModel
-  >;
-
-  return resultDocuments.value;
+  id: string,
+): Promise<ChatDocument> => {
+  const result = await database.chatDocument.findFirst({
+    where: {
+      id: id,
+    },
+  });
+  if (!result) {
+    throw new Error("Document not found");
+  }
+  return result;
 };
 
 export const similaritySearchVectorWithScore = async (
   query: string,
   k: number,
-  filter?: AzureCogFilter
-): Promise<Array<AzureCogDocumentIndex & DocumentSearchModel>> => {
-  const openai = OpenAIEmbeddingInstance();
+  chatThreadId: string,
+): Promise<DocumentEmbedding[]> => {
+  const openai = OpenAIInstance();
 
-  const embeddings = await openai.embeddings.create({
+  const embeddingsResult = await openai.embeddings.create({
     input: query,
-    model: process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
+    model: "text-embedding-ada-002"
   });
 
-  const url = `${baseIndexUrl()}/docs/search?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
+  const embeddings = embeddingsResult.data.map((item) => {
+    return item.embedding;
+  });
 
-  const searchBody: AzureCogRequestObject = {
-    search: filter?.search || "*",
-    facets: filter?.facets || [],
-    filter: filter?.filter || "",
-    vectors: [
-      { value: embeddings.data[0].embedding, fields: "embedding", k: k },
-    ],
-    top: filter?.top || k,
-  };
+  const embeddingsString = embeddings.map((item) => {
+    return item.join(",")
+  });
 
-  const resultDocuments = (await fetcher(url, {
-    method: "POST",
-    body: JSON.stringify(searchBody),
-  })) as DocumentSearchResponseModel<
-    AzureCogDocumentIndex & DocumentSearchModel
-  >;
+  // SELECT * FROM items WHERE category_id = 123 ORDER BY embedding <-> '[3,1,2]' LIMIT 5;
 
-  return resultDocuments.value;
-};
+  // model DocumentEmbedding {
+  //   id            String    @id @default(uuid())
+  //   content       String
+  //   contentLength Int       @map("content_length")
+  //   contentTokens Int       @map("content_tokens")
+  //   embedding     Unsupported("vector(1536)")?
+  
+  //   document      ChatDocument @relation(fields: [documentId], references: [id])
+  //   documentId    String       @map("document_id")
+  
+  //   @@map("document_embedding")
+  // }
 
-export const indexDocuments = async (
-  documents: Array<AzureCogDocumentIndex>
-): Promise<void> => {
-  const url = `${baseIndexUrl()}/docs/index?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
+  const result = await database.$queryRaw`
+  SELECT e.id, content, content_length, content_tokens, document_id, file_name
+  FROM document_embedding e join chat_document cd on e.document_id = cd.id
+  WHERE document_id IN (
+    SELECT id
+    FROM chat_document
+    WHERE chat_thread_id = ${chatThreadId}
+  )
+  ORDER BY embedding <=> ${embeddings[0]}::vector LIMIT ${k};
+  ` as any[];
 
-  await embedDocuments(documents);
-  const documentIndexRequest: DocumentSearchResponseModel<AzureCogDocumentIndex> =
-    {
-      value: documents,
+  const mapResult = result.map((item) => {
+    return {
+      id: item.id,
+      content: item.content,
+      contentLength: item.content_length,
+      contentTokens: item.content_tokens,
+      documentId: item.document_id,
+      fileName: item.file_name,
     };
+  }) as DocumentEmbedding[];
 
-  await fetcher(url, {
-    method: "POST",
-    body: JSON.stringify(documentIndexRequest),
-  });
+  return mapResult;
+  
 };
+
+
 
 export const deleteDocuments = async (chatThreadId: string): Promise<void> => {
   // find all documents for chat thread
 
-  const documentsInChat = await simpleSearch({
-    filter: `chatThreadId eq '${chatThreadId}'`,
-  });
-
-  const documentsToDelete: DocumentDeleteModel[] = [];
-
-  documentsInChat.forEach(async (document: { id: string }) => {
-    const doc: DocumentDeleteModel = {
-      "@search.action": "delete",
-      id: document.id,
-    };
-    documentsToDelete.push(doc);
-  });
-
-  // delete the documents
-  await fetcher(
-    `${baseIndexUrl()}/docs/index?api-version=${
-      process.env.AZURE_SEARCH_API_VERSION
-    }`,
-    {
-      method: "POST",
-      body: JSON.stringify({ value: documentsToDelete }),
-    }
-  );
-};
-
-export const embedDocuments = async (
-  documents: Array<AzureCogDocumentIndex>
-) => {
-  const openai = OpenAIEmbeddingInstance();
-
-  try {
-    const contentsToEmbed = documents.map((d) => d.pageContent);
-
-    const embeddings = await openai.embeddings.create({
-      input: contentsToEmbed,
-      model: process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
-    });
-
-    embeddings.data.forEach((embedding, index) => {
-      documents[index].embedding = embedding.embedding;
-    });
-  } catch (e) {
-    console.log(e);
-    const error = e as any;
-    throw new Error(`${e} with code ${error.status}`);
-  }
-};
-
-const baseUrl = (): string => {
-  return `https://${process.env.AZURE_SEARCH_NAME}.search.windows.net/indexes`;
-};
-
-const baseIndexUrl = (): string => {
-  return `https://${process.env.AZURE_SEARCH_NAME}.search.windows.net/indexes/${process.env.AZURE_SEARCH_INDEX_NAME}`;
-};
-
-const fetcher = async (url: string, init?: RequestInit) => {
-  const response = await fetch(url, {
-    ...init,
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      "api-key": process.env.AZURE_SEARCH_API_KEY,
+  const documents = await database.chatDocument.findMany({
+    where: {
+      chatThreadId: chatThreadId,
     },
   });
 
-  if (!response.ok) {
-    if (response.status === 400) {
-      const err = await response.json();
-      throw new Error(err.error.message);
-    } else {
-      throw new Error(`Azure Cog Search Error: ${response.statusText}`);
-    }
-  }
-
-  return await response.json();
-};
-
-export const ensureIndexIsCreated = async (): Promise<void> => {
-  const url = `${baseIndexUrl()}?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
-
-  try {
-    await fetcher(url);
-  } catch (e) {
-    await createCogSearchIndex();
-  }
-};
-
-const createCogSearchIndex = async (): Promise<void> => {
-  const url = `${baseUrl()}?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
-
-  await fetcher(url, {
-    method: "POST",
-    body: JSON.stringify(AZURE_SEARCH_INDEX),
-  });
-};
-
-const AZURE_SEARCH_INDEX = {
-  name: process.env.AZURE_SEARCH_INDEX_NAME,
-  fields: [
-    {
-      name: "id",
-      type: "Edm.String",
-      key: true,
-      filterable: true,
-    },
-    {
-      name: "user",
-      type: "Edm.String",
-      searchable: true,
-      filterable: true,
-    },
-    {
-      name: "chatThreadId",
-      type: "Edm.String",
-      searchable: true,
-      filterable: true,
-    },
-    {
-      name: "pageContent",
-      searchable: true,
-      type: "Edm.String",
-    },
-    {
-      name: "metadata",
-      type: "Edm.String",
-    },
-    {
-      name: "embedding",
-      type: "Collection(Edm.Single)",
-      searchable: true,
-      filterable: false,
-      sortable: false,
-      facetable: false,
-      retrievable: true,
-      dimensions: 1536,
-      vectorSearchConfiguration: "vectorConfig",
-    },
-  ],
-  vectorSearch: {
-    algorithmConfigurations: [
-      {
-        name: "vectorConfig",
-        kind: "hnsw",
+  for (const document of documents) {
+    await database.documentEmbedding.deleteMany({
+      where: {
+        documentId: document.id,
       },
-    ],
-  },
+    });
+
+    await database.chatDocument.delete({
+      where: {
+        id: document.id,
+      },
+    });
+  }
 };

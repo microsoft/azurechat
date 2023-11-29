@@ -3,7 +3,7 @@ import "server-only";
 
 import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
-import { ChatMessageModel, MESSAGE_ATTRIBUTE } from "./models";
+import { MESSAGE_ATTRIBUTE } from "./models";
 import database from "@/features/common/database";
 import { ChatMessage } from "@prisma/client";
 
@@ -54,7 +54,7 @@ export const insertPromptAndResponse = async (
   });
 };
 
-export const newChatModel = (): ChatMessageModel => {
+export const newChatModel = (): ChatMessage => {
   return {
     content: "",
     threadId: "",

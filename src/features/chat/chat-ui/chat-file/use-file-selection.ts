@@ -1,7 +1,6 @@
 import { useGlobalMessageContext } from "@/features/global-message/global-message-context";
 import {
-  IndexDocuments,
-  UploadDocument,
+  UploadIndexAndSaveDocument,
 } from "../../chat-services/chat-document-service";
 import { useChatContext } from "../chat-context";
 
@@ -27,50 +26,28 @@ export const useFileSelection = (props: Props) => {
       setUploadButtonLabel("Uploading document...");
       formData.append("id", props.id);
       const file: File | null = formData.get("file") as unknown as File;
-      const uploadResponse = await UploadDocument(formData);
+      formData.append("fileName", file.name);
+      
+      let index = 0;
 
-      if (uploadResponse.success) {
-        let index = 0;
-
-        for (const doc of uploadResponse.response) {
-          setUploadButtonLabel(
-            `Indexing document [${index + 1}]/[${
-              uploadResponse.response.length
-            }]`
-          );
-          try {
-            const indexResponse = await IndexDocuments(
-              file.name,
-              [doc],
-              props.id
-            );
-
-            if (!indexResponse.success) {
-              showError(indexResponse.error);
-              break;
-            }
-          } catch (e) {
-            alert(e);
-          }
-
-          index++;
-        }
-
-        if (index === uploadResponse.response.length) {
-          showSuccess({
-            title: "File upload",
-            description: `${file.name} uploaded successfully.`,
-          });
-          setUploadButtonLabel("");
-          setChatBody({ ...chatBody, chatOverFileName: file.name });
-        } else {
-          showError(
-            "Looks like not all documents were indexed. Please try again."
-          );
-        }
-      } else {
-        showError(uploadResponse.error);
+      const uploadResponse = await UploadIndexAndSaveDocument(formData);
+      if (uploadResponse.error) {
+        throw new Error(uploadResponse.error);
       }
+
+      if (index === uploadResponse.response.length) {
+        showSuccess({
+          title: "File upload",
+          description: `${file.name} uploaded successfully.`,
+        });
+        setUploadButtonLabel("");
+        setChatBody({ ...chatBody, chatOverFileName: file.name });
+      } else {
+        showError(
+          "Looks like not all documents were indexed. Please try again."
+        );
+      }
+      
     } catch (error) {
       showError("" + error);
     } finally {

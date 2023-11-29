@@ -8,8 +8,6 @@ import { deleteDocuments } from "./azure-cog-search/azure-cog-vector-store";
 import { FindAllChatDocuments } from "./chat-document-service";
 import {
   CHAT_THREAD_ATTRIBUTE,
-  ChatMessageModel,
-  ChatThreadModel,
   ChatType,
   ConversationStyle,
   PromptGPTProps,
@@ -136,11 +134,14 @@ export const updateChatThreadTitle = async (
 };
 
 export const CreateChatThread = async () => {
+  console.log("creating chat thread")
+  const id =uniqueId();
+  console.log("id", id)
   const modelToSave: ChatThread = {
     name: "new chat",
     useName: (await userSession())!.name,
     userId: await userHashedId(),
-    id: uniqueId(),
+    id: id,
     createdAt: new Date(),
     isDeleted: false,
     chatType: "simple",

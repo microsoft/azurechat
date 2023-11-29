@@ -6,25 +6,22 @@ export const CitationAction = async (
   previousState: any,
   formData: FormData
 ) => {
-  const result = await simpleSearch({
-    filter: `id eq '${formData.get("id")}'`,
-  });
+  const documentId = formData.get("id");
+  const result = await simpleSearch(documentId as string);
 
-  if (result.length === 0) return <div>Not found</div>;
-
-  const firstResult = result[0];
+  if (!result) return <div>Not found</div>;
 
   return (
     <div className="flex flex-col gap-4">
       <div className="border rounded-sm p-2">
         <div className="font-bold">Idd</div>
-        <div>{firstResult.id} </div>
+        <div>{result.id} </div>
       </div>
       <div className="border rounded-sm p-2">
         <div className="font-bold">File name</div>
-        <div>{firstResult.metadata} </div>
+        <div>{result.name} </div>
       </div>
-      <p>{firstResult.pageContent}</p>
+      <p>{result.textContent}</p>
     </div>
   );
 };

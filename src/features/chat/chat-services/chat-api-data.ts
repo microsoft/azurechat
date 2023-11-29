@@ -52,11 +52,14 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
 
   const context = relevantDocuments
     .map((result, index) => {
-      const content = result.pageContent.replace(/(\r\n|\n|\r)/gm, "");
-      const context = `[${index}]. file name: ${result.metadata} \n file id: ${result.id} \n ${content}`;
+      const content = result.content.replace(/(\r\n|\n|\r)/gm, "");
+      const context = `[${index}]. file name: ${result.fileName} \n file id: ${result.id} \n ${content}`;
       return context;
     })
     .join("\n------\n");
+
+
+  console.log(context);
 
   try {
     const response = await openAI.chat.completions.create({
@@ -74,7 +77,7 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
           }),
         },
       ],
-      model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+      model: "gpt-3.5-turbo",
       stream: true,
     });
 
@@ -112,9 +115,7 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
 };
 
 const findRelevantDocuments = async (query: string, chatThreadId: string) => {
-  const relevantDocuments = await similaritySearchVectorWithScore(query, 10, {
-    filter: `user eq '${await userHashedId()}' and chatThreadId eq '${chatThreadId}'`,
-  });
+  const relevantDocuments = await similaritySearchVectorWithScore(query, 10, chatThreadId);
 
   return relevantDocuments;
 };
