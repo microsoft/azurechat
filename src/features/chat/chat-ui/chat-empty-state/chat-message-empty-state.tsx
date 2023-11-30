@@ -4,6 +4,7 @@ import { FC } from "react";
 import { useChatContext } from "../chat-context";
 import { ChatFileUI } from "../chat-file/chat-file-ui";
 import { ChatStyleSelector } from "./chat-style-selector";
+import { ChatSensitivitySelector } from "./chat-sensitivity-selector";
 import { ChatTypeSelector } from "./chat-type-selector";
 
 interface Prop {}
@@ -32,6 +33,12 @@ export const ChatMessageEmptyState: FC<Prop> = (props) => {
             Choose a conversation style
           </p>
           <ChatStyleSelector disable={false} />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">
+            Set the Sensitivity of your chat
+          </p>
+          <ChatSensitivitySelector disable={false} />
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">
