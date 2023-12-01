@@ -1,5 +1,11 @@
 FROM node:18-alpine AS base
 
+# If using a proxy / secure web gateway / etc., you may need to add your own PKI's root certificate in order for your containers to reach out to web resources.
+# Customize the {your_certificate_file} strings and uncomment the following three lines to allow for this scenario.
+# COPY {your_certificate_file}.pem /usr/local/share/ca-certificates/
+# RUN cat /usr/local/share/ca-certificates/{your_certificate_file}.pem >>/etc/ssl/certs/ca-certificates.crt
+# ARG NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
@@ -53,6 +59,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 
 ENV PORT 3000
+# If deploying your container to an Azure App Service, you may need to switch this variable value to 0.0.0.0 in order for HTTP responses to be returned from the container. Uncomment / comment out the following two lines as needed.
+# ENV HOSTNAME 0.0.0.0
 ENV HOSTNAME localhost
 
 # set environment variables here to run locally
