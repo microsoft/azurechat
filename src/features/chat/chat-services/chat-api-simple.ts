@@ -5,6 +5,8 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 import { initAndGuardChatSession } from "./chat-thread-service";
 import { CosmosDBChatMessageHistory } from "./cosmosdb/cosmosdb";
 import { PromptGPTProps } from "./models";
+import { getTokenCount } from "./lexical/token-counter";
+import database from "@/features/common/database";
 
 export const ChatAPISimple = async (props: PromptGPTProps) => {
   const { lastHumanMessage, chatThread } = await initAndGuardChatSession(props);
@@ -27,25 +29,46 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
   const topHistory = history.slice(history.length - 30, history.length);
 
   try {
+    const msg = {
+      role: "system" as const,
+      content: `-You are ${AI_NAME} who is a helpful AI Assistant.
+      - You will provide clear and concise queries, and you will respond with polite and professional answers.
+      - You will answer questions truthfully and accurately.`,
+    };
+    const messages = [msg, ...topHistory];
     const response = await openAI.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: `-You are ${AI_NAME} who is a helpful AI Assistant.
-          - You will provide clear and concise queries, and you will respond with polite and professional answers.
-          - You will answer questions truthfully and accurately.`,
-        },
-        ...topHistory,
-      ],
+      messages: messages,
       model: props.model,
       stream: true,
     });
+
+    const inputText = messages.map((m) => m.content).join("");
 
     const stream = OpenAIStream(response, {
       async onCompletion(completion) {
         await chatHistory.addMessage({
           content: completion,
           role: "assistant",
+        });
+
+        const inputTokens = getTokenCount("openai", "gpt-3.5-turbo", inputText);
+        const outputTokens = getTokenCount(
+          "openai",
+          "gpt-3.5-turbo",
+          completion
+        );
+
+        await database.messageAudit.create({
+          data: {
+            userId: userId,
+            threadId: chatThread.id,
+            promptTokens: inputTokens,
+            responseTokens: outputTokens,
+            promptMessage: inputText,
+            responseMessage: completion,
+            model: "gpt-3.5-turbo",
+            provider: "openai",
+          },
         });
       },
     });
