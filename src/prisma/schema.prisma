@@ -93,3 +93,22 @@ model DocumentEmbedding {
 
   @@map("document_embedding")
 }
+
+model MessageAudit {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  threadId String @map("thread_id")
+  userId   String @map("user_id")
+
+  provider String
+  model    String
+
+  promptTokens   Int @map("prompt_tokens")
+  responseTokens Int @map("response_tokens")
+
+  promptMessage   String @map("prompt_message")
+  responseMessage String @map("response_message")
+
+  @@map("message_audit")
+}
