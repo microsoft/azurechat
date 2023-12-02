@@ -60,8 +60,6 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
     })
     .join("\n------\n");
 
-  console.log(context);
-
   try {
     const response = await openAI.chat.completions.create({
       messages: [

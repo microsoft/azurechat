@@ -41,22 +41,19 @@ export const MainMenu = () => {
             <MessageCircle />
           </Link>
         </Button>
-        {/*
-                {session?.user?.isAdmin ? (
+        {session?.user?.isAdmin ? (
           <Button
             asChild
             className="rounded-full w-[40px] h-[40px] p-2 text-primary"
             variant={"outline"}
           >
-            <Link href="/reporting" title="Reporting">
+            <Link href="/admin/models" title="Models">
               <LayoutDashboard />
             </Link>
           </Button>
         ) : (
           <></>
         )}
-      
-      */}
       </div>
       <div className="flex flex-col gap-2 items-center">
         <Button
