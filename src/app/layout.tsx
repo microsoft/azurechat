@@ -28,7 +28,7 @@ export default function RootLayout({
           config={{ speechEnabled: process.env.PUBLIC_SPEECH_ENABLED }}
         >
           <Providers>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <ThemeProvider attribute="class" defaultTheme="light">
               <div
                 className={cn(
                   inter.className,
