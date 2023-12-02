@@ -92,7 +92,9 @@ model DocumentEmbedding {
   documentId    String       @map("document_id")
 
   @@map("document_embedding")
-}model MessageAudit {
+}
+
+model MessageAudit {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now()) @map("created_at")
 
