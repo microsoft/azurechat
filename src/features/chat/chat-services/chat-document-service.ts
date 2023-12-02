@@ -18,7 +18,7 @@ const MAX_DOCUMENT_SIZE = 20000000;
 const DEFAULT_PARSR_CONFIG = {
   version: 0.9,
   extractor: {
-    pdf: "pdfminer",
+    pdf: "pdfjs",
     ocr: "tesseract",
     language: ["eng"],
   },
