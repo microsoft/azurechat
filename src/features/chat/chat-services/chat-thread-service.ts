@@ -1,6 +1,7 @@
 "use server";
 import "server-only";
-
+import { OpenAIInstance } from "@/features/common/openai";
+import { AI_NAME } from "@/features/theme/customise";
 import { userHashedId, userSession } from "@/features/auth/helpers";
 import { FindAllChats } from "@/features/chat/chat-services/chat-service";
 import { uniqueId } from "@/features/common/util";
@@ -157,11 +158,38 @@ export const updateChatThreadTitle = async (
       chatType: chatType,
       chatOverFileName: chatOverFileName,
       conversationStyle: conversationStyle,
-      name: userMessage.substring(0, 30),
+      // name: userMessage.substring(0, 30),
+      name : await generateChatName(userMessage),
     });
 
     return updatedChatThread.resource!;
   }
+  async function generateChatName(chatMessage: string): Promise <string> {
+    const openAI = OpenAIInstance();
+    
+    try {
+      const name = await openAI.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content: `You are ${AI_NAME} who is a helpful AI Assistant.
+            
+            - provide a short chat name in less than 30 characters for chat title based in first user message`
+          },
+        ],
+        model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+      });
+  
+      return name.choices[0].message.content;
+  
+    } catch (e) {
+      console.error(`An error occurred: ${e}`);
+      const words: string[] = chatMessage.split(' ');
+      const name: string = 'New Chat by Error';
+      // const name: string = 'New Chat - ' + words.slice(0, 5).join(' ');
+      return name;
+    }
+    }
 
   return chatThread;
 };
@@ -184,6 +212,7 @@ export const CreateChatThread = async () => {
   const response = await container.items.create<ChatThreadModel>(modelToSave);
   return response.resource;
 };
+
 
 export const initAndGuardChatSession = async (props: PromptGPTProps) => {
   const { messages, id, chatType, conversationStyle, chatOverFileName } = props;
