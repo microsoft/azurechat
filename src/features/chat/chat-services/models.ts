@@ -23,7 +23,7 @@ export type ChatRole = "system" | "user" | "assistant" | "function";
 
 export interface ChatThreadModel {
   id: string;
-  name: string;
+  name: string | Promise<string> | null;
   createdAt: Date;
   userId: string;
   useName: string;

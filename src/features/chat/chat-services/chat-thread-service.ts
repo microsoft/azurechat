@@ -164,23 +164,29 @@ export const updateChatThreadTitle = async (
 
     return updatedChatThread.resource!;
   }
-  async function generateChatName(chatMessage: string): Promise <string> {
+  async function generateChatName(chatMessage: string): Promise <string | null> {
     const openAI = OpenAIInstance();
     
     try {
       const name = await openAI.chat.completions.create({
         messages: [
           {
-            role: "user",
-            content: `You are ${AI_NAME} who is a helpful AI Assistant.
-            
-            - provide a short chat name in less than 30 characters for chat title based in first user message`
+            role: "system",
+            content: `- create a succinct title, limited to five words and 20 characters, for the following chat """ ${chatMessage}""" conversation with a generative AI assistant:
+            - this title should effectively summarise the main topic or theme of the chat.
+            -  it will be used in the app's navigation interface, so it should be easily undestandable and reflective of the chat's content 
+            to help users quickly grasp what the conversation was about.`
           },
         ],
         model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
       });
-  
-      return name.choices[0].message.content;
+      
+      if (name.choices && name.choices[0] && name.choices[0].message && name.choices[0].message.content ){
+        return name.choices[0].message.content;
+      } else{
+        console.error('Error: Unexpected response structurefrom openAI API.');
+        return null;
+      }
   
     } catch (e) {
       console.error(`An error occurred: ${e}`);
