@@ -156,6 +156,7 @@ export const updateChatThreadTitle = async (
     const updatedChatThread = await UpsertChatThread({
       ...chatThread,
       chatType: chatType,
+      chatCategory: await (generateChatCategory(userMessage)),
       chatOverFileName: chatOverFileName,
       conversationStyle: conversationStyle,
       // name: userMessage.substring(0, 30),
@@ -164,7 +165,9 @@ export const updateChatThreadTitle = async (
 
     return updatedChatThread.resource!;
   }
-  async function generateChatName(chatMessage: string): Promise <string | null> {
+  async function generateChatName(chatMessage: string): Promise <string | null> 
+  
+  {
     const openAI = OpenAIInstance();
     
     try {
@@ -196,6 +199,55 @@ export const updateChatThreadTitle = async (
       return name;
     }
     }
+    
+  
+  async function generateChatCategory(chatMessage: string): Promise <string> {
+    const openAI = OpenAIInstance();
+  
+    let categories = [
+      'Information Processing and Management',
+      'Communication and Interaction',
+      'Decision Support and Advisory',
+      'Educational and Training Services',
+      'Operational Efficiency and Automation',
+      'Public Engagement and Services',
+      'Innovation and Development',
+      'Creative Assistance',
+      'Lifestyle and Personal Productivity',
+      'Entertainment and Engagement',
+      'Emotional and Mental Support'
+  ];
+    
+    try {
+      const category = await openAI.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content: `Categorise this chat session inside triple quotes """ ${chatMessage} """ into one of the following 
+            categories: ${categories.join(', ')} inside square brackets based on my query`
+          },
+        ],
+        model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+      });
+  
+  
+      if (category.choices[0].message.content != null) {
+        return category.choices[0].message.content;
+      }
+      else{
+        console.log(`Uncategorised chat.`);
+        return "Uncategorised!";
+      }
+  
+      
+  
+    } catch (e) {
+      console.error(`An error occurred: ${e}`);
+      const words: string[] = chatMessage.split(' ');
+      const category: string = 'Uncategorised chat';
+      return category;
+    }
+    }
 
   return chatThread;
 };
@@ -203,6 +255,7 @@ export const updateChatThreadTitle = async (
 export const CreateChatThread = async () => {
   const modelToSave: ChatThreadModel = {
     name: "new chat",
+    chatCategory: "Uncategorised",
     useName: (await userSession())!.name,
     userId: await userHashedId(),
     id: uniqueId(),
