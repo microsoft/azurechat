@@ -5,8 +5,15 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 import { initAndGuardChatSession } from "./chat-thread-service";
 import { CosmosDBChatMessageHistory } from "./cosmosdb/cosmosdb";
 import { PromptGPTProps } from "./models";
+import {initializeAppInsights} from "@/lib/appInsightsConfig";
+import {performanceLogger} from "@/lib/appInsightsConfig";
+
+const appInsights = initializeAppInsights();
 
 export const ChatAPISimple = async (props: PromptGPTProps) => {
+
+  const startTime = Date.now(); 
+
   const { lastHumanMessage, chatThread } = await initAndGuardChatSession(props);
 
   const openAI = OpenAIInstance();
@@ -49,6 +56,12 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
         });
       },
     });
+
+    const endTime = Date.now(); 
+    performanceLogger(appInsights, startTime, endTime);
+
+ 
+
     return new StreamingTextResponse(stream);
   } catch (e: unknown) {
     if (e instanceof Error) {
