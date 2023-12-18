@@ -1,6 +1,7 @@
 "use server";
 import "server-only";
-
+import { OpenAIInstance } from "@/features/common/openai";
+import { AI_NAME } from "@/features/theme/customise";
 import { userHashedId, userSession } from "@/features/auth/helpers";
 import { FindAllChats } from "@/features/chat/chat-services/chat-service";
 import { uniqueId } from "@/features/common/util";
@@ -80,44 +81,62 @@ export const FindChatThreadByID = async (id: string) => {
   return resources;
 };
 
-export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
+export const RenameChatThreadByID = async (
+  chatThreadID: string, 
+  newTitle: string| Promise<string> | null
+  ) => {
   const container = await CosmosDBContainer.getInstance().getContainer();
   const threads = await FindChatThreadByID(chatThreadID);
 
   if (threads.length !== 0) {
-    const chats = await FindAllChats(chatThreadID);
-
-    chats.forEach(async (chat) => {
-      const itemToUpdate = {
-        ...chat,
-      };
-      itemToUpdate.isDeleted = true;
-      await container.items.upsert(itemToUpdate);
-    });
-
-    const chatDocuments = await FindAllChatDocuments(chatThreadID);
-
-    if (chatDocuments.length !== 0) {
-      await deleteDocuments(chatThreadID);
-    }
-
-    chatDocuments.forEach(async (chatDocument) => {
-      const itemToUpdate = {
-        ...chatDocument,
-      };
-      itemToUpdate.isDeleted = true;
-      await container.items.upsert(itemToUpdate);
-    });
-
     threads.forEach(async (thread) => {
       const itemToUpdate = {
         ...thread,
+        name: newTitle, // Update the name property with the new title.
       };
-      itemToUpdate.isDeleted = true;
       await container.items.upsert(itemToUpdate);
     });
   }
 };
+
+// export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
+//   const container = await CosmosDBContainer.getInstance().getContainer();
+//   const threads = await FindChatThreadByID(chatThreadID);
+
+//   if (threads.length !== 0) {
+//     const chats = await FindAllChats(chatThreadID);
+
+//     chats.forEach(async (chat) => {
+//       const itemToUpdate = {
+//         ...chat,
+//       };
+//       itemToUpdate.isDeleted = true;
+//       await container.items.upsert(itemToUpdate);
+//     });
+
+//     const chatDocuments = await FindAllChatDocuments(chatThreadID);
+
+//     if (chatDocuments.length !== 0) {
+//       await deleteDocuments(chatThreadID);
+//     }
+
+//     chatDocuments.forEach(async (chatDocument) => {
+//       const itemToUpdate = {
+//         ...chatDocument,
+//       };
+//       itemToUpdate.isDeleted = true;
+//       await container.items.upsert(itemToUpdate);
+//     });
+
+//     threads.forEach(async (thread) => {
+//       const itemToUpdate = {
+//         ...thread,
+//       };
+//       itemToUpdate.isDeleted = true;
+//       await container.items.upsert(itemToUpdate);
+//     });
+//   }
+// };
 
 export const EnsureChatThreadIsForCurrentUser = async (
   chatThreadID: string
@@ -155,20 +174,117 @@ export const updateChatThreadTitle = async (
     const updatedChatThread = await UpsertChatThread({
       ...chatThread,
       chatType: chatType,
+      chatCategory: await (generateChatCategory(userMessage)),
       chatOverFileName: chatOverFileName,
       conversationStyle: conversationStyle,
-      name: userMessage.substring(0, 30),
+      // name: userMessage.substring(0, 30),
+      name : await generateChatName(userMessage),
+      previousChatName : await StoreOriginalChatName(chatThread.name)
     });
 
     return updatedChatThread.resource!;
   }
+
+  async function StoreOriginalChatName(currentChatName: string) {
+    let previousChatName: string = "";
+    if (currentChatName !== previousChatName) {
+        previousChatName = currentChatName; // store the original chat name
+      }
+      return previousChatName;
+    }
+
+  async function generateChatName(chatMessage: string): Promise <string> 
+  
+  {
+    const openAI = OpenAIInstance();
+    
+    try {
+      const name = await openAI.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content: `- create a succinct title, limited to five words and 20 characters, for the following chat """ ${chatMessage}""" conversation with a generative AI assistant:
+            - this title should effectively summarise the main topic or theme of the chat.
+            -  it will be used in the app's navigation interface, so it should be easily undestandable and reflective of the chat's content 
+            to help users quickly grasp what the conversation was about.`
+          },
+        ],
+        model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+      });
+      
+      if (name.choices && name.choices[0] && name.choices[0].message && name.choices[0].message.content ){
+        return name.choices[0].message.content;
+      } else{
+        console.error('Error: Unexpected response structurefrom openAI API.');
+        return "";
+      }
+  
+    } catch (e) {
+      console.error(`An error occurred: ${e}`);
+      const words: string[] = chatMessage.split(' ');
+      const name: string = 'New Chat by Error';
+      // const name: string = 'New Chat - ' + words.slice(0, 5).join(' ');
+      return name;
+    }
+    }
+    
+  
+  async function generateChatCategory(chatMessage: string): Promise <string> {
+    const openAI = OpenAIInstance();
+  
+    let categories = [
+      'Information Processing and Management',
+      'Communication and Interaction',
+      'Decision Support and Advisory',
+      'Educational and Training Services',
+      'Operational Efficiency and Automation',
+      'Public Engagement and Services',
+      'Innovation and Development',
+      'Creative Assistance',
+      'Lifestyle and Personal Productivity',
+      'Entertainment and Engagement',
+      'Emotional and Mental Support'
+  ];
+    
+    try {
+      const category = await openAI.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content: `Categorise this chat session inside triple quotes """ ${chatMessage} """ into one of the following 
+            categories: ${categories.join(', ')} inside square brackets based on my query`
+          },
+        ],
+        model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+      });
+  
+  
+      if (category.choices[0].message.content != null) {
+        return category.choices[0].message.content;
+      }
+      else{
+        console.log(`Uncategorised chat.`);
+        return "Uncategorised!";
+      }
+  
+      
+  
+    } catch (e) {
+      console.error(`An error occurred: ${e}`);
+      const words: string[] = chatMessage.split(' ');
+      const category: string = 'Uncategorised chat';
+      return category;
+    }
+    }
 
   return chatThread;
 };
 
 export const CreateChatThread = async () => {
   const modelToSave: ChatThreadModel = {
-    name: "new chat",
+    name: "New Chat",
+    previousChatName : "",
+    chatCategory: "Uncategorised",
     useName: (await userSession())!.name,
     userId: await userHashedId(),
     id: uniqueId(),
@@ -184,6 +300,7 @@ export const CreateChatThread = async () => {
   const response = await container.items.create<ChatThreadModel>(modelToSave);
   return response.resource;
 };
+
 
 export const initAndGuardChatSession = async (props: PromptGPTProps) => {
   const { messages, id, chatType, conversationStyle, chatOverFileName } = props;
