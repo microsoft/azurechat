@@ -23,8 +23,9 @@ export type ChatRole = "system" | "user" | "assistant" | "function";
 
 export interface ChatThreadModel {
   id: string;
-  name: string | Promise<string> | null;
-  chatCategory: string | null | Promise<string>;
+  name: string;
+  previousChatName : string;
+  chatCategory: string;
   createdAt: Date;
   userId: string;
   useName: string;

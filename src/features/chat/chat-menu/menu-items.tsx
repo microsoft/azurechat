@@ -1,30 +1,102 @@
 "use client";
 import { MenuItem } from "@/components/menu";
 import { Button } from "@/components/ui/button";
-import { SoftDeleteChatThreadByID } from "@/features/chat/chat-services/chat-thread-service";
 import { useGlobalMessageContext } from "@/features/global-message/global-message-context";
-import { FileText, MessageCircle, Trash } from "lucide-react";
+import { FileText, MessageCircle, Trash, Pencil} from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { FC } from "react";
 import { ChatThreadModel } from "../chat-services/models";
+import {RenameChatThreadByID} from "@/features/chat/chat-services/chat-thread-service";
+import React, { useState } from 'react';
 
 interface Prop {
   menuItems: Array<ChatThreadModel>;
 }
 
-export const MenuItems: FC<Prop> = (props) => {
-  const { id } = useParams();
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (newTitle: string) => void;
+}
+
+const PopupMessage: React.FC<{ message: string }> = ({ message }) => {
+  return (
+    <div className="popup-message">
+      <p>{message}</p>
+    </div>
+  );
+};
+
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave }) => {
+  const [newName, setNewName] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleSave = () => {
+    onSave(newName);
+    onClose();
+
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+  };
+
+  return (
+    <>
+      {isOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <label>
+              Enter The New Chat Name:
+              <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} />
+            </label>
+            <button onClick={handleSave}>Save</button>
+            <button onClick={onClose}>Cancel</button>
+          </div>
+          {showPopup && <PopupMessage message="Chat name updated successfully!" />}
+        </div>
+      )}
+    </>
+  );
+};
+
+
+ export const MenuItems: FC<Prop> = (props) => {
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { showError } = useGlobalMessageContext();
 
-  const sendData = async (threadID: string) => {
+  const [modalPosition, setModalPosition] = useState<{ top: number; left: number } | null>(null);
+  const handleOpenModal = (threadId: string) => {
+    
+    const top = window.innerHeight / 2 - 100; 
+    const left = window.innerWidth / 2 - 150; 
+    setModalPosition({ top, left });
+    setSelectedThreadId(threadId);
+    
+  };
+
+    const renameChat = async (threadID: string, newTitle: string| Promise<string> | null) => {
     try {
-      await SoftDeleteChatThreadByID(threadID);
+      await RenameChatThreadByID(threadID, newTitle);
       router.refresh();
       router.replace("/chat");
+    
     } catch (e) {
-      console.log(e);
+      console.error(e);
       showError("" + e);
+    }
+  };
+
+  const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
+
+  const handleCloseModal = () => {
+    setSelectedThreadId(null);
+  };
+
+  const handleSaveModal = async (newName: string) => {
+    if (newName.trim() !== '' && selectedThreadId) {
+      await renameChat(selectedThreadId, newName);
     }
   };
 
@@ -52,24 +124,26 @@ export const MenuItems: FC<Prop> = (props) => {
           <span className="flex gap-2 items-center overflow-hidden flex-1">
             <span className="overflow-ellipsis truncate"> {thread.name}</span>
           </span>
-          <Button
-            className="invisible  group-hover/item:visible hover:text-brand"
+
+        <Button
+            className="invisible group-hover/item:visible hover:text-brand"
             size={"sm"}
             variant={"ghost"}
-            onClick={async (e) => {
-              e.preventDefault();
-              const yesDelete = confirm(
-                "Are you sure you want to delete this chat?"
-              );
-              if (yesDelete) {
-                await sendData(thread.id);
-              }
-            }}
+            onClick={() => handleOpenModal(thread.id)}
           >
-            <Trash size={16} />
+            <Pencil size={16} />
           </Button>
-        </MenuItem>
-      ))}
-    </>
-  );
-};
+
+        {selectedThreadId === thread.id && (
+
+          <Modal
+          isOpen={selectedThreadId === thread.id}
+          onClose={handleCloseModal}
+          onSave={handleSaveModal}
+        />
+      )}
+    </MenuItem>
+  ))}
+</>
+);
+};      

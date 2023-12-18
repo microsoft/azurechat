@@ -81,44 +81,62 @@ export const FindChatThreadByID = async (id: string) => {
   return resources;
 };
 
-export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
+export const RenameChatThreadByID = async (
+  chatThreadID: string, 
+  newTitle: string| Promise<string> | null
+  ) => {
   const container = await CosmosDBContainer.getInstance().getContainer();
   const threads = await FindChatThreadByID(chatThreadID);
 
   if (threads.length !== 0) {
-    const chats = await FindAllChats(chatThreadID);
-
-    chats.forEach(async (chat) => {
-      const itemToUpdate = {
-        ...chat,
-      };
-      itemToUpdate.isDeleted = true;
-      await container.items.upsert(itemToUpdate);
-    });
-
-    const chatDocuments = await FindAllChatDocuments(chatThreadID);
-
-    if (chatDocuments.length !== 0) {
-      await deleteDocuments(chatThreadID);
-    }
-
-    chatDocuments.forEach(async (chatDocument) => {
-      const itemToUpdate = {
-        ...chatDocument,
-      };
-      itemToUpdate.isDeleted = true;
-      await container.items.upsert(itemToUpdate);
-    });
-
     threads.forEach(async (thread) => {
       const itemToUpdate = {
         ...thread,
+        name: newTitle, // Update the name property with the new title.
       };
-      itemToUpdate.isDeleted = true;
       await container.items.upsert(itemToUpdate);
     });
   }
 };
+
+// export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
+//   const container = await CosmosDBContainer.getInstance().getContainer();
+//   const threads = await FindChatThreadByID(chatThreadID);
+
+//   if (threads.length !== 0) {
+//     const chats = await FindAllChats(chatThreadID);
+
+//     chats.forEach(async (chat) => {
+//       const itemToUpdate = {
+//         ...chat,
+//       };
+//       itemToUpdate.isDeleted = true;
+//       await container.items.upsert(itemToUpdate);
+//     });
+
+//     const chatDocuments = await FindAllChatDocuments(chatThreadID);
+
+//     if (chatDocuments.length !== 0) {
+//       await deleteDocuments(chatThreadID);
+//     }
+
+//     chatDocuments.forEach(async (chatDocument) => {
+//       const itemToUpdate = {
+//         ...chatDocument,
+//       };
+//       itemToUpdate.isDeleted = true;
+//       await container.items.upsert(itemToUpdate);
+//     });
+
+//     threads.forEach(async (thread) => {
+//       const itemToUpdate = {
+//         ...thread,
+//       };
+//       itemToUpdate.isDeleted = true;
+//       await container.items.upsert(itemToUpdate);
+//     });
+//   }
+// };
 
 export const EnsureChatThreadIsForCurrentUser = async (
   chatThreadID: string
@@ -161,11 +179,21 @@ export const updateChatThreadTitle = async (
       conversationStyle: conversationStyle,
       // name: userMessage.substring(0, 30),
       name : await generateChatName(userMessage),
+      previousChatName : await StoreOriginalChatName(chatThread.name)
     });
 
     return updatedChatThread.resource!;
   }
-  async function generateChatName(chatMessage: string): Promise <string | null> 
+
+  async function StoreOriginalChatName(currentChatName: string) {
+    let previousChatName: string = "";
+    if (currentChatName !== previousChatName) {
+        previousChatName = currentChatName; // store the original chat name
+      }
+      return previousChatName;
+    }
+
+  async function generateChatName(chatMessage: string): Promise <string> 
   
   {
     const openAI = OpenAIInstance();
@@ -188,7 +216,7 @@ export const updateChatThreadTitle = async (
         return name.choices[0].message.content;
       } else{
         console.error('Error: Unexpected response structurefrom openAI API.');
-        return null;
+        return "";
       }
   
     } catch (e) {
@@ -254,7 +282,8 @@ export const updateChatThreadTitle = async (
 
 export const CreateChatThread = async () => {
   const modelToSave: ChatThreadModel = {
-    name: "new chat",
+    name: "New Chat",
+    previousChatName : "",
     chatCategory: "Uncategorised",
     useName: (await userSession())!.name,
     userId: await userHashedId(),
