@@ -6,7 +6,8 @@ import {
   MessageCircle,
   PanelLeftClose,
   PanelRightClose,
-  Triangle,
+  Lightbulb,
+  Home,
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "../theme/theme-toggle";
@@ -35,7 +36,7 @@ export const MainMenu = () => {
           variant={"outline"}
         >
           <Link href="/" title="Home">
-            <img src="/ai-icon.png" />
+            <Home />
           </Link>
         </Button>
         <Button
@@ -66,7 +67,7 @@ export const MainMenu = () => {
           variant={"outline"}
         >
           <Link href="/change-log" title="change log" className="relative">
-            <Triangle />
+            <Lightbulb />
             <UpdateIndicator />
           </Link>
         </Button>
