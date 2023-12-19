@@ -4,12 +4,12 @@ import { GlobalConfigProvider } from "@/features/global-config/global-client-con
 import { Providers } from "@/features/providers";
 import { AI_NAME } from "@/features/theme/customise";
 import { cn } from "@/lib/utils";
-import { NotoSans } from "next/font/google";
+import { Noto_Sans } from "next/font/google";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
 
-const notoSans = NotoSans({ subsets: ["latin"] });
+const notoSans = Noto_Sans({ weight: '400', subsets: ["latin"] });
 
 export const metadata = {
   title: AI_NAME,
