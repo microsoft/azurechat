@@ -8,7 +8,10 @@ interface Props {
   chatId: string;
 }
 
+
+
 export const ChatReportingUI: FC<Props> = async (props) => {
+
   const chatThreads = await FindChatThreadByID(props.chatId);
   const chats = await FindAllChatsInThread(props.chatId);
   const chatThread = chatThreads[0];
@@ -20,6 +23,7 @@ export const ChatReportingUI: FC<Props> = async (props) => {
         <div className=" pb-[80px] ">
           {chats.map((message, index) => (
             <ChatRow
+              chatMessageId={chatThread.id} // rename to message id
               name={message.role === "user" ? chatThread.useName : AI_NAME}
               profilePicture={message.role === "user" ? "" : "/ai-icon.png"}
               message={message.content}

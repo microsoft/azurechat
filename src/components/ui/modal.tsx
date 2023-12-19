@@ -1,32 +1,51 @@
 import { ReactElement } from "react";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { CheckIcon, ClipboardIcon, UserCircle, ThumbsUp, ThumbsDown } from "lucide-react";
 
 interface ModalProps {
+    chatThreadId: string;
     open: boolean;
     onClose: () => void;
-    onSubmit: (feedback: string, reason: string | null) => void;
-    children: ReactElement;
+    onSubmit: (chatMessageId: string, feedback: string, reason: string) => void;
+    onFeedbackReceived: (feedback: string) => void;
+    onReasonReceived: (reason: string) => void;
 }
 
 export default function Modal(props: ModalProps): ReturnType<FC> {
-    let feedbackText = ''; // State to hold the feedback text
-    let selectedReason: string | null = null; // State to hold the selected reason
+    const [feedback, setFeedback] = useState(''); 
+    const [reason, setReason] = useState(""); 
+    const [chatMessageId, setChatMessageId] = useState<string>(""); 
+    const [isClicked, setIsClicked] = useState(false);
+
+
+  const handleBlur = () => {
+      setIsClicked(false);
+  };
+
+  const buttonStyles = {
+      fontWeight: 'bold',
+      padding: '8px 12px',
+      backgroundColor: isClicked ? '#e0e0e0' : 'transparent',
+  };
+
 
     const handleFeedbackChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      feedbackText = event.target.value; // Update feedback text as it changes
+      setFeedback(event.target.value);
     };
 
 
     const handleSubmit = () => {
-        props.onSubmit(feedbackText, selectedReason); // Pass the feedback text and reason to the parent component
-        props.onClose(); // Close the modal
+      setChatMessageId(chatMessageId);
+      props.onFeedbackReceived(feedback);
+      props.onFeedbackReceived(reason);
+      props.onSubmit(chatMessageId,feedback, reason); 
+      props.onClose(); 
     };
 
 
     const handleReasonSelection = (reason: string) => {
-        props.onSubmit(feedbackText, selectedReason); // Pass the feedback text and reason to the parent component
-        props.onClose(); // Close the modal
+      setIsClicked(true);
+      setReason(reason);
       };
 
     return (
@@ -48,8 +67,10 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
                 <div className="reason-buttons">
             <button
               type="button"
-              className={selectedReason === 'unsatisfied' ? 'selected-btn' : 'btn'}
+              className={feedback === 'unsatisfied' ? 'selected-btn' : 'btn'}
               onClick={() => handleReasonSelection('unsatisfied')}
+              onBlur={handleBlur}
+              style={buttonStyles}
             >
               Unsatisfied
             </button>
@@ -58,8 +79,10 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
             
             <button
               type="button"
-              className={selectedReason === 'unsafe' ? 'selected-btn' : 'btn'}
+              className={feedback === 'unsafe' ? 'selected-btn' : 'btn'}
               onClick={() => handleReasonSelection('unsafe')}
+              onBlur={handleBlur}
+              style={buttonStyles}
             >
               Unsafe
             </button>
@@ -68,8 +91,10 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
 
             <button
               type="button"
-              className={selectedReason === 'inaccurate' ? 'selected-btn' : 'btn'}
+              className={feedback === 'inaccurate' ? 'selected-btn' : 'btn'}
               onClick={() => handleReasonSelection('inaccurate')}
+              onBlur={handleBlur}
+              style={buttonStyles}
             >
               Inaccurate
             </button>

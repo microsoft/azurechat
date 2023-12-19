@@ -6,8 +6,13 @@ import { useSession } from "next-auth/react";
 import { useRef } from "react";
 import { useChatContext } from "./chat-context";
 import { ChatHeader } from "./chat-header";
+import { FC } from "react";
 
-export const ChatMessageContainer = () => {
+interface Props {
+  chatId: string;
+};
+
+export const ChatMessageContainer:  FC<Props> = async (props) => {
   const { data: session } = useSession();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +28,7 @@ export const ChatMessageContainer = () => {
       <div className=" pb-[80px] flex flex-col justify-end flex-1">
         {messages.map((message, index) => (
           <ChatRow
+            chatMessageId={message.id}
             name={message.role === "user" ? session?.user?.name! : AI_NAME}
             profilePicture={
               message.role === "user" ? session?.user?.image! : "/ai-icon.png"

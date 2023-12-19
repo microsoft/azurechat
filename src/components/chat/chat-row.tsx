@@ -8,9 +8,12 @@ import { Markdown } from "../markdown/markdown";
 import Typography from "../typography";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import Modal from "../ui/modal";
+import Modal from "../ui/modal"
+import {CreateUserFeedbackChatId} from "@/features/chat/chat-services/chat-service";
+
 
 interface ChatRowProps {
+  chatMessageId: string;
   name: string;
   profilePicture: string;
   message: string;
@@ -20,8 +23,13 @@ interface ChatRowProps {
 const ChatRow: FC<ChatRowProps> = (props) => {
   const [isIconChecked, setIsIconChecked] = useState(false);
   const [thumbsUpClicked, setThumbsUpClicked] = useState(false);
-  const [thumbsDownClicked, setThumbsDownClicked] = useState(false)
-  const [showModal, setShowModal] = useState(false);
+  const [thumbsDownClicked, setThumbsDownClicked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  const [reason, setReason] = useState('');
+  const [selectedMessageId, setSelectedMessageId] =  useState<string>('');
+
+
   
   const toggleIcon = () => {
     setIsIconChecked((prevState) => !prevState);
@@ -33,13 +41,27 @@ const ChatRow: FC<ChatRowProps> = (props) => {
     navigator.clipboard.writeText(props.message);
   };
 
-//   function toggleModal() {
-//     setShowModal(!showModal);
-// }
+  const handleModalSubmit = (chatMessageId: string, feedback: string, reason: string) => {
+    setFeedback(feedback);
+    setReason(reason);
+    setIsModalOpen(false);
+    CreateUserFeedbackChatId(props.chatMessageId,  feedback, reason);// insert into cosmodb
+  };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const handleModalSubmit = () => {
+  //   setSelectedMessageId(selectedMessageId);
+  //   // setFeedback(feedback);
+  //   // setReason(reason);
+    
+
+  //   CreateUserFeedbackChatId(selectedMessageId,  feedback, reason);// insert into cosmodb
+
+  //   closeModal();
+  // };
+  
 
   const openModal = () => {
+    setSelectedMessageId(props.chatMessageId);
     setIsModalOpen(true);
   };
 
@@ -49,12 +71,10 @@ const ChatRow: FC<ChatRowProps> = (props) => {
 
   const buttonStyleThumbsUp = {
     backgroundColor: thumbsUpClicked ? 'lightblue' : 'transparent',
-    // Other styles for thumbs up button
   } as React.CSSProperties;
 
   const buttonStyleThumbsDown = {
     backgroundColor: thumbsDownClicked ? 'lightblue' : 'transparent',
-    // Other styles for thumbs down button
   } as React.CSSProperties;
 
 
@@ -63,35 +83,6 @@ const ChatRow: FC<ChatRowProps> = (props) => {
     setThumbsDownClicked(false);
 
   };
-
-  // const handleThumbsDownClick = () => {
-  //   // setThumbsDownClicked(true);
-  //   // setThumbsUpClicked(false);
-  //   // const confirmation = window.prompt('Please enter a reason for thumbs down:');
-
-  //   // if (confirmation !== null) {
-  //   //   setThumbsDownClicked(true);
-  //   //   setThumbsUpClicked(false); // Reset the state of the other button
-  //   //   // ... any other logic you want to execute for thumbs down
-  //   //   console.log('Reason for thumbs down:', confirmation);
-  //   // }
-
-    
-  //   return (
-  //     <>
-  //         {/* <Modal open={true} onClose={toggleModal}>
-  //             <div>
-  //                 Main Content goes here!
-  //             </div>
-  //         </Modal> */}
-  //         ...
-  //     </>
-  // );
-
-
-  // };
-
-
 
   return (
     <div
@@ -139,6 +130,7 @@ const ChatRow: FC<ChatRowProps> = (props) => {
               <ThumbsUp size={16} />
             )}
           </Button>
+
           <Button
             variant={"ghost"}
             size={"sm"}
@@ -152,10 +144,22 @@ const ChatRow: FC<ChatRowProps> = (props) => {
               <ThumbsDown size={16} />
             )}
           </Button>
-          <Modal open={isModalOpen} onClose={closeModal}>
-          {/* Content for your modal */}
-          <p>Modal content goes here.</p>
-          </Modal>
+          <Modal  chatThreadId={props.chatMessageId}
+                  open={isModalOpen}
+                  onClose={closeModal}
+                  onSubmit={handleModalSubmit}
+                  onFeedbackReceived={(feedback) => {
+                    console.log("Received Feedback:", feedback); // Log received feedback
+                    // You can do further processing here with the received feedback
+                  }}
+                  onReasonReceived={(reason) => {
+                    console.log("Received Feedback:", reason); // Log received feedback
+                    // You can do further processing here with the received feedback
+                  }}
+                  
+          />
+
+
           <Button
             variant={"ghost"}
             size={"sm"}
