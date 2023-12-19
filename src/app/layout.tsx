@@ -9,7 +9,7 @@ import "./globals.css";
 
 export const dynamic = "force-dynamic";
 
-const notoSans = Noto_Sans({ weight: '300', subsets: ["latin"] });
+const notoSans = Noto_Sans({ weight: '400', subsets: ["latin"] });
 
 export const metadata = {
   title: AI_NAME,
