@@ -9,6 +9,7 @@ import {
   ChatThreadModel,
   ChatType,
   ConversationStyle,
+  ConversationSensitivity,
   PromptGPTBody,
 } from "../chat-services/models";
 import { transformCosmosToAIModel } from "../chat-services/utils";
@@ -29,6 +30,7 @@ interface ChatContextProps extends UseChatHelpers {
   fileState: FileState;
   onChatTypeChange: (value: ChatType) => void;
   onConversationStyleChange: (value: ConversationStyle) => void;
+  onConversationSensitivityChange: (value: ConversationSensitivity) => void;
   speech: TextToSpeechProps & SpeechToTextProps;
 }
 
@@ -57,6 +59,7 @@ export const ChatProvider: FC<Prop> = (props) => {
     id: props.chatThread.id,
     chatType: props.chatThread.chatType,
     conversationStyle: props.chatThread.conversationStyle,
+    conversationSensitivity: props.chatThread.conversationSensitivity,
     chatOverFileName: props.chatThread.chatOverFileName,
   });
 
@@ -91,6 +94,10 @@ export const ChatProvider: FC<Prop> = (props) => {
     setChatBody({ ...chatBody, conversationStyle: value });
   };
 
+  const onConversationSensitivityChange = (value: ConversationSensitivity) => {
+    setChatBody({ ...chatBody, conversationSensitivity: value });
+  };
+
   function onError(error: Error) {
     showError(error.message, response.reload);
   }
@@ -103,6 +110,7 @@ export const ChatProvider: FC<Prop> = (props) => {
         chatBody,
         onChatTypeChange,
         onConversationStyleChange,
+        onConversationSensitivityChange,
         fileState,
         id: props.id,
         speech: {

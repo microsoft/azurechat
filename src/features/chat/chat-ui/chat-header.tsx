@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useChatContext } from "./chat-context";
 import { ChatStyleSelector } from "./chat-empty-state/chat-style-selector";
+import { ChatSensitivitySelector } from "./chat-empty-state/chat-sensitivity-selector";
 import { ChatTypeSelector } from "./chat-empty-state/chat-type-selector";
 
 interface Prop {}

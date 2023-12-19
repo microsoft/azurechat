@@ -292,6 +292,7 @@ export const CreateChatThread = async () => {
     isDeleted: false,
     chatType: "simple",
     conversationStyle: "precise",
+    conversationSensitivity: "official",
     type: CHAT_THREAD_ATTRIBUTE,
     chatOverFileName: "",
   };
