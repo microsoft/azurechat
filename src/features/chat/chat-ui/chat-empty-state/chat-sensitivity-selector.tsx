@@ -13,7 +13,7 @@ export const ChatSensitivitySelector: FC<Prop> = (props) => {
 
   return (
     <Tabs
-      defaultValue={chatBody.ConversationSensitivity}
+      defaultValue={chatBody.conversationSensitivity}
       onValueChange={(value) =>
         onConversationSensitivityChange(value as ConversationSensitivity)
       }
