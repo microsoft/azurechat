@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brush, CircleDot, Scale } from "lucide-react";
+import { Shield, ShieldAlert, ShieldX } from "lucide-react";
 import { FC } from "react";
 import { ConversationSensitivity } from "../../chat-services/models";
 import { useChatContext } from "../chat-context";
@@ -24,21 +24,21 @@ export const ChatSensitivitySelector: FC<Prop> = (props) => {
           className="flex gap-2"
           disabled={props.disable}
         >
-          <Brush size={20} /> Official
+          <Shield size={20} /> Official
         </TabsTrigger>
         <TabsTrigger
           value="sensitive"
           className="flex gap-2"
           disabled={props.disable}
         >
-          <Scale size={20} /> Sensitive
+          <ShieldAlert size={20} /> Sensitive
         </TabsTrigger>
         <TabsTrigger
           value="protected"
           className="flex gap-2"
-          disabled={props.disable}
+          disabled={true}
         >
-          <CircleDot size={20} /> Protected
+          <ShieldX size={20} /> Protected
         </TabsTrigger>
       </TabsList>
     </Tabs>

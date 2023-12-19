@@ -30,15 +30,15 @@ export const ChatMessageEmptyState: FC<Prop> = (props) => {
 
         <div className="flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">
-            Choose a conversation style
-          </p>
-          <ChatStyleSelector disable={false} />
-        </div>
-        <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground">
             Set the Sensitivity of your chat
           </p>
           <ChatSensitivitySelector disable={false} />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">
+            Choose a conversation style
+          </p>
+          <ChatStyleSelector disable={false} />
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">
