@@ -11,6 +11,7 @@ export const ChatHeader: FC<Prop> = (props) => {
     <div className="flex flex-col gap-2">
       <div className="flex gap-2">
         <ChatTypeSelector disable={true} />
+        <ChatSensitivitySelector disable={true} />
         <ChatStyleSelector disable={true} />
       </div>
       <div className="flex gap-2 h-2">
