@@ -15,7 +15,7 @@ export interface CosmosDBChatMessageHistoryFields {
   userId: string;
 }
 
-interface ExtendedChatMessageModel extends ChatCompletionMessage {
+interface ExtendedChatCompletionMessage extends ChatCompletionMessage {
   feedback: string;
   reason: string;
 }
@@ -40,7 +40,7 @@ export class CosmosDBChatMessageHistory {
     await container.delete();
   }
 
-  async addMessage(message: ExtendedChatMessageModel, citations: string = "") {
+  async addMessage(message: ExtendedChatCompletionMessage, citations: string = "") {
     const modelToSave: ChatMessageModel = {
       id: uniqueId(),
       createdAt: new Date(),

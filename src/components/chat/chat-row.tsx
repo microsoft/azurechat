@@ -27,41 +27,47 @@ const ChatRow: FC<ChatRowProps> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [reason, setReason] = useState('');
-  const [selectedMessageId, setSelectedMessageId] =  useState<string>('');
-
 
   
-  const toggleIcon = () => {
-    setIsIconChecked((prevState) => !prevState);
-    
-  };
+  const toggleButton = (buttonId: string) => {
+    switch (buttonId) {
+        case 'thumbsUp':
+            setThumbsUpClicked(prevState => !prevState);
+            setThumbsDownClicked(false);
+            setIsIconChecked(false);
+            break;
+        case 'thumbsDown':
+            setThumbsDownClicked(prevState => !prevState);
+            break;
+        case 'CopyButton':
+          setIsIconChecked(prevState => !prevState);
+          setThumbsUpClicked(false);
+          setThumbsDownClicked(false);
+            break;
+        // Add more cases for other buttons if needed
+        default:
+            break;
+    }
+};
 
-  const handleButtonClick = () => {
-    toggleIcon();
+  const handleCopyButton = () => {
+    toggleButton('thumbsUp');
     navigator.clipboard.writeText(props.message);
+    // setThumbsUpClicked(false);
+    // setThumbsDownClicked(false);
+    // setIsIconChecked(true);
   };
 
-  const handleModalSubmit = (chatMessageId: string, feedback: string, reason: string) => {
+  const handleModalSubmit = ( feedback: string, reason: string) => {
     setFeedback(feedback);
     setReason(reason);
     setIsModalOpen(false);
-    CreateUserFeedbackChatId(props.chatMessageId,  feedback, reason);// insert into cosmodb
+    CreateUserFeedbackChatId(props.chatMessageId,  feedback, reason);
   };
 
-  // const handleModalSubmit = () => {
-  //   setSelectedMessageId(selectedMessageId);
-  //   // setFeedback(feedback);
-  //   // setReason(reason);
-    
-
-  //   CreateUserFeedbackChatId(selectedMessageId,  feedback, reason);// insert into cosmodb
-
-  //   closeModal();
-  // };
-  
 
   const openModal = () => {
-    setSelectedMessageId(props.chatMessageId);
+    toggleButton('thumbsDown');
     setIsModalOpen(true);
   };
 
@@ -79,8 +85,10 @@ const ChatRow: FC<ChatRowProps> = (props) => {
 
 
   const handleThumbsUpClick = () => {
-    setThumbsUpClicked(true);
-    setThumbsDownClicked(false);
+    toggleButton('thumbsUp');
+    // setThumbsUpClicked(true);
+    // setThumbsDownClicked(false);
+    // setIsIconChecked(false);
 
   };
 
@@ -165,7 +173,7 @@ const ChatRow: FC<ChatRowProps> = (props) => {
             size={"sm"}
             title="Copy text"
             className="justify-right flex"
-            onClick={handleButtonClick}
+            onClick={handleCopyButton}
           >
             {isIconChecked ? (
               <CheckIcon size={16} />
