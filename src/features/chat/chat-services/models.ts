@@ -16,7 +16,7 @@ export interface ChatMessageModel {
   type: "CHAT_MESSAGE";
 }
 
-export type ConversationStyle = "creative" | "balanced" | "precise";
+export type ConversationStyle = "創造的" | "バランス" | "厳格";
 export type ChatType = "simple" | "data" | "mssql";
 
 export type ChatRole = "system" | "user" | "assistant" | "function";
