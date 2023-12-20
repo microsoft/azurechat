@@ -19,7 +19,6 @@ export interface ChatMessageModel {
 export type ConversationStyle = "creative" | "balanced" | "precise";
 export type ConversationSensitivity = "official" | "sensitive" | "protected";
 export type ChatType = "simple" | "data" | "mssql";
-
 export type ChatRole = "system" | "user" | "assistant" | "function";
 
 export interface ChatThreadModel {
@@ -42,6 +41,7 @@ export interface PromptGPTBody {
   id: string; // thread id
   chatType: ChatType;
   conversationStyle: ConversationStyle;
+  conversationSensitivity: ConversationSensitivity;
   chatOverFileName: string;
 }
 

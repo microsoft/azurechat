@@ -14,6 +14,7 @@ import {
   ChatMessageModel,
   ChatThreadModel,
   ChatType,
+  ConversationSensitivity,
   ConversationStyle,
   PromptGPTProps,
 } from "./models";
@@ -167,6 +168,7 @@ export const updateChatThreadTitle = async (
   messages: ChatMessageModel[],
   chatType: ChatType,
   conversationStyle: ConversationStyle,
+  conversationSensitivity: ConversationSensitivity,
   chatOverFileName: string,
   userMessage: string
 ) => {
@@ -177,6 +179,7 @@ export const updateChatThreadTitle = async (
       chatCategory: await (generateChatCategory(userMessage)),
       chatOverFileName: chatOverFileName,
       conversationStyle: conversationStyle,
+      conversationSensitivity: conversationSensitivity,
       // name: userMessage.substring(0, 30),
       name : await generateChatName(userMessage),
       previousChatName : await StoreOriginalChatName(chatThread.name)
@@ -304,7 +307,7 @@ export const CreateChatThread = async () => {
 
 
 export const initAndGuardChatSession = async (props: PromptGPTProps) => {
-  const { messages, id, chatType, conversationStyle, chatOverFileName } = props;
+  const { messages, id, chatType, conversationStyle, conversationSensitivity, chatOverFileName } = props;
 
   //last message
   const lastHumanMessage = messages[messages.length - 1];
@@ -317,6 +320,7 @@ export const initAndGuardChatSession = async (props: PromptGPTProps) => {
     chats,
     chatType,
     conversationStyle,
+    conversationSensitivity,
     chatOverFileName,
     lastHumanMessage.content
   );
