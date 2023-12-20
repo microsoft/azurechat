@@ -59,7 +59,7 @@ export const MenuItems: FC<Prop> = (props) => {
             onClick={async (e) => {
               e.preventDefault();
               const yesDelete = confirm(
-                "Are you sure you want to delete this chat?"
+                "メッセージを削除してもよろしいですか？\n\n※削除したメッセージは元に戻せません。"
               );
               if (yesDelete) {
                 await sendData(thread.id);
