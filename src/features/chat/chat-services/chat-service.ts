@@ -72,22 +72,29 @@ export const CreateUserFeedbackChatId = async (
   feedback: string,
   reason: string,
   ) => {
-  const container = await CosmosDBContainer.getInstance().getContainer();
-  const message = await FindChatMessageByID(chatMessageId);
+    
+  try {
+    const container = await CosmosDBContainer.getInstance().getContainer();
+    const chatMessageModel = await FindChatMessageByID(chatMessageId);
 
-
-  if (message.length !== 0) {
+    if (chatMessageModel.length !== 0) {
+    const message = chatMessageModel[0];
+    message.feedback = feedback;
+    message.reason = reason;
 
     const itemToUpdate = {
       ...message,
-      feedback: feedback, // Update the name property with the new title.
-      reason:reason,
+  
     };
-
-    await container.items.upsert(itemToUpdate);
-
+  
+      await container.items.upsert(itemToUpdate);
+      return itemToUpdate;
+    }
+  } catch (e) {
+    console.log("There was an error in saving user feedback", e);
   }
 };
+
 
 export const UpsertChat = async (chatModel: ChatMessageModel) => {
   const modelToSave: ChatMessageModel = {

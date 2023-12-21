@@ -37,7 +37,7 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
     const handleSubmit = () => {
       setChatMessageId(chatMessageId);
       props.onFeedbackReceived(feedback);
-      props.onFeedbackReceived(reason);
+      props.onReasonReceived(reason);
       props.onSubmit(chatMessageId,feedback, reason); 
       props.onClose(); 
     };
@@ -67,7 +67,7 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
                 <div className="reason-buttons">
             <button
               type="button"
-              className={feedback === 'unsatisfied' ? 'selected-btn' : 'btn'}
+              className={reason === 'unsatisfied' ? 'selected-btn' : 'btn'}
               onClick={() => handleReasonSelection('unsatisfied')}
               onBlur={handleBlur}
               style={buttonStyles}
@@ -79,7 +79,7 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
             
             <button
               type="button"
-              className={feedback === 'unsafe' ? 'selected-btn' : 'btn'}
+              className={reason === 'unsafe' ? 'selected-btn' : 'btn'}
               onClick={() => handleReasonSelection('unsafe')}
               onBlur={handleBlur}
               style={buttonStyles}
@@ -91,7 +91,7 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
 
             <button
               type="button"
-              className={feedback === 'inaccurate' ? 'selected-btn' : 'btn'}
+              className={reason === 'inaccurate' ? 'selected-btn' : 'btn'}
               onClick={() => handleReasonSelection('inaccurate')}
               onBlur={handleBlur}
               style={buttonStyles}

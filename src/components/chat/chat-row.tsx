@@ -12,6 +12,7 @@ import Modal from "../ui/modal"
 import {CreateUserFeedbackChatId} from "@/features/chat/chat-services/chat-service";
 
 
+
 interface ChatRowProps {
   chatMessageId: string;
   name: string;
@@ -20,7 +21,7 @@ interface ChatRowProps {
   type: ChatRole;
 }
 
-const ChatRow: FC<ChatRowProps> = (props) => {
+ export const ChatRow: FC<ChatRowProps> = (props) => {
   const [isIconChecked, setIsIconChecked] = useState(false);
   const [thumbsUpClicked, setThumbsUpClicked] = useState(false);
   const [thumbsDownClicked, setThumbsDownClicked] = useState(false);
@@ -63,6 +64,9 @@ const ChatRow: FC<ChatRowProps> = (props) => {
     setReason(reason);
     setIsModalOpen(false);
     CreateUserFeedbackChatId(props.chatMessageId,  feedback, reason);
+    // props.feedback = feedback;
+    // props.reason = reason;
+
   };
 
 

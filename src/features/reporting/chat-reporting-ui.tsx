@@ -9,7 +9,6 @@ interface Props {
 }
 
 
-
 export const ChatReportingUI: FC<Props> = async (props) => {
 
   const chatThreads = await FindChatThreadByID(props.chatId);
