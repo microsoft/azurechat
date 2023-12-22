@@ -8,7 +8,7 @@ import { Markdown } from "../markdown/markdown";
 import Typography from "../typography";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import Modal from "../ui/modal"
+import Modal from "../ui/modal";
 import {CreateUserFeedbackChatId} from "@/features/chat/chat-services/chat-service";
 
 
@@ -39,33 +39,29 @@ interface ChatRowProps {
             break;
         case 'thumbsDown':
             setThumbsDownClicked(prevState => !prevState);
+            setThumbsUpClicked(false);
+            setIsIconChecked(false);
             break;
         case 'CopyButton':
           setIsIconChecked(prevState => !prevState);
           setThumbsUpClicked(false);
           setThumbsDownClicked(false);
             break;
-        // Add more cases for other buttons if needed
         default:
             break;
     }
 };
 
   const handleCopyButton = () => {
-    toggleButton('thumbsUp');
+    toggleButton('CopyButton');
     navigator.clipboard.writeText(props.message);
-    // setThumbsUpClicked(false);
-    // setThumbsDownClicked(false);
-    // setIsIconChecked(true);
   };
 
-  const handleModalSubmit = ( feedback: string, reason: string) => {
+  async function handleModalSubmit(feedback: string, reason: string): Promise<void> {
     setFeedback(feedback);
     setReason(reason);
     setIsModalOpen(false);
-    CreateUserFeedbackChatId(props.chatMessageId,  feedback, reason);
-    // props.feedback = feedback;
-    // props.reason = reason;
+    CreateUserFeedbackChatId(props.chatMessageId, feedback, reason);
 
   };
 
@@ -90,9 +86,6 @@ interface ChatRowProps {
 
   const handleThumbsUpClick = () => {
     toggleButton('thumbsUp');
-    // setThumbsUpClicked(true);
-    // setThumbsDownClicked(false);
-    // setIsIconChecked(false);
 
   };
 
@@ -134,13 +127,9 @@ interface ChatRowProps {
             title="Thumbs up"
             className="justify-right flex"
             onClick={handleThumbsUpClick}
-            style={buttonStyleThumbsUp}
+            style={buttonStyleThumbsUp}         
           >
-            {isIconChecked ? (
-              <CheckIcon size={16} />
-            ) : (
-              <ThumbsUp size={16} />
-            )}
+       <ThumbsUp size={16} />
           </Button>
 
           <Button
@@ -150,28 +139,15 @@ interface ChatRowProps {
             className="justify-right flex"
             onClick={openModal}
           >
-            {isIconChecked ? (
-              <CheckIcon size={16} />
-            ) : (
-              <ThumbsDown size={16} />
-            )}
+           <ThumbsDown size={16} />
           </Button>
           <Modal  chatThreadId={props.chatMessageId}
                   open={isModalOpen}
                   onClose={closeModal}
-                  onSubmit={handleModalSubmit}
-                  onFeedbackReceived={(feedback) => {
-                    console.log("Received Feedback:", feedback); // Log received feedback
-                    // You can do further processing here with the received feedback
-                  }}
-                  onReasonReceived={(reason) => {
-                    console.log("Received Feedback:", reason); // Log received feedback
-                    // You can do further processing here with the received feedback
-                  }}
-                  
+                  onSubmit={(chatMessageId,feedback, reason) => {
+                  handleModalSubmit(feedback, reason);
+                  }}                 
           />
-
-
           <Button
             variant={"ghost"}
             size={"sm"}

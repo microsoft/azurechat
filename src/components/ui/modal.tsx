@@ -1,103 +1,102 @@
-import { ReactElement } from "react";
-import { FC, useState } from "react";
-import { CheckIcon, ClipboardIcon, UserCircle, ThumbsUp, ThumbsDown } from "lucide-react";
+import React, { FC, useState, useRef, useEffect } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { XCircle, Ban, FileQuestion } from "lucide-react";
+import Typography from "@/components/typography";
+
 
 interface ModalProps {
     chatThreadId: string;
     open: boolean;
     onClose: () => void;
     onSubmit: (chatMessageId: string, feedback: string, reason: string) => void;
-    onFeedbackReceived: (feedback: string) => void;
-    onReasonReceived: (reason: string) => void;
 }
 
 export default function Modal(props: ModalProps): ReturnType<FC> {
-    const [feedback, setFeedback] = useState(''); 
+    const [feedback, setFeedback] = useState<string>(''); 
     const [reason, setReason] = useState(""); 
-    const [chatMessageId, setChatMessageId] = useState<string>(""); 
-    const [isClicked, setIsClicked] = useState(false);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null); // Reference to the textarea element
+    const [areTabsEnabled, setTabsEnabled] = useState<boolean>(false); // State to manage TabsTrigger disabled/enabled
 
+    // useEffect(() => {
+    //   if (props.open) {
+    //     setFeedback('');
+    //   }
+    // }, [props.open]);
 
-  const handleBlur = () => {
-      setIsClicked(false);
-  };
+    
+    async function handleFeedbackChange(): Promise<void> {
+      const textareaValue = textAreaRef.current?.value || "";
+  
+      if (!areTabsEnabled) {
+        setTabsEnabled(true);
+      }
+    
+      setFeedback(textareaValue);
+    };
+    
 
-  const buttonStyles = {
-      fontWeight: 'bold',
-      padding: '8px 12px',
-      backgroundColor: isClicked ? '#e0e0e0' : 'transparent',
-  };
-
-
-    const handleFeedbackChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setFeedback(event.target.value);
+    const handleReasonChange = (reason: string) => {
+      setReason(reason);
     };
 
-
-    const handleSubmit = () => {
-      setChatMessageId(chatMessageId);
-      props.onFeedbackReceived(feedback);
-      props.onReasonReceived(reason);
-      props.onSubmit(chatMessageId,feedback, reason); 
+    async function handleSubmit(): Promise<void> {
+      props.onSubmit(props.chatThreadId,feedback, reason); 
+      setFeedback('');
       props.onClose(); 
     };
-
-
-    const handleReasonSelection = (reason: string) => {
-      setIsClicked(true);
-      setReason(reason);
-      };
 
     return (
         <div className={`${"modal"} ${props.open ? "display-block" : "display-none"}`}>
             <div className="modal-main">
                 <div className="modal-head">
-                    <h1>Submit your feedback</h1>
+                <Typography variant="h4" className="text-primary">
+                Submit your feedback
+                </Typography>
                 </div>
 
-                <div className="modal-body">
+                <div className="col-span-2 gap-5 flex flex-col flex-1">
                 <textarea
                     placeholder="Enter your feedback here"
-                    rows={4}
+                    ref={textAreaRef}
+                    rows={6}
                     cols={50}
-                    onChange={handleFeedbackChange}
+                    className="textarea-with-spacing"
+                    onChange={(event) =>  handleFeedbackChange()}
+                    // defaultValue={"Enter your feedback here..."}
                 />
                 </div>
 
                 <div className="reason-buttons">
-            <button
-              type="button"
-              className={reason === 'unsatisfied' ? 'selected-btn' : 'btn'}
-              onClick={() => handleReasonSelection('unsatisfied')}
-              onBlur={handleBlur}
-              style={buttonStyles}
-            >
-              Unsatisfied
-            </button>
 
-            <span className="button-space" />
-            
-            <button
-              type="button"
-              className={reason === 'unsafe' ? 'selected-btn' : 'btn'}
-              onClick={() => handleReasonSelection('unsafe')}
-              onBlur={handleBlur}
-              style={buttonStyles}
+            <Tabs
+              defaultValue={""}
+              onValueChange={(value) => handleReasonChange(value)}
             >
-              Unsafe
-            </button>
-            
-            <span className="button-space" />
+              <TabsList className="flex w-full justify-center gap-5" >
+                <TabsTrigger
+                  value="Unsafe"
+                  className="flex items-center justify-center flex-2"
+                  disabled={!areTabsEnabled}
+                >
+                  <Ban size={20} /> Unsafe
+                </TabsTrigger>
+                <TabsTrigger
+                  value="Inaccurate"
+                  className="flex items-center justify-center flex-2"
+                  disabled={!areTabsEnabled}
+                >
+                  <XCircle size={20} /> Inaccurate
+                </TabsTrigger>
+                <TabsTrigger
+                  value="Unhelpful"
+                  className="lex items-center justify-center flex-2"
+                  disabled={!areTabsEnabled}
+                >
+                  <FileQuestion size={20} /> Unhelpful
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
 
-            <button
-              type="button"
-              className={reason === 'inaccurate' ? 'selected-btn' : 'btn'}
-              onClick={() => handleReasonSelection('inaccurate')}
-              onBlur={handleBlur}
-              style={buttonStyles}
-            >
-              Inaccurate
-            </button>
           </div>
 
                 <div className="btn-container">
