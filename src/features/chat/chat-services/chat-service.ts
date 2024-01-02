@@ -5,6 +5,7 @@ import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { CosmosDBContainer } from "../../common/cosmos";
 import { ChatMessageModel, MESSAGE_ATTRIBUTE } from "./models";
+import { userHashedId } from "@/features/auth/helpers";
 
 export const FindAllChats = async (chatThreadID: string) => {
   const container = await CosmosDBContainer.getInstance().getContainer();
@@ -34,6 +35,66 @@ export const FindAllChats = async (chatThreadID: string) => {
 
   return resources;
 };
+
+export const FindChatMessageByID = async (id: string) => {
+  const container = await CosmosDBContainer.getInstance().getContainer();
+
+  const querySpec: SqlQuerySpec = {
+    query:
+      "SELECT * FROM root r WHERE r.type=@type AND r.id=@id AND r.isDeleted=@isDeleted",
+    parameters: [
+      {
+        name: "@type",
+        value: MESSAGE_ATTRIBUTE,
+      },
+      {
+        name: "@id",
+        value: id,
+      },
+      {
+        name: "@isDeleted",
+        value: false,
+      },
+    ],
+  };
+
+
+  const { resources } = await container.items
+    .query<ChatMessageModel>(querySpec)
+    .fetchAll();
+
+  return resources;
+};
+
+
+export const CreateUserFeedbackChatId = async (
+  chatMessageId: string,
+  feedback: string,
+  reason: string,
+  ) => {
+    
+  try {
+    const container = await CosmosDBContainer.getInstance().getContainer();
+    const chatMessageModel = await FindChatMessageByID(chatMessageId);
+
+    if (chatMessageModel.length !== 0) {
+    const message = chatMessageModel[0];
+    message.feedback = feedback;
+    message.reason = reason;
+
+    const itemToUpdate = {
+      ...message,
+  
+    };
+  
+      await container.items.upsert(itemToUpdate);
+      return itemToUpdate;
+    }
+  } catch (e) {
+    console.log("There was an error in saving user feedback", e);
+  }
+};
+
 
 export const UpsertChat = async (chatModel: ChatMessageModel) => {
   const modelToSave: ChatMessageModel = {
@@ -78,5 +139,7 @@ export const newChatModel = (): ChatMessageModel => {
     type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
     context: "",
+    feedback: "",
+    reason:"",
   };
 };

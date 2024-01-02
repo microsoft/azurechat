@@ -6,15 +6,17 @@ import { ChatMessageEmptyState } from "./chat-empty-state/chat-message-empty-sta
 import ChatInput from "./chat-input/chat-input";
 import { ChatMessageContainer } from "./chat-message-container";
 
-interface Prop {}
+interface Prop {
+  chatId: string;
+};
 
-export const ChatUI: FC<Prop> = () => {
+export const ChatUI: FC<Prop> = async(props) => {
   const { messages } = useChatContext();
 
   return (
     <div className="h-full relative overflow-hidden flex-1 bg-card rounded-md shadow-md">
       {messages.length !== 0 ? (
-        <ChatMessageContainer />
+        <ChatMessageContainer chatId={props.chatId} />
       ) : (
         <ChatMessageEmptyState />
       )}

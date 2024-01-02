@@ -18,7 +18,7 @@ export default async function Home({ params }: { params: { id: string } }) {
 
   return (
     <ChatProvider id={params.id} chats={items} chatThread={thread[0]}>
-      <ChatUI />
+      <ChatUI chatId={params.id}/>
     </ChatProvider>
   );
 }

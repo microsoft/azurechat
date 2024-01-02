@@ -47,6 +47,37 @@
     --input: 240 3.7% 15.9%;
     --ring: 214 89% 31%;
   }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #00000099;
+  }
+  
+  .modal-main {
+    position: fixed;
+    background: white;
+    width: 35rem;
+    height: auto;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+  }
+  
+  .modal.display-block {
+    display: flex;
+  }
+  
+  .modal.display-none {
+    display: none;
+  }
 }
 
 @layer base {
