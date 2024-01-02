@@ -100,45 +100,6 @@ export const RenameChatThreadByID = async (
   }
 };
 
-// export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
-//   const container = await CosmosDBContainer.getInstance().getContainer();
-//   const threads = await FindChatThreadByID(chatThreadID);
-
-//   if (threads.length !== 0) {
-//     const chats = await FindAllChats(chatThreadID);
-
-//     chats.forEach(async (chat) => {
-//       const itemToUpdate = {
-//         ...chat,
-//       };
-//       itemToUpdate.isDeleted = true;
-//       await container.items.upsert(itemToUpdate);
-//     });
-
-//     const chatDocuments = await FindAllChatDocuments(chatThreadID);
-
-//     if (chatDocuments.length !== 0) {
-//       await deleteDocuments(chatThreadID);
-//     }
-
-//     chatDocuments.forEach(async (chatDocument) => {
-//       const itemToUpdate = {
-//         ...chatDocument,
-//       };
-//       itemToUpdate.isDeleted = true;
-//       await container.items.upsert(itemToUpdate);
-//     });
-
-//     threads.forEach(async (thread) => {
-//       const itemToUpdate = {
-//         ...thread,
-//       };
-//       itemToUpdate.isDeleted = true;
-//       await container.items.upsert(itemToUpdate);
-//     });
-//   }
-// };
-
 export const EnsureChatThreadIsForCurrentUser = async (
   chatThreadID: string
 ) => {

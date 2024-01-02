@@ -6,13 +6,21 @@ import { ChatFileUI } from "../chat-file/chat-file-ui";
 import { ChatStyleSelector } from "./chat-style-selector";
 import { ChatSensitivitySelector } from "./chat-sensitivity-selector";
 import { ChatTypeSelector } from "./chat-type-selector";
+import { PromptButton } from "./prompt-buttons-UI";
 
-interface Prop {}
+interface Prop {
+  onPromptSelected: (prompt: string) => void;
+}
 
 export const ChatMessageEmptyState: FC<Prop> = (props) => {
   const { fileState } = useChatContext();
 
   const { showFileUpload } = fileState;
+
+  const handlePromptSelected = (prompt: string) => {
+    // send it to backend for getting the prompt button from the ai.
+    console.log('Selected prompt:', prompt);
+  };
 
   return (
     <div className="grid grid-cols-5 w-full items-center container mx-auto max-w-3xl justify-center h-full gap-9">
@@ -48,6 +56,12 @@ export const ChatMessageEmptyState: FC<Prop> = (props) => {
         </div>
         {showFileUpload === "data" && <ChatFileUI />}
       </Card>
+
+      <Card className="col-span-5">
+        <PromptButton onPromptSelected={handlePromptSelected} />
+      </Card>
+
     </div>
+    
   );
 };
