@@ -25,9 +25,10 @@ type DocumentDeleteModel = {
 export interface AzureCogDocument {}
 
 type AzureCogVectorField = {
-  value: number[];
+  vector: number[];
   fields: string;
   k: number;
+  kind: string;
 };
 
 type AzureCogFilter = {
@@ -48,27 +49,24 @@ type AzureCogRequestObject = {
 export const simpleSearch = async (
   filter?: AzureCogFilter
 ): Promise<Array<AzureCogDocumentIndex & DocumentSearchModel>> => {
-  const url = `${baseIndexUrl()}/docs/search?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
+  const url = `${baseIndexUrl()}/docs/search?api-version=${process.env.AZURE_SEARCH_API_VERSION}`;
 
   const searchBody: AzureCogRequestObject = {
     search: filter?.search || "*",
     facets: filter?.facets || [],
     filter: filter?.filter || "",
-    vectors: [],
+    // Removed 'vectors' as it's not a valid parameter for the search operation
     top: filter?.top || 10,
   };
 
   const resultDocuments = (await fetcher(url, {
     method: "POST",
     body: JSON.stringify(searchBody),
-  })) as DocumentSearchResponseModel<
-    AzureCogDocumentIndex & DocumentSearchModel
-  >;
+  })) as DocumentSearchResponseModel<AzureCogDocumentIndex & DocumentSearchModel>;
 
   return resultDocuments.value;
 };
+
 
 export const similaritySearchVectorWithScore = async (
   query: string,
@@ -82,16 +80,14 @@ export const similaritySearchVectorWithScore = async (
     model: process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
   });
 
-  const url = `${baseIndexUrl()}/docs/search?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
+  const url = `${baseIndexUrl()}/docs/search?api-version=${process.env.AZURE_SEARCH_API_VERSION}`;
 
   const searchBody: AzureCogRequestObject = {
     search: filter?.search || "*",
     facets: filter?.facets || [],
     filter: filter?.filter || "",
-    vectors: [
-      { value: embeddings.data[0].embedding, fields: "embedding", k: k },
+    vectorQueries: [
+      { vector: embeddings.data[0].embedding, fields: "embedding", k: k, kind: "vector" },
     ],
     top: filter?.top || k,
   };
@@ -99,9 +95,7 @@ export const similaritySearchVectorWithScore = async (
   const resultDocuments = (await fetcher(url, {
     method: "POST",
     body: JSON.stringify(searchBody),
-  })) as DocumentSearchResponseModel<
-    AzureCogDocumentIndex & DocumentSearchModel
-  >;
+  })) as DocumentSearchResponseModel<AzureCogDocumentIndex & DocumentSearchModel>;
 
   return resultDocuments.value;
 };
@@ -109,15 +103,12 @@ export const similaritySearchVectorWithScore = async (
 export const indexDocuments = async (
   documents: Array<AzureCogDocumentIndex>
 ): Promise<void> => {
-  const url = `${baseIndexUrl()}/docs/index?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
+  const url = `${baseIndexUrl()}/docs/index?api-version=${process.env.AZURE_SEARCH_API_VERSION}`;
 
   await embedDocuments(documents);
-  const documentIndexRequest: DocumentSearchResponseModel<AzureCogDocumentIndex> =
-    {
-      value: documents,
-    };
+  const documentIndexRequest: DocumentSearchResponseModel<AzureCogDocumentIndex> = {
+    value: documents,
+  };
 
   await fetcher(url, {
     method: "POST",
@@ -127,13 +118,11 @@ export const indexDocuments = async (
 
 export const deleteDocuments = async (chatThreadId: string): Promise<void> => {
   // find all documents for chat thread
-
   const documentsInChat = await simpleSearch({
     filter: `chatThreadId eq '${chatThreadId}'`,
   });
 
   const documentsToDelete: DocumentDeleteModel[] = [];
-
   documentsInChat.forEach(async (document: { id: string }) => {
     const doc: DocumentDeleteModel = {
       "@search.action": "delete",
@@ -144,9 +133,7 @@ export const deleteDocuments = async (chatThreadId: string): Promise<void> => {
 
   // delete the documents
   await fetcher(
-    `${baseIndexUrl()}/docs/index?api-version=${
-      process.env.AZURE_SEARCH_API_VERSION
-    }`,
+    `${baseIndexUrl()}/docs/index?api-version=${process.env.AZURE_SEARCH_API_VERSION}`,
     {
       method: "POST",
       body: JSON.stringify({ value: documentsToDelete }),
@@ -161,7 +148,6 @@ export const embedDocuments = async (
 
   try {
     const contentsToEmbed = documents.map((d) => d.pageContent);
-
     const embeddings = await openai.embeddings.create({
       input: contentsToEmbed,
       model: process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
@@ -208,9 +194,7 @@ const fetcher = async (url: string, init?: RequestInit) => {
 };
 
 export const ensureIndexIsCreated = async (): Promise<void> => {
-  const url = `${baseIndexUrl()}?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
+  const url = `${baseIndexUrl()}?api-version=${process.env.AZURE_SEARCH_API_VERSION}`;
 
   try {
     await fetcher(url);
@@ -220,9 +204,7 @@ export const ensureIndexIsCreated = async (): Promise<void> => {
 };
 
 const createCogSearchIndex = async (): Promise<void> => {
-  const url = `${baseUrl()}?api-version=${
-    process.env.AZURE_SEARCH_API_VERSION
-  }`;
+  const url = `${baseUrl()}?api-version=${process.env.AZURE_SEARCH_API_VERSION}`;
 
   await fetcher(url, {
     method: "POST",

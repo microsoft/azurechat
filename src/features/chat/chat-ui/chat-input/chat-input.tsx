@@ -21,7 +21,8 @@ const ChatInput: FC<Props> = (props) => {
     buttonRef,
   });
 
-  const fileCHatVisible =
+  const isDataChat = chatBody.chatType === "data";
+  const fileChatVisible =
     chatBody.chatType === "data" && chatBody.chatOverFileName;
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
@@ -41,7 +42,7 @@ const ChatInput: FC<Props> = (props) => {
       className="absolute bottom-0 w-full flex items-center"
     >
       <div className="container mx-auto max-w-4xl relative py-2 flex gap-2 items-center">
-        {fileCHatVisible && <ChatFileSlider />}
+        {fileChatVisible && <ChatFileSlider />}
         <Textarea
           rows={rows}
           value={input}
@@ -53,19 +54,21 @@ const ChatInput: FC<Props> = (props) => {
         ></Textarea>
         <div className="absolute right-0 bottom-0 px-8 flex items-end h-full mr-2 mb-4">
           {speechEnabled && <Microphone disabled={isLoading} />}
-          <Button
-            size="icon"
-            type="submit"
-            variant={"ghost"}
-            ref={buttonRef}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader className="animate-spin" size={16} />
-            ) : (
-              <Send size={16} />
-            )}
-          </Button>
+          {!isDataChat || (isDataChat && fileChatVisible) ? ( // Render the button if not data chat or if it's a data chat with a file
+            <Button
+              size="icon"
+              type="submit"
+              variant={"ghost"}
+              ref={buttonRef}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader className="animate-spin" size={16} />
+              ) : (
+                <Send size={16} />
+              )}
+            </Button>
+          ) : null}
         </div>
       </div>
     </form>
