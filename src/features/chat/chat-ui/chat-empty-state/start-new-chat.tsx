@@ -14,15 +14,14 @@ export const StartNewChat: FC<Prop> = (props) => {
       </div>
       <Card className="col-span-3 flex flex-col gap-5 p-5 ">
         <Typography variant="h4" className="text-primary">
-          {AI_NAME}
+          {AI_NAME}<br />
+          Your own AI Assistant
         </Typography>
         <div className="flex flex-col gap-2">
           <p className="">
-            Welcome to {AI_NAME}. You should interact in a friendly manner with
-            the AI assistant and refrain from participating in any harmful
-            activities.
+          QChat, your text-based virtual assistant, is equipped with cutting-edge Generative AI technology to empower you in your role within the Queensland Government. Let QChat assist you in accomplishing remarkable outcomes.
           </p>
-          <p>You can start a new chat with me by clicking the button below.</p>
+          <p>Press the plus button below to get started.</p>
         </div>
         <div className="-mx-5 -mb-5 p-5 flex flex-col border-t bg-muted">
           <NewChat />
