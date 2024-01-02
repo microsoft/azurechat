@@ -27,7 +27,7 @@ export const ChatTypeSelector: FC<Prop> = (props) => {
         <TabsTrigger
           value="data"
           className="flex gap-2"
-          disabled={true}
+          disabled={props.disable}
         >
           <FileText size={20} /> File
         </TabsTrigger>
