@@ -141,7 +141,6 @@ export const updateChatThreadTitle = async (
       chatOverFileName: chatOverFileName,
       conversationStyle: conversationStyle,
       conversationSensitivity: conversationSensitivity,
-      // name: userMessage.substring(0, 30),
       name : await generateChatName(userMessage),
       previousChatName : await StoreOriginalChatName(chatThread.name)
     });
@@ -266,6 +265,11 @@ export const CreateChatThread = async () => {
   return response.resource;
 };
 
+export const PromptSuggestion = async (): Promise<string[]> => {
+
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  return ['AI prompt 1', 'AI prompt 2', 'AI prompt 3', 'AI prompt 4'];
+};
 
 export const initAndGuardChatSession = async (props: PromptGPTProps) => {
   const { messages, id, chatType, conversationStyle, conversationSensitivity, chatOverFileName } = props;
