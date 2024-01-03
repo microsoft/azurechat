@@ -102,7 +102,7 @@ stages:
 
               - task: AzureCLI@2
                 inputs:
-                  azureSubscription: '$(dev-service)'
+                  azureSubscription: '$(Dev_Service_Connection)'
                   scriptType: 'ps'
                   scriptLocation: 'inlineScript'
                   inlineScript: |
