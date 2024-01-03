@@ -71,7 +71,7 @@ stages:
             containerRegistry: 'Dev-qggptdevacr'
             repository: 'az_qggpt_image'
             command: 'buildAndPush'
-            Dockerfile: 'src/Dockerfile'
+            Dockerfile: 'src/dockerfile'
 
 
 - stage: Development
