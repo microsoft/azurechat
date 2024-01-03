@@ -27,20 +27,28 @@ variables:
                 -AZURE_AD_CLIENT_ID "$(AZURE_AD_CLIENT_ID)"
                 -AZURE_AD_CLIENT_SECRET "$(AZURE_AD_CLIENT_SECRET)"
                 -AZURE_AD_TENANT_ID "$(AZURE_AD_TENANT_ID)"
+                -AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING "$(AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING)"
                 -AZURE_COSMOSDB_CONTAINER_NAME "$(AZURE_COSMOSDB_CONTAINER_NAME)"
                 -AZURE_COSMOSDB_DB_NAME "$(AZURE_COSMOSDB_DB_NAME)"
                 -AZURE_COSMOSDB_KEY "$(AZURE_COSMOSDB_KEY)"
                 -AZURE_COSMOSDB_URI "$(AZURE_COSMOSDB_URI)"
+                -AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT "$(AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT)"
+                -AZURE_DOCUMENT_INTELLIGENCE_KEY "$(AZURE_DOCUMENT_INTELLIGENCE_KEY)"
                 -AZURE_OPENAI_API_DEPLOYMENT_NAME "$(AZURE_OPENAI_API_DEPLOYMENT_NAME)"
                 -AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME "$(AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME)"
                 -AZURE_OPENAI_API_INSTANCE_NAME "$(AZURE_OPENAI_API_INSTANCE_NAME)"
                 -AZURE_OPENAI_API_VERSION "$(AZURE_OPENAI_API_VERSION)"
+                -AZURE_SEARCH_API_KEY "$(AZURE_SEARCH_API_KEY)"
+                -AZURE_SEARCH_API_VERSION "$(AZURE_SEARCH_API_VERSION)"
+                -AZURE_SEARCH_INDEX_NAME "$(AZURE_SEARCH_INDEX_NAME)"
+                -AZURE_SEARCH_NAME "$(AZURE_SEARCH_NAME)"
+                -AZURE_SPEECH_KEY "$(AZURE_SPEECH_KEY)"
+                -AZURE_SPEECH_REGION "$(AZURE_SPEECH_REGION)"
                 -NEXTAUTH_SECRET "$(NEXTAUTH_SECRET)"
                 -NEXTAUTH_URL "$(NEXTAUTH_URL)"
                 -OPENAI_API_KEY "$(OPENAI_API_KEY)"
                 -PUBLIC_SPEECH_ENABLED "$(PUBLIC_SPEECH_ENABLED)"
-                -System_Prompt "$(System_Prompt)"
-                -AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING "$(AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING)"'
+                -System_Prompt "$(System_Prompt)"'
 
  
 stages:
@@ -72,9 +80,6 @@ stages:
   condition: succeeded()
   variables:
     - group: dev-az-qggpt-variables
-    - group: dev-resource-variables
-    - name: dev-service
-      value: $[variables.DEV_SUB_SERVICECONNECTION]
   jobs:
     - deployment: Dev
       displayName: Dev
@@ -87,7 +92,7 @@ stages:
                 displayName: 'Azure Web App Container Deploy'
                 inputs:
                   ConnectionType: 'AzureRM'
-                  azureSubscription: '$(dev-service)'
+                  azureSubscription: '$(Dev_Service_Connection)'
                   appType: 'webAppContainer'
                   WebAppName: 'qggptdevopenai'
                   DockerNamespace: 'qggptdevacr.azurecr.io'
