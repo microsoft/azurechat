@@ -15,12 +15,6 @@ export interface CosmosDBChatMessageHistoryFields {
   userId: string;
 }
 
-interface ExtendedChatCompletionMessage extends ChatCompletionMessage {
-  feedback: string;
-  reason: string;
-}
-
-
 export class CosmosDBChatMessageHistory {
   private sessionId: string;
   private userId: string;
@@ -51,8 +45,6 @@ export class CosmosDBChatMessageHistory {
       threadId: this.sessionId,
       userId: this.userId,
       context: citations,
-      feedback: "",
-      reason: "",
     };
 
     await UpsertChat(modelToSave);
