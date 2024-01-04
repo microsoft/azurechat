@@ -65,8 +65,6 @@ export const FindChatMessageByID = async (id: string) => {
 
   return resources;
 };
-
-
 export const CreateUserFeedbackChatId = async (
   chatMessageId: string,
   feedback: string,
@@ -78,19 +76,18 @@ export const CreateUserFeedbackChatId = async (
     const chatMessageModel = await FindChatMessageByID(chatMessageId);
 
     if (chatMessageModel.length !== 0) {
-    const message = chatMessageModel[0];
-    message.feedback = feedback;
-    message.reason = reason;
+      const message = chatMessageModel[0];
+      message.feedback = feedback;
+      message.reason = reason;
 
-    const itemToUpdate = {
-      ...message,
-  
-    };
+      const itemToUpdate = {
+        ...message,
+      };
   
       await container.items.upsert(itemToUpdate);
       return itemToUpdate;
     }
-  } catch (e) {
+  } catch (e: unknown) {
     console.log("There was an error in saving user feedback", e);
   }
 };
