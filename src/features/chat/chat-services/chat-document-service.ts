@@ -27,7 +27,7 @@ export const UploadDocument = async (formData: FormData): Promise<ServerActionRe
       response: splitDocuments,
     };
   } catch (e) {
-    console.error(`UploadDocument: Error - ${e.message}`);
+    console.error(`UploadDocument: Error - ${e}`);
     return {
       success: false,
       error: (e as Error).message,
