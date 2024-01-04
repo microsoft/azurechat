@@ -11,12 +11,12 @@ trigger:
     exclude:
       - README.md
 
-pr: 
-  branches:
-    include:
-      - 'main'
-    exclude:
-      - README.md
+# pr: 
+#   branches:
+#     include:
+#       - 'main'
+#     exclude:
+#       - README.md
 
 variables:
   # Agent VM image name
