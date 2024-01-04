@@ -55,7 +55,7 @@ export const simpleSearch = async (
     search: filter?.search || "*",
     facets: filter?.facets || [],
     filter: filter?.filter || "",
-    // Removed 'vectors' as it's not a valid parameter for the search operation
+    vectors: [],
     top: filter?.top || 10,
   };
 
