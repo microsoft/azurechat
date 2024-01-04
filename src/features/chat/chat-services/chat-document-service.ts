@@ -13,36 +13,30 @@ import { isNotNullOrEmpty } from "./utils";
 const MAX_DOCUMENT_SIZE = 20000000;
 
 export const UploadDocument = async (formData: FormData): Promise<ServerActionResponse<string[]>> => {
-  console.log("UploadDocument: Starting file upload process");
   try {
     await ensureSearchIsConfigured();
 
     const { docs } = await LoadFile(formData);
     const splitDocuments = chunkDocumentWithOverlap(docs.join("\n"));
 
-    console.log("UploadDocument: File upload and processing completed successfully");
     return {
       success: true,
       error: "",
       response: splitDocuments,
     };
   } catch (e) {
-    console.error(`UploadDocument: Error - ${e}`);
     return {
       success: false,
-      error: (e as Error).message,
+      error: (e as Error).toString(),
       response: [],
     };
   }
 };
 
 const LoadFile = async (formData: FormData) => {
-  console.log("LoadFile: Loading file");
   try {
     const file: File | null = formData.get("file") as unknown as File;
     if (file) {
-      console.log(`LoadFile: File details: Name - ${file.name}, Size - ${file.size}`);
-
       if (file.size < MAX_DOCUMENT_SIZE) {
         const client = initDocumentIntelligence();
 
@@ -59,26 +53,22 @@ const LoadFile = async (formData: FormData) => {
           }
         }
 
-        console.log("LoadFile: Document analysis completed");
         return { docs };
       }
     }
   } catch (e) {
     const error = e as any;
-    console.error(`LoadFile: Error - ${error.message}`);
-    throw new Error(error.message);
+    throw new Error(error);
   }
 
   throw new Error("Invalid file format or size. Only PDF files are supported.");
 };
 
 export const IndexDocuments = async (fileName: string, docs: string[], chatThreadId: string): Promise<ServerActionResponse<AzureCogDocumentIndex[]>> => {
-  console.log("IndexDocuments: Starting document indexing");
   try {
     const documentsToIndex: AzureCogDocumentIndex[] = [];
 
     for (let index = 0; index < docs.length; index++) {
-      console.log(`IndexDocuments: Indexing document ${index + 1} of ${docs.length}`);
       const doc = docs[index];
       const docToAdd: AzureCogDocumentIndex = {
         id: uniqueId(),
@@ -95,17 +85,15 @@ export const IndexDocuments = async (fileName: string, docs: string[], chatThrea
     await indexDocuments(documentsToIndex);
 
     await UpsertChatDocument(fileName, chatThreadId);
-    console.log("IndexDocuments: Document indexing completed successfully");
     return {
       success: true,
       error: "",
       response: documentsToIndex,
     };
   } catch (e) {
-    console.error(`IndexDocuments: Error - ${e.message}`);
     return {
       success: false,
-      error: (e as Error).message,
+      error: (e as Error).toString(),
       response: [],
     };
   }
