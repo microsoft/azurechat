@@ -82,10 +82,20 @@ export const similaritySearchVectorWithScore = async (
 
   const url = `${baseIndexUrl()}/docs/search?api-version=${process.env.AZURE_SEARCH_API_VERSION}`;
 
+  type AzureCogRequestObject = {
+    search: string;
+    facets: string[];
+    filter: string;
+    vectors: AzureCogVectorField[];
+    top: number;
+    vectorQueries?: AzureCogVectorField[];
+  };
+
   const searchBody: AzureCogRequestObject = {
     search: filter?.search || "*",
     facets: filter?.facets || [],
     filter: filter?.filter || "",
+    vectors: [],
     vectorQueries: [
       { vector: embeddings.data[0].embedding, fields: "embedding", k: k, kind: "vector" },
     ],
