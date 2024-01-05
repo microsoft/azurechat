@@ -17,7 +17,7 @@ export interface ChatMessageModel {
 }
 
 export type ConversationStyle = "creative" | "balanced" | "precise";
-export type ChatType = "simple" | "data" | "mssql";
+export type ChatType = "simple" | "data" | "mssql" | "promptflow";
 
 export type ChatRole = "system" | "user" | "assistant" | "function";
 
@@ -59,4 +59,17 @@ export interface ServerActionResponse<T> {
   success: boolean;
   error: string;
   response: T;
+}
+
+export interface PromptflowChatMessageMessageInput {
+  question: string;
+}
+
+export interface PromptflowChatMessageMessageOutput {
+  answer?: string;
+}
+
+export interface PromptflowChatMessage {
+  inputs: PromptflowChatMessageMessageInput;
+  outputs: PromptflowChatMessageMessageOutput;
 }
