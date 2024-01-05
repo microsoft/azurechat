@@ -26,6 +26,7 @@
     "@types/react-dom": "^18.2.14",
     "ai": "^2.2.20",
     "autoprefixer": "^10.4.16",
+    "axios": "^1.6.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "eslint": "^8.52.0",

@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, MessageCircle } from "lucide-react";
+import { FileText, MessageCircle, Globe } from "lucide-react";
 import { FC } from "react";
 import { ChatType } from "../../chat-services/models";
 import { useChatContext } from "../chat-context";
@@ -16,7 +16,7 @@ export const ChatTypeSelector: FC<Prop> = (props) => {
       defaultValue={chatBody.chatType}
       onValueChange={(value) => onChatTypeChange(value as ChatType)}
     >
-      <TabsList className="grid w-full grid-cols-2 h-12 items-stretch">
+      <TabsList className="grid w-full grid-cols-3 h-12 items-stretch">
         <TabsTrigger
           value="simple"
           className="flex gap-2"
@@ -30,6 +30,13 @@ export const ChatTypeSelector: FC<Prop> = (props) => {
           disabled={props.disable}
         >
           <FileText size={20} /> File
+        </TabsTrigger>
+        <TabsTrigger
+          value="promptflow"
+          className="flex gap-2"
+          disabled={props.disable}
+        >
+          <Globe size={20} /> PF API
         </TabsTrigger>
       </TabsList>
     </Tabs>

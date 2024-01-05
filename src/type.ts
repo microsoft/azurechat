@@ -25,6 +25,8 @@ const azureEnvVars = [
   "AZURE_SPEECH_REGION",
   "AZURE_SPEECH_KEY",
   "PUBLIC_PUBLIC_SPEECH_ENABLED",
+  "PROMPT_FLOW_API_URL",
+  "PROMPT_FLOW_API_KEY",
 ] as const;
 
 type RequiredServerEnvKeys = (typeof azureEnvVars)[number];
