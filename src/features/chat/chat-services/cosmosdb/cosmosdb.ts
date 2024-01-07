@@ -45,6 +45,8 @@ export class CosmosDBChatMessageHistory {
       threadId: this.sessionId,
       userId: this.userId,
       context: citations,
+      feedback: "",
+      reason: "",
     };
 
     await UpsertChat(modelToSave);
