@@ -33,7 +33,3 @@ next-env.d.ts
 
 .azure/
 infra/aad_setup.sh
-
-# Added to exclude specific package files or updates in src directory
-src/package-lock.json
-src/package.json
