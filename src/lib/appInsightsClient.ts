@@ -12,7 +12,6 @@ if (typeof window !== 'undefined') {
         config: {
             connectionString: process.env.NEXT_PUBLIC_AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING,
             extensions: [reactPlugin],
-            // ... other settings
         }
     });
     appInsights.loadAppInsights();
