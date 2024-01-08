@@ -108,5 +108,7 @@ export const newChatModel = (): ChatMessageModel => {
     type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
     context: "",
+    feedback: "",
+    reason: "",
   };
 };

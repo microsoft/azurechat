@@ -13,7 +13,6 @@ export const initializeAppInsights = (): typeof appInsights | null => {
             .setAutoCollectPreAggregatedMetrics(true)
             .setSendLiveMetrics(true)
             .setAutoCollectHeartbeat(false)
-            .setAutoCollectIncomingRequestAzureFunctions(true)
             .setInternalLogging(false, true)
             .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
             .enableWebInstrumentation(false)

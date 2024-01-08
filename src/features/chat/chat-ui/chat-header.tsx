@@ -8,7 +8,7 @@ export const ChatHeader: FC<Prop> = (props) => {
   const { chatBody } = useChatContext();
   return (
     <div className="flex flex-col gap-2">
-      <ChatSelectedOptions /> {/* Use the new component here */}
+      <ChatSelectedOptions />
       <div className="flex gap-2 h-2">
         <p className="text-xs">{chatBody.chatOverFileName}</p>
       </div>
