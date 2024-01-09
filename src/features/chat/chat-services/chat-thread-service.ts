@@ -241,6 +241,12 @@ export const updateChatThreadTitle = async (
   return chatThread;
 };
 
+export const PromptSuggestion = async (): Promise<string[]> => {
+
+  await new Promise(resolve => setTimeout(resolve, 1));
+  return ['AI prompt 1', 'AI prompt 2', 'AI prompt 3', 'AI prompt 4'];
+};
+
 export const CreateChatThread = async () => {
   const modelToSave: ChatThreadModel = {
     name: "New Chat",
