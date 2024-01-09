@@ -2,31 +2,17 @@
 
 import { userHashedId } from "@/features/auth/helpers";
 import { CosmosDBContainer } from "@/features/common/cosmos";
-
 import { uniqueId } from "@/features/common/util";
-import {
-  AzureKeyCredential,
-  DocumentAnalysisClient,
-} from "@azure/ai-form-recognizer";
+import { AzureKeyCredential, DocumentAnalysisClient } from "@azure/ai-form-recognizer";
 import { SqlQuerySpec } from "@azure/cosmos";
-import {
-  AzureCogDocumentIndex,
-  ensureIndexIsCreated,
-  indexDocuments,
-} from "./azure-cog-search/azure-cog-vector-store";
-import {
-  CHAT_DOCUMENT_ATTRIBUTE,
-  ChatDocumentModel,
-  ServerActionResponse,
-} from "./models";
+import { AzureCogDocumentIndex, ensureIndexIsCreated, indexDocuments } from "./azure-cog-search/azure-cog-vector-store";
+import { CHAT_DOCUMENT_ATTRIBUTE, ChatDocumentModel, ServerActionResponse } from "./models";
 import { chunkDocumentWithOverlap } from "./text-chunk";
 import { isNotNullOrEmpty } from "./utils";
 
 const MAX_DOCUMENT_SIZE = 20000000;
 
-export const UploadDocument = async (
-  formData: FormData
-): Promise<ServerActionResponse<string[]>> => {
+export const UploadDocument = async (formData: FormData): Promise<ServerActionResponse<string[]>> => {
   try {
     await ensureSearchIsConfigured();
 
@@ -41,7 +27,7 @@ export const UploadDocument = async (
   } catch (e) {
     return {
       success: false,
-      error: (e as Error).message,
+      error: (e as Error).toString(),
       response: [],
     };
   }
@@ -50,54 +36,40 @@ export const UploadDocument = async (
 const LoadFile = async (formData: FormData) => {
   try {
     const file: File | null = formData.get("file") as unknown as File;
+    if (file) {
+      if (file.size < MAX_DOCUMENT_SIZE) {
+        const client = initDocumentIntelligence();
 
-    if (file && file.size < MAX_DOCUMENT_SIZE) {
-      const client = initDocumentIntelligence();
+        const blob = new Blob([file], { type: file.type });
 
-      const blob = new Blob([file], { type: file.type });
+        const poller = await client.beginAnalyzeDocument("prebuilt-read", await blob.arrayBuffer());
+        const { paragraphs } = await poller.pollUntilDone();
 
-      const poller = await client.beginAnalyzeDocument(
-        "prebuilt-read",
-        await blob.arrayBuffer()
-      );
-      const { paragraphs } = await poller.pollUntilDone();
+        const docs: Array<string> = [];
 
-      const docs: Array<string> = [];
-
-      if (paragraphs) {
-        for (const paragraph of paragraphs) {
-          docs.push(paragraph.content);
+        if (paragraphs) {
+          for (const paragraph of paragraphs) {
+            docs.push(paragraph.content);
+          }
         }
-      }
 
-      return { docs };
+        return { docs };
+      }
     }
   } catch (e) {
     const error = e as any;
-
-    if (error.details) {
-      if (error.details.length > 0) {
-        throw new Error(error.details[0].message);
-      } else {
-        throw new Error(error.details.error.innererror.message);
-      }
-    }
-
-    throw new Error(error.message);
+    throw new Error(error);
   }
 
   throw new Error("Invalid file format or size. Only PDF files are supported.");
 };
 
-export const IndexDocuments = async (
-  fileName: string,
-  docs: string[],
-  chatThreadId: string
-): Promise<ServerActionResponse<AzureCogDocumentIndex[]>> => {
+export const IndexDocuments = async (fileName: string, docs: string[], chatThreadId: string): Promise<ServerActionResponse<AzureCogDocumentIndex[]>> => {
   try {
     const documentsToIndex: AzureCogDocumentIndex[] = [];
 
-    for (const doc of docs) {
+    for (let index = 0; index < docs.length; index++) {
+      const doc = docs[index];
       const docToAdd: AzureCogDocumentIndex = {
         id: uniqueId(),
         chatThreadId,
@@ -119,10 +91,9 @@ export const IndexDocuments = async (
       response: documentsToIndex,
     };
   } catch (e) {
-    console.log(e);
     return {
       success: false,
-      error: (e as Error).message,
+      error: (e as Error).toString(),
       response: [],
     };
   }

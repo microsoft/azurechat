@@ -1,0 +1,145 @@
+# Azure Chat Pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+      include:
+        - 'main'
+  paths:
+    exclude:
+      - README.md
+
+# pr: 
+#   branches:
+#     include:
+#       - 'main'
+#     exclude:
+#       - README.md
+
+variables:
+  # Agent VM image name
+  poolName: 'QGGPT_Pool'
+
+  # App Settings variables
+  appSettings: '-ADMIN_EMAIL_ADDRESS "$(ADMIN_EMAIL_ADDRESS)"
+                -AZURE_AD_CLIENT_ID "$(AZURE_AD_CLIENT_ID)"
+                -AZURE_AD_CLIENT_SECRET "$(AZURE_AD_CLIENT_SECRET)"
+                -AZURE_AD_TENANT_ID "$(AZURE_AD_TENANT_ID)"
+                -AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING "$(AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING)"
+                -AZURE_COSMOSDB_CONTAINER_NAME "$(AZURE_COSMOSDB_CONTAINER_NAME)"
+                -AZURE_COSMOSDB_DB_NAME "$(AZURE_COSMOSDB_DB_NAME)"
+                -AZURE_COSMOSDB_KEY "$(AZURE_COSMOSDB_KEY)"
+                -AZURE_COSMOSDB_URI "$(AZURE_COSMOSDB_URI)"
+                -AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT "$(AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT)"
+                -AZURE_DOCUMENT_INTELLIGENCE_KEY "$(AZURE_DOCUMENT_INTELLIGENCE_KEY)"
+                -AZURE_OPENAI_API_DEPLOYMENT_NAME "$(AZURE_OPENAI_API_DEPLOYMENT_NAME)"
+                -AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME "$(AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME)"
+                -AZURE_OPENAI_API_INSTANCE_NAME "$(AZURE_OPENAI_API_INSTANCE_NAME)"
+                -AZURE_OPENAI_API_VERSION "$(AZURE_OPENAI_API_VERSION)"
+                -AZURE_SEARCH_API_KEY "$(AZURE_SEARCH_API_KEY)"
+                -AZURE_SEARCH_API_VERSION "$(AZURE_SEARCH_API_VERSION)"
+                -AZURE_SEARCH_INDEX_NAME "$(AZURE_SEARCH_INDEX_NAME)"
+                -AZURE_SEARCH_NAME "$(AZURE_SEARCH_NAME)"
+                -AZURE_SPEECH_KEY "$(AZURE_SPEECH_KEY)"
+                -AZURE_SPEECH_REGION "$(AZURE_SPEECH_REGION)"
+                -NEXTAUTH_SECRET "$(NEXTAUTH_SECRET)"
+                -NEXTAUTH_URL "$(NEXTAUTH_URL)"
+                -OPENAI_API_KEY "$(OPENAI_API_KEY)"
+                -PUBLIC_SPEECH_ENABLED "$(PUBLIC_SPEECH_ENABLED)"
+                -System_Prompt "$(System_Prompt)"'
+
+ 
+stages:
+- stage: Build
+  displayName: Build Stage
+  jobs:
+    - job: BuildJob
+      displayName: 'Build Job'
+      steps: 
+        - checkout: self
+        - task: CmdLine@2
+          displayName: 'Command Line Script'
+          inputs:
+            script: |
+              echo Initialised Build and Publish
+
+        - task: Docker@2
+          displayName: 'Build and Push to DEV'
+          inputs:
+            containerRegistry: 'Dev-qggptdevacr'
+            repository: 'az_qggpt_image'
+            command: 'buildAndPush'
+            Dockerfile: 'src/dockerfile'
+
+
+- stage: Development
+  displayName: Development Stage
+  dependsOn: Build
+  condition: succeeded()
+  variables:
+    - group: dev-az-qggpt-variables
+  jobs:
+    - deployment: Dev
+      displayName: Dev
+      environment: 'Dev'
+      strategy:
+        runOnce:
+          deploy:
+            steps:              
+              - task: AzureRmWebAppDeployment@4
+                displayName: 'Azure Web App Container Deploy'
+                inputs:
+                  ConnectionType: 'AzureRM'
+                  azureSubscription: '$(Dev_Service_Connection)'
+                  appType: 'webAppContainer'
+                  WebAppName: 'qggptdevopenai'
+                  DockerNamespace: 'qggptdevacr.azurecr.io'
+                  DockerRepository: 'az_qggpt_image'
+                  DockerImageTag: '$(Build.BuildId)'
+                  AppSettings: '$(appSettings)'
+
+              - task: AzureCLI@2
+                inputs:
+                  azureSubscription: '$(Dev_Service_Connection)'
+                  scriptType: 'ps'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: |
+                    $registryName = 'qggptdevacr'
+                    $doNotDeleteTags = '$(Build.BuildId)'
+                    $skipLastTags = 3
+                    
+                    # Get a list of repositories in the ACR
+                    $repoArray = (az acr repository list --name $registryName --output json | ConvertFrom-Json)
+                    
+                    # Loop through each repository
+                    foreach ($repo in $repoArray)
+                    {
+                        # Get a list of tags for the repository, skip the number of tags specified in $skipLastTags
+                        $tagsArray = (az acr repository show-tags --name $registryName --repository $repo --orderby time_asc --output json | ConvertFrom-Json ) | Select-Object -SkipLast $skipLastTags
+                    
+                        # Loop through each tag and delete the image
+                        foreach($tag in $tagsArray)
+                        {
+                            # Skip recently build tag
+                            if($doNotDeleteTags -contains $tag) 
+                            {
+                                Write-Output("Tag skipped - $tag")
+                            }
+                            else
+                            {
+                                # Delete the image
+                                try 
+                                {
+                                    az acr repository delete --name $registryName --image "$repo`:$tag" --yes
+                                    Write-Output "Deleted images: $repo`:$tag"
+                                }
+                                catch 
+                                {
+                                    Write-Error ("Failed to delete image $repo`:$tag. Error: $_")
+                                }
+                            }
+                        }
+                    }
+                  powerShellErrorActionPreference: 'continue'

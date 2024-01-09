@@ -1,7 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { Provider } from "next-auth/providers";
 import AzureADProvider from "next-auth/providers/azure-ad";
-import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { hashValue } from "./helpers";
 
@@ -9,22 +8,6 @@ const configureIdentityProvider = () => {
   const providers: Array<Provider> = [];
 
   const adminEmails = process.env.ADMIN_EMAIL_ADDRESS?.split(",").map(email => email.toLowerCase().trim());
-
-  if (process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET) {
-    providers.push(
-      GitHubProvider({
-        clientId: process.env.AUTH_GITHUB_ID!,
-        clientSecret: process.env.AUTH_GITHUB_SECRET!,
-        async profile(profile) {
-          const newProfile = {
-            ...profile,
-            isAdmin: adminEmails?.includes(profile.email.toLowerCase())
-          }
-          return newProfile;
-        }
-      })
-    );
-  }
 
   if (
     process.env.AZURE_AD_CLIENT_ID &&

@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const useChatInputDynamicHeight = (props: Props) => {
-  const maxRows = 10;
+  const maxRows = 5;
   const [rows, setRows] = useState(1);
 
   const [keysPressed, setKeysPressed] = useState(new Set());
