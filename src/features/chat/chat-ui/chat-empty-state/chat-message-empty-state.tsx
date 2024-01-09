@@ -48,6 +48,8 @@ export const ChatMessageEmptyState: FC<Prop> = (props) => {
         </div>
         {showFileUpload === "data" && <ChatFileUI />}
       </Card>
+
     </div>
+    
   );
 };

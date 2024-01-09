@@ -1,7 +1,6 @@
 "use server";
 import "server-only";
 import { OpenAIInstance } from "@/features/common/openai";
-import { AI_NAME } from "@/features/theme/customise";
 import { userHashedId, userSession } from "@/features/auth/helpers";
 import { FindAllChats } from "@/features/chat/chat-services/chat-service";
 import { uniqueId } from "@/features/common/util";
@@ -100,45 +99,6 @@ export const RenameChatThreadByID = async (
   }
 };
 
-// export const SoftDeleteChatThreadByID = async (chatThreadID: string) => {
-//   const container = await CosmosDBContainer.getInstance().getContainer();
-//   const threads = await FindChatThreadByID(chatThreadID);
-
-//   if (threads.length !== 0) {
-//     const chats = await FindAllChats(chatThreadID);
-
-//     chats.forEach(async (chat) => {
-//       const itemToUpdate = {
-//         ...chat,
-//       };
-//       itemToUpdate.isDeleted = true;
-//       await container.items.upsert(itemToUpdate);
-//     });
-
-//     const chatDocuments = await FindAllChatDocuments(chatThreadID);
-
-//     if (chatDocuments.length !== 0) {
-//       await deleteDocuments(chatThreadID);
-//     }
-
-//     chatDocuments.forEach(async (chatDocument) => {
-//       const itemToUpdate = {
-//         ...chatDocument,
-//       };
-//       itemToUpdate.isDeleted = true;
-//       await container.items.upsert(itemToUpdate);
-//     });
-
-//     threads.forEach(async (thread) => {
-//       const itemToUpdate = {
-//         ...thread,
-//       };
-//       itemToUpdate.isDeleted = true;
-//       await container.items.upsert(itemToUpdate);
-//     });
-//   }
-// };
-
 export const EnsureChatThreadIsForCurrentUser = async (
   chatThreadID: string
 ) => {
@@ -180,7 +140,6 @@ export const updateChatThreadTitle = async (
       chatOverFileName: chatOverFileName,
       conversationStyle: conversationStyle,
       conversationSensitivity: conversationSensitivity,
-      // name: userMessage.substring(0, 30),
       name : await generateChatName(userMessage),
       previousChatName : await StoreOriginalChatName(chatThread.name)
     });
@@ -226,7 +185,6 @@ export const updateChatThreadTitle = async (
       console.error(`An error occurred: ${e}`);
       const words: string[] = chatMessage.split(' ');
       const name: string = 'New Chat by Error';
-      // const name: string = 'New Chat - ' + words.slice(0, 5).join(' ');
       return name;
     }
     }
@@ -304,7 +262,6 @@ export const CreateChatThread = async () => {
   const response = await container.items.create<ChatThreadModel>(modelToSave);
   return response.resource;
 };
-
 
 export const initAndGuardChatSession = async (props: PromptGPTProps) => {
   const { messages, id, chatType, conversationStyle, conversationSensitivity, chatOverFileName } = props;

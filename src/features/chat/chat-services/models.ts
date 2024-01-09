@@ -14,6 +14,7 @@ export interface ChatMessageModel {
   role: ChatRole;
   context: string;
   type: "CHAT_MESSAGE";
+  systemPrompt: string;
   feedback: string;
   reason: string;
 }
@@ -26,7 +27,7 @@ export type ChatRole = "system" | "user" | "assistant" | "function";
 export interface ChatThreadModel {
   id: string;
   name: string;
-  previousChatName : string;
+  previousChatName: string;
   chatCategory: string;
   createdAt: Date;
   userId: string;
