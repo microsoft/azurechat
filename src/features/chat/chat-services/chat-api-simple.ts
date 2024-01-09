@@ -4,10 +4,7 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 import { initAndGuardChatSession } from "./chat-thread-service";
 import { CosmosDBChatMessageHistory } from "./cosmosdb/cosmosdb";
 import { PromptGPTProps } from "./models";
-import { initializeAppInsights } from "@/lib/appInsightsConfig";
-import { performanceLogger } from "@/lib/appInsightsConfig";
-import { AI_NAME } from "@/features/theme/customise";
-const appInsights = initializeAppInsights();
+import { appInsights, trackEventClientSide, trackExceptionClientSide } from "@/features/common/app-insights";
 
 export const ChatAPISimple = async (props: PromptGPTProps) => {
 
@@ -32,13 +29,17 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
   const history = await chatHistory.getMessages();
   const topHistory = history.slice(history.length - 30, history.length);
 
-
-  const systemPrompt: string = process.env.System_Prompt || `-You are ${AI_NAME} who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks. 
+  const systemPrompt: string = process.env.SYSTEM_PROMPT || `-You are QChat who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks. 
    - You will provide clear and concise queries, and you will respond with polite and professional answers.
    - You will answer questions truthfully and accurately.
    - You will respond to questions in accordance with rules of Queensland government.`;
 
   try {
+    // Track the start of the streaming
+    if (appInsights) {
+      trackEventClientSide('Streaming_Start', { sessionId: chatThread.id, userId: userId });
+    }
+
     const response = await openAI.chat.completions.create({
       messages: [
         {
@@ -53,30 +54,41 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
 
     const stream = OpenAIStream(response, {
       async onCompletion(completion) {
-        await chatHistory.addMessage({
-          content: completion,
-          role: "assistant",
-        });
-      },
+        try {
+          await chatHistory.addMessage({
+            content: completion,
+            role: "assistant",
+          });
+              if (appInsights) {
+            trackEventClientSide('Streaming_Message_Received', { sessionId: chatThread.id, userId: userId });
+          }
+        } catch (e) {
+          if (appInsights && e instanceof Error) {
+            trackExceptionClientSide(e, "StreamingError");
+          }
+        }
+      }
     });
 
-    const endTime = Date.now(); 
+    const endTime = Date.now();
+    const duration = endTime - startTime; 
     if (appInsights) {
-      performanceLogger(appInsights, startTime, endTime);
+      trackEventClientSide('Chat_Completion_Time', { duration });
     }
 
     return new StreamingTextResponse(stream);
   } catch (e: unknown) {
-    if (e instanceof Error) {
-      return new Response(e.message, {
-        status: 500,
-        statusText: e.toString(),
-      });
-    } else {
-      return new Response("An unknown error occurred.", {
-        status: 500,
-        statusText: "Unknown Error",
-      });
+    const customErrorName = "ChatAPIError";
+    if (appInsights && e instanceof Error) {
+      trackExceptionClientSide(e, customErrorName);
     }
+
+    const errorResponse = e instanceof Error ? e.message : "An unknown error occurred.";
+    const errorStatusText = e instanceof Error ? e.toString() : "Unknown Error";
+
+    return new Response(errorResponse, {
+      status: 500,
+      statusText: errorStatusText,
+    });
   }
 };
