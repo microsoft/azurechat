@@ -109,7 +109,7 @@ export const newChatModel = (): ChatMessageModel => {
     type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
     context: "",
-    systemPrompt: process.env.System_Prompt || `-You are ${AI_NAME} who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks.
+    systemPrompt: process.env.SYSTEM_PROMPT || `-You are ${AI_NAME} who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks.
     - You will provide clear and concise queries, and you will respond with polite and professional answers.
     - You will answer questions truthfully and accurately.
     - You will respond to questions in accordance with rules of Queensland government.`,

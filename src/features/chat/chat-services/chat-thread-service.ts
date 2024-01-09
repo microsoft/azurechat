@@ -212,7 +212,7 @@ export const updateChatThreadTitle = async (
         messages: [
           {
             role: "user",
-            content: `Categorise this chat session inside triple quotes """ ${chatMessage} """ into one of the following 
+            content: `Categorise this chat session inside double quotes "" ${chatMessage} "" into one of the following 
             categories: ${categories.join(', ')} inside square brackets based on my query`
           },
         ],

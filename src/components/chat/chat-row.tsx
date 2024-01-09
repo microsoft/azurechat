@@ -37,47 +37,34 @@ const ChatRow: FC<ChatRowProps> = (props) => {
     >
       <div
         className={cn(
-          "flex flex-col  max-w-[690px] border rounded-lg overflow-hidden  p-4 gap-8"
+          "flex flex-col max-w-[690px] border rounded-lg overflow-hidden p-4 gap-8"
         )}
       >
-        <div className="flex flex-1">
-          <div className="flex gap-4 items-center flex-1">
-            <div className="">
-              {isNotNullOrEmpty(props.profilePicture) ? (
-                <Avatar>
-                  <AvatarImage src={props.profilePicture} />
-                </Avatar>
+        <div className="flex justify-between items-center w-full">
+          <Typography variant="h5" className="capitalize text-sm flex-1">
+            {props.name}
+          </Typography>
+
+          {/* Render the button only for system (assistant) messages */}
+          {props.type === "assistant" && (
+            <Button
+              variant={"ghost"}
+              size={"sm"}
+              title="Copy text"
+              onClick={handleButtonClick}
+            >
+              {isIconChecked ? (
+                <CheckIcon size={16} />
               ) : (
-                <UserCircle
-                  width={40}
-                  height={40}
-                  strokeWidth={1.2}
-                  className="text-primary"
-                />
+                <ClipboardIcon size={16} />
               )}
-            </div>
-            <Typography variant="h5" className="capitalize text-sm">
-              {props.name}
-            </Typography>
-          </div>
-          <Button
-            variant={"ghost"}
-            size={"sm"}
-            title="Copy text"
-            className="justify-right flex"
-            onClick={handleButtonClick}
-          >
-            {isIconChecked ? (
-              <CheckIcon size={16} />
-            ) : (
-              <ClipboardIcon size={16} />
-            )}
-          </Button>
+            </Button>
+          )}
         </div>
 
         <div
           className={cn(
-            "-m-4 p-4 prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-non",
+            "p-4 prose prose-slate dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0 max-w-none",
             props.type === "assistant"
               ? "bg-secondary"
               : "bg-primary text-white"

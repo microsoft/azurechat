@@ -7,6 +7,7 @@ import { FC, FormEvent, useRef, useState } from "react";
 import { ChatFileSlider } from "../chat-file/chat-file-slider";
 import { Microphone } from "../chat-speech/microphone";
 import { useChatInputDynamicHeight } from "./use-chat-input-dynamic-height";
+import { trackEventClientSide } from "@/features/common/app-insights";
 
 interface Props {}
 
@@ -15,6 +16,8 @@ const ChatInput: FC<Props> = (props) => {
 
   const handleFAIRAClick = () => {
     setInput("Help me complete a Queensland Government Fast AI Risk Assessment (FAIRA)");
+
+    trackEventClientSide('FAIRA_Button_Click', { input: "FAIRA Request" });
 
     setTimeout(() => {
       handleSubmit({ preventDefault: () => {} } as FormEvent<HTMLFormElement>);
@@ -35,6 +38,7 @@ const ChatInput: FC<Props> = (props) => {
     handleSubmit(e);
     resetRows();
     setInput("");
+    trackEventClientSide('Input_Submit', { input: "Message Submitted" });
   };
 
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {

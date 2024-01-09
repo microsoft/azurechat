@@ -21,7 +21,7 @@ export type ReportingProp = {
 
 export const Reporting = async (props: ReportingProp) => {
   let _pageNumber = Number(props.searchParams.pageNumber ?? 0);
-  let pageSize = Number(props.searchParams.pageSize ?? 5);
+  let pageSize = Number(props.searchParams.pageSize ?? 10);
   let pageNumber = _pageNumber < 0 ? 0 : _pageNumber;
   let nextPage = Number(pageNumber) + 1;
   let previousPage = Number(pageNumber) - 1;
@@ -45,9 +45,12 @@ export const Reporting = async (props: ReportingProp) => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[200px]">Conversation</TableHead>
-                  <TableHead className="w-[200px]">User</TableHead>
-                  <TableHead className="mw-[300px]">Title</TableHead>
+                  <TableHead>Chat Name</TableHead>
+                  <TableHead>User</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Style</TableHead>
+                  <TableHead>Sensitivity</TableHead>
                   <TableHead>Date</TableHead>
                 </TableRow>
               </TableHeader>
@@ -57,13 +60,16 @@ export const Reporting = async (props: ReportingProp) => {
                     <TableRow key={chatThread.id}>
                       <TableCell className="font-medium">
                         <Link href={"/reporting/" + chatThread.id}>
-                          {chatThread.id}
+                          {chatThread.name}
                         </Link>
                       </TableCell>
                       <TableCell>{chatThread.useName}</TableCell>
-                      <TableCell>{chatThread.name}</TableCell>
+                      <TableCell>{chatThread.chatCategory}</TableCell>
+                      <TableCell>{chatThread.chatType}</TableCell>
+                      <TableCell>{chatThread.conversationStyle}</TableCell>
+                      <TableCell>{chatThread.conversationSensitivity}</TableCell>
                       <TableCell>
-                        {new Date(chatThread.createdAt).toLocaleDateString()}
+                        {new Date(chatThread.createdAt).toLocaleDateString("en-AU")}
                       </TableCell>
                     </TableRow>
                   ))}
