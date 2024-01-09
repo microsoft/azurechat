@@ -1,7 +1,6 @@
 "use server";
 import "server-only";
 import { OpenAIInstance } from "@/features/common/openai";
-import { AI_NAME } from "@/features/theme/customise";
 import { userHashedId, userSession } from "@/features/auth/helpers";
 import { FindAllChats } from "@/features/chat/chat-services/chat-service";
 import { uniqueId } from "@/features/common/util";
@@ -186,7 +185,6 @@ export const updateChatThreadTitle = async (
       console.error(`An error occurred: ${e}`);
       const words: string[] = chatMessage.split(' ');
       const name: string = 'New Chat by Error';
-      // const name: string = 'New Chat - ' + words.slice(0, 5).join(' ');
       return name;
     }
     }
@@ -263,12 +261,6 @@ export const CreateChatThread = async () => {
   const container = await CosmosDBContainer.getInstance().getContainer();
   const response = await container.items.create<ChatThreadModel>(modelToSave);
   return response.resource;
-};
-
-export const PromptSuggestion = async (): Promise<string[]> => {
-
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  return ['AI prompt 1', 'AI prompt 2', 'AI prompt 3', 'AI prompt 4'];
 };
 
 export const initAndGuardChatSession = async (props: PromptGPTProps) => {

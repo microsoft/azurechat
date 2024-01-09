@@ -5,6 +5,7 @@ import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { CosmosDBContainer } from "../../common/cosmos";
 import { ChatMessageModel, MESSAGE_ATTRIBUTE } from "./models";
+import { AI_NAME } from "@/features/theme/customise";
 
 export const FindAllChats = async (chatThreadID: string) => {
   const container = await CosmosDBContainer.getInstance().getContainer();
@@ -27,6 +28,36 @@ export const FindAllChats = async (chatThreadID: string) => {
       },
     ],
   };
+
+  const { resources } = await container.items
+    .query<ChatMessageModel>(querySpec)
+    .fetchAll();
+
+  return resources;
+};
+
+export const FindChatMessageByID = async (id: string) => {
+  const container = await CosmosDBContainer.getInstance().getContainer();
+
+  const querySpec: SqlQuerySpec = {
+    query:
+      "SELECT * FROM root r WHERE r.type=@type AND r.id=@id AND r.isDeleted=@isDeleted",
+    parameters: [
+      {
+        name: "@type",
+        value: MESSAGE_ATTRIBUTE,
+      },
+      {
+        name: "@id",
+        value: id,
+      },
+      {
+        name: "@isDeleted",
+        value: false,
+      },
+    ],
+  };
+
 
   const { resources } = await container.items
     .query<ChatMessageModel>(querySpec)
@@ -78,5 +109,11 @@ export const newChatModel = (): ChatMessageModel => {
     type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
     context: "",
+    systemPrompt: process.env.System_Prompt || `-You are ${AI_NAME} who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks.
+    - You will provide clear and concise queries, and you will respond with polite and professional answers.
+    - You will answer questions truthfully and accurately.
+    - You will respond to questions in accordance with rules of Queensland government.`,
+    feedback: "",
+    reason: "",
   };
 };

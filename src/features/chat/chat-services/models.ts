@@ -14,6 +14,9 @@ export interface ChatMessageModel {
   role: ChatRole;
   context: string;
   type: "CHAT_MESSAGE";
+  systemPrompt: string;
+  feedback: string;
+  reason: string;
 }
 
 export type ConversationStyle = "creative" | "balanced" | "precise";
