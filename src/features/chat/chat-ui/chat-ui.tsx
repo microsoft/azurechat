@@ -6,12 +6,9 @@ import { ChatMessageEmptyState } from "./chat-empty-state/chat-message-empty-sta
 import ChatInput from "./chat-input/chat-input";
 import { ChatMessageContainer } from "./chat-message-container";
 
-interface Prop {
-  chatId: string;
-  onPromptSelected: () => string;
-};
+interface Prop {};
 
-export const ChatUI: FC<Prop> = ({ chatId, onPromptSelected }) => {
+export const ChatUI: FC<Prop> = () => {
   const { messages } = useChatContext();
 
   return (
@@ -19,7 +16,7 @@ export const ChatUI: FC<Prop> = ({ chatId, onPromptSelected }) => {
     {messages.length !== 0 ? (
       <ChatMessageContainer/>
     ) : (
-      <ChatMessageEmptyState onPromptSelected={onPromptSelected} />
+      <ChatMessageEmptyState/>
     )}
 
     <ChatInput />
@@ -28,3 +25,4 @@ export const ChatUI: FC<Prop> = ({ chatId, onPromptSelected }) => {
 
   );
 };
+

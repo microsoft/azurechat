@@ -7,9 +7,7 @@ import { ChatStyleSelector } from "./chat-style-selector";
 import { ChatSensitivitySelector } from "./chat-sensitivity-selector";
 import { ChatTypeSelector } from "./chat-type-selector";
 
-interface Prop {
-  onPromptSelected: (prompt: string) => void;
-}
+interface Prop {}
 
 export const ChatMessageEmptyState: FC<Prop> = (props) => {
   const { fileState } = useChatContext();
