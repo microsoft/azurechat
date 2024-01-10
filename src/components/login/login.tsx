@@ -22,7 +22,7 @@ export const LogIn = () => {
           <span className="text-primary">{AI_NAME}</span>
         </CardTitle>
         <CardDescription>
-        Azure Entraでログインをしてください。
+        Azure Entraでログインをお願いします。
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
