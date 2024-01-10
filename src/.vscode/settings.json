@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/652ce3d6-703a-4aeb-9118-de8329819fc7/resourceGroups/teamsbot/providers/Microsoft.Web/sites/jbccbing",
+    "appService.deploySubpath": "."
+}
