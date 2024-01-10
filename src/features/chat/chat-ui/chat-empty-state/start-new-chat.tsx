@@ -14,17 +14,17 @@ export const StartNewChat: FC<Prop> = (props) => {
       </div>
       <Card className="col-span-3 flex flex-col gap-5 p-5 ">
         <Typography variant="h4" className="text-primary">
-          {AI_NAME}
+        {AI_NAME}にようこそ！
         </Typography>
         <div className="flex flex-col gap-2">
           <p className="">
-            Welcome to {AI_NAME}. You should interact in a friendly manner with
-            the AI assistant and refrain from participating in any harmful
-            activities.
+          このChatGPT搭載のAIチャットボットは、2024年1月からプレビューで社内利用限定で公開されています。
+            まだまだ未熟なAIですが、皆様のご協力により、AIの成長を目指しています。
+
           </p>
-          <p>You can start a new chat with me by clicking the button below.</p>
+          <p>下記の➕を押して会話を開始できます</p>
         </div>
-        <div className="-mx-5 -mb-5 p-5 flex flex-col border-t bg-muted">
+        <div className="-mx-1 -mb-1 p-1 flex flex-col border-t bg-muted">
           <NewChat />
         </div>
       </Card>

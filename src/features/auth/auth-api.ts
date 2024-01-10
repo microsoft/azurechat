@@ -42,7 +42,8 @@ const configureIdentityProvider = () => {
             ...profile,
             // throws error without this - unsure of the root cause (https://stackoverflow.com/questions/76244244/profile-id-is-missing-in-google-oauth-profile-response-nextauth)
             id: profile.sub,
-            isAdmin: adminEmails?.includes(profile.email.toLowerCase()) || adminEmails?.includes(profile.preferred_username.toLowerCase())
+            //isAdmin: adminEmails?.includes(profile.email.toLowerCase()) || adminEmails?.includes(profile.preferred_username.toLowerCase())
+            isAdmin: adminEmails?.includes(profile.preferred_username.toLowerCase())
           }
           return newProfile;
         }
@@ -72,7 +73,7 @@ const configureIdentityProvider = () => {
               id: hashValue(email),
               name: username,
               email: email,
-              isAdmin: false,
+              isAdmin: true,
               image: "",
             };
           console.log("=== DEV USER LOGGED IN:\n", JSON.stringify(user, null, 2));
