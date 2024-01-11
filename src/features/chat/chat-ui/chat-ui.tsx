@@ -6,7 +6,7 @@ import { ChatMessageEmptyState } from "./chat-empty-state/chat-message-empty-sta
 import ChatInput from "./chat-input/chat-input";
 import { ChatMessageContainer } from "./chat-message-container";
 
-interface Prop {};
+interface Prop {}
 
 export const ChatUI: FC<Prop> = () => {
   const { messages } = useChatContext();
