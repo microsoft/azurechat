@@ -5,7 +5,7 @@ import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { CosmosDBContainer } from "../../common/cosmos";
 import { ChatMessageModel, MESSAGE_ATTRIBUTE } from "./models";
-import { AI_NAME } from "@/features/theme/customise";
+import { userHashedId } from "@/features/auth/helpers";
 
 export const FindAllChats = async (chatThreadID: string) => {
   const container = await CosmosDBContainer.getInstance().getContainer();
@@ -66,6 +66,35 @@ export const FindChatMessageByID = async (id: string) => {
   return resources;
 };
 
+export const CreateUserFeedbackChatId = async (
+  chatMessageId: string,
+  feedback: string,
+  reason: string,
+  ) => {
+
+  try {
+    const container = await CosmosDBContainer.getInstance().getContainer();
+    const chatMessageModel = await FindChatMessageByID(chatMessageId);
+
+    if (chatMessageModel.length !== 0) {
+    const message = chatMessageModel[0];
+    message.feedback = feedback;
+    message.reason = reason;
+
+    const itemToUpdate = {
+      ...message,
+
+    };
+
+      await container.items.upsert(itemToUpdate);
+      return itemToUpdate;
+    }
+  } catch (e) {
+    console.log("There was an error in saving user feedback", e);
+  }
+};
+
+
 export const UpsertChat = async (chatModel: ChatMessageModel) => {
   const modelToSave: ChatMessageModel = {
     ...chatModel,
@@ -109,7 +138,7 @@ export const newChatModel = (): ChatMessageModel => {
     type: MESSAGE_ATTRIBUTE,
     isDeleted: false,
     context: "",
-    systemPrompt: process.env.SYSTEM_PROMPT || `-You are ${AI_NAME} who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks.
+    systemPrompt: process.env.SYSTEM_PROMPT || `-You are Qchat who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks.
     - You will provide clear and concise queries, and you will respond with polite and professional answers.
     - You will answer questions truthfully and accurately.
     - You will respond to questions in accordance with rules of Queensland government.`,
