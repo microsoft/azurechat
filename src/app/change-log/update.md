@@ -23,3 +23,11 @@ AZURE_SPEECH_KEY="1234...."
 Please note that the solution has been upgraded to utilise the most recent version of the OpenAI JavaScript SDK, necessitating the use of the `OPENAI_API_KEY` environment variable.
 
 Ensure that you update the variable name in both your '.env' file and the configuration within Azure App Service or Key Vault, changing it from `AZURE_OPENAI_API_KEY` to `OPENAI_API_KEY`.
+
+## 💻 Login with GitHub
+
+Ability to hide / display GitHub Login. The GitHub Login feature is enabled by default. To disable this feature, you must set the environment variable `GITHUB_LOGIN_ENABLED=false`.
+
+```
+GITHUB_LOGIN_ENABLED=false
+```

@@ -25,6 +25,7 @@ const azureEnvVars = [
   "AZURE_SPEECH_REGION",
   "AZURE_SPEECH_KEY",
   "PUBLIC_PUBLIC_SPEECH_ENABLED",
+  "GITHUB_LOGIN_ENABLED",
 ] as const;
 
 type RequiredServerEnvKeys = (typeof azureEnvVars)[number];
