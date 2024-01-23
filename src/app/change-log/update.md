@@ -26,8 +26,8 @@ Ensure that you update the variable name in both your '.env' file and the config
 
 ## 💻 Login with GitHub
 
-Ability to hide / display GitHub Login. The GitHub Login feature is enabled by default. To disable this feature, you must set the environment variable `GITHUB_LOGIN_ENABLED=false`.
+Ability to hide / display GitHub Login. The GitHub Login feature is enabled by default. To disable this feature, you must set the environment variable `AUTH_GITHUB_ENABLED=false`.
 
 ```
-GITHUB_LOGIN_ENABLED=false
+AUTH_GITHUB_ENABLED=false
 ```

@@ -14,6 +14,7 @@ const azureEnvVars = [
   "AZURE_SEARCH_API_VERSION",
   "AUTH_GITHUB_ID",
   "AUTH_GITHUB_SECRET",
+  "AUTH_GITHUB_ENABLED",
   "AZURE_AD_CLIENT_ID",
   "AZURE_AD_CLIENT_SECRET",
   "AZURE_AD_TENANT_ID",
@@ -25,7 +26,6 @@ const azureEnvVars = [
   "AZURE_SPEECH_REGION",
   "AZURE_SPEECH_KEY",
   "PUBLIC_PUBLIC_SPEECH_ENABLED",
-  "GITHUB_LOGIN_ENABLED",
 ] as const;
 
 type RequiredServerEnvKeys = (typeof azureEnvVars)[number];

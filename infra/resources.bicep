@@ -172,7 +172,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
           value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_SPEECH_KEY.name})'
         }
         { 
-          name: 'GITHUB_LOGIN_ENABLED'
+          name: 'AUTH_GITHUB_ENABLED'
           value: 'true'
         }
       ]
