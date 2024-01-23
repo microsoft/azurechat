@@ -17,7 +17,7 @@ export const LogIn = () => {
   const [gitHubLoginEnabled, setGitHubLoginEnabled] = useState(false)
   
   useEffect(() => {
-    setGitHubLoginEnabled(process.env.AUTH_GITHUB_ENABLED)
+    setGitHubLoginEnabled(process.env.AUTH_GITHUB_ENABLED === 'true')
   }, [])
   
   return (
