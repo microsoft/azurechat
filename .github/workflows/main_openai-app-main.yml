@@ -52,8 +52,8 @@ jobs:
       - name: ⬆️ Publish Next Application artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Nextjs-site
-          path: release.zip
+          name: node-app
+          path: ./site-deploy/Nextjs-site.zip
 
   deploy:
     runs-on: ubuntu-latest
