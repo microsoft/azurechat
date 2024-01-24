@@ -78,3 +78,4 @@ on:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9105C0EDDB574C7483DC532127141358 }}
           package: .
+
