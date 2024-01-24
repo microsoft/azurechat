@@ -33,6 +33,7 @@ var cosmos_name = toLower('${name}-cosmos-${resourceToken}')
 var search_name = toLower('${name}search${resourceToken}')
 var webapp_name = toLower('${name}-webapp-${resourceToken}')
 var appservice_name = toLower('${name}-app-${resourceToken}')
+var appInsights_name = toLower('${name}-ai-${resourceToken}')
 // keyvault name must be less than 24 chars - token is 13
 var kv_prefix = take(name, 7)
 var keyVaultName = toLower('balm-chat-${resourceToken}')
@@ -171,6 +172,10 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
           name: 'AZURE_SPEECH_KEY'
           value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_SPEECH_KEY.name})'
         }
+        {
+          name: 'NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY'
+          value: appInsights.properties.InstrumentationKey
+        }
       ]
     }
   }
@@ -180,6 +185,18 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
   name: la_workspace_name
   location: location
+}
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsights_name
+  kind: 'web'
+  location: location
+  tags: tags
+  properties: {
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+    Application_Type: 'web'
+    Request_Source: 'rest'
+  }
 }
 
 resource webDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
