@@ -41,7 +41,7 @@ jobs:
       - name: 📦 Package Next application
         run: |
           cd ./site-deploy
-          zip -r Nextjs-site.zip . .next/ -qr 
+          zip -r Nextjs-site.zip . ./src/.next/ -qr 
           
       - name: 🔍 Diagnostics
         run: |
