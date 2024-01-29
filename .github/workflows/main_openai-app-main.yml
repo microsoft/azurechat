@@ -12,48 +12,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 🌱 Checkout to the branch
-        uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-      - name: 🍏 Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20.x"
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
 
-      - name: ⚙️ npm install and build
-        run: |
-          cd ./src
-          npm install
-          npm run build --if-present
-          cd ..
-
-      - name: 📂 Copy standalone into the root
-        run: cp -R ./src/.next/standalone ./site-deploy
-
-      - name: 📂 Copy static into the .next folder
-        run: cp -R ./src/.next/static ./site-deploy/.next/static
-
-      - name: 📂 Copy Public folder
-        run: cp -R ./src/public ./site-deploy/public
-
-      - name: 📦 Package Next application
-        run: |
-          cd ./site-deploy
-          zip Nextjs-site.zip ./* -qr     
-          
-      - name: 🔍 Diagnostics
-        run: |
-          ls ./src
-          ls ./src/.next
-          ls ./site-deploy
-
-      - name: ⬆️ Publish Next Application artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: node-app
-          path: ./site-deploy/Nextjs-site.zip
+    - name: npm install, build, and test
+      run: |
+        npm install
+        npm run build --if-present
+        npm run test --if-present
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: node-app
+        path: .
 
   deploy:
     runs-on: ubuntu-latest
