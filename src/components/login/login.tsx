@@ -3,6 +3,7 @@ import { AI_NAME } from "@/features/theme/customise";
 import { signIn } from "next-auth/react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import { useState, useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -12,6 +13,13 @@ import {
 } from "../ui/card";
 
 export const LogIn = () => {
+
+  const [gitHubLoginEnabled, setGitHubLoginEnabled] = useState(false)
+  
+  useEffect(() => {
+    setGitHubLoginEnabled(process.env.AUTH_GITHUB_ENABLED === 'true')
+  }, [])
+  
   return (
     <Card className="flex gap-2 flex-col min-w-[300px]">
       <CardHeader className="gap-2">
@@ -26,7 +34,9 @@ export const LogIn = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        <Button onClick={() => signIn("github")}>GitHub</Button>
+        { gitHubLoginEnabled && (
+          <Button onClick={() => signIn("github")}>GitHub</Button>
+        )}
         <Button onClick={() => signIn("azure-ad")}> Microsoft 365</Button>
         {process.env.NODE_ENV === "development" && (
           <Button onClick={() => signIn("localdev")}>Basic Auth (DEV ONLY)</Button>
