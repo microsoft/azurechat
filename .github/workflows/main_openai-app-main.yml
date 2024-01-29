@@ -20,7 +20,7 @@ jobs:
       - name: 🍏 Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: "18.x"
+          node-version: "20.x"
 
       - name: ⚙️ npm install and build
         run: |
