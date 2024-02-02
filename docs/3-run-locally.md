@@ -4,7 +4,7 @@ Clone this repository locally or fork to your Github account. Run all of the the
 
 ## Prerequisites
 
-- **History Database**: If you didn't [provision the Azure resources](2-provision-azure-resources.md), you **must** at least deploy an instance of Cosmos DB in your Azure Subscription to store chat history.
+- **History Database**: If you didn't [provision the Azure resources](/README.md#deploy-to-azure) by following one of the deployment options you **must** at least deploy an instance of Cosmos DB in your Azure Subscription to store chat history.
 
 - **Identity Provider**: For local development, you have the option of using a username / password. If you prefer to use an Identity Provider, follow the [instructions](3-run-locally.md) to add one.
 
