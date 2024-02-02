@@ -67,4 +67,4 @@ To reduce costs, you can switch to free SKUs for Azure App Service, Azure Cognit
 > **Warning**
 > To avoid unnecessary costs, remember to destroy your provisioned resources by deleting the resource group.
 
-[Next](/docs/2-provision-azure-resources.md)
+[Next](/docs/3-run-locally.md)
