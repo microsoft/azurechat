@@ -2,12 +2,11 @@
 
 Once the deployment is complete, you will need to add an identity provider to authenticate your app. You will also need to configure an admin user.
 
-> **Note**
+> [!NOTE]
 > Only one of the identity providers is required to be configured below.
 
-> **Important**
+> [!IMPORTANT]
 > We **strongly** recommend that you store client secrets in Azure Key Vault and use Kev Vault references in your App config settings. If you have created your environment using the templates in this repo you will already have a Key Vault that is being used to store a range of other secrets, and you will have Key Vault references in your app config. Details on how to configure App Service settings to use Key Vault are [here](https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references?tabs=azure-cli#source-app-settings-from-key-vault). Note that you will also need to give yourself appropriate permissions to create secrets in the Key Vault.
-
 
 ## GitHub Authentication Provider
 
@@ -37,7 +36,7 @@ We'll create two GitHub apps: one for testing locally and another for production
    Authorization callback URL: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/github
    ```
 
-> **Note**
+> [!NOTE]
 > After completing app setup, ensure that both your local environment variables as well as Azure Web App environment variables are up to date.
 
 ```bash
@@ -74,7 +73,7 @@ We'll create two GitHub apps: one for testing locally and another for production
    Redirect URI: https://YOUR-WEBSITE-NAME.azurewebsites.net/api/auth/callback/azure-ad
    ```
 
-> **Note**
+> [!NOTE]
 > After completing app setup, ensure your environment variables locally and on Azure App Service are up to date.
 
 ```bash
@@ -87,6 +86,6 @@ AZURE_AD_TENANT_ID=
 
 ## Configure an admin user
 
-The reporting pages in the application are only available to an admin user. To configure the admin user create or update the "ADMIN_EMAIL_ADDRESS" config setting locally and on Azure App Service with the email address of the user who will use reports.
+The reporting pages in the application are only available to an admin user. To configure the admin user create or update the `ADMIN_EMAIL_ADDRESS` config setting locally and on Azure App Service with the email address of the user who will use reports.
 
 [Next](/docs/6-chat-over-file.md)
