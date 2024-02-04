@@ -35,6 +35,6 @@ Under the same repository secrets add a new variable `AZURE_APP_SERVICE_NAME` to
 
 Once the secrets are configured, the GitHub Actions will be triggered for every code push to the repository. Alternatively, you can manually run the workflow by clicking on the "Run Workflow" button in the Actions tab in GitHub.
 
-![Workflow screenshot](/images/runworkflow.png)
+![Workflow screenshot](/docs/images/runworkflow.png)
 
 [Next](/docs/5-add-identity.md)

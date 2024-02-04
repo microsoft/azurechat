@@ -7,8 +7,8 @@ Please make sure the following prerequisites are in place prior to deploying thi
 2. Setup GitHub or Azure AD for Authentication:
    The [add an identity provider](./5-add-identity.md) section below shows how to configure authentication providers.
 
-   > **Note**
-   > You can configure the authentication provider to your identity solution using [NextAuth providers](https://next-auth.js.org/providers/)
+> [!NOTE]
+> You can configure the authentication provider to your identity solution using [NextAuth providers](https://next-auth.js.org/providers/)
 
 ## 👋🏻 Introduction
 
@@ -20,7 +20,7 @@ _Azure Chat Solution Accelerator powered by Azure Open AI Service_ solution acce
 
 - [NextAuth.js](https://next-auth.js.org/): configurable authentication framework for Next.js 13
 
-- [ai sdk](https://sdk.vercel.ai/docs) Open-source library that simplifies building conversational UI on top Next.js and JavaScript
+- [OpenAI sdk](https://github.com/openai/openai-node) NodeJS library that simplifies building conversational UI
 
 - [Tailwind CSS](https://tailwindcss.com/): is a utility-first CSS framework that provides a series of predefined classes that can be used to style each element by mixing and matching
 
@@ -38,7 +38,7 @@ The following Azure services can be deployed to expand the feature set of your s
 
 - [Azure Document Intelligence](https://learn.microsoft.com/en-GB/azure/ai-services/document-intelligence/) Microsoft Azure Form Recognizer is an automated data processing system that uses AI and OCR to quickly extract text and structure from documents. We use this service for extracting information from documents.
 
-- [Azure Cognitive Search](https://learn.microsoft.com/en-GB/azure/search/) Azure Cognitive Search is an AI-powered platform as a service (PaaS) that helps developers build rich search experiences for applications. We use this service for indexing and retrieving information.
+- [Azure AI Search ](https://learn.microsoft.com/en-GB/azure/search/) Azure AI Search is an AI-powered platform as a service (PaaS) that helps developers build rich search experiences for applications. We use this service for indexing and retrieving information.
 
 - [Azure OpenAI Embeddings](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/embeddings?tabs=console) for embed content extracted from files.
 
@@ -48,7 +48,7 @@ The following Azure services can be deployed to expand the feature set of your s
 
 The following high-level diagram depicts the architecture of the solution accelerator:
 
-![Architecture diagram](/images/architecture.png)
+![Architecture diagram](/docs/images/architecture.png)
 
 # Azure Deployment Costs
 
@@ -58,13 +58,13 @@ However, you can try the [Azure pricing calculator - Sample Estimate](https://az
 - Azure App Service: Premium V3 Tier 1 CPU core, 4 GB RAM, 250 GB Storage. Pricing per hour. [Pricing](https://azure.microsoft.com/pricing/details/app-service/linux/)
 - Azure Open AI: Standard tier, ChatGPT and Embedding models. Pricing per 1K tokens used, and at least 1K tokens are used per question. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/)
 - Form Recognizer: SO (Standard) tier using pre-built layout. Pricing per document page, sample documents have 261 pages total. [Pricing](https://azure.microsoft.com/pricing/details/form-recognizer/)
-- Azure Cognitive Search: Standard tier, 1 replica, free level of semantic search. Pricing per hour.[Pricing](https://azure.microsoft.com/pricing/details/search/)
+- Azure AI Search : Standard tier, 1 replica, free level of semantic search. Pricing per hour.[Pricing](https://azure.microsoft.com/pricing/details/search/)
 - Azure Cosmos DB: Standard provisioned throughput with ZRS (Zone-redundant storage). Pricing per storage and read operations. [Pricing](https://azure.microsoft.com/en-us/pricing/details/cosmos-db/autoscale-provisioned/)
 - Azure Monitor: Pay-as-you-go tier. Costs based on data ingested. [Pricing](https://azure.microsoft.com/pricing/details/monitor/)
 
-To reduce costs, you can switch to free SKUs for Azure App Service, Azure Cognitive Search, and Form Recognizer by changing the parameters file under the `./infra` folder. There are some limits to consider; for example, you can have up to 1 free Cognitive Search resource per subscription, and the free Form Recognizer resource only analyzes the first 2 pages of each document. You can also reduce costs associated with the Form Recognizer by reducing the number of documents you upload.
+To reduce costs, you can switch to free SKUs for Azure App Service, Azure AI Search , and Form Recognizer by changing the parameters file under the `./infra` folder. There are some limits to consider; for example, you can have up to 1 free Cognitive Search resource per subscription, and the free Form Recognizer resource only analyzes the first 2 pages of each document. You can also reduce costs associated with the Form Recognizer by reducing the number of documents you upload.
 
-> **Warning**
+> [!WARNING]
 > To avoid unnecessary costs, remember to destroy your provisioned resources by deleting the resource group.
 
 [Next](/docs/2-provision-azure-resources.md)
