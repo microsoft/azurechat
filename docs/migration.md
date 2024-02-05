@@ -53,8 +53,9 @@ AZURE_KEY_VAULT_NAME=
 
 2. **Azure Cosmos DB**: The Azure Cosmos DB is already created and used to store the chat data. The new version of the application segregates the data into two collections: `history` and `config`.
 
-history: Stores the chat history data.
-config: Stores the configuration data such as the prompt templates, extension details etc.
+`history`: Stores the chat history data.
+
+`config`: Stores the configuration data such as the prompt templates, extension details etc.
 
 Update the environment variables in the `.env.local` file and on Azure App settings with the Cosmos DB account name and the database name.
 
