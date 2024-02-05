@@ -10,6 +10,7 @@
 1. [Persona](/docs/6-persona.md)
 1. [Extensions](/docs/8-extensions.md)
 1. [Environment variables](/docs/9-environment-variables.md)
+1. [Migration considerations](/docs/migration.md)
 
 # Introduction
 
