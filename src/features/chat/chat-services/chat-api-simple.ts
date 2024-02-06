@@ -6,8 +6,8 @@ import { initAndGuardChatSession } from "./chat-thread-service";
 import { CosmosDBChatMessageHistory } from "./cosmosdb/cosmosdb";
 import { PromptGPTProps } from "./models";
 import { encodingForModel, TiktokenModel} from "js-tiktoken"
-import { reportCompletionTokens, reportPromptTokens, reportUserChatMessage } from "./chat-metrics-service";
-import { ChatTokenService } from "./chat-token-service";
+import { reportCompletionTokens, reportPromptTokens, reportUserChatMessage } from "../../common/services/chat-metrics-service";
+import { ChatTokenService } from "../../common/services/chat-token-service";
 
 export const ChatAPISimple = async (props: PromptGPTProps) => {
   const { lastHumanMessage, chatThread } = await initAndGuardChatSession(props);

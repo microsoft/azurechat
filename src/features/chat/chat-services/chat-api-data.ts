@@ -6,8 +6,8 @@ import { similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-ve
 import { initAndGuardChatSession } from "./chat-thread-service";
 import { CosmosDBChatMessageHistory } from "./cosmosdb/cosmosdb";
 import { PromptGPTProps } from "./models";
-import { ChatTokenService } from "./chat-token-service";
-import { reportCompletionTokens, reportPromptTokens, reportUserChatMessage } from "./chat-metrics-service";
+import { ChatTokenService } from "../../common/services/chat-token-service";
+import { reportCompletionTokens, reportPromptTokens, reportUserChatMessage } from "../../common/services/chat-metrics-service";
 
 const SYSTEM_PROMPT = `You are ${AI_NAME} who is a helpful AI Assistant.`;
 

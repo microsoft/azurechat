@@ -31,21 +31,12 @@ export const LogIn: FC<LoginProps> = (props) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-<<<<<<< HEAD:src/components/login/login.tsx
-        {/* <Button onClick={() => signIn("github")}>GitHub</Button> */}
-        <Button onClick={() => signIn("azure-ad")}>Microsoft Entra ID</Button>
-        {process.env.NODE_ENV === "development" && (
-          <Button onClick={() => signIn("localdev")}>Basic Auth (DEV ONLY)</Button>
-        )}
-=======
-        <Button onClick={() => signIn("github")}>GitHub</Button>
-        <Button onClick={() => signIn("azure-ad")}> Microsoft 365</Button>
+        <Button onClick={() => signIn("azure-ad")}> Microsoft Entra</Button>
         {props.isDevMode ? (
           <Button onClick={() => signIn("localdev")}>
             Basic Auth (DEV ONLY)
           </Button>
         ) : null}
->>>>>>> microsoft-main:src/features/auth-page/login.tsx
       </CardContent>
     </Card>
   );
