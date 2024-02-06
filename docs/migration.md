@@ -4,7 +4,14 @@ The following changes and services are required to migrate from the old version 
 
 Refer the `.env.example` file for the latest environment variable changes.
 
-## New Azure services
+If you previously had Azure Chat running and have pulled the v2 version you will need at minimum to make the following changes:
+
+* Change the "OPENAI_API_KEY" environment setting to "AZURE_OPENAI_API_KEY"
+* Add an additional container to your Cosmos DB database called "config" with a partition key of "/userId"
+* Add the "AZURE_KEY_VAULT_NAME" environment setting with the name of your Azure Key Vault
+* Add the "New Azure Services" settings below if you wish to use these features
+
+## New Azure Services
 
 1. **Azure OpenAI Service**: Create a new Azure OpenAI Service and deploy a DALL-E 3 model. DALL-E is available within the following [regions](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models#dall-e-models-preview).
 
