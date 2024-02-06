@@ -258,6 +258,18 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12
   location: location
 }
 
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsights_name
+  kind: 'web'
+  location: location
+  tags: tags
+  properties: {
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+    Application_Type: 'web'
+    Request_Source: 'rest'
+  }
+}
+
 resource webDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: diagnostic_setting_name
   scope: webApp

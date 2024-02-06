@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["@azure/storage-blob"],
   },
+  instrumentationHook: true,
 };
 
 module.exports = nextConfig;
