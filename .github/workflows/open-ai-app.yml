@@ -41,8 +41,8 @@ jobs:
       - name: 📦 Package Next application
         run: |
           cd ./site-deploy
-          zip Nextjs-site.zip ./* .next -qr      
-          
+          zip Nextjs-site.zip ./* .next -qr
+
       - name: 🔍 Diagnostics
         run: |
           ls ./src
@@ -61,6 +61,11 @@ jobs:
     environment:
       name: "Development"
     steps:
+      - name: 🍏 Set up Node.js version
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
       - name: ⬇️ Download artifact from build job
         uses: actions/download-artifact@v4
         with:
@@ -71,7 +76,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Set the build during deployment setting to false. This setting was added in the templates to all azd to work, but breaks deployment via webapps-deploy 
+      # Set the build during deployment setting to false. This setting was added in the templates to all azd to work, but breaks deployment via webapps-deploy
       - name: Azure CLI script
         uses: azure/CLI@v1
         with:
