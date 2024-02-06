@@ -37,32 +37,41 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
           <div>
             <h2 className="text-2xl font-bold mb-3">Extensions</h2>
 
-            <div className="grid grid-cols-3 gap-3">
-              {props.extensions.map((extension) => {
-                return (
-                  <ExtensionCard
-                    extension={extension}
-                    key={extension.id}
-                    showContextMenu={false}
-                  />
-                );
-              })}
-            </div>
+            {props.extensions && props.extensions.length > 0 ? (
+              <div className="grid grid-cols-3 gap-3">
+                {props.extensions.map((extension) => {
+                  return (
+                    <ExtensionCard
+                      extension={extension}
+                      key={extension.id}
+                      showContextMenu={false}
+                    />
+                  );
+                })}
+              </div>
+            ) :
+              <p className="text-muted-foreground max-w-xl">No extentions created</p>
+            }
+
           </div>
           <div>
-            <h2 className="text-2xl font-bold mb-3">Persona</h2>
+            <h2 className="text-2xl font-bold mb-3">Personas</h2>
 
-            <div className="grid grid-cols-3 gap-3">
-              {props.personas.map((persona) => {
-                return (
-                  <PersonaCard
-                    persona={persona}
-                    key={persona.id}
-                    showContextMenu={false}
-                  />
-                );
-              })}
-            </div>
+            {props.personas && props.personas.length > 0 ? (
+              <div className="grid grid-cols-3 gap-3">
+                {props.personas.map((persona) => {
+                  return (
+                    <PersonaCard
+                      persona={persona}
+                      key={persona.id}
+                      showContextMenu={false}
+                    />
+                  );
+                })}
+              </div>
+            ) :
+              <p className="text-muted-foreground max-w-xl">No personas created</p>
+            }
           </div>
         </div>
         <AddExtension />
