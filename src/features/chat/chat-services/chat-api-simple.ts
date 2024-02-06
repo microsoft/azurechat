@@ -1,10 +1,13 @@
-import { userHashedId } from "@/features/auth/helpers";
+import { userHashedId, userSession } from "@/features/auth/helpers";
 import { OpenAIInstance } from "@/features/common/openai";
 import { AI_NAME } from "@/features/theme/customise";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import { initAndGuardChatSession } from "./chat-thread-service";
 import { CosmosDBChatMessageHistory } from "./cosmosdb/cosmosdb";
 import { PromptGPTProps } from "./models";
+import { encodingForModel, TiktokenModel} from "js-tiktoken"
+import { reportCompletionTokens, reportPromptTokens, reportUserChatMessage } from "./chat-metrics-service";
+import { ChatTokenService } from "./chat-token-service";
 
 export const ChatAPISimple = async (props: PromptGPTProps) => {
   const { lastHumanMessage, chatThread } = await initAndGuardChatSession(props);
@@ -26,7 +29,15 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
   const history = await chatHistory.getMessages();
   const topHistory = history.slice(history.length - 30, history.length);
 
+  const tokenService = new ChatTokenService();
+
   try {
+    const promptTokens = tokenService.getTokenCountFromHistory(topHistory, 45);
+
+    const model = "gpt-4";
+
+    reportPromptTokens(promptTokens, model);
+
     const response = await openAI.chat.completions.create({
       messages: [
         {
@@ -41,14 +52,23 @@ export const ChatAPISimple = async (props: PromptGPTProps) => {
       stream: true,
     });
 
+    let completionTokens = 0;
+
     const stream = OpenAIStream(response, {
+      async onToken(token) {
+        completionTokens += tokenService.getTokenCount(token);
+      },
       async onCompletion(completion) {
         await chatHistory.addMessage({
           content: completion,
           role: "assistant",
         });
+
+        reportUserChatMessage(model);
+        reportCompletionTokens(completionTokens, model);
       },
     });
+
     return new StreamingTextResponse(stream);
   } catch (e: unknown) {
     if (e instanceof Error) {

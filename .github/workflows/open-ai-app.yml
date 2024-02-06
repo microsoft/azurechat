@@ -90,13 +90,10 @@ jobs:
           resource-group-name: ${{ secrets.AZURE_APP_SERVICE_RG_NAME_DEV }}
           app-name: ${{ secrets.AZURE_APP_SERVICE_NAME_DEV }}
           package: ${{ github.workspace }}/Nextjs-site.zip
-
-      - name: 🧹 Cleanup
-        run: rm ${{ github.workspace }}/Nextjs-site.zip
     
   deploy-production:
     runs-on: ubuntu-latest
-    needs: deploy-development
+    needs: build
     environment:
       name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }} # or your production URL, add reviewers as well if you need
@@ -131,6 +128,4 @@ jobs:
           app-name: ${{ secrets.AZURE_APP_SERVICE_NAME_PROD }}
           package: ${{ github.workspace }}/Nextjs-site.zip
 
-      - name: 🧹 Cleanup
-        run: rm ${{ github.workspace }}/Nextjs-site.zip
     

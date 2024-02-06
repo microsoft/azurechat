@@ -6,6 +6,8 @@ import { similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-ve
 import { initAndGuardChatSession } from "./chat-thread-service";
 import { CosmosDBChatMessageHistory } from "./cosmosdb/cosmosdb";
 import { PromptGPTProps } from "./models";
+import { ChatTokenService } from "./chat-token-service";
+import { reportCompletionTokens, reportPromptTokens, reportUserChatMessage } from "./chat-metrics-service";
 
 const SYSTEM_PROMPT = `You are ${AI_NAME} who is a helpful AI Assistant.`;
 
@@ -35,6 +37,8 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
 
   const openAI = OpenAIInstance();
 
+  const chatModel = "gpt-4";
+
   const userId = await userHashedId();
 
   const chatHistory = new CosmosDBChatMessageHistory({
@@ -44,6 +48,8 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
 
   const history = await chatHistory.getMessages();
   const topHistory = history.slice(history.length - 30, history.length);
+
+  const tokenService = new ChatTokenService();
 
   const relevantDocuments = await findRelevantDocuments(
     lastHumanMessage.content,
@@ -58,7 +64,16 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
     })
     .join("\n------\n");
 
+  const contextTokens = tokenService.getTokenCount(context);
+
+  let promptTokens = contextTokens + 122; // 122 is static system prompt tokens.
+
+  promptTokens += tokenService.getTokenCountFromHistory(topHistory, 0);
+
   try {
+
+    reportPromptTokens(promptTokens, chatModel);
+
     const response = await openAI.chat.completions.create({
       messages: [
         {
@@ -78,6 +93,8 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
       stream: true,
     });
 
+    let completionTokens = 0;
+
     const stream = OpenAIStream(response, {
       async onCompletion(completion) {
         await chatHistory.addMessage({
@@ -92,7 +109,13 @@ export const ChatAPIData = async (props: PromptGPTProps) => {
           },
           context
         );
+
+        reportCompletionTokens(completionTokens, chatModel);
+        reportUserChatMessage(chatModel);
       },
+      onToken(token) {
+        completionTokens += tokenService.getTokenCount(token);
+      }
     });
 
     return new StreamingTextResponse(stream);
