@@ -18,6 +18,9 @@ import { GetDynamicExtensions } from "./chat-api-dynamic-extensions";
 import { ChatApiExtensions } from "./chat-api-extension";
 import { ChatApiMultimodal } from "./chat-api-multimodal";
 import { OpenAIStream } from "./open-ai-stream";
+import { reportCompletionTokens, reportPromptTokens, reportUserChatMessage } from "../../../common/services/chat-metrics-service";
+import { ChatTokenService } from "@/features/common/services/chat-token-service";
+import { isRunningInBrowser } from "openai/core.mjs";
 type ChatTypes = "extensions" | "chat-with-file" | "multimodal";
 
 export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
@@ -96,6 +99,12 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
   const readableStream = OpenAIStream({
     runner: runner,
     chatThread: currentChatThread,
+  });
+
+  runner.on("finalContent", async (finalContent) => {
+      const chatTokenService = new ChatTokenService();
+      const tokens = chatTokenService.getTokenCount(finalContent);
+      reportCompletionTokens(tokens, "gpt-4");
   });
 
   return new Response(readableStream, {

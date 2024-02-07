@@ -1,5 +1,5 @@
 import { metrics } from "@opentelemetry/api";
-import { userHashedId, userSession } from "@/features/auth/helpers";
+import { userHashedId, userSession } from "@/features/auth-page/helpers";
 
 function getChatMeter(){
     const meter = metrics.getMeter("chat");

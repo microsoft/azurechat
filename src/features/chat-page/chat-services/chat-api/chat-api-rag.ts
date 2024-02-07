@@ -14,6 +14,8 @@ import {
 } from "../azure-ai-search/azure-ai-search";
 import { CreateCitations } from "../citation-service";
 import { ChatCitationModel, ChatThreadModel } from "../models";
+import { reportPromptTokens } from "@/features/common/services/chat-metrics-service";
+import { ChatTokenService } from "@/features/common/services/chat-token-service";
 
 export const ChatApiRAG = async (props: {
   chatThread: ChatThreadModel;
@@ -92,8 +94,12 @@ ${userMessage}
         role: "user",
         content: _userMessage,
       },
-    ],
+    ]
   };
+
+  let chatTokenService = new ChatTokenService();
+
+  reportPromptTokens(chatTokenService.getTokenCountFromHistory(stream.messages, 0), "gpt-4");
 
   return openAI.beta.chat.completions.stream(stream, { signal });
 };
