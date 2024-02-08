@@ -96,6 +96,8 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
       break;
   }
 
+  reportUserChatMessage("gpt-4");
+
   const readableStream = OpenAIStream({
     runner: runner,
     chatThread: currentChatThread,
