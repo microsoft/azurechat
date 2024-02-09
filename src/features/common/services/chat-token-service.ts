@@ -2,6 +2,7 @@ import { Tiktoken, TiktokenModel, encodingForModel } from "js-tiktoken";
 
 export class ChatTokenService{
 
+
     private encoder: Tiktoken;
 
     constructor(model = "gpt-4") {
@@ -16,12 +17,17 @@ export class ChatTokenService{
         }
     }
 
-    public getTokenCountFromHistory(topHistory: any, systemPromptStatic: number = 45) {
-        let promptTokens = systemPromptStatic;
+    public getTokenCountFromMessage(message: any){
+        const tokenList = this.encoder.encode(message.content || "");
+        return tokenList.length;
+    }
+
+    public getTokenCountFromHistory(topHistory: any): { role: string, tokens: number }[] {
+        let promptTokens = [];
 
         for (const message of topHistory) {
             const tokenList = this.encoder.encode(message.content || "");
-            promptTokens += tokenList.length;
+            promptTokens.push({ role: <string>message.role, tokens: <number>tokenList.length });
         }
 
         return promptTokens;

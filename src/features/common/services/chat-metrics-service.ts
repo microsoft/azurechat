@@ -9,11 +9,11 @@ function getChatMeter(){
 async function getAttributes(chatModel: string){
     const user = await userSession();
     const userId = await userHashedId();
-    const attributes = { "email": user?.email, "name": user?.name, "userHashedId": userId, "chatModel": chatModel || "unknown", "userId": userId };
+    const attributes = { "email": user?.email, "name": user?.name, "userHashedId": userId, "chatModel": chatModel };
     return attributes;
 }
 
-export async function reportPromptTokens(tokenCount: number, model: string) {
+export async function reportPromptTokens(tokenCount: number, model: string, role: string, attributes: any = {}) {
 
     const meter = getChatMeter();
 
@@ -22,10 +22,15 @@ export async function reportPromptTokens(tokenCount: number, model: string) {
         unit: "tokens",
     });
 
-    promptTokensUsed.record(tokenCount, await getAttributes(model));
+    let defaultAttributes = <any>await getAttributes(model);
+    attributes["role"] = role;
+
+    let compbinedAttributes = { ...defaultAttributes, ...attributes };
+
+    promptTokensUsed.record(tokenCount, compbinedAttributes);
 }
 
-export async function reportCompletionTokens(tokenCount: number, model: string) {
+export async function reportCompletionTokens(tokenCount: number, model: string, attributes: any = {}) {
 
         const meter = getChatMeter();
 
@@ -34,10 +39,12 @@ export async function reportCompletionTokens(tokenCount: number, model: string) 
             unit: "tokens",
         });
 
-        completionsTokensUsed.record(tokenCount, await getAttributes(model));
+        let combinedAttributes = { ...attributes, ...await getAttributes(model) };
+
+        completionsTokensUsed.record(tokenCount, combinedAttributes);
 }
 
-export async function reportUserChatMessage(model: string) {
+export async function reportUserChatMessage(model: string, attributes: any = {}) {
 
     const meter = getChatMeter();
 
@@ -46,5 +53,7 @@ export async function reportUserChatMessage(model: string) {
         unit: "messages",
     });
 
-    userChatMessage.add(1, await getAttributes(model));
+    let combinedAttributes = { ...attributes, ...await getAttributes(model) };
+
+    userChatMessage.add(1, combinedAttributes);
 }

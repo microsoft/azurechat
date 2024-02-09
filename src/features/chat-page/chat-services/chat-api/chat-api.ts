@@ -96,7 +96,7 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
       break;
   }
 
-  reportUserChatMessage("gpt-4");
+  reportUserChatMessage("gpt-4", { personaMessageTitle: currentChatThread.personaMessageTitle });
 
   const readableStream = OpenAIStream({
     runner: runner,
@@ -106,7 +106,7 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
   runner.on("finalContent", async (finalContent) => {
       const chatTokenService = new ChatTokenService();
       const tokens = chatTokenService.getTokenCount(finalContent);
-      reportCompletionTokens(tokens, "gpt-4");
+      reportCompletionTokens(tokens, "gpt-4", {personaMessageTitle: currentChatThread.personaMessageTitle});
   });
 
   return new Response(readableStream, {
