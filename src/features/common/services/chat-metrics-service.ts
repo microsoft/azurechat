@@ -3,6 +3,7 @@ import { userHashedId, userSession } from "@/features/auth-page/helpers";
 
 function getChatMeter(){
     const meter = metrics.getMeter("chat");
+    console.log("Meter: ", meter);
     return meter;
 }
 
