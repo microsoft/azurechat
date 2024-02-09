@@ -8,6 +8,7 @@ export async function register() {
     const exporter = new AzureMonitorMetricExporter({
         connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
     });
+    console.log("Application Insights Connection String: ", process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
     const metricReaderOptions = {
         exporter: exporter,
     };
