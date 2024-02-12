@@ -70,6 +70,7 @@ export const OpenAIStream = (props: {
             response: "Chat aborted",
           };
           streamResponse(response.type, JSON.stringify(response));
+          controller.close();
         })
         .on("error", async (error) => {
           console.log("🔴 error", error);
@@ -87,6 +88,7 @@ export const OpenAIStream = (props: {
           });
 
           streamResponse(response.type, JSON.stringify(response));
+          controller.close();
         })
         .on("finalContent", async (content: string) => {
           await CreateChatMessage({
