@@ -67,6 +67,7 @@ export type MenuItemsGroup = {
 export type ChatCitationModel = {
   id: string;
   content: any;
+  userId: string;
   type: typeof CHAT_CITATION_ATTRIBUTE;
 };
 
