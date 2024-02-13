@@ -92,8 +92,7 @@ jobs:
             az webapp config appsettings set -n ${AZURE_APP_SERVICE_NAME} -g $rg --slot ${AZURE_SLOT} --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
             echo Setting --startup-file=\"node server.js\" on app service ${AZURE_APP_SERVICE_NAME} in slot ${AZURE_SLOT}
             az webapp config set --startup-file="node server.js" -n ${AZURE_APP_SERVICE_NAME} -g $rg --slot ${AZURE_SLOT} -o none
-
-sleep 10
+            sleep 10
 
       - name: 🚀 Deploy to Azure Web App
         id: deploy-to-webapp
