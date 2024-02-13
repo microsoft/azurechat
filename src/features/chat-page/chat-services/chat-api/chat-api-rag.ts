@@ -8,11 +8,8 @@ import {
   ChatCompletionStreamParams,
 } from "openai/resources/beta/chat/completions";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
-import {
-  DocumentSearchResponse,
-  SimilaritySearch,
-} from "../azure-ai-search/azure-ai-search";
-import { CreateCitations } from "../citation-service";
+import { SimilaritySearch } from "../azure-ai-search/azure-ai-search";
+import { CreateCitations, FormatCitations } from "../citation-service";
 import { ChatCitationModel, ChatThreadModel } from "../models";
 
 export const ChatApiRAG = async (props: {
@@ -34,20 +31,7 @@ export const ChatApiRAG = async (props: {
   const documents: ChatCitationModel[] = [];
 
   if (documentResponse.status === "OK") {
-    const withoutEmbedding: DocumentSearchResponse[] = [];
-    documentResponse.response.forEach((d) => {
-      withoutEmbedding.push({
-        score: d.score,
-        document: {
-          metadata: d.document.metadata,
-          pageContent: d.document.pageContent,
-          chatThreadId: d.document.chatThreadId,
-          id: d.document.id,
-          user: d.document.user,
-        },
-      });
-    });
-
+    const withoutEmbedding = FormatCitations(documentResponse.response);
     const citationResponse = await CreateCitations(withoutEmbedding);
 
     citationResponse.forEach((c) => {

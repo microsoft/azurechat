@@ -1,3 +1,4 @@
+import { userHashedId } from "@/features/auth-page/helpers";
 import { ServerActionResponse } from "@/features/common/server-action-response";
 import { HistoryContainer } from "@/features/common/services/cosmos";
 import { uniqueId } from "@/features/common/util";
@@ -31,8 +32,11 @@ export const CreateCitation = async (
   }
 };
 
+// Create citations for the documents with a user as optional parameter
+// when calling this method from the extension, you must provide the user as the REST API does not have access to the user
 export const CreateCitations = async (
-  models: DocumentSearchResponse[]
+  models: DocumentSearchResponse[],
+  userId?: string
 ): Promise<Array<ServerActionResponse<ChatCitationModel>>> => {
   const items: Array<Promise<ServerActionResponse<ChatCitationModel>>> = [];
 
@@ -41,6 +45,7 @@ export const CreateCitations = async (
       content: model,
       id: uniqueId(),
       type: CHAT_CITATION_ATTRIBUTE,
+      userId: userId || (await userHashedId()),
     });
 
     items.push(res);
@@ -54,7 +59,8 @@ export const FindCitationByID = async (
 ): Promise<ServerActionResponse<ChatCitationModel>> => {
   try {
     const querySpec: SqlQuerySpec = {
-      query: "SELECT * FROM root r WHERE r.type=@type AND r.id=@id",
+      query:
+        "SELECT * FROM root r WHERE r.type=@type AND r.id=@id AND r.userId=@userId ",
       parameters: [
         {
           name: "@type",
@@ -63,6 +69,10 @@ export const FindCitationByID = async (
         {
           name: "@id",
           value: id,
+        },
+        {
+          name: "@userId",
+          value: await userHashedId(),
         },
       ],
     };
@@ -88,4 +98,22 @@ export const FindCitationByID = async (
       errors: [{ message: `${error}` }],
     };
   }
+};
+
+export const FormatCitations = (citation: DocumentSearchResponse[]) => {
+  const withoutEmbedding: DocumentSearchResponse[] = [];
+  citation.forEach((d) => {
+    withoutEmbedding.push({
+      score: d.score,
+      document: {
+        metadata: d.document.metadata,
+        pageContent: d.document.pageContent,
+        chatThreadId: d.document.chatThreadId,
+        id: "",
+        user: "",
+      },
+    });
+  });
+
+  return withoutEmbedding;
 };
