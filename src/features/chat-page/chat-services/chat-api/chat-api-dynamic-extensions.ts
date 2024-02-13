@@ -3,6 +3,7 @@ import "server-only";
 
 import { ServerActionResponse } from "@/features/common/server-action-response";
 
+import { userHashedId } from "@/features/auth-page/helpers";
 import {
   FindAllExtensionForCurrentUser,
   FindSecureHeaderValue,
@@ -84,6 +85,12 @@ async function executeFunction(props: {
 
     const headerItems = await Promise.all(headerPromise);
 
+    // we need to add the user id to the headers as this is expected by the function and does not have context of the user
+    headerItems.push({
+      id: "authorization",
+      key: "authorization",
+      value: await userHashedId(),
+    });
     // map the headers to a dictionary
     const headers: { [key: string]: string } = headerItems.reduce(
       (acc: { [key: string]: string }, header) => {
@@ -119,7 +126,6 @@ async function executeFunction(props: {
     if (!response.ok) {
       return `There was an error calling the api: ${response.statusText}`;
     }
-
     const result = await response.json();
 
     return {
