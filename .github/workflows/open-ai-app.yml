@@ -86,6 +86,7 @@ jobs:
             if [ -z "$rg" ]
             then
               echo "Resource group could not be found for the given web app name. Please check the web app name."
+              echo az webapp list
               exit 1
             fi
             echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${AZURE_APP_SERVICE_NAME} in slot ${AZURE_SLOT}
