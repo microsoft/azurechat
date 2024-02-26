@@ -28,7 +28,6 @@ jobs:
           npm install
           npm run build --if-present
           cd ..
-
       - name: 📂 Copy standalone into the root
         run: cp -R ./src/.next/standalone ./site-deploy
 
@@ -42,13 +41,11 @@ jobs:
         run: |
           cd ./site-deploy
           zip Nextjs-site.zip ./* .next -qr
-
       - name: 🔍 Diagnostics
         run: |
           ls ./src
           ls ./src/.next
           ls ./site-deploy
-
       - name: ⬆️ Publish Next Application artifact
         uses: actions/upload-artifact@v4
         with:
@@ -82,13 +79,12 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            rg=azurechat-webapp-4w4mpry5742im
+            rg=$(az webapp list --query "[?name=='${{ secrets.AZURE_APP_SERVICE_NAME }}'].resourceGroup" --output tsv)
             echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
             az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
             echo Setting --startup-file=\"node server.js\" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
             az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg -o none
             sleep 10
-
       - name: 🚀 Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
