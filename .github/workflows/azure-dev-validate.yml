@@ -31,8 +31,3 @@ jobs:
           tools: templateanalyzer
         env:
           GDN_TEMPLATEANALYZER_VERBOSE: 1
-
-      
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: ${{ steps.msdo.outputs.sarifFile }}
