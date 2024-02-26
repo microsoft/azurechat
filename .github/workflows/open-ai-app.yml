@@ -1,3 +1,23 @@
+Skip to content
+RATP-Smart-Systems-Copilot
+/
+azurechat-old
+
+Code
+Pull requests
+Actions
+Projects
+Wiki
+Security
+9
+Insights
+Settings
+Build & deploy Next.js app to Azure Web App
+Merge pull request #18 from RATP-Smart-Systems-Copilot/develop #16
+Jobs
+Run details
+Workflow file for this run
+.github/workflows/open-ai-app.yml at d5ef893
 name: Build & deploy Next.js app to Azure Web App
 
 # When this action will be executed
@@ -15,12 +35,12 @@ jobs:
 
     steps:
       - name: 🌱 Checkout to the branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: 🍏 Set up Node.js version
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: "20.x"
+          node-version: "18.x"
 
       - name: ⚙️ npm install and build
         run: |
@@ -40,14 +60,15 @@ jobs:
       - name: 📦 Package Next application
         run: |
           cd ./site-deploy
-          zip Nextjs-site.zip ./* .next -qr
+          zip Nextjs-site.zip ./* .next -qr      
+          
       - name: 🔍 Diagnostics
         run: |
           ls ./src
           ls ./src/.next
           ls ./site-deploy
       - name: ⬆️ Publish Next Application artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: Nextjs-site
           path: ./site-deploy/Nextjs-site.zip
@@ -56,16 +77,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: Production
+      name: "Production"
 
     steps:
-      - name: 🍏 Set up Node.js version
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20.x"
-
       - name: ⬇️ Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: Nextjs-site
 
@@ -74,7 +90,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Set the build during deployment setting to false. This setting was added in the templates to all azd to work, but breaks deployment via webapps-deploy
+      # Set the build during deployment setting to false. This setting was added in the templates to all azd to work, but breaks deployment via webapps-deploy 
       - name: Azure CLI script
         uses: azure/CLI@v1
         with:
@@ -94,3 +110,4 @@ jobs:
 
       - name: 🧹 Cleanup
         run: rm ${{ github.workspace }}/Nextjs-site.zip
+Merge pull request #18 from RATP-Smart-Systems-Copilot/develop · RATP-Smart-Systems-Copilot/azurechat-old@d5ef893
