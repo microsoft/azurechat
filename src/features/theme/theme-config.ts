@@ -1,5 +1,5 @@
 export const AI_NAME = "RATP Smart Systems Chat";
-export const AI_DESCRIPTION = "RATP Smart Systems Chat est le chat dédié à nos collaborateurs";
+export const AI_DESCRIPTION = "Chat dédié à nos collaborateurs";
 export const CHAT_DEFAULT_PERSONA = AI_NAME + " default";
 
 export const CHAT_DEFAULT_SYSTEM_PROMPT = `You are a friendly ${AI_NAME} AI assistant. You must always return in markdown format.
