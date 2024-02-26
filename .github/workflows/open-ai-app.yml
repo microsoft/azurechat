@@ -82,7 +82,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            rg=azurechat
+            rg=azurechat-webapp-4w4mpry5742im
             echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
             az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
             echo Setting --startup-file=\"node server.js\" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
