@@ -35,7 +35,7 @@ export const ExtensionDetail: FC<Props> = (props) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant={"outline"} className="gap-2" disabled={props.disabled}>
+        <Button variant={"outline"} className="gap-2" disabled={props.disabled} aria-label="Current Chat Extensions Menu">
           <PocketKnife size={16} /> {installedCount} ({totalCount})
         </Button>
       </SheetTrigger>
