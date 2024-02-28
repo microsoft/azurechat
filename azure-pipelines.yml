@@ -1,0 +1,259 @@
+trigger:
+  branches:
+      include:
+        - main
+
+variables:
+  - name: poolName
+    value: 'QGGPT_Pool'
+
+  - name: appSettings
+    value: >
+      -ACCESS_GROUPS "$(ACCESS_GROUPS)"
+      -ACCESS_GROUPS_REQUIRED "$(ACCESS_GROUPS_REQUIRED)"
+      -ADMIN_EMAIL_ADDRESS "$(ADMIN_EMAIL_ADDRESS)"
+      -AZURE_AD_AUTHORIZATION_ENDPOINT "$(AZURE_AD_AUTHORIZATION_ENDPOINT)"
+      -AZURE_AD_CLIENT_ID "$(AZURE_AD_CLIENT_ID)"
+      -AZURE_AD_CLIENT_SECRET "$(AZURE_AD_CLIENT_SECRET)"
+      -AZURE_AD_OPENID_CONFIGURATION "$(AZURE_AD_OPENID_CONFIGURATION)"
+      -AZURE_AD_REDIRECT_URL "$(AZURE_AD_REDIRECT_URL)"
+      -AZURE_AD_TENANT_ID "$(AZURE_AD_TENANT_ID)"
+      -AZURE_AD_TOKEN_ENDPOINT "$(AZURE_AD_TOKEN_ENDPOINT)"
+      -AZURE_AD_USERINFO_ENDPOINT "$(AZURE_AD_USERINFO_ENDPOINT)"
+      -AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING "$(AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING)"
+      -AZURE_COSMOSDB_CONFIG_CONTAINER_NAME "$(AZURE_COSMOSDB_CONFIG_CONTAINER_NAME)"
+      -AZURE_COSMOSDB_CONTAINER_NAME "$(AZURE_COSMOSDB_CONTAINER_NAME)"
+      -AZURE_COSMOSDB_DB_NAME "$(AZURE_COSMOSDB_DB_NAME)"
+      -AZURE_COSMOSDB_KEY "$(AZURE_COSMOSDB_KEY)"
+      -AZURE_COSMOSDB_TENANT_CONTAINER_NAME "$(AZURE_COSMOSDB_TENANT_CONTAINER_NAME)"
+      -AZURE_COSMOSDB_URI "$(AZURE_COSMOSDB_URI)"
+      -AZURE_COSMOSDB_USER_CONTAINER_NAME "$(AZURE_COSMOSDB_USER_CONTAINER_NAME)"
+      -AZURE_COSMOSDB_USER_PREFS_CONTAINER_NAME "$(AZURE_COSMOSDB_USER_PREFS_CONTAINER_NAME)"
+      -AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT "$(AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT)"
+      -AZURE_DOCUMENT_INTELLIGENCE_KEY "$(AZURE_DOCUMENT_INTELLIGENCE_KEY)"
+      -AZURE_KEY_VAULT_NAME "$(AZURE_KEY_VAULT_NAME)"
+      -AZURE_OPENAI_API_DEPLOYMENT_NAME "$(AZURE_OPENAI_API_DEPLOYMENT_NAME)"
+      -AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME "$(AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME)"
+      -AZURE_OPENAI_API_INSTANCE_NAME "$(AZURE_OPENAI_API_INSTANCE_NAME)"
+      -AZURE_OPENAI_API_VERSION "$(AZURE_OPENAI_API_VERSION)"
+      -AZURE_SEARCH_API_KEY "$(AZURE_SEARCH_API_KEY)"
+      -AZURE_SEARCH_API_VERSION "$(AZURE_SEARCH_API_VERSION)"
+      -AZURE_SEARCH_INDEX_NAME "$(AZURE_SEARCH_INDEX_NAME)"
+      -AZURE_SEARCH_NAME "$(AZURE_SEARCH_NAME)"
+      -AZURE_SPEECH_KEY "$(AZURE_SPEECH_KEY)"
+      -AZURE_SPEECH_REGION "$(AZURE_SPEECH_REGION)"
+      -AZURE_SPEECH_STT_URL "$(AZURE_SPEECH_STT_URL)"
+      -AZURE_SPEECH_URL "$(AZURE_SPEECH_URL)"
+      -AZURE_TRANSLATOR_KEY "$(AZURE_TRANSLATOR_KEY)"
+      -AZURE_TRANSLATOR_URL "$(AZURE_TRANSLATOR_URL)"
+      -FEATURE_FILEEXPORT "$(FEATURE_FILEEXPORT)"
+      -FEATURE_QUASYMODO "$(FEATURE_QUASYMODO)"
+      -FEATURE_TRANSCRIBE_TENANTS "$(FEATURE_TRANSCRIBE_TENANTS)"
+      -MAX_DOCUMENT_SIZE "$(MAX_DOCUMENT_SIZE)"
+      -NEXT_PUBLIC_AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING "$(NEXT_PUBLIC_AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING)"
+      -NEXTAUTH_SECRET "$(NEXTAUTH_SECRET)"
+      -NEXTAUTH_URL "$(NEXTAUTH_URL)"
+      -OPENAI_API_KEY "$(OPENAI_API_KEY)"
+      -PERMITTED_TENANTS "$(PERMITTED_TENANTS)"
+      -PERMITTED_TENANTS_REQUIRED "$(PERMITTED_TENANTS_REQUIRED)"
+      -PROMPT_BUTTON_ENABLED "$(PROMPT_BUTTON_ENABLED)"
+      -PUBLIC_SPEECH_ENABLED "$(PUBLIC_SPEECH_ENABLED)"
+      -QGAIP_APIM_BASE "$(QGAIP_APIM_BASE)"
+      -QGAIP_APIM_HEALTHCHECK_URI "$(QGAIP_APIM_HEALTHCHECK_URI)"
+      -QGAIP_QCHAT_APP_URI "$(QGAIP_QCHAT_APP_URI)"
+      -QGAIP_QCHAT_FQDN_URI "$(QGAIP_QCHAT_FQDN_URI)"
+      -SYSTEM_PROMPT "$(SYSTEM_PROMPT)"
+      -TRANSLATOR_ENABLED "$(TRANSLATOR_ENABLED)"'
+
+  - group: dev-az-qggpt-variables
+  - group: prod-az-qggpt-variables
+
+stages:
+- stage: Build
+  displayName: Build Stage
+  variables:
+  - group: dev-az-qggpt-variables
+  jobs:
+    - job: BuildJob
+      displayName: 'Build Job'
+      pool:
+        name: $(poolName)
+      steps:
+        - checkout: self
+          clean: "true"
+        - task: Docker@2
+          displayName: 'Build Docker Image for Analysis'
+          inputs:
+            containerRegistry: '$(CONTAINER_REGISTRY)'
+            command: 'build'
+            Dockerfile: 'src/dockerfile'
+            repository: '$(REPOSITORY)'
+            tags: '$(Build.BuildId)'
+
+- stage: Development
+  displayName: Development Stage
+  dependsOn: Build
+  condition: succeeded()
+  variables:
+    - group: dev-az-qggpt-variables
+  jobs:
+    - deployment: DeployToDev
+      displayName: 'Deploy to Development Environment'
+      environment: 'Dev'
+      pool:
+        name: $(poolName)
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: Docker@2
+                displayName: 'Push Docker Image to Dev Registry'
+                inputs:
+                  containerRegistry: '$(CONTAINER_REGISTRY)'
+                  repository: '$(REPOSITORY)'
+                  command: 'push'
+                  tags: '$(Build.BuildId)'
+              - task: AzureRmWebAppDeployment@4
+                displayName: 'Deploy to Development Web App'
+                inputs:
+                  ConnectionType: 'AzureRM'
+                  azureSubscription: '$(Dev_Service_Connection)'
+                  appType: 'webAppContainer'
+                  WebAppName: '$(WEBAPPNAME)'
+                  DockerNamespace: $(DOCKER_NAMESPACE)
+                  DockerRepository: '$(REPOSITORY)'
+                  DockerImageTag: '$(Build.BuildId)'
+                  AppSettings: '$(appSettings)'
+    - job: CleanupImagesDev
+      displayName: 'Cleanup Docker Images - Dev'
+      dependsOn: DeployToDev
+      pool:
+        name: $(poolName)
+      steps:
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: '$(Dev_Service_Connection)'
+            scriptType: 'ps'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              $registryName = '$(REGISTRY_NAME)'
+              $doNotDeleteTags = '$(Build.BuildId)'
+              $skipLastTags = 3
+                    
+              # Get a list of repositories in the ACR
+              $repoArray = (az acr repository list --name $registryName --output json | ConvertFrom-Json)
+              
+              # Loop through each repository
+              foreach ($repo in $repoArray)
+              {
+                  # Get a list of tags for the repository, skip the number of tags specified in $skipLastTags
+                  $tagsArray = (az acr repository show-tags --name $registryName --repository $repo --orderby time_asc --output json | ConvertFrom-Json ) | Select-Object -SkipLast $skipLastTags
+              
+                  # Loop through each tag and delete the image
+                  foreach($tag in $tagsArray)
+                  {
+                      # Skip recently build tag
+                      if($doNotDeleteTags -contains $tag) 
+                      {
+                          Write-Output("Tag skipped - $tag")
+                      }
+                      else
+                      {
+                          # Delete the image
+                          try 
+                          {
+                              az acr repository delete --name $registryName --image "$repo`:$tag" --yes
+                              Write-Output "Deleted images: $repo`:$tag"
+                          }
+                          catch 
+                          {
+                              Write-Error ("Failed to delete image $repo`:$tag. Error: $_")
+                          }
+                      }
+                  }
+              }
+            powerShellErrorActionPreference: 'continue'
+
+- stage: Production
+  displayName: Production Stage
+  dependsOn: Development
+  condition: and(succeeded('Development'), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  variables:
+    - group: prod-az-qggpt-variables
+  jobs:
+    - deployment: DeployToProd
+      displayName: 'Deploy to Production Environment'
+      environment: 'Prod'
+      pool:
+        name: $(poolName)
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: Docker@2
+                displayName: 'Push Docker Image to Prod Registry'
+                inputs:
+                  containerRegistry: '$(CONTAINER_REGISTRY)'
+                  repository: '$(REPOSITORY)'
+                  command: 'push'
+                  tags: '$(Build.BuildId)'
+              - task: AzureRmWebAppDeployment@4
+                displayName: 'Deploy to Production Web App'
+                inputs:
+                  ConnectionType: 'AzureRM'
+                  azureSubscription: 'Prod QGGPT'
+                  appType: 'webAppContainer'
+                  WebAppName: '$(WEBAPPNAME)'
+                  DockerNamespace: '$(DOCKER_NAMESPACE)'
+                  DockerRepository: '$(REPOSITORY)'
+                  DockerImageTag: '$(Build.BuildId)'
+                  AppSettings: '$(appSettings)'
+
+    - job: CleanupImagesProd
+      displayName: 'Cleanup Docker Images - Prod'
+      dependsOn: DeployToProd
+      pool:
+        name: $(poolName)
+      steps:
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: 'Prod QGGPT'
+            scriptType: 'ps'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              $registryName = '$(REGISTRY_NAME)'
+              $doNotDeleteTags = '$(Build.BuildId)'
+              $skipLastTags = 3
+              # Get a list of repositories in the ACR
+              $repoArray = (az acr repository list --name $registryName --output json | ConvertFrom-Json)
+              
+              # Loop through each repository
+              foreach ($repo in $repoArray)
+              {
+                  # Get a list of tags for the repository, skip the number of tags specified in $skipLastTags
+                  $tagsArray = (az acr repository show-tags --name $registryName --repository $repo --orderby time_asc --output json | ConvertFrom-Json ) | Select-Object -SkipLast $skipLastTags
+              
+                  # Loop through each tag and delete the image
+                  foreach($tag in $tagsArray)
+                  {
+                      # Skip recently build tag
+                      if($doNotDeleteTags -contains $tag) 
+                      {
+                          Write-Output("Tag skipped - $tag")
+                      }
+                      else
+                      {
+                          # Delete the image
+                          try 
+                          {
+                              az acr repository delete --name $registryName --image "$repo`:$tag" --yes
+                              Write-Output "Deleted images: $repo`:$tag"
+                          }
+                          catch 
+                          {
+                              Write-Error ("Failed to delete image $repo`:$tag. Error: $_")
+                          }
+                      }
+                  }
+              }
+            powerShellErrorActionPreference: 'continue'

@@ -17,6 +17,7 @@
 
 # misc
 .DS_Store
+**/certificates/
 *.pem
 
 # debug
@@ -33,4 +34,3 @@ next-env.d.ts
 
 .azure/
 infra/aad_setup.sh
-.vscode

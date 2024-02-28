@@ -4,48 +4,113 @@
 
 @layer base {
   :root {
+    --QLD-color-siteTitle: #022A50;
+    --QLD-color-designAccent: #6BBE27;
+    --QLD-color-heading: #03213F;
+    --QLD-color-text: #414141;
+    --QLD-color-text-muted: #636363;
+    --QLD-color-link: #09549F;
+    --QLD-color-link-visited: #551A8B;
+    --QLD-color-button-text: #FFFFFF;
+    --QLD-color-button: #09549F;
+    --QLD-color-button-hover: #003E7D;
+    --QLD-color-focus: #0085B3;
+    --QLD-color-border: #EBEBEB;
+    --QLD-color-background: #FFFFFF;
+    --QLD-color-dark-background: #09549F;
+    --QLD-color-background-shade: #F5F5F5;
+    --QLD-color-underline: #3F7AB4;
+    --QLD-color-hover-underline: #09549F;
+    --QLD-color-visited-underline: #8B63B0;
+    --QLD-color-hover-visited-underline: #551A8B;
+    --QLD-color-alt-button: #008635;
+    --QLD-color-dark-alt-button: #FFE500;
+    --QLD-color-alt-button-hover: #005B23;
+    --QLD-color-alt-border: #7A7A7A;
+    --QLD-color-alt-background: #E8E8E8;
+    --QLD-color-alt-background-shade: #E0E0E0;
+    --QLD-error: #E22339;
+    --QLD-success: #339D37;
+    --QLD-information: #0085B3;
+    --QLD-alert: #FFCC2C;
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 136 80% 42%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 205, 100%, 18%;;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 84, 78%, 40%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 84 80% 38%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 136 80% 42%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --QLD-color-siteTitle: #FFFFFF;
+    --QLD-color-designAccent: #6BBE27;
+    --QLD-color-heading: #FFFFFF;
+    --QLD-color-text: #FFFFFF;
+    --QLD-color-text-muted: #DEEBF9;
+    --QLD-color-link: #FFFFFF;
+    --QLD-color-link-visited: #E1BBEE;
+    --QLD-color-button-text: #121940;
+    --QLD-color-button: #78BA00;
+    --QLD-color-button-hover: #ADD33F;
+    --QLD-color-focus: #01B0E5;
+    --QLD-color-border: #2573C1;
+    --QLD-color-background: #09549F;
+    --QLD-color-dark-background: #09549F;
+    --QLD-color-background-shade: #04498F;
+    --QLD-color-underline: #B5CCE2;
+    --QLD-color-hover-underline: #FFFFFF;
+    --QLD-color-visited-underline: #E1C2FF;
+    --QLD-color-hover-visited-underline: #E1BBEE;
+    --QLD-color-alt-button: #FFE500;
+    --QLD-color-dark-alt-button: #FFE500;
+    --QLD-color-alt-button-hover: #FFEF60;
+    --QLD-color-alt-border: #09ACFE;
+    --QLD-color-alt-background: #05325F;
+    --QLD-color-alt-background-shade: #052C53;
+    --QLD-error: #E22339;
+    --QLD-success: #339D37;
+    --QLD-information: #0085B3;
+    --QLD-alert: #FFCC2C;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 214 89% 31%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 199 64% 48%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 84, 78%, 40%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 214 89% 31%;
+  }
+  :root, .dark {
+    --QLD-border-width-thin: 1px;
+    --QLD-border-width-default: 2px;
+    --QLD-border-width-medium: 3px;
+    --QLD-border-width-thick: 4px;
+    --QLD-border-width-extra-thick: 8px;
   }
 }
 
@@ -53,7 +118,20 @@
   * {
     @apply border-border;
   }
-  body {
-    @apply bg-background text-foreground;
+}
+
+@layer utilities {
+  @keyframes spin {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+  }
+
+  .loader {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+  }
+
+  .loader-more {
+      animation-delay: 0.1s;
   }
 }

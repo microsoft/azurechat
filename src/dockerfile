@@ -1,0 +1,71 @@
+# Base stage with Node.js on Alpine, updated system packages, and common dependencies
+FROM node:alpine AS base
+
+# Update system packages, install ca-certificates for SSL, and libc6-compat for glibc compatibility
+RUN apk --no-cache upgrade && \
+    apk add --no-cache ca-certificates libc6-compat \
+    && mkdir -p /etc/pki/ca-trust/source/anchors \
+    && update-ca-certificates
+
+WORKDIR /app
+
+# Upgrade npm to the latest version
+RUN npm install -g npm@latest && \
+    npm install ip@2.0.1
+# Dependencies stage for installing Node.js dependencies
+FROM base AS deps
+
+# Copy package.json and any lock files
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+
+# Install dependencies using the appropriate package manager based on the lock file present
+RUN if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+    elif [ -f package-lock.json ]; then npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+    else echo "Lockfile not found." && exit 1; \
+    fi
+
+# Builder stage to compile/build the application
+FROM base AS builder
+WORKDIR /app
+
+# Copy installed dependencies
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Optionally disable Next.js telemetry
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Build the application using npm or yarn
+RUN npm run build
+RUN npm list ip
+
+# Runner stage for the production image
+FROM base AS runner
+WORKDIR /app
+
+RUN npm install -g npm@latest && \
+    npm install ip@2.0.1
+
+# Set environment variables for production
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Create a non-root user and group for running the application
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy the build output and static files from the builder stage
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Run the application as the non-root user
+USER nextjs
+
+# Network configuration
+ENV PORT 443
+ENV HOSTNAME 0.0.0.0
+
+# Command to run the application
+CMD ["node", "server.js"]
