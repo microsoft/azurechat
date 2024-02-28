@@ -1,11 +1,18 @@
-import { redirectIfAuthenticated } from "@/features/auth-page/helpers";
-import { LogIn } from "@/features/auth-page/login";
+import { LogIn } from "@/components/login/login";
+import { Card } from "@/components/ui/card";
+import { userSession } from "@/features/auth/helpers";
+import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  await redirectIfAuthenticated();
+  const user = await userSession();
+  if (user) {
+    redirect("/chat");
+  }
   return (
-    <main className="container max-w-lg flex items-center">
-      <LogIn isDevMode={process.env.NODE_ENV === "development"} />
-    </main>
+    <Card className="max:h-5/6 flex-1 overflow-hidden relative items-center justify-center flex">
+      <LogIn />
+    </Card>
   );
-}
+};
