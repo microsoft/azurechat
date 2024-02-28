@@ -38,6 +38,7 @@ export const Microphone = (props: {
           className={
             props.isMicrophoneReady ? "bg-red-400 hover:bg-red-400" : ""
           }
+          aria-label="Microphone for speech input"
         >
           <Mic size={16} />
         </Button>

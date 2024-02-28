@@ -23,7 +23,7 @@ export const PersonaDetail: FC<Props> = (props) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant={"outline"} size={"icon"}>
+        <Button variant={"outline"} size={"icon"} aria-label="Current Chat Persona Menu">
           <VenetianMask size={16} />
         </Button>
       </SheetTrigger>

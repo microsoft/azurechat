@@ -8,6 +8,7 @@ export const StopChat = (props: { stop: () => void }) => {
       type="submit"
       variant={"ghost"}
       onClick={() => props.stop()}
+      aria-label="Stop speech readout"
     >
       <Square size={16} />
     </Button>

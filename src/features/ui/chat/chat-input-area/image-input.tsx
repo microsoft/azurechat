@@ -27,6 +27,7 @@ export const ImageInput: FC = () => {
           <button
             className="absolute right-1 top-1 bg-background/20 rounded-full p-[2px]"
             onClick={resetFileInput}
+            aria-label="Remove image from chat input"
           >
             <X size={12} className="stroke-background" />
           </button>
@@ -51,6 +52,7 @@ export const ImageInput: FC = () => {
         variant={"ghost"}
         type="button"
         onClick={handleButtonClick}
+        aria-label="Add an image to the chat input"
       >
         <ImageIcon size={16} />
       </Button>
