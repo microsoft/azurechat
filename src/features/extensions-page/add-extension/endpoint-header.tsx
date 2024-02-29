@@ -46,6 +46,7 @@ export const EndpointHeaderRow: FC<Props> = (props) => {
             headerId: props.header.id,
           })
         }
+        aria-label="Remove this header"
       >
         <Trash size={18} />
       </Button>

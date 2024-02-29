@@ -26,7 +26,7 @@ export const MainMenu = async () => {
       <MenuBar>
         <MenuItemContainer>
           <MenuItem tooltip="Home" asChild>
-            <MenuLink href="/chat">
+            <MenuLink href="/chat" ariaLabel="Go to the Home page">
               <Home {...menuIconProps} />
             </MenuLink>
           </MenuItem>
@@ -34,29 +34,29 @@ export const MainMenu = async () => {
         </MenuItemContainer>
         <MenuItemContainer>
           <MenuItem tooltip="Chat">
-            <MenuLink href="/chat">
+            <MenuLink href="/chat" ariaLabel="Go to the Chat page">
               <MessageCircle {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           <MenuItem tooltip="Persona">
-            <MenuLink href="/persona">
+            <MenuLink href="/persona" ariaLabel="Go to the Persona configuration page">
               <VenetianMask {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           <MenuItem tooltip="extensions">
-            <MenuLink href="/extensions">
+            <MenuLink href="/extensions" ariaLabel="Go to the Extensions configuration page">
               <PocketKnife {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           <MenuItem tooltip="prompts">
-            <MenuLink href="/prompt">
+            <MenuLink href="/prompt" ariaLabel="Go to the Prompt Library configuration page">
               <Book {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           {user.isAdmin && (
             <>
               <MenuItem tooltip="reporting">
-                <MenuLink href="/reporting">
+                <MenuLink href="/reporting" ariaLabel="Go to the Admin reporting" >
                   <Sheet {...menuIconProps} />
                 </MenuLink>
               </MenuItem>

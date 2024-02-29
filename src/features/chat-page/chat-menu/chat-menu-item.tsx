@@ -49,7 +49,7 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
           {isLoading ? (
             <LoadingIndicator isLoading={isLoading} />
           ) : (
-            <MoreVertical size={18} />
+            <MoreVertical size={18} aria-label="Chat Menu Item Dropdown Menu" />
           )}
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" align="start">

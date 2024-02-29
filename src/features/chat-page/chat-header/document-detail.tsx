@@ -19,7 +19,7 @@ export const DocumentDetail: FC<Props> = (props) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant={"outline"} className="gap-2">
+        <Button variant={"outline"} className="gap-2" aria-label="Current Chat Documents Menu">
           <File size={16} /> {props.chatDocuments.length}
         </Button>
       </SheetTrigger>
