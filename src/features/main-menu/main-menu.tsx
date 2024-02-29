@@ -56,7 +56,7 @@ export const MainMenu = async () => {
           {user.isAdmin && (
             <>
               <MenuItem tooltip="reporting">
-                <MenuLink href="/reporting">
+                <MenuLink href="/reporting" ariaLabel="Go to the Admin reporting" >
                   <Sheet {...menuIconProps} />
                 </MenuLink>
               </MenuItem>
