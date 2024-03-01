@@ -54,6 +54,7 @@ export const UploadBlob = async (
   
   } catch (error){
     console.error(error);
+    throw error;
   }
 };
 
