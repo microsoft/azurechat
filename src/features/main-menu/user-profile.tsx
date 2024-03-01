@@ -28,7 +28,7 @@ export const UserProfile = () => {
             />
           </Avatar>
         ) : (
-          <CircleUserRound {...menuIconProps} />
+          <CircleUserRound {...menuIconProps} role="button" />
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent side="right" className="w-56" align="end">

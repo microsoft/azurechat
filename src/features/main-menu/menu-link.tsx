@@ -7,6 +7,7 @@ import { ButtonLinkVariant } from "../ui/button";
 
 interface MenuLinkProps {
   href: string;
+  ariaLabel: string;
   children: React.ReactNode;
 }
 
@@ -19,6 +20,7 @@ export const MenuLink: FC<MenuLinkProps> = (props) => {
         path.startsWith(props.href) && props.href !== "/" ? "text-primary" : ""
       )}
       href={props.href}
+      aria-label={props.ariaLabel}
     >
       {props.children}
     </Link>
