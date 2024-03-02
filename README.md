@@ -39,13 +39,15 @@ You can deploy the application using one of the following options:
 - [1. Azure Developer CLI](#azure-developer-cli)
 - [2. Azure Portal Deployment](#azure-portal-deployment)
 
-### 1. Azure Developer CLI
+### 1. Azure Developer CLI (Resource group scoped deployment)
 
 > [!IMPORTANT]
 > This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. Note that you do not need to clone this repo to complete these steps.
 
 1. Download the [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview)
-1. If you have not cloned this repo, run `azd init -t microsoft/azurechat`. If you have cloned this repo, just run 'azd init' from the repo root directory.
+1. Enable Resource Group scoping for `azd` based deployments to target the deployment scope to resource group from defalt subscription scope by executing `azd config set alpha.resourceGroupDeployments on`. Note that [this feature](https://learn.microsoft.com/azure/developer/azure-developer-cli/resource-group-scoped-deployments) is still in early stages of deveopment.
+1. Set the environment variables for pointing the deployment to the resource group by running `azd env set AZURE_RESOURCE_GROUP <existing-rg-name>`. In case you don't have existing resource groups, you can create one using [Azure portal](https://learn.microsoft.com/azure/azure-resource-manager/management/manage-resource-groups-portal#create-resource-groups) or [CLI](https://learn.microsoft.com/azure/azure-resource-manager/management/manage-resource-groups-cli#create-resource-groups).
+1. If you have not cloned this repo, run `azd init -t microsoft/azurechat`. If you have cloned this repo, just run `azd init` from the repo root directory.
 1. Run `azd up` to provision and deploy the application
 
 ```pwsh
