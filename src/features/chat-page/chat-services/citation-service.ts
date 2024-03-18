@@ -100,7 +100,7 @@ export const FindCitationByID = async (
   }
 };
 
-export const FormatCitations = (citation: DocumentSearchResponse[]) => {
+export const FormatCitations = (citation: any[]) => {
   const withoutEmbedding: DocumentSearchResponse[] = [];
   citation.forEach((d) => {
     withoutEmbedding.push({
