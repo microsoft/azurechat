@@ -42,7 +42,7 @@ param dalleApiVersion string = '2023-12-01-preview'
 
 // DALL-E v3 only supported in Sweden Central for now
 @description('Location for the GPT vision instance resource')
-@allowed(['swedencentral','westus',])
+@allowed(['australiaeast','swedencentral','westus',])
 param gptvisionLocation string
 
 param gptvisionDeploymentCapacity int = 1
