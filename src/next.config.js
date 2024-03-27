@@ -24,7 +24,7 @@ const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value:
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-ancestors 'self'; img-src 'self'; font-src 'self' data:; connect-src 'self' https://qdap-dev-apim.azure-api.net https://qdap-prd-apim.developer.azure-api.net *.ai.qld.gov.au https://australiaeast-1.in.applicationinsights.azure.com/ https://australiaeast.livediagnostics.monitor.azure.com/; media-src 'self'; frame-src 'self'; object-src 'none';",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-ancestors 'self'; img-src 'self'; font-src 'self' data:; connect-src 'self' https://qdap-dev-apim.azure-api.net https://qdap-prd-apim.developer.azure-api.net *.ai.qld.gov.au https://australiaeast-1.in.applicationinsights.azure.com/ https://australiaeast.livediagnostics.monitor.azure.com/; media-src 'self'; frame-src 'self'; object-src 'none'; upgrade-insecure-requests",
   },
   {
     key: "Referrer-Policy",

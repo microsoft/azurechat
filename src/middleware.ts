@@ -21,7 +21,7 @@ const requireAuth: string[] = [
 
 const requireAdmin: string[] = ["/admin", "/reporting", "/settings", "/tenant"]
 
-export async function middleware(request: NextRequest): Promise<NextResponse> {
+export async function middleware(request: NextRequest): Promise<NextResponse<unknown>> {
   if (process.env.NODE_ENV === "development") {
     return NextResponse.next()
   }
