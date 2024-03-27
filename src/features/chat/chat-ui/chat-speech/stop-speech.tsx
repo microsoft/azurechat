@@ -1,23 +1,17 @@
-import { Button } from "@/components/ui/button";
-import { Square } from "lucide-react";
-import { FC } from "react";
-import { useChatContext } from "../chat-context";
+import { Button } from "@/features/ui/button"
+import { Square } from "lucide-react"
+import { FC } from "react"
+import { useChatContext } from "../chat-context"
 
 interface StopButtonProps {
-  disabled: boolean;
+  disabled: boolean
 }
 
-export const StopSpeech: FC<StopButtonProps> = (props) => {
-  const { speech } = useChatContext();
+export const StopSpeech: FC<StopButtonProps> = props => {
+  const { speech } = useChatContext()
   return (
-    <Button
-      disabled={props.disabled}
-      onClick={speech.stopPlaying}
-      type="button"
-      size="icon"
-      variant={"ghost"}
-    >
+    <Button disabled={props.disabled} onClick={speech.stopPlaying} type="button" size="icon" variant={"ghost"}>
       <Square size={18} />
     </Button>
-  );
-};
+  )
+}

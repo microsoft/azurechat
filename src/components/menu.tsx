@@ -1,70 +1,52 @@
-import * as React from "react";
+import * as React from "react"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
+import { UrlObject } from "url"
 
-import { cn } from "@/lib/utils";
-import Link from "next/link";
+const Menu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("flex w-80 flex-col", className)} {...props} />
+))
 
-const Menu = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("w-80 flex flex-col", className)} {...props} />
-));
+Menu.displayName = "Menu"
 
-Menu.displayName = "Menu";
+const MenuHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("flex items-center justify-between pb-2", className)} {...props} />
+  )
+)
+MenuHeader.displayName = "MenuHeader"
 
-const MenuHeader = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex pb-2 justify-between items-center", className)}
-    {...props}
-  />
-));
-MenuHeader.displayName = "MenuHeader";
+const MenuContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("flex flex-1 flex-col gap-1 overflow-y-auto py-2", className)} {...props} />
+  )
+)
+MenuContent.displayName = "MenuContent"
 
-const MenuContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "flex flex-col flex-1 overflow-y-auto gap-1 py-2",
-      className
-    )}
-    {...props}
-  />
-));
-MenuContent.displayName = "MenuContent";
-
-interface MenuItemProps extends React.HTMLAttributes<HTMLLinkElement> {
-  href: string;
-  isSelected?: boolean;
+interface MenuItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
+  href: UrlObject | string
+  isSelected?: boolean
 }
 
-const MenuItem: React.FC<MenuItemProps> = (props) => {
+const MenuItem: React.FC<MenuItemProps> = ({ href, isSelected, children, className, ...props }) => {
   return (
     <Link
+      href={href}
       className={cn(
-        props.className,
-        "items-center text-sm font-medium rounded-md flex gap-2 p-2 hover:bg-altBackgroundShade hover:border-altButtonHover border-separate border-2 border-transparent transition-colors",
-        props.isSelected && "bg-altBackgroundShade border-altBorder"
+        className,
+        "flex border-separate items-center gap-2 rounded-md border-2 border-transparent p-2 text-sm font-medium transition-colors hover:border-altButtonHover hover:bg-altBackgroundShade",
+        isSelected ? "border-altBorder bg-altBackgroundShade" : ""
       )}
-      href={props.href}
+      {...props}
     >
-      {props.children}
+      {children}
     </Link>
-  );
-};
+  )
+}
 
-const MenuFooter = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("flex flex-col", className)} {...props} />
-));
-MenuFooter.displayName = "MenuFooter";
+const MenuFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn("flex flex-col", className)} {...props} />
+)
+MenuFooter.displayName = "MenuFooter"
 
-export { Menu, MenuContent, MenuFooter, MenuHeader, MenuItem };
+export { Menu, MenuContent, MenuFooter, MenuHeader, MenuItem }

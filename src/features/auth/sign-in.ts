@@ -1,60 +1,147 @@
-import { CosmosDBUserContainer, UserRecord } from "../user-management/user-cosmos";
-import { CosmosDBTenantContainerExtended } from "../tenant-management/tenant-groups";
+import { CreateUser, GetUserByUpn, UpdateUser, type UserRecord } from "@/features/user-management/user-service"
+import { CreateTenant, GetTenantById, type TenantRecord } from "@/features/tenant-management/tenant-service"
+import { hashValue } from "./helpers"
+import { User } from "next-auth"
+import { AdapterUser } from "next-auth/adapters"
+
+export enum SignInErrorType {
+  NotAuthorised = "notAuthorised",
+  SignInFailed = "signInFailed",
+}
+
+type SignInSuccess = {
+  success: true
+}
+
+type SignInError = {
+  success: false
+  errorCode: SignInErrorType
+}
+
+export type SignInResponse = SignInSuccess | SignInError
 
 export class UserSignInHandler {
-  static async handleSignIn(user: UserRecord, groupsString?: string): Promise<boolean> {
-    const userContainer = new CosmosDBUserContainer();
-    const tenantContainerExtended = new CosmosDBTenantContainerExtended();
-
+  static async handleSignIn(user: User | AdapterUser, userGroups: string[] = []): Promise<SignInResponse> {
     try {
-      const existingUser = await userContainer.getUserByUPN(user.tenantId, user.upn ?? '');
+      const groupAdmins = process.env.ADMIN_EMAIL_ADDRESS?.split(",").map(string => string.toLowerCase().trim())
+      const tenantResponse = await GetTenantById(user.tenantId)
+      const userRecord = await getsertUser(userGroups, user)
 
-      const userGroups = groupsString ? groupsString.split(',').map(group => group.trim()) : [];
+      if (tenantResponse.status === "ERROR" || tenantResponse.status === "UNAUTHORIZED") {
+        return {
+          success: false,
+          errorCode: SignInErrorType.NotAuthorised,
+        }
+      }
 
-      if (!existingUser) {
-        await userContainer.createUser({
-          ...user,
-          first_login: new Date(),
-          accepted_terms: false,
-          accepted_terms_date: "",
+      if (tenantResponse.status === "NOT_FOUND") {
+        const now = new Date()
+        const domain = user.upn?.split("@")[1] || ""
+        const tenantRecord: TenantRecord = {
+          tenantId: user.tenantId,
+          primaryDomain: domain,
+          requiresGroupLogin: true,
+          id: user.tenantId,
+          email: user.upn,
+          supportEmail: `support@${domain}`,
+          dateCreated: now.toISOString(),
+          dateUpdated: now.toISOString(),
+          dateOnBoarded: null,
+          dateOffBoarded: null,
+          modifiedBy: user.upn,
+          createdBy: user.upn,
+          departmentName: null,
+          groups: [],
+          administrators: groupAdmins,
+          features: null,
+          serviceTier: null,
+          history: [`${now}: Tenant created by user ${user.upn} on failed login.`],
+        }
+        const tenant = await CreateTenant(tenantRecord, user.upn)
+        if (tenant.status !== "OK") throw tenant
+
+        const userUpdate = {
+          ...updateFailedLogin(userRecord),
+          groups: [],
+        }
+        const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
+        if (updatedUser.status !== "OK") throw updatedUser
+
+        return { success: false, errorCode: SignInErrorType.NotAuthorised }
+      }
+
+      if (tenantResponse.status !== "OK") throw tenantResponse
+      const tenant = tenantResponse.response
+
+      if (!tenant.requiresGroupLogin || isUserInRequiredGroups(userGroups, tenant.groups || [])) {
+        const userUpdate = {
+          ...resetFailedLogin(userRecord),
           groups: userGroups,
-        });
-      } else {
-        const currentTime = new Date();
-        const updatedUser = {
-          ...existingUser,
-          last_login: currentTime,
-          groups: userGroups,
-        };
-
-        await userContainer.updateUser(updatedUser, user.tenantId, user.userId);
+        }
+        const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
+        if (updatedUser.status !== "OK") throw updatedUser
+        return { success: true }
       }
 
-      if (process.env.NODE_ENV === 'development') {
-        return true;
+      const userUpdate = {
+        ...updateFailedLogin(userRecord),
+        groups: userGroups,
       }
-
-      let tenant = await tenantContainerExtended.getTenantById(user.tenantId);
-      if (!tenant) {
-        if (userGroups.length > 0) {
-          const accessGroups = process.env.ACCESS_GROUPS ? process.env.ACCESS_GROUPS.split(',') : [];
-          const isUserGroupApproved = userGroups.some(userGroup => accessGroups.includes(userGroup));
-          if (!isUserGroupApproved) {
-          }
-        }
-      } else if (tenant.requiresGroupLogin) {
-        if (userGroups.length === 0) {
-        }
-
-        const groupsApproved = await tenantContainerExtended.areGroupsPresentForTenant(user.tenantId, groupsString || "");
-        if (!groupsApproved) {
-        }
-      }
-
-      return true;
+      const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
+      if (updatedUser.status !== "OK") throw updatedUser
+      return { success: false, errorCode: SignInErrorType.NotAuthorised }
     } catch (error) {
-      console.log("Error during sign-in process:", error);
-      return false;
+      console.error("Error handling sign-in:", error)
+      return { success: false, errorCode: SignInErrorType.SignInFailed }
     }
   }
-};
+}
+
+const updateFailedLogin = (existingUser: UserRecord): UserRecord => ({
+  ...existingUser,
+  failed_login_attempts: existingUser.failed_login_attempts + 1,
+  last_failed_login: new Date(),
+})
+
+const resetFailedLogin = (existingUser: UserRecord): UserRecord => ({
+  ...existingUser,
+  failed_login_attempts: 0,
+  last_failed_login: new Date(),
+})
+
+const isUserInRequiredGroups = (userGroups: string[], requiredGroups: string[]): boolean =>
+  !!requiredGroups.length && requiredGroups.some(groupId => userGroups.includes(groupId))
+
+const getsertUser = async (userGroups: string[], user: User | AdapterUser): Promise<UserRecord> => {
+  try {
+    const now = new Date()
+    const existingUserResponse = await GetUserByUpn(user.tenantId, user.upn ?? "")
+
+    if (existingUserResponse.status === "NOT_FOUND") {
+      const createUserResponse = await CreateUser({
+        id: hashValue(user.upn),
+        tenantId: user.tenantId,
+        email: user.email ?? user.upn,
+        name: user.name ?? "",
+        upn: user.upn,
+        userId: user.upn,
+        qchatAdmin: user.qchatAdmin ?? false,
+        last_login: now,
+        first_login: now,
+        accepted_terms: false,
+        accepted_terms_date: "",
+        groups: userGroups,
+        failed_login_attempts: 0,
+        last_failed_login: null,
+        history: [`${now}: User created.`],
+      })
+      if (createUserResponse.status !== "OK") throw createUserResponse
+      return createUserResponse.response
+    }
+    if (existingUserResponse.status !== "OK") throw existingUserResponse
+    return existingUserResponse.response
+  } catch (error) {
+    console.error("Error upserting user:", error)
+    throw error
+  }
+}

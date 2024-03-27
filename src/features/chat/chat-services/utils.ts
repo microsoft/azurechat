@@ -1,34 +1,33 @@
-import { Message } from "ai";
-import { ChatMessageModel, ConversationStyle } from "./models";
+import { Message } from "ai"
+import { ChatMessageModel, ConversationStyle } from "../models"
 
-export const transformCosmosToAIModel = (
-  chats: Array<ChatMessageModel>
-): Array<Message> => {
-  return chats.map((chat) => {
+export const transformCosmosToAIModel = (chats: Array<ChatMessageModel>): Array<Message> => {
+  return chats.map(chat => {
     return {
       role: chat.role,
       content: chat.content,
       id: chat.id,
       createdAt: chat.createdAt,
-    };
-  });
-};
+      feedback: chat.feedback,
+      sentiment: chat.sentiment,
+      reason: chat.reason,
+    }
+  })
+}
 
-export const transformConversationStyleToTemperature = (
-  conversationStyle: ConversationStyle
-) => {
+export const transformConversationStyleToTemperature = (conversationStyle: ConversationStyle): number => {
   switch (conversationStyle) {
     case "precise":
-      return 0;
+      return 0
     case "balanced":
-      return 0.5;
+      return 0.5
     case "creative":
-      return 2;
+      return 2
     default:
-      return 1;
+      return 1
   }
-};
+}
 
-export const isNotNullOrEmpty = (value?: string) => {
-  return value !== null && value !== undefined && value !== "";
-};
+export const isNotNullOrEmpty = (value?: string): boolean => {
+  return value !== null && value !== undefined && value !== ""
+}

@@ -1,36 +1,47 @@
-import ChatRow from "@/components/chat/chat-row";
-import { Card } from "@/components/ui/card";
-import { FC } from "react";
-import { AI_NAME } from "../theme/customise";
-import { FindAllChatsInThread, FindChatThreadByID } from "./reporting-service";
-import { ChatRole } from "../chat/chat-services/models";
+import ChatRow from "@/components/chat/chat-row"
+import { Card } from "@/features/ui/card"
+import { FC } from "react"
+import { AI_NAME } from "../theme/theme-config"
+import { FindAllChatsInThread, FindChatThreadById } from "./reporting-service"
+import { ChatMessageModel, ChatRole } from "../chat/models"
 
 interface Props {
-  chatId: string;
+  chatThreadId: string
 }
 
-export const ChatReportingUI: FC<Props> = async (props) => {
-  const chatThreads = await FindChatThreadByID(props.chatId);
-  const chats = await FindAllChatsInThread(props.chatId);
-  const chatThread = chatThreads[0];
+export const ChatReportingUI: FC<Props> = async props => {
+  const [chatThreads, chats] = await Promise.all([
+    FindChatThreadById(props.chatThreadId),
+    FindAllChatsInThread(props.chatThreadId),
+  ])
+  if (chatThreads.status !== "OK") return <div>Error</div>
+  if (chats.status !== "OK") return <div>Error</div>
+
+  const chatThread = chatThreads.response
 
   return (
-    <Card className="h-full relative">
-      <div className="h-full rounded-md overflow-y-auto">
+    <Card className="relative h-full">
+      <div className="h-full overflow-y-auto rounded-md">
         <div className="flex justify-center p-4"></div>
-        <div className=" pb-[80px] ">
-          {chats.map((message, index) => (
-            <ChatRow
-              name={message.role === ChatRole.User ? chatThread.useName : AI_NAME}
-              profilePicture={message.role === ChatRole.User ? "" : ""}
-              message={message.content}
-              type={message.role}
-              key={index}
-              chatMessageId={chatThread.id}
-              chatThreads={props.chatId}            />
-          ))}
+        <div className="pb-[80px]">
+          {chats.response?.map((message, index) => {
+            return (
+              <ChatRow
+                chatMessageId={message.id}
+                name={message.role === ChatRole.User ? chatThread.useName : AI_NAME}
+                message={message.content}
+                type={message.role as ChatRole}
+                key={index}
+                chatThreadId={props.chatThreadId}
+                contentSafetyWarning={message as unknown as ChatMessageModel["contentSafetyWarning"]}
+                feedback={message as unknown as ChatMessageModel["feedback"]}
+                sentiment={message as unknown as ChatMessageModel["sentiment"]}
+                reason={message as unknown as ChatMessageModel["reason"]}
+              />
+            )
+          })}
         </div>
       </div>
     </Card>
-  );
-};
+  )
+}

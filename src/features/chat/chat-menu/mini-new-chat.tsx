@@ -1,45 +1,51 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { MessageSquarePlus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { FindChatThreadByTitleAndEmpty, UpdateChatThreadCreatedAt } from "../chat-services/chat-thread-service";
-import { useGlobalMessageContext } from "@/features/global-message/global-message-context";
+import { Button } from "@/features/ui/button"
+import { MessageSquarePlus } from "lucide-react"
+import { useRouter } from "next/navigation"
+import {
+  CreateChatThread,
+  FindChatThreadByTitleAndEmpty,
+  UpdateChatThreadCreatedAt,
+} from "../chat-services/chat-thread-service"
+import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 
-export const MiniNewChat = () => {
-  const router = useRouter();
-  const { showError } = useGlobalMessageContext();
+export const MiniNewChat = (): JSX.Element => {
+  const router = useRouter()
+  const { showError } = useGlobalMessageContext()
 
-  const startNewChat = async () => {
-    const title = "New Chat";
+  const startNewChat = async (): Promise<void> => {
+    const title = "New Chat"
 
     try {
-      const existingThread = await FindChatThreadByTitleAndEmpty(title);
-      
-      if (existingThread) {
-        await UpdateChatThreadCreatedAt(existingThread.id);
-        router.push(`/chat/${existingThread.id}`);
+      const existingThreadResponse = await FindChatThreadByTitleAndEmpty(title)
+      if (existingThreadResponse.status === "OK" && existingThreadResponse.response) {
+        await UpdateChatThreadCreatedAt(existingThreadResponse.response?.id)
+        router.push(`/chat/${existingThreadResponse.response?.id}`)
       } else {
-        router.push("/chat/");
+        const newChatThreadResponse = await CreateChatThread()
+        if (newChatThreadResponse.status === "OK" && newChatThreadResponse.response?.id)
+          router.push(`/chat/${newChatThreadResponse.response?.id}`)
       }
-    } catch (error) {
-      showError('Failed to start a new chat. Please try again later.');
+      router.refresh()
+    } catch (_error) {
+      showError("Failed to start a new chat. Please try again later.")
     }
-  };
+  }
 
   return (
-    <div className="lg:hidden absolute top-4 right-4">
+    <div className="absolute right-4 top-4 lg:hidden">
       <Button
         aria-label="Start a new chat"
         role="button"
         tabIndex={0}
-        className="gap-2 rounded-md w-[40px] h-[40px] p-1"
+        className="size-[40px] gap-2 rounded-md p-1"
         variant="default"
         onClick={startNewChat}
-        onKeyDown={(e) => e.key === 'Enter' && startNewChat()}
+        onKeyDown={async e => e.key === "Enter" && (await startNewChat())}
       >
         <MessageSquarePlus size={40} strokeWidth={1.2} aria-hidden="true" />
       </Button>
     </div>
-  );
-};
+  )
+}

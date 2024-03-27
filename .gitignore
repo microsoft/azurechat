@@ -12,6 +12,8 @@
 **/.next/
 **/out/
 
+**/analyze/
+
 # production
 **/build
 
@@ -34,3 +36,8 @@ next-env.d.ts
 
 .azure/
 infra/aad_setup.sh
+
+**./test-results/
+**./playwright-report
+**./blob-report/
+**./playwright/.cache/

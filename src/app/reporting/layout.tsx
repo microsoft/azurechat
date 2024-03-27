@@ -1,19 +1,14 @@
-import { MainMenu } from "@/features/main-menu/menu";
-import { AI_NAME } from "@/features/theme/customise";
+import { AI_NAME } from "@/features/theme/theme-config"
 
 export const metadata = {
   title: AI_NAME,
   description: AI_NAME,
-};
+}
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <>
-      <div className="flex-1">{children}</div>
+      <div className="size-full flex-1">{children}</div>
     </>
-  );
+  )
 }

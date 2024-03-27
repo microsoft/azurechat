@@ -1,0 +1,11 @@
+const appInsights = require("applicationinsights")
+appInsights
+  .setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
+  .setAutoCollectRequests(true)
+  .setAutoCollectPerformance(true)
+  .setAutoCollectExceptions(true)
+  .setAutoCollectDependencies(true)
+  .setAutoCollectConsole(true, true)
+  .setUseDiskRetryCaching(true)
+  .samplingPercentage(33)
+  .start()

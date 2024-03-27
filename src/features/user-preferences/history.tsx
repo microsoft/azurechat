@@ -1,33 +1,32 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
-import { FindAllChatThreadsForReporting } from "./history-service";
+import { Button } from "@/features/ui/button"
+import { Card } from "@/features/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import Link from "next/link"
+import { FindAllChatThreadsForReporting } from "./history-service"
+import { showError } from "../globals/global-message-store"
 
 export type ReportingProp = {
   searchParams: {
-    pageSize?: number;
-    pageNumber?: number;
-  };
-};
+    pageSize?: number
+    pageNumber?: number
+  }
+}
 
-export const Reporting = async (props: ReportingProp) => {
-  let _pageNumber = Number(props.searchParams.pageNumber ?? 0);
-  let pageSize = Number(props.searchParams.pageSize ?? 10);
-  let pageNumber = _pageNumber < 0 ? 0 : _pageNumber;
-  let nextPage = Number(pageNumber) + 1;
-  let previousPage = Number(pageNumber) - 1;
+export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
+  const _pageNumber = Number(props.searchParams.pageNumber ?? 0)
+  const pageSize = Number(props.searchParams.pageSize ?? 10)
+  const pageNumber = _pageNumber < 0 ? 0 : _pageNumber
+  const nextPage = Number(pageNumber) + 1
+  const previousPage = Number(pageNumber) - 1
 
-  const { resources: chatThreads } = await FindAllChatThreadsForReporting(
-    pageSize,
-    pageNumber
-  );
+  const chatThreads = await FindAllChatThreadsForReporting(pageSize, pageNumber)
+  if (chatThreads.status !== "OK") showError(chatThreads.errors[0].message)
 
-  const hasMoreResults = chatThreads && chatThreads.length === pageSize;
+  const hasMoreResults = chatThreads.status === "OK" && chatThreads.response.length === pageSize
 
   return (
-    <Card className="h-full flex pt-8 overflow-y-auto">
+    <Card className="flex h-full overflow-y-auto pt-8">
       <div className="container mx-auto max-w-5xl space-y-8">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Chat Reporting</h2>
@@ -47,26 +46,22 @@ export const Reporting = async (props: ReportingProp) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {chatThreads &&
-                  chatThreads.map((chatThread) => (
+                {chatThreads.status === "OK" &&
+                  chatThreads.response?.map(chatThread => (
                     <TableRow key={chatThread.id}>
                       <TableCell className="font-medium">
-                        <Link href={"/reporting/" + chatThread.id}>
-                          {chatThread.name}
-                        </Link>
+                        <Link href={"/reporting/" + chatThread.id}>{chatThread.name}</Link>
                       </TableCell>
                       <TableCell>{chatThread.chatCategory}</TableCell>
                       <TableCell>{chatThread.chatType}</TableCell>
                       <TableCell>{chatThread.conversationStyle}</TableCell>
                       <TableCell>{chatThread.conversationSensitivity}</TableCell>
-                      <TableCell>
-                        {new Date(chatThread.createdAt).toLocaleDateString("en-AU")}
-                      </TableCell>
+                      <TableCell>{new Date(chatThread.createdAt).toLocaleDateString("en-AU")}</TableCell>
                     </TableRow>
                   ))}
               </TableBody>
             </Table>
-            <div className="flex gap-2 p-2 justify-end">
+            <div className="flex justify-end gap-2 p-2">
               {previousPage >= 0 && (
                 <Button asChild size={"icon"} variant={"outline"}>
                   <Link
@@ -96,5 +91,5 @@ export const Reporting = async (props: ReportingProp) => {
         </div>
       </div>
     </Card>
-  );
-};
+  )
+}

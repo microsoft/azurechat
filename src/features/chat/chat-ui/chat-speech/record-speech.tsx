@@ -1,23 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { Mic } from "lucide-react";
-import { FC } from "react";
-import { useChatContext } from "../chat-context";
+import { Button } from "@/features/ui/button"
+import { Mic } from "lucide-react"
+import { FC } from "react"
+import { useChatContext } from "../chat-context"
 
 interface Prop {
-  disabled: boolean;
+  disabled: boolean
 }
 
-export const RecordSpeech: FC<Prop> = (props) => {
-  const { speech } = useChatContext();
-  const { startRecognition, stopRecognition, isMicrophonePressed } = speech;
+export const RecordSpeech: FC<Prop> = props => {
+  const { speech } = useChatContext()
+  const { startRecognition, stopRecognition, isMicrophonePressed } = speech
 
-  const handleMouseDown = async () => {
-    await startRecognition();
-  };
+  const handleMouseDown = async (): Promise<void> => {
+    await startRecognition()
+  }
 
-  const handleMouseUp = () => {
-    stopRecognition();
-  };
+  const handleMouseUp = (): void => {
+    stopRecognition()
+  }
 
   return (
     <Button
@@ -32,5 +32,5 @@ export const RecordSpeech: FC<Prop> = (props) => {
     >
       <Mic size={18} />
     </Button>
-  );
-};
+  )
+}

@@ -1,17 +1,15 @@
-import { ChatAPIData } from "./chat-api-data";
-import { ChatAPISimple } from "./chat-api-simple";
-import { PromptGPTProps } from "./models";
+import { ChatAPIData } from "./chat-api-data"
+import { ChatAPISimple } from "./chat-api-simple"
+import { PromptGPTProps } from "../models"
 
-export const chatAPIEntry = async (props: PromptGPTProps) => {
+export const ChatAPIEntry = async (props: PromptGPTProps): Promise<Response> => {
+  const dataChatTypes = ["data", "mssql", "audio"]
+
   if (props.chatType === "simple") {
-    return await ChatAPISimple(props);
-  } else if (props.chatType === "data") {
-    return await ChatAPIData(props);
-  } else if (props.chatType === "mssql") {
-    return await ChatAPIData(props);
-  } else if (props.chatType === "audio") {
-    return await ChatAPIData(props);
+    return await ChatAPISimple(props)
+  } else if (dataChatTypes.includes(props.chatType)) {
+    return await ChatAPIData(props)
   } else {
-    return await ChatAPISimple(props);
+    return await ChatAPISimple(props)
   }
-};
+}

@@ -1,83 +1,73 @@
-import { useGlobalMessageContext } from "@/features/global-message/global-message-context";
+import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 import {
   AudioConfig,
   AutoDetectSourceLanguageConfig,
   SpeechConfig,
   SpeechRecognizer,
-} from "microsoft-cognitiveservices-speech-sdk";
-import { useRef, useState } from "react";
-import { GetSpeechToken } from "./speech-service";
+} from "microsoft-cognitiveservices-speech-sdk"
+import { useRef, useState } from "react"
+import { GetSpeechToken } from "./speech-service"
 
 export interface SpeechToTextProps {
-  startRecognition: () => void;
-  stopRecognition: () => void;
-  isMicrophoneUsed: boolean;
-  resetMicrophoneUsed: () => void;
-  isMicrophonePressed: boolean;
+  startRecognition: () => void
+  stopRecognition: () => void
+  isMicrophoneUsed: boolean
+  resetMicrophoneUsed: () => void
+  isMicrophonePressed: boolean
 }
 
 interface Props {
-  onSpeech: (value: string) => void;
+  onSpeech: (value: string) => void
 }
 
 export const useSpeechToText = (props: Props): SpeechToTextProps => {
-  const recognizerRef = useRef<SpeechRecognizer>();
+  const recognizerRef = useRef<SpeechRecognizer>()
 
-  const [isMicrophoneUsed, setIsMicrophoneUsed] = useState(false);
-  const [isMicrophonePressed, setIsMicrophonePressed] = useState(false);
+  const [isMicrophoneUsed, setIsMicrophoneUsed] = useState(false)
+  const [isMicrophonePressed, setIsMicrophonePressed] = useState(false)
 
-  const { showError } = useGlobalMessageContext();
+  const { showError } = useGlobalMessageContext()
 
-  const startRecognition = async () => {
-    const token = await GetSpeechToken();
-    const apimUrl = new URL(token.sttUrl);
+  const startRecognition = async (): Promise<void> => {
+    const token = await GetSpeechToken()
+    const apimUrl = new URL(token.sttUrl)
 
     if (token.error) {
-      showError(token.errorMessage);
-      return;
+      showError(token.errorMessage)
+      return
     }
 
-    setIsMicrophoneUsed(true);
-    setIsMicrophonePressed(true);
-    const speechConfig = SpeechConfig.fromEndpoint(
-      apimUrl,
-      token.apimKey
-    );
+    setIsMicrophoneUsed(true)
+    setIsMicrophonePressed(true)
+    const speechConfig = SpeechConfig.fromEndpoint(apimUrl, token.apimKey)
 
-    const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+    const audioConfig = AudioConfig.fromDefaultMicrophoneInput()
 
-    const autoDetectSourceLanguageConfig =
-      AutoDetectSourceLanguageConfig.fromLanguages([
-        "en-US"
-      ]);
+    const autoDetectSourceLanguageConfig = AutoDetectSourceLanguageConfig.fromLanguages(["en-US"])
 
-    const recognizer = SpeechRecognizer.FromConfig(
-      speechConfig,
-      autoDetectSourceLanguageConfig,
-      audioConfig
-    );
+    const recognizer = SpeechRecognizer.FromConfig(speechConfig, autoDetectSourceLanguageConfig, audioConfig)
 
-    recognizerRef.current = recognizer;
+    recognizerRef.current = recognizer
 
-    recognizer.recognizing = (s, e) => {
-      props.onSpeech(e.result.text);
-    };
+    recognizer.recognizing = (_s, e) => {
+      props.onSpeech(e.result.text)
+    }
 
-    recognizer.canceled = (s, e) => {
-      showError(e.errorDetails);
-    };
+    recognizer.canceled = (_s, e) => {
+      showError(e.errorDetails)
+    }
 
-    recognizer.startContinuousRecognitionAsync();
-  };
+    recognizer.startContinuousRecognitionAsync()
+  }
 
-  const stopRecognition = () => {
-    recognizerRef.current?.stopContinuousRecognitionAsync();
-    setIsMicrophonePressed(false);
-  };
+  const stopRecognition = (): void => {
+    recognizerRef.current?.stopContinuousRecognitionAsync()
+    setIsMicrophonePressed(false)
+  }
 
-  const resetMicrophoneUsed = () => {
-    setIsMicrophoneUsed(false);
-  };
+  const resetMicrophoneUsed = (): void => {
+    setIsMicrophoneUsed(false)
+  }
 
   return {
     startRecognition,
@@ -85,5 +75,5 @@ export const useSpeechToText = (props: Props): SpeechToTextProps => {
     isMicrophoneUsed,
     resetMicrophoneUsed,
     isMicrophonePressed,
-  };
-};
+  }
+}

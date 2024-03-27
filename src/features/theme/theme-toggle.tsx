@@ -1,33 +1,28 @@
-"use client";
+"use client"
 
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import React from "react"
+import { useTheme } from "next-themes"
+import { Moon, Sun } from "lucide-react"
 
-import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs";
+export const ThemeToggle: React.FC = () => {
+  const { theme, setTheme } = useTheme()
 
-export function ThemeToggle() {
-  const { setTheme, theme } = useTheme();
   return (
-    <Tabs
-      defaultValue={theme}
-      className="flex flex-col rounded-full overflow-hidden"
-    >
-      <TabsList className="flex flex-col items-stretch justify-stretch flex-1">
-      <TabsTrigger
-          value="dark"
-          onClick={() => setTheme("dark")}
-          className="h-[40px] w-[40px]  rounded-full"
-        >
-          <Moon size={18} />
-        </TabsTrigger>
-        <TabsTrigger
-          value="light"
-          onClick={() => setTheme("light")}
-          className="h-[40px] w-[40px] rounded-full"
-        >
-          <Sun size={18} />
-        </TabsTrigger>
-      </TabsList>
-    </Tabs>
-  );
+    <div className="flex space-x-4">
+      <button
+        onClick={() => setTheme("dark")}
+        aria-label="Set dark theme"
+        className={`${theme === "dark" ? "bg-gray-800 text-white" : "bg-gray-200"} rounded-full p-2`}
+      >
+        <Moon size={18} />
+      </button>
+      <button
+        onClick={() => setTheme("light")}
+        aria-label="Set light theme"
+        className={`${theme === "light" ? "bg-yellow-500 text-white" : "bg-gray-200"} rounded-full p-2`}
+      >
+        <Sun size={18} />
+      </button>
+    </div>
+  )
 }

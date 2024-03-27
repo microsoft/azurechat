@@ -4,42 +4,42 @@
 
 @layer base {
   :root {
-    --QLD-color-siteTitle: #022A50;
-    --QLD-color-designAccent: #6BBE27;
-    --QLD-color-heading: #03213F;
+    --QLD-color-siteTitle: #022a50;
+    --QLD-color-designAccent: #6bbe27;
+    --QLD-color-heading: #03213f;
     --QLD-color-text: #414141;
     --QLD-color-text-muted: #636363;
-    --QLD-color-link: #09549F;
-    --QLD-color-link-visited: #551A8B;
-    --QLD-color-button-text: #FFFFFF;
-    --QLD-color-button: #09549F;
-    --QLD-color-button-hover: #003E7D;
-    --QLD-color-focus: #0085B3;
-    --QLD-color-border: #EBEBEB;
-    --QLD-color-background: #FFFFFF;
-    --QLD-color-dark-background: #09549F;
-    --QLD-color-background-shade: #F5F5F5;
-    --QLD-color-underline: #3F7AB4;
-    --QLD-color-hover-underline: #09549F;
-    --QLD-color-visited-underline: #8B63B0;
-    --QLD-color-hover-visited-underline: #551A8B;
+    --QLD-color-link: #09549f;
+    --QLD-color-link-visited: #551a8b;
+    --QLD-color-button-text: #ffffff;
+    --QLD-color-button: #09549f;
+    --QLD-color-button-hover: #003e7d;
+    --QLD-color-focus: #0085b3;
+    --QLD-color-border: #ebebeb;
+    --QLD-color-background: #ffffff;
+    --QLD-color-dark-background: #09549f;
+    --QLD-color-background-shade: #f5f5f5;
+    --QLD-color-underline: #3f7ab4;
+    --QLD-color-hover-underline: #09549f;
+    --QLD-color-visited-underline: #8b63b0;
+    --QLD-color-hover-visited-underline: #551a8b;
     --QLD-color-alt-button: #008635;
-    --QLD-color-dark-alt-button: #FFE500;
-    --QLD-color-alt-button-hover: #005B23;
-    --QLD-color-alt-border: #7A7A7A;
-    --QLD-color-alt-background: #E8E8E8;
-    --QLD-color-alt-background-shade: #E0E0E0;
-    --QLD-error: #E22339;
-    --QLD-success: #339D37;
-    --QLD-information: #0085B3;
-    --QLD-alert: #FFCC2C;
+    --QLD-color-dark-alt-button: #ffe500;
+    --QLD-color-alt-button-hover: #005b23;
+    --QLD-color-alt-border: #7a7a7a;
+    --QLD-color-alt-background: #e8e8e8;
+    --QLD-color-alt-background-shade: #e0e0e0;
+    --QLD-error: #e22339;
+    --QLD-success: #339d37;
+    --QLD-information: #0085b3;
+    --QLD-alert: #ffcc2c;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 205, 100%, 18%;;
+    --primary: 205, 100%, 18%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -56,35 +56,35 @@
   }
 
   .dark {
-    --QLD-color-siteTitle: #FFFFFF;
-    --QLD-color-designAccent: #6BBE27;
-    --QLD-color-heading: #FFFFFF;
-    --QLD-color-text: #FFFFFF;
-    --QLD-color-text-muted: #DEEBF9;
-    --QLD-color-link: #FFFFFF;
-    --QLD-color-link-visited: #E1BBEE;
+    --QLD-color-siteTitle: #ffffff;
+    --QLD-color-designAccent: #6bbe27;
+    --QLD-color-heading: #ffffff;
+    --QLD-color-text: #ffffff;
+    --QLD-color-text-muted: #deebf9;
+    --QLD-color-link: #ffffff;
+    --QLD-color-link-visited: #e1bbee;
     --QLD-color-button-text: #121940;
-    --QLD-color-button: #78BA00;
-    --QLD-color-button-hover: #ADD33F;
-    --QLD-color-focus: #01B0E5;
-    --QLD-color-border: #2573C1;
-    --QLD-color-background: #09549F;
-    --QLD-color-dark-background: #09549F;
-    --QLD-color-background-shade: #04498F;
-    --QLD-color-underline: #B5CCE2;
-    --QLD-color-hover-underline: #FFFFFF;
-    --QLD-color-visited-underline: #E1C2FF;
-    --QLD-color-hover-visited-underline: #E1BBEE;
-    --QLD-color-alt-button: #FFE500;
-    --QLD-color-dark-alt-button: #FFE500;
-    --QLD-color-alt-button-hover: #FFEF60;
-    --QLD-color-alt-border: #09ACFE;
-    --QLD-color-alt-background: #05325F;
-    --QLD-color-alt-background-shade: #052C53;
-    --QLD-error: #E22339;
-    --QLD-success: #339D37;
-    --QLD-information: #0085B3;
-    --QLD-alert: #FFCC2C;
+    --QLD-color-button: #78ba00;
+    --QLD-color-button-hover: #add33f;
+    --QLD-color-focus: #01b0e5;
+    --QLD-color-border: #2573c1;
+    --QLD-color-background: #09549f;
+    --QLD-color-dark-background: #09549f;
+    --QLD-color-background-shade: #04498f;
+    --QLD-color-underline: #b5cce2;
+    --QLD-color-hover-underline: #ffffff;
+    --QLD-color-visited-underline: #e1c2ff;
+    --QLD-color-hover-visited-underline: #e1bbee;
+    --QLD-color-alt-button: #ffe500;
+    --QLD-color-dark-alt-button: #ffe500;
+    --QLD-color-alt-button-hover: #ffef60;
+    --QLD-color-alt-border: #09acfe;
+    --QLD-color-alt-background: #05325f;
+    --QLD-color-alt-background-shade: #052c53;
+    --QLD-error: #e22339;
+    --QLD-success: #339d37;
+    --QLD-information: #0085b3;
+    --QLD-alert: #ffcc2c;
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
@@ -105,7 +105,8 @@
     --input: 240 3.7% 15.9%;
     --ring: 214 89% 31%;
   }
-  :root, .dark {
+  :root,
+  .dark {
     --QLD-border-width-thin: 1px;
     --QLD-border-width-default: 2px;
     --QLD-border-width-medium: 3px;
@@ -122,16 +123,21 @@
 
 @layer utilities {
   @keyframes spin {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 
   .loader {
-      display: inline-block;
-      animation: spin 1s linear infinite;
+    display: inline-block;
+    animation: spin 1s linear infinite;
   }
 
   .loader-more {
-      animation-delay: 0.1s;
+    animation-delay: 0.1s;
   }
 }

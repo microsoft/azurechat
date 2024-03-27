@@ -12,5 +12,6 @@ Below are the updates for the Queensland Government QChat Virtual Assistant.
 - Citations within responses are now visible, and you can click on them for related context.
 - It's now possible to upload files to existing chats, enabling multiple file interactions within a single chat session.
 
-## 🔑 Important Note:
+## 🔑 Important Note
+
 - A new **Sensitivity Selector** has been added to help categorize the sensitivity of the information in your documents. Despite this feature, please remember that Protected Information should not be uploaded at any time.

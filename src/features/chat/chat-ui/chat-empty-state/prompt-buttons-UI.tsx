@@ -1,39 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { PromptButtons } from '../../chat-services/prompt-buttons';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from "react"
+import { PromptButtons } from "@/features/chat/chat-services/prompt-buttons"
+import { Button } from "@/features/ui/button"
 
 interface Prop {
-  onPromptSelected: (prompt: string) => void;
-  selectedPrompt: string | undefined;
+  onPromptSelected: (prompt: string) => void
+  selectedPrompt?: string
 }
 
 export const PromptButton: React.FC<Prop> = ({ onPromptSelected, selectedPrompt }) => {
-  const [prompts, setPrompts] = useState<string[]>([]);
+  const [prompts, setPrompts] = useState<string[]>([])
   useEffect(() => {
-    const fetchPrompts = async () => {
-      try {
-        const data = await PromptButtons();
-        setPrompts(data);
-      } catch (error) {
-        console.log('Error fetching prompts from backend:', error);
-      }
-    };
+    const fetchPrompts = async (): Promise<string[]> => await PromptButtons()
 
-    fetchPrompts();
-  }, []);
+    fetchPrompts()
+      .then(data => setPrompts(data))
+      .catch(_err => setPrompts([]))
+  }, [])
 
-  const handlePromptClick = (prompt: string) => {
-    onPromptSelected(prompt);
-  };
+  const handlePromptClick = (prompt: string): void => {
+    onPromptSelected(prompt)
+  }
 
   return (
     <div className="space-container">
-      <ul aria-live="polite" className="w-full mb-2 ">
+      <ul aria-live="polite" className="mb-2 w-full ">
         {prompts.map((prompt, index) => (
-          <li key={index} className="mb-2 bg-background rounded text-foreground">
+          <li key={index} className="mb-2 rounded bg-background text-foreground">
             <Button
               onClick={() => handlePromptClick(prompt)}
-              className={`w-full text-center p-2 rounded text-buttonText ${selectedPrompt === prompt ? 'bg-button' : 'text-buttonText'}`}
+              className={`w-full rounded p-2 text-center text-buttonText ${selectedPrompt === prompt ? "bg-button" : "text-buttonText"}`}
               disabled={selectedPrompt === prompt}
               aria-pressed={selectedPrompt === prompt}
             >
@@ -44,5 +39,5 @@ export const PromptButton: React.FC<Prop> = ({ onPromptSelected, selectedPrompt 
       </ul>
       <div className="additional-spacing" />
     </div>
-  );
-};
+  )
+}

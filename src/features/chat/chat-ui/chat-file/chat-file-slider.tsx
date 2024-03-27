@@ -1,15 +1,9 @@
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { FileText } from "lucide-react";
-import { ChatFileUI } from "./chat-file-ui";
+import { Button } from "@/features/ui/button"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/features/ui/sheet"
+import { FileText } from "lucide-react"
+import { ChatFileUI } from "./chat-file-ui"
 
-export const ChatFileSlider = () => {
+export const ChatFileSlider = (): JSX.Element => {
   return (
     <div>
       <Sheet>
@@ -28,5 +22,5 @@ export const ChatFileSlider = () => {
         </SheetContent>
       </Sheet>
     </div>
-  );
-};
+  )
+}

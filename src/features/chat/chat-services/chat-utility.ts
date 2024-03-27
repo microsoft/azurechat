@@ -1,107 +1,100 @@
-'use server'
-import "server-only";
-import { ChatThreadModel } from "./models";
-import { UpsertChatThread } from "./chat-thread-service";
-import { GenericChatAPI } from "./generic-chat-api";
-import { translator } from "./chat-translator-service";
+"use server"
+import "server-only"
+import { ChatThreadModel } from "../models"
+import { UpsertChatThread } from "./chat-thread-service"
+import { GenericChatAPI } from "./generic-chat-api"
 
 async function generateChatName(chatMessage: string): Promise<string> {
-    const apiName = "generateChatName";
-    try {
-        let name = await GenericChatAPI(apiName, {
-            messages: [
-                {
-                    role: "system",
-                    content: `- create a succinct title, limited to five words and 20 characters, for the following chat """ ${chatMessage}""" conversation with a generative AI assistant:
-                    - this title should effectively summarise the main topic or theme of the chat.
-                    - it will be used in the app's navigation interface, so it should be easily understandable and reflective of the chat's content 
-                    to help users quickly grasp what the conversation was about.`
-                },
-            ],
-        });
+  const apiName = "generateChatName"
+  try {
+    const name = await GenericChatAPI(apiName, {
+      messages: [
+        {
+          role: "system",
+          content: `- create a succinct title, limited to five words and 20 characters, for the following chat """${chatMessage}""" conversation with a generative AI assistant:
+                - this title should effectively summarise the main topic or theme of the chat.
+                - it will be used in the app's navigation interface, so it should be easily understandable and reflective of the chat's content 
+                to help users quickly grasp what the conversation was about.`,
+        },
+      ],
+    })
 
-        const translatedChatName = await translator(name);
-        name = translatedChatName;
-        
-        if (name) {
-            return name.replace(/^"+|"+$/g, ''); // Remove proceeding and trailing quotes from the returned message
-        } else {
-            console.log('Error: Unexpected response structure from OpenAI API.');
-            return "";
-        }
-
-    } catch (e) {
-        console.log(`An error occurred: ${e}`);
-        const words: string[] = chatMessage.split(' ');
-        const name: string = 'New Chat by Error';
-        return name;
+    if (name) {
+      return name.replace(/^"+|"+$/g, "")
+    } else {
+      // TODO handle error
+      console.error("Error: Unexpected response structure from OpenAI API.")
     }
+
+    return name || "New Chat by Error"
+  } catch (e) {
+    console.error("Error generating chat name:", e)
+    return "New Chat by Error"
+  }
 }
 
 async function generateChatCategory(chatMessage: string): Promise<string> {
-    const apiName = "generateChatCategory";
-    let categories = [
-        'Information Processing and Management',
-        'Communication and Interaction',
-        'Decision Support and Advisory',
-        'Educational and Training Services',
-        'Operational Efficiency and Automation',
-        'Public Engagement and Services',
-        'Innovation and Development',
-        'Creative Assistance',
-        'Lifestyle and Personal Productivity',
-        'Entertainment and Engagement',
-        'Emotional and Mental Support'
-    ];
+  const apiName = "generateChatCategory"
+  const categories = [
+    "Information Processing and Management",
+    "Communication and Interaction",
+    "Decision Support and Advisory",
+    "Educational and Training Services",
+    "Operational Efficiency and Automation",
+    "Finance and Banking",
+    "Public Engagement and Services",
+    "Innovation and Development",
+    "Creative Assistance",
+    "Lifestyle and Personal Productivity",
+    "Entertainment and Engagement",
+    "Emotional and Mental Support",
+  ]
 
-    try {
-        const category = await GenericChatAPI(apiName, {
-            messages: [
-                {
-                    role: "user",
-                    content: `Categorise this chat session inside double quotes "" ${chatMessage} "" into only one of the following 
-                    categories: ${categories.join(', ')} inside square brackets based on my query`
-                },
-            ],
-        });
+  try {
+    const category = await GenericChatAPI(apiName, {
+      messages: [
+        {
+          role: "system",
+          content: `Please categorise this chat session: "${chatMessage}" into only one of the following specified categories based on the content of the query. The category selected must strictly be one of the following: ${categories.join(", ")}. Ensure the response aligns with these predefined categories to maintain consistency.`,
+        },
+      ],
+    })
 
-
-        if (category != null) {
-            return category;
-        }
-        else {
-            console.log(`Uncategorised chat.`);
-            return "Uncategorised!";
-        }
-
-    } catch (e) {
-        console.log(`An error occurred: ${e}`);
-        const words: string[] = chatMessage.split(' ');
-        const category: string = 'Uncategorised';
-        return category;
+    if (category && categories.includes(category)) {
+      return category
+    } else {
+      return "Uncategorised"
     }
+  } catch (_e) {
+    return "Uncategorised"
+  }
 }
 
-export async function StoreOriginalChatName(currentChatName: string) {
-    let previousChatName: string = "";
-    if (currentChatName !== previousChatName) {
-        previousChatName = currentChatName; // store the original chat name
+export async function UpdateChatThreadIfUncategorised(
+  chatThread: ChatThreadModel,
+  content: string
+): Promise<ChatThreadModel> {
+  try {
+    if (chatThread.chatCategory === "Uncategorised") {
+      const [chatCategory, name, previousChatName] = await Promise.all([
+        generateChatCategory(content),
+        generateChatName(content),
+        StoreOriginalChatName(chatThread.name),
+      ])
+      const response = await UpsertChatThread({ ...chatThread, chatCategory, name, previousChatName })
+      if (response.status !== "OK") throw new Error(response.errors.join(", "))
     }
-    return previousChatName;
+    return chatThread
+  } catch (e) {
+    console.error("Failed to update chat thread due to an error:", e)
+    throw e
+  }
 }
 
-export async function chatCatName(chatThread: ChatThreadModel, content: string) {
-    try {
-
-        if (chatThread.chatCategory === "Uncategorised") {
-            chatThread.chatCategory = await generateChatCategory(content);
-            chatThread.name = await generateChatName(content);
-            chatThread.previousChatName = await StoreOriginalChatName(chatThread.name)
-
-            UpsertChatThread(chatThread);
-        }
-
-    } catch (e) {
-        console.log("Do some magic failed", e);
-    }
+function StoreOriginalChatName(currentChatName: string): string {
+  let previousChatName: string = ""
+  if (currentChatName !== previousChatName) {
+    previousChatName = currentChatName
+  }
+  return previousChatName
 }

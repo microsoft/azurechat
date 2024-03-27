@@ -1,28 +1,27 @@
-import { useEffect, useState } from "react";
-import { getPromptSuggestions } from "../../chat-services/prompt-suggestions";
-import React from 'react';
+import { useEffect, useState } from "react"
+import { getPromptSuggestions } from "@/features/chat/chat-services/prompt-suggestions"
+import React from "react"
 
 interface PromptSuggestionProps {
-  newInputValue: string;
-  onSelect: (selectedValue: string) => void;
-  onHide: () => void;
+  newInputValue: string
+  onSelect: (selectedValue: string) => void
+  onHide: () => void
 }
 export const PromptSuggestion: React.FC<PromptSuggestionProps> = ({ newInputValue, onSelect, onHide }) => {
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<string[]>([])
 
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      const fetchedSuggestions = await getPromptSuggestions(newInputValue);
-      setSuggestions(fetchedSuggestions);
-    };
+    const fetchSuggestions = async (): Promise<string[]> => await getPromptSuggestions(newInputValue)
 
-    fetchSuggestions();
-  }, [newInputValue]);
+    fetchSuggestions()
+      .then(fetchedSuggestions => setSuggestions(fetchedSuggestions))
+      .catch(_err => setSuggestions([]))
+  }, [newInputValue])
 
-  const handleSuggestionClick = (suggestion: string) => {
-    onSelect(suggestion);
-    onHide();
-  };
+  const handleSuggestionClick = (suggestion: string): void => {
+    onSelect(suggestion)
+    onHide()
+  }
 
   return (
     <div>
@@ -34,5 +33,5 @@ export const PromptSuggestion: React.FC<PromptSuggestionProps> = ({ newInputValu
         ))}
       </ul>
     </div>
-  );
-};
+  )
+}

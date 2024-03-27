@@ -1,63 +1,90 @@
-"use client";
+import React, { useEffect, useState } from "react"
+import * as Form from "@radix-ui/react-form"
 
-import React, { useState } from 'react';
-import * as Form from '@radix-ui/react-form';
-
-// Define the form data type for type safety
 interface PromptFormData {
-  fullName: string;
-  jobTitle: string;
-  teamOrBusinessUnit: string;
-  departmentOrOrganisation: string;
-  additionalInfo: string;
+  fullName: string
+  jobTitle: string
+  teamOrBusinessUnit: string
+  departmentOrOrganisation: string
+  additionalInfo: string
 }
 
-// Define props for the FormField component
 type FormFieldProps = {
-  label: string;
-  name: keyof PromptFormData;
-  type?: string;
-};
+  label: string
+  name: keyof PromptFormData
+  type?: string
+  onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+}
 
-// Reusable FormField component for text inputs
-const FormField: React.FC<FormFieldProps> = ({ label, name, type = 'text' }) => (
+const FormField: React.FC<FormFieldProps> = ({ label, name, type = "text", onChange }) => (
   <Form.Field name={name}>
     <Form.Label htmlFor={name}>{label}</Form.Label>
-    <Form.Control type={type} id={name} required />
+    <input
+      type={type}
+      id={name}
+      name={name}
+      required
+      onChange={onChange}
+      className="input-style"
+      placeholder={label}
+      title={label}
+    />{" "}
     <Form.Message />
   </Form.Field>
-);
+)
 
-// The main PromptForm component
 const PromptForm: React.FC = () => {
-  // State for managing form data
-  const [formData, setFormData] = useState<PromptFormData>({
-    fullName: '',
-    jobTitle: '',
-    teamOrBusinessUnit: '',
-    departmentOrOrganisation: '',
-    additionalInfo: '',
-  });
+  const [formData, setFormData] = React.useState<PromptFormData>({
+    fullName: "",
+    jobTitle: "",
+    teamOrBusinessUnit: "",
+    departmentOrOrganisation: "",
+    additionalInfo: "",
+  })
+  const checkFormValidity = React.useCallback(() => {
+    const isValid = Object.values(formData).every(value => value.trim() !== "")
+    setIsFormValid(isValid)
+  }, [formData])
+  useEffect(() => {
+    checkFormValidity()
+  }, [formData, checkFormValidity])
 
-  // Handle form submission
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(formData);
-    // Handle form data, e.g., by sending it to an API
-  };
+  const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
-  // Update state based on input changes
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = event.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault()
+    try {
+      const response = await fetch("/api/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok")
+      }
+
+      // TODO Handle successful form submission here, e.g., showing a success message
+      console.log("Form submitted successfully")
+    } catch (error) {
+      // TODO Handle errors here, e.g., showing an error message
+      console.error("Failed to submit form:", error)
+    }
+  }
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const { name, value } = event.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
 
   return (
     <Form.Root onSubmit={handleSubmit}>
-      <FormField label="Full Name" name="fullName" />
-      <FormField label="Job Title" name="jobTitle" />
-      <FormField label="Team or Business Unit Name" name="teamOrBusinessUnit" />
-      <FormField label="Department or Organisation Name" name="departmentOrOrganisation" />
+      <FormField label="Full Name" name="fullName" onChange={handleChange} />
+      <FormField label="Job Title" name="jobTitle" onChange={handleChange} />
+      <FormField label="Team or Business Unit Name" name="teamOrBusinessUnit" onChange={handleChange} />
+      <FormField label="Department or Organisation Name" name="departmentOrOrganisation" onChange={handleChange} />
 
       <Form.Field name="additionalInfo">
         <Form.Label htmlFor="additionalInfo">Additional Information</Form.Label>
@@ -66,17 +93,19 @@ const PromptForm: React.FC = () => {
           name="additionalInfo"
           required
           onChange={handleChange}
+          placeholder="Enter additional information"
+          className="textarea-style"
         />
         <Form.Message />
       </Form.Field>
 
-      <Form.ValidityState>
-        {(validity) => <div>Form Validity: {validity ? 'valid' : 'invalid'}</div>}
-      </Form.ValidityState>
+      <div>Form Validity: {isFormValid ? "valid" : "invalid"}</div>
 
-      <button type="submit">Submit</button>
+      <button type="submit" className="submit-button-style">
+        Submit
+      </button>
     </Form.Root>
-  );
-};
+  )
+}
 
-export default PromptForm;
+export default PromptForm

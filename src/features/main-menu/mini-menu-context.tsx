@@ -1,32 +1,23 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react"
 
 interface MiniMenuContextProps {
-  isMenuOpen: boolean;
-  toggleMenu: () => void;
+  isMenuOpen: boolean
+  toggleMenu: () => void
 }
 
-// Create the context
 export const MiniMenuContext = createContext<MiniMenuContextProps>({
-  isMenuOpen: false, // Set the default state
+  isMenuOpen: false,
   toggleMenu: () => {},
-});
+})
 
-// Create the provider
-export const MiniMenuProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export const MiniMenuProvider = ({ children }: { children: React.ReactNode }): React.JSX.Element => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = (): void => {
+    setIsMenuOpen(!isMenuOpen)
+  }
 
-  return (
-    <MiniMenuContext.Provider value={{ isMenuOpen, toggleMenu }}>
-      {children}
-    </MiniMenuContext.Provider>
-  );
-};
+  return <MiniMenuContext.Provider value={{ isMenuOpen, toggleMenu }}>{children}</MiniMenuContext.Provider>
+}
 
-// Hook to use the context
-export const useMiniMenuContext = () => useContext(MiniMenuContext);
-
-
+export const useMiniMenuContext = (): MiniMenuContextProps => useContext(MiniMenuContext)

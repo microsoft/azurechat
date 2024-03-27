@@ -1,5 +1,5 @@
-import { LoadingSkeleton } from "@/features/loading-skeleton";
+import { PageLoader } from "@/features/ui/page-loader"
 
-export default function Loading() {
-  return <LoadingSkeleton />;
+export default function Loading(): JSX.Element {
+  return <PageLoader />
 }

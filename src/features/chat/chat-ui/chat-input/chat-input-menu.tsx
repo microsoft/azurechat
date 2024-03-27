@@ -1,46 +1,58 @@
-import React, { FormEvent, useEffect, useRef } from 'react';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { Button } from "@/components/ui/button";
-import { Menu, Bird, File, Clipboard } from "lucide-react";
-import { Message } from 'ai';
-import { toast } from '@/components/ui/use-toast';
+import React, { useEffect, useRef } from "react"
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
+import { Button } from "@/features/ui/button"
+import { Menu, File, Clipboard, Bird } from "lucide-react"
+import { Message } from "ai"
+import { useToast } from "@/features/ui/use-toast"
+import { getSession } from "next-auth/react"
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 
 interface ChatInputMenuProps {
-  onDocExport: () => void;
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  setInput: (input: string) => void;
-  messageCopy: Message[];
+  onDocExport: () => void
+  messageCopy: Message[]
 }
 
-const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport, handleSubmit, setInput, messageCopy }) => {
-  const firstMenuItemRef = useRef<HTMLDivElement>(null);
+const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport }) => {
+  const { setInput, handleSubmit, messages } = useChatContext()
+  const firstMenuItemRef = useRef<HTMLDivElement>(null)
+  const { toast } = useToast()
 
   useEffect(() => {
     if (firstMenuItemRef.current) {
-      firstMenuItemRef.current.focus();
+      firstMenuItemRef.current.focus()
     }
-  }, []);
+  }, [])
 
-  const fairClickHandler = () => {
-    const fairInput = "Help me complete a Queensland Government Fast AI Risk Assessment (FAIRA)";
-    setInput(fairInput);
+  const fairClickHandler = (): void => {
+    const fairInput = "Help me complete a Queensland Government Fast AI Risk Assessment (FAIRA)"
+    setInput(fairInput)
     setTimeout(() => {
-      const syntheticEvent = { preventDefault: () => {} } as FormEvent<HTMLFormElement>;
-      handleSubmit(syntheticEvent);
-    }, 0);
-  };
+      handleSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>)
+    }, 0)
+  }
 
-  const copyToClipboard = () => {
-    const formattedMessages = messageCopy.map(message => {
-      const author = message.role === 'system' || message.role === 'assistant' ? "AI" : "You";
-      // fix the author name on export and copy to clipboard
-      return `${author}: ${message.content}`;
-    }).join('\n');
-  
-    navigator.clipboard.writeText(formattedMessages)
-      .then(() => toast({ title: "Success", description: "Messages copied to clipboard" }))
-      .catch(err => toast({ title: "Error", description: "Failed to copy messages to clipboard" }));
-  };
+  const copyToClipboard = async (): Promise<void> => {
+    try {
+      const session = await getSession()
+      const name = session?.user?.name || "You"
+
+      const formattedMessages = messages
+        .map(message => {
+          const author = message.role === "system" || message.role === "assistant" ? "AI" : name
+          return `${author}: ${message.content}`
+        })
+        .join("\n")
+
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(formattedMessages)
+        toast({ title: "Success", description: "Messages copied to clipboard" })
+      } else {
+        throw new Error("Clipboard API not available")
+      }
+    } catch (_error) {
+      toast({ title: "Error", description: "Failed to copy messages to clipboard" })
+    }
+  }
 
   return (
     <DropdownMenu.Root>
@@ -62,45 +74,43 @@ const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport, handleSubmit
           id="chat-input-options"
           role="menu"
           aria-label="Chat input options"
-          className="min-w-[220px] bg-background text-popover-foreground p-[5px] shadow-lg rounded-md"
+          className="min-w-[220px] rounded-md bg-background p-[5px] text-popover-foreground shadow-lg"
           sideOffset={5}
         >
           <DropdownMenu.Item
             asChild
             onSelect={fairClickHandler}
-            className="DropdownMenuItem bg-background text-foreground hover:bg-secondary hover:text-secondary-foreground rounded-md cursor-pointer"
+            className="DropdownMenuItem cursor-pointer rounded-md bg-background text-foreground hover:bg-secondary hover:text-secondary-foreground"
           >
-            <div tabIndex={0} ref={firstMenuItemRef} style={{display: 'flex', alignItems: 'center', padding: '5px'}}>
-              <Bird size={20} className="mr-2" aria-hidden="true"/>
+            <div tabIndex={0} ref={firstMenuItemRef} style={{ display: "flex", alignItems: "center", padding: "5px" }}>
+              <Bird size={20} className="mr-2" aria-hidden="true" />
               Complete a Fast AI Risk Assessment
             </div>
           </DropdownMenu.Item>
-          <DropdownMenu.Separator className="h-[1px] bg-secondary my-2" />
-          <DropdownMenu.Item
-            asChild
-            onSelect={onDocExport}
-            className="DropdownMenuItem bg-background text-foreground hover:bg-secondary hover:text-secondary-foreground rounded-md cursor-pointer"
-          >
-            <div tabIndex={0} style={{display: 'flex', alignItems: 'center', padding: '5px'}}>
-              <File size={20} className="mr-2" aria-hidden="true"/>
+          <DropdownMenu.Separator className="my-2 h-px bg-secondary" />
+          <DropdownMenu.Item asChild onSelect={onDocExport} className="dropdown-menu-item">
+            <div
+              tabIndex={0}
+              className="flex cursor-pointer items-center rounded-md p-2 hover:bg-secondary hover:text-secondary-foreground"
+            >
+              <File size={20} className="mr-2" aria-hidden="true" />
               Export your Chat to File
             </div>
           </DropdownMenu.Item>
-          <DropdownMenu.Separator className="h-[1px] bg-secondary my-2" />
-          <DropdownMenu.Item
-            asChild
-            onSelect={copyToClipboard}
-            className="DropdownMenuItem bg-background text-foreground hover:bg-secondary hover:text-secondary-foreground rounded-md cursor-pointer"
-          >
-            <div tabIndex={0} style={{display: 'flex', alignItems: 'center', padding: '5px'}}>
-              <Clipboard size={20} className="mr-2" aria-hidden="true"/>
+          <DropdownMenu.Separator className="my-2 h-px bg-secondary" />
+          <DropdownMenu.Item asChild onSelect={copyToClipboard} className="dropdown-menu-item">
+            <div
+              tabIndex={0}
+              className="flex cursor-pointer items-center rounded-md p-2 hover:bg-secondary hover:text-secondary-foreground"
+            >
+              <Clipboard size={20} className="mr-2" aria-hidden="true" />
               Copy Chat to Clipboard
             </div>
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
-  );
-};
+  )
+}
 
-export default ChatInputMenu;
+export default ChatInputMenu

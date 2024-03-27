@@ -1,22 +1,12 @@
-import { AI_NAME } from "@/features/theme/customise";
+import { AI_NAME } from "@/features/theme/theme-config"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: AI_NAME,
   description: AI_NAME,
-};
+}
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <>
-      <div className="flex-1 flex overflow-hidden bg-card/70">
-        {children}
-      </div>
-    </>
-  );
+export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+  return <div className="flex h-full flex-1 overflow-scroll bg-card/70">{children}</div>
 }

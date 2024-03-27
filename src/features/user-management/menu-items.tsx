@@ -1,8 +1,8 @@
-import React from 'react';
-import { Menu, MenuContent, MenuHeader, MenuItem } from "@/components/menu";
-import { FileText, MessageCircle, Settings, HelpCircle } from 'lucide-react';
+import React from "react"
+import { MenuItem } from "@/components/menu"
+import { FileText, MessageCircle, Settings, HelpCircle } from "lucide-react"
 
-export const UserSettings = () => {
+export const UserSettings = (): React.JSX.Element => {
   return (
     <>
       <MenuItem href="/settings/details">
@@ -18,5 +18,5 @@ export const UserSettings = () => {
         <HelpCircle size={16} /> <span>Help & Support</span>
       </MenuItem>
     </>
-  );
-};
+  )
+}

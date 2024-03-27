@@ -1,18 +1,18 @@
-import { LogIn } from "@/components/login/login";
-import { Card } from "@/components/ui/card";
-import { userSession } from "@/features/auth/helpers";
-import { redirect } from "next/navigation";
+import { LogIn } from "@/components/login/login"
+import { userSession } from "@/features/auth/helpers"
+import { Card } from "@/features/ui/card"
+import { redirect } from "next/navigation"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
-export default async function Home() {
-  const user = await userSession();
+export default async function Home(): Promise<JSX.Element> {
+  const user = await userSession()
   if (user) {
-    redirect("/chat");
+    redirect("/chat")
   }
   return (
-    <Card className="max:h-5/6 flex-1 overflow-hidden relative items-center justify-center flex">
+    <Card className="relative flex h-full flex-1 items-center justify-center overflow-hidden">
       <LogIn />
     </Card>
-  );
-};
+  )
+}

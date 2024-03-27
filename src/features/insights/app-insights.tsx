@@ -1,50 +1,57 @@
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
-import { ClickAnalyticsPlugin } from '@microsoft/applicationinsights-clickanalytics-js';
-import { createBrowserHistory } from 'history';
+import { ApplicationInsights, IConfiguration } from "@microsoft/applicationinsights-web"
+import { ReactPlugin } from "@microsoft/applicationinsights-react-js"
+import { ClickAnalyticsPlugin } from "@microsoft/applicationinsights-clickanalytics-js"
+import { IAppInsightsContext } from "./app-insights-context"
+import { createBrowserHistory } from "history"
 
-const appInsightsKey = process.env.NEXT_PUBLIC_AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING;
-
-export interface IAppInsightsContext {
-  appInsights: ApplicationInsights;
-  reactPlugin: ReactPlugin;
-  browserHistory: ReturnType<typeof createBrowserHistory>;
-  clickPlugin: ClickAnalyticsPlugin;
-}
+type EventProperties = Record<string, unknown>
 
 export const createAppInsights = (): IAppInsightsContext | null => {
-  if (typeof window === 'undefined') {
-    console.warn('Application Insights cannot be initialized server-side.');
-    return null;
+  if (typeof window === "undefined") {
+    console.warn("Application Insights cannot be initialized server-side.")
+    return null
   }
-  
-  try {
-    const browserHistory = createBrowserHistory();
-    const reactPlugin = new ReactPlugin();
-    const clickPlugin = new ClickAnalyticsPlugin();
 
-    const connectionString = appInsightsKey;
-    if (!connectionString) {
-      throw new Error('Connection string for Application Insights is undefined or empty.');
+  try {
+    const browserHistory = createBrowserHistory()
+    const reactPlugin = new ReactPlugin()
+    const clickPlugin = new ClickAnalyticsPlugin()
+    const appInsightsKey = process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING
+
+    if (!appInsightsKey) {
+      throw new Error("Connection string for Application Insights is undefined or empty.")
     }
 
-    const config = {
-      connectionString,
-      enableAutoRouteTracking: true,
+    const config: IConfiguration = {
+      connectionString: appInsightsKey,
       extensions: [reactPlugin, clickPlugin],
       extensionConfig: {
         [clickPlugin.identifier]: { autoCapture: true },
         [reactPlugin.identifier]: { history: browserHistory },
       },
-    };
+    }
 
-    const appInsights = new ApplicationInsights({ config });
-    appInsights.loadAppInsights();
-    appInsights.trackPageView();
+    const appInsights = new ApplicationInsights({ config })
+    appInsights.loadAppInsights()
+    appInsights.trackPageView()
 
-    return { appInsights, reactPlugin, browserHistory, clickPlugin };
+    return {
+      appInsights,
+      reactPlugin,
+      browserHistory,
+      clickPlugin,
+      logEvent: (name: string, properties?: EventProperties) => {
+        appInsights.trackEvent({ name }, properties)
+      },
+      logError: (error: Error, properties?: EventProperties) => {
+        appInsights.trackException({ exception: error, properties })
+      },
+      logInfo: (message: string, properties?: EventProperties) => {
+        appInsights.trackTrace({ message, properties })
+      },
+    }
   } catch (error) {
-    console.log('Failed to initialize Application Insights:', error);
-    return null;
+    console.error("Failed to initialize Application Insights", error)
+    return null
   }
-};
+}
