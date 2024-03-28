@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "tidy": "npm upgrade && npm ci && npm run lint:fix && npm run build",
+    "dev:https": "next dev --experimental-https --port 443",
     "dev": "next dev --experimental-https --experimental-https-key ./certificates/localhost-key.pem --experimental-https-cert ./certificates/localhost.pem --port 443",
     "build": "next build",
     "start": "next start",

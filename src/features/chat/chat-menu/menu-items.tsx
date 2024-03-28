@@ -119,7 +119,6 @@ export const MenuItems: FC<Prop> = ({ menuItems }) => {
     if (newName.trim() !== "" && selectedThreadId) {
       try {
         await UpdateChatThreadTitle(selectedThreadId, newName)
-        window.location.reload()
       } catch (e) {
         showError("" + e)
       } finally {
