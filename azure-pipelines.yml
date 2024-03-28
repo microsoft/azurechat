@@ -1,10 +1,37 @@
 name: "📦 - Publish Artifact"
 
-trigger: none
+pr:
+  branches:
+    include:
+      - main
+
 variables:
   - name: poolName
     value: "QGGPT_Pool"
+
 stages:
+  - stage: Build
+    displayName: "🛠️ - Build check"
+    jobs:
+      - job: BuildCheckJob
+        displayName: "Build Check Job"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - checkout: self
+            clean: "true"
+
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "20.x"
+            displayName: "Install Node.js"
+          - script: npm install
+            displayName: "Install dependencies"
+            workingDirectory: $(Build.SourcesDirectory)/src
+          - script: npm run build
+            displayName: "Build the app"
+            workingDirectory: $(Build.SourcesDirectory)/src
+
   - stage: PublishArtifact
     displayName: "📦 - Publish Artifact"
     jobs:

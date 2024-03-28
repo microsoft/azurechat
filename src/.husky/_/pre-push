@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+cd src
+npm run lint && npm run build
