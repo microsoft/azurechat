@@ -29,14 +29,11 @@ export const ChatReportingUI: FC<Props> = async props => {
               <ChatRow
                 chatMessageId={message.id}
                 name={message.role === ChatRole.User ? chatThread.useName : AI_NAME}
-                message={message.content}
+                message={message}
                 type={message.role as ChatRole}
                 key={index}
                 chatThreadId={props.chatThreadId}
                 contentSafetyWarning={message as unknown as ChatMessageModel["contentSafetyWarning"]}
-                feedback={message as unknown as ChatMessageModel["feedback"]}
-                sentiment={message as unknown as ChatMessageModel["sentiment"]}
-                reason={message as unknown as ChatMessageModel["reason"]}
               />
             )
           })}

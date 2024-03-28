@@ -9,25 +9,31 @@ import { Markdown } from "../markdown/markdown"
 import AssistantButtons from "@/features/ui/assistant-buttons"
 import { AI_NAME } from "@/features/theme/theme-config"
 import { CreateUserFeedback } from "@/features/chat/chat-services/chat-message-service"
+import { Message } from "ai/react/dist"
+import { showError } from "@/features/globals/global-message-store"
 
 interface ChatRowProps {
   chatMessageId: string
   name: string
-  message: string
+  message: Message & { sentiment?: ChatSentiment; feedback?: FeedbackType; reason?: string }
   type: ChatRole
   chatThreadId: string
   contentSafetyWarning?: string
-  sentiment?: ChatSentiment
-  feedback?: string
-  reason?: string
 }
+
+const TEMPORARY_ID_LENGTH = 7 // TODO: if chatMessageId length is 7, it's the temp id; investigate for a better solution
 
 export const ChatRow: FC<ChatRowProps> = props => {
   const [isIconChecked, setIsIconChecked] = useState(false)
-  const [thumbsUpClicked, setThumbsUpClicked] = useState(false)
-  const [thumbsDownClicked, setThumbsDownClicked] = useState(false)
+  const [thumbsUpClicked, setThumbsUpClicked] = useState(props.message.sentiment === ChatSentiment.Positive)
+  const [thumbsDownClicked, setThumbsDownClicked] = useState(props.message.sentiment === ChatSentiment.Negative)
+
+  const [feedbackType, setFeedbackType] = useState(props.message.feedback)
+  const [feedbackReason, setFeedbackReason] = useState(props.message.reason)
+
   const [feedbackMessage, setFeedbackMessage] = useState("")
-  const { isModalOpen, openModal, closeModal } = useChatContext()
+  const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false)
+  const { openModal, closeModal } = useChatContext()
 
   const toggleButton = (buttonId: string): void => {
     switch (buttonId) {
@@ -72,25 +78,42 @@ export const ChatRow: FC<ChatRowProps> = props => {
     toggleButton("ThumbsUp")
     setFeedbackMessage("Positive feedback submitted.")
     setTimeout(() => setFeedbackMessage(""), 2000)
+
+    setFeedbackType(FeedbackType.None)
+    setFeedbackReason("")
   }
 
   const handleThumbsDownClick = (): void => {
-    toggleButton("ThumbsDown")
-    if (openModal) {
-      openModal()
-    }
+    setFeedbackModalOpen(true)
+    openModal?.()
   }
 
-  function handleModalSubmit(_feedback: string, sentiment: string, _reason: string): void {
-    if (sentiment === ChatSentiment.Negative) {
-      setFeedbackMessage("Negative feedback submitted.")
-      setTimeout(() => setFeedbackMessage(""), 2000)
+  async function handleModalSubmit(): Promise<void> {
+    const resp = await CreateUserFeedback(
+      props.chatMessageId,
+      feedbackType || FeedbackType.None,
+      ChatSentiment.Negative,
+      (feedbackReason || "").trim(),
+      props.chatThreadId
+    )
+
+    if (resp.status !== "OK") {
+      showError("Failed to submit feedback.")
+      return
     }
+
+    if (!thumbsDownClicked) toggleButton("ThumbsDown")
+
+    setFeedbackMessage("Negative feedback submitted.")
+    setTimeout(() => setFeedbackMessage(""), 2000)
+
+    setFeedbackModalOpen(false)
+    closeModal?.()
   }
 
   const handleModalClose = (): void => {
+    setFeedbackModalOpen(false)
     closeModal?.()
-    return
   }
 
   const safetyWarning = props.contentSafetyWarning ? (
@@ -118,7 +141,11 @@ export const ChatRow: FC<ChatRowProps> = props => {
           <Modal
             chatThreadId={props.chatThreadId}
             chatMessageId={props.chatMessageId}
-            open={isModalOpen || false}
+            feedbackType={feedbackType}
+            onFeedbackTypeChange={setFeedbackType}
+            feedbackReason={feedbackReason}
+            onFeedbackReasonChange={setFeedbackReason}
+            open={isFeedbackModalOpen}
             onClose={handleModalClose}
             onSubmit={handleModalSubmit}
           />
@@ -127,13 +154,13 @@ export const ChatRow: FC<ChatRowProps> = props => {
           className="prose prose-slate max-w-none break-words text-sm text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base"
           tabIndex={0}
         >
-          <Markdown content={props.message} />
+          <Markdown content={props.message.content} />
         </div>
         {safetyWarning}
         <div className="sr-only" aria-live="assertive">
           {feedbackMessage}
         </div>
-        {props.type === "assistant" && (
+        {props.type === "assistant" && props.chatMessageId.length !== TEMPORARY_ID_LENGTH && (
           <AssistantButtons
             isIconChecked={isIconChecked}
             thumbsUpClicked={thumbsUpClicked}

@@ -17,6 +17,7 @@ import { FileState, useFileState } from "./chat-file/use-file-state"
 import { SpeechToTextProps, useSpeechToText } from "./chat-speech/use-speech-to-text"
 import { TextToSpeechProps, useTextToSpeech } from "./chat-speech/use-text-to-speech"
 import { useRouter } from "next/navigation"
+import { DataItem } from "../chat-services/chat-api-simple"
 
 interface ChatContextProps extends UseChatHelpers {
   id: string
@@ -114,6 +115,14 @@ export const ChatProvider: FC<Prop> = props => {
     <ChatContext.Provider
       value={{
         ...response,
+        messages: response.messages.map(message => {
+          const dataItem = (response.data as DataItem[])?.find(d => d.message === message.content)
+
+          return {
+            ...message,
+            id: dataItem?.id || message.id,
+          }
+        }),
         setChatBody,
         chatBody,
         onChatTypeChange,

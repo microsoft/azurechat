@@ -8,6 +8,7 @@ import { AddChatMessage, FindTopChatMessagesForCurrentUser } from "./chat-messag
 import { PromptGPTProps } from "../models"
 import { UpdateChatThreadIfUncategorised } from "./chat-utility"
 import { DocumentSearchModel } from "./azure-cog-search/azure-cog-vector-store"
+import { Completion } from "openai/resources/completions"
 
 const SYSTEM_PROMPT = `You are ${AI_NAME} who is a helpful AI Assistant.`
 const CONTEXT_PROMPT = ({ context, userQuestion }: { context: string; userQuestion: string }): string => {
@@ -62,7 +63,7 @@ export const ChatAPIData = async (props: PromptGPTProps): Promise<Response> => {
       stream: true,
     })
 
-    const stream = OpenAIStream(response, {
+    const stream = OpenAIStream(response as AsyncIterable<Completion>, {
       async onCompletion(completion) {
         await AddChatMessage(chatThread.id, {
           content: updatedLastHumanMessage.content,

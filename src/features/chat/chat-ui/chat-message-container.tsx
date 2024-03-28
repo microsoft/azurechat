@@ -28,23 +28,20 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   }, [isLoading, router])
 
   return (
-    <div className="h-full overflow-y-auto bg-altBackground" ref={scrollRef}>
+    <div className="bg-altBackground h-full overflow-y-auto" ref={scrollRef}>
       <div className="flex h-auto justify-center p-4">
         <ChatHeader />
       </div>
-      <div className="flex h-auto flex-1 flex-col justify-end pb-[80px]">
-        {messages.map((message, index) => (
+      <div className="flex flex-1 flex-col justify-end pb-[80px]">
+        {messages.map(message => (
           <ChatRow
+            key={message.id}
             chatMessageId={message.id}
             name={message.role === ChatRole.User ? session?.user?.name || "" : AI_NAME}
-            message={message.content}
+            message={message}
             type={message.role as ChatRole}
-            key={index}
             chatThreadId={chatThreadId}
             contentSafetyWarning={undefined}
-            feedback={undefined}
-            sentiment={undefined}
-            reason={undefined}
           />
         ))}
         {isLoading && <ChatLoading />}

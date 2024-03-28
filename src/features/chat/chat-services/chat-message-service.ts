@@ -1,3 +1,5 @@
+"use server"
+
 import { ChatMessageModel, ChatRecordType, ChatSentiment, FeedbackType } from "@/features/chat/models"
 import { uniqueId } from "@/lib/utils"
 import { ChatCompletionMessage } from "openai/resources"

@@ -27,15 +27,12 @@ export const ChatReportingUI: FC<Props> = async props => {
             chats.response.map((message, index) => (
               <ChatRow
                 name={message.role === ChatRole.User ? chatThread.response.useName : AI_NAME}
-                message={message.content}
+                message={message}
                 type={message.role}
                 key={index}
                 chatMessageId={message.id}
                 chatThreadId={chatThread.response.id}
                 contentSafetyWarning={undefined}
-                feedback={undefined}
-                sentiment={undefined}
-                reason={undefined}
               />
             ))
           )}
