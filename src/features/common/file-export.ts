@@ -1,4 +1,4 @@
-import { Document, Paragraph, Packer, TextRun, HeadingLevel, IStylesOptions } from "docx"
+import { Document, Paragraph, Packer, TextRun, HeadingLevel, IStylesOptions, INumberingOptions } from "docx"
 import { IPropertiesOptions } from "docx/build/file/core-properties/properties"
 import { saveAs } from "file-saver"
 import { marked } from "marked"
@@ -7,6 +7,27 @@ import { toast } from "@/features/ui/use-toast"
 interface MessageType {
   role: string
   content: string
+}
+
+const numbering: INumberingOptions = {
+  config: [
+    {
+      reference: "myDecimal",
+      levels: [
+        {
+          level: 0,
+          format: "decimal",
+          text: "%1.",
+          alignment: "left",
+          style: {
+            paragraph: {
+              indent: { left: 720, hanging: 260 },
+            },
+          },
+        },
+      ],
+    },
+  ],
 }
 
 const customStyles: IStylesOptions = {
@@ -60,18 +81,17 @@ const customStyles: IStylesOptions = {
       next: "Normal",
       quickFormat: true,
       run: {
-        font: "Aptos", // Monospaced font for code
-        size: 18, // Adjust font size as needed
+        font: "Aptos",
+        size: 18,
       },
       paragraph: {
-        spacing: { after: 30 }, // Adjust spacing as needed
+        spacing: { after: 30 },
         numbering: {
-          reference: "decimal",
+          reference: "myDecimal",
           level: 0,
         },
       },
     },
-    // Add more paragraph styles as needed
   ],
   characterStyles: [
     {
@@ -83,9 +103,7 @@ const customStyles: IStylesOptions = {
         size: 24,
       },
     },
-    // Add more character styles as needed
   ],
-  // If you have initial styles, default styles or imported styles, define them here
 }
 
 class CustomRenderer extends marked.Renderer {
@@ -249,9 +267,10 @@ export const convertMarkdownToWordDocument = async (
 
   const coreProperties: IPropertiesOptions = {
     title: chatThreadName,
-    subject: chatThreadName, // or any other logic to determine the subject
-    creator: aiName, // Using the environment variable
+    subject: chatThreadName,
+    creator: aiName,
     lastModifiedBy: aiName,
+    numbering: numbering,
     sections: [],
   }
 
@@ -273,6 +292,7 @@ export const convertMarkdownToWordDocument = async (
   const messageParagraphs = (await Promise.all(messageParagraphPromises)).flat()
 
   const doc = new Document({
+    numbering: numbering,
     styles: customStyles,
     title: coreProperties.title,
     subject: coreProperties.subject,
@@ -280,6 +300,7 @@ export const convertMarkdownToWordDocument = async (
     lastModifiedBy: coreProperties.lastModifiedBy,
     sections: [{ children: messageParagraphs }],
   })
+  console.log(doc)
 
   Packer.toBlob(doc)
     .then(blob => {
@@ -302,128 +323,3 @@ const processCitationsInText = (text: string): string => {
   const processedText = text.replace(citationPattern, "-- References were removed for privacy reasons --")
   return processedText
 }
-
-//   const paragraphs: Paragraph[] = []
-//   const parser = new DOMParser()
-//   const doc = parser.parseFromString(html, "text/html")
-
-//   const processNode = (node: ChildNode): void => {
-//     if (node.textContent && node.textContent.trim() !== "") {
-//       switch (node.nodeName) {
-//         case "P":
-//           paragraphs.push(new Paragraph(node.textContent.trim()))
-//           break
-//         case "STRONG":
-//           paragraphs.push(
-//             new Paragraph({
-//               children: [new TextRun({ text: node.textContent.trim(), bold: true })],
-//             })
-//           )
-//           break
-//         case "EM":
-//           paragraphs.push(
-//             new Paragraph({
-//               children: [new TextRun({ text: node.textContent.trim(), italics: true })],
-//             })
-//           )
-//           break
-//         case "H1":
-//         case "H2":
-//         case "H3":
-//         case "H4":
-//         case "H5":
-//         case "H6":
-//           paragraphs.push(
-//             new Paragraph({
-//               text: node.textContent.trim(),
-//               heading: HeadingLevel[`HEADING_${node.nodeName.charAt(1)}` as keyof typeof HeadingLevel],
-//             })
-//           )
-//           break
-//         case "UL":
-//         case "OL":
-//           node.childNodes.forEach(li => {
-//             processNode(li)
-//           })
-//           break
-//         case "BLOCKQUOTE":
-//           paragraphs.push(
-//             new Paragraph({
-//               children: [
-//                 new TextRun({
-//                   text: node.textContent.trim(),
-//                   italics: true,
-//                 }),
-//               ],
-//               indent: { left: 720 },
-//             })
-//           )
-//           break
-//         case "LI":
-//           paragraphs.push(
-//             new Paragraph({
-//               text: node.textContent.trim(),
-//               bullet: { level: 0 },
-//             })
-//           )
-//           break
-//       }
-//     }
-//   }
-
-//   doc.body.childNodes.forEach(processNode)
-//   return paragraphs
-// }
-
-// export const convertMarkdownToWordDocument = async (
-//   messages: MessageType[],
-//   fileName: string,
-//   aiName: string,
-//   _userId: string,
-//   _tenantId: string,
-//   _chatThreadId: string
-// ) => {
-//   const renderer = new CustomRenderer()
-//   marked.use({ renderer })
-
-//   const messageParagraphPromises = messages.map(async message => {
-//     const author = message.role === "system" || message.role === "assistant" ? aiName : "You"
-//     const authorParagraph = new Paragraph({
-//       text: `${author}:`,
-//       heading: HeadingLevel.HEADING_2,
-//     })
-
-//     const processedContent = await processCitationsInText(message.content)
-//     const content = await marked.parse(processedContent)
-//     const contentParagraphs = createParagraphFromHtml(content)
-
-//     return [authorParagraph, ...contentParagraphs, new Paragraph("")]
-//   })
-
-//   const messageParagraphs = (await Promise.all(messageParagraphPromises)).flat()
-
-//   const doc = new Document({
-//     sections: [{ children: messageParagraphs }],
-//   })
-
-//   Packer.toBlob(doc)
-//     .then(blob => {
-//       saveAs(blob, fileName)
-//       toast({
-//         title: "Success",
-//         description: "Chat exported to Word document",
-//       })
-//     })
-//     .catch(_err => {
-//       toast({
-//         title: "Error",
-//         description: "Failed to export chat to Word document",
-//       })
-//     })
-// }
-
-// const processCitationsInText = (text: string) => {
-//   const citationPattern = /{% citation[^\n]*/g
-//   const processedText = text.replace(citationPattern, "-- References were removed for privacy reasons --")
-//   return processedText
-// }
