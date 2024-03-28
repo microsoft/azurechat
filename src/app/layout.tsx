@@ -9,8 +9,9 @@ import { ThemeProvider } from "@/features/theme/theme-provider"
 import { AI_NAME } from "@/features/theme/theme-config"
 import { GlobalConfigProvider } from "@/features/globals/global-client-config-context"
 import { Providers } from "@/features/globals/providers"
+import { Footer } from "./footer"
 
-const notoSans = Noto_Sans({ subsets: ["latin"] })
+const notoSans = Noto_Sans({ subsets: ["latin"], preload: true })
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://qchat.ai.qld.gov.au"),
@@ -34,7 +35,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
               <Header />
               <NavBar />
-              <main className="size-full overflow-auto bg-background">{children}</main>
+              <main className="bg-background size-full overflow-auto">{children}</main>
+              <Footer />
               <Toaster />
             </ThemeProvider>
           </Providers>

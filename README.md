@@ -6,39 +6,48 @@ Welcome to the QChat README. This repository hosts the code for QChat, an AI-dri
 
 QChat builds upon the foundational features of the original AzureChat project but is customised to align with the particular operational requirements and standards of the Queensland Government. The application is an integral part of the government's initiative to offer more effective public services through intelligent and responsive digital communication channels.
 
-### Key Adaptations:
-* Support workflows developed to meet the needs of Queensland Government agencies.
-* Integration with the Queensland Government's datasets and APIs.
-* A robust security model in accordance with Queensland Government policies.
-* Adapted user interface that reflects the Queensland Government's branding and adheres to accessibility standards.
-* Advanced analytics features crafted to extract meaningful insights about user interactions and satisfaction.
+### Key Adaptations
 
-### Additional Features:
-* State-of-the-art natural language processing for accurate and context-aware responses.
-* Multi-channel support for integration with various digital interfaces used by the Queensland Government.
-* Streamlined automated reporting functionality that aids in compliance and regulatory documentation management.
+- Support workflows developed to meet the needs of Queensland Government agencies.
+- Integration with the Queensland Government's datasets and APIs.
+- A robust security model in accordance with Queensland Government policies.
+- Adapted user interface that reflects the Queensland Government's branding and adheres to accessibility standards.
+- Advanced analytics features crafted to extract meaningful insights about user interactions and satisfaction.
+
+### Additional Features
+
+- State-of-the-art natural language processing for accurate and context-aware responses.
+- Multi-channel support for integration with various digital interfaces used by the Queensland Government.
+- Streamlined automated reporting functionality that aids in compliance and regulatory documentation management.
 
 ### Contributions
+
 Staff members from Queensland Government agencies are invited to contribute to the ongoing development of QChat. By sharing your unique perspectives and knowledge, you can help enhance QChat to better serve both public sector employees and the citizens of Queensland.
 
 Queensland Government employees who wish to suggest enhancements or add new features are encouraged to get involved. Please feel free to fork the repository, push pull requests, flag issues, or initiate discussions about potential improvements.
 
 ### Access Requests and Suggestions
+
 For access requests or to share suggestions, please enter a submission on the project's issues page. If you require additional information or assistance, contact the Queensland Government AI Unit directly.
 
 We are keen on cultivating a collaborative and creative environment that welcomes innovation and shared improvements. Your contributions will help ensure that our services are optimal for all residents of Queensland.
 
 ### Contact Information
+
 Queensland Government AI Unit
+
 - Project Issues: [GitHub Project Issues](https://github.com/kpqdap/azurechat/issues)
 
 ### Getting Started
+
 For those interested in using or contributing to QChat, please review the `CONTRIBUTING.md` file for detailed guidance on how to contribute.
 
 ### Licence
+
 QChat is licenced under the terms of the [MIT Licence](LICENSE).
 
 ### Acknowledgements
+
 QChat is adapted from Microsoft's AzureChat, which is generously made available as an open-source project under the MIT Licence.
 
 ---

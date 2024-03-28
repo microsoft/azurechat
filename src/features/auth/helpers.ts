@@ -43,13 +43,6 @@ export const getContextPrompt = async (): Promise<string> => {
   throw new Error("Context Prompt not found")
 }
 
-// export const redirectIfAuthenticated = async (): Promise<void> => {
-//   const user = await userSession()
-//   if (user) {
-//     RedirectToPage("chat")
-//   }
-// }
-
 export type UserModel = {
   name: string
   image: string

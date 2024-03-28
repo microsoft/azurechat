@@ -22,15 +22,5 @@ export default async function Home(): Promise<JSX.Element> {
 }
 
 const loadContent = async (): Promise<string> => {
-  // if (process.env.NODE_ENV === "production") {
-  //   const response = await fetch(
-  //     "https://raw.githubusercontent.com/kpqdap/azurechat/main/src/app/change-log/update.md",
-  //     {
-  //       cache: "no-cache",
-  //     }
-  //   );
-  //   return await response.text();
-  // } else {
   return await fs.readFile(process.cwd() + "/public/update.md", "utf8")
-  // }
 }

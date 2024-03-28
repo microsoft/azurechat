@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { CloudUpload, HomeIcon, BookMarked, HeartHandshake, SpellCheck2 } from "lucide-react"
+import { CloudUpload, HomeIcon, BookMarked, SpellCheck2 } from "lucide-react"
 import Typography from "@/components/typography"
 import { ThemeSwitch } from "@/features/theme/theme-switch"
 import { useSession } from "next-auth/react"
@@ -18,7 +18,7 @@ export const NavBar: React.FC = () => {
 
   if (status === "loading") {
     return (
-      <nav aria-label="Main navigation" className="m:h-[44px] border-b-4 border-accent bg-backgroundShade">
+      <nav aria-label="Main navigation" className="m:h-[44px] border-accent bg-backgroundShade border-b-4">
         {" "}
         <div className="container mx-auto hidden md:block">
           <div className="grid grid-cols-12 gap-2">
@@ -46,27 +46,25 @@ export const NavBar: React.FC = () => {
       icon: SpellCheck2,
       condition: status => status === "authenticated",
     },
-    { name: "Terms of Use", href: "/terms", icon: HeartHandshake, condition: status => status === "authenticated" },
-
     // Further links can be added with or without conditions
   ]
 
   const visibleLinks = links.filter(link => !link.condition || (link.condition && link.condition(status)))
 
   return (
-    <nav aria-label="Main navigation" className="m:h-[44px] block border-b-4 border-accent bg-backgroundShade">
+    <nav aria-label="Main navigation" className="m:h-[44px] border-accent bg-backgroundShade block border-b-4">
       <div className="container mx-auto hidden md:block">
         <div dir="ltr" className="grid grid-cols-12 gap-2">
           {visibleLinks.map((link, index) => (
             <div key={index} className="relative col-span-2 flex items-center space-x-2">
-              <a href={link.href} className="group flex w-full items-center justify-center py-2 hover:bg-altBackground">
+              <a href={link.href} className="hover:bg-altBackground group flex w-full items-center justify-center py-2">
                 {link.icon &&
                   React.createElement(link.icon, {
                     className: "h-8 w-5 mr-2",
                     "aria-hidden": "true",
                   })}
                 <Typography variant="h3">{link.name}</Typography>
-                <div className="absolute inset-x-0 bottom-0 border-b-4 border-darkAltButton opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                <div className="border-darkAltButton absolute inset-x-0 bottom-0 border-b-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               </a>
             </div>
           ))}

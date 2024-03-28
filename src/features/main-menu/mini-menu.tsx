@@ -4,7 +4,7 @@ import React from "react"
 import Link from "next/link"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useMiniMenuContext } from "./mini-menu-context"
-import { CloudUpload, SpellCheck2, X, LogIn, LogOut, Moon, Sun, Home, HeartHandshake, Bookmark } from "lucide-react"
+import { CloudUpload, SpellCheck2, X, LogIn, LogOut, Moon, Sun, Home, Bookmark } from "lucide-react"
 import { useTheme } from "next-themes"
 import { UrlObject } from "url"
 import { cn } from "@/lib/utils"
@@ -53,8 +53,6 @@ export const MiniMenu: React.FC = () => {
       icon: SpellCheck2,
       ariaLabel: "Help with factual errors",
     },
-    { name: "Terms of Use", href: "/terms", icon: HeartHandshake, ariaLabel: "Navigate to terms of use" },
-
     // { name: 'Settings', href: '/settings', icon: UserCog, ariaLabel: 'Navigate to settings' },
   ]
 
