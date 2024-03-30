@@ -106,6 +106,7 @@ export const UpdateChatThreadTitle = async (
     const response = await FindChatThreadForCurrentUser(chatThreadId)
     if (response.status !== "OK") return response
     const chatThread = response.response
+    chatThread.previousChatName = chatThread.name
     chatThread.name = newTitle.substring(0, 30)
     return await UpsertChatThread(chatThread)
   } catch (error) {
@@ -277,14 +278,9 @@ export const InitChatSession = async (
   const updatedChatThreadResponse = await UpsertChatThread({
     ...currentChatThreadResponse.response,
     chatType: chatType,
-    chatCategory: "Uncategorised",
     chatOverFileName: chatOverFileName,
     conversationStyle: conversationStyle,
     conversationSensitivity: conversationSensitivity,
-    name: "New Chat",
-    previousChatName: "",
-    prompts: [],
-    selectedPrompt: "",
   })
   if (updatedChatThreadResponse.status !== "OK") return updatedChatThreadResponse
 
