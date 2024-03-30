@@ -156,7 +156,7 @@ export const FindAllChatDocumentsForCurrentUser = async (
     const [userId, tenantId] = await Promise.all([userHashedId(), getTenantId()])
     const query: SqlQuerySpec = {
       query:
-        "SELECT * FROM root r WHERE r.type=@type AND r.isDeleted=@isDeleted AND r.userId=@userId AND r.tenantId=@tenantId AND r.createdAt >= @createdAt ORDER BY r.createdAt DESC",
+        "SELECT * FROM root r WHERE r.chatThreadId=@chatThreadId AND r.type=@type AND r.isDeleted=@isDeleted AND r.userId=@userId AND r.tenantId=@tenantId AND r.createdAt >= @createdAt ORDER BY r.createdAt DESC",
       parameters: [
         { name: "@chatThreadId", value: chatThreadId },
         { name: "@type", value: ChatRecordType.Document },
