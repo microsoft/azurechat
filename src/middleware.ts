@@ -52,6 +52,7 @@ export const config = {
   matcher: [
     "/admin/:path*",
     "/api/chat/:path*",
+    "/api/cosmos/:path*",
     "/api/images/:path*",
     "/chat/:path*",
     "/hallucinations/:path*",

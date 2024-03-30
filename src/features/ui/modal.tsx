@@ -33,6 +33,8 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
         </div>
         <div className="mb-4">
           <FeedbackTextarea
+            name={props.chatMessageId + "Feedback text"}
+            id={props.chatMessageId + "Feedback text id"}
             aria-label="Enter your feedback"
             placeholder="Please provide any additional details about the message or your feedback, our team will not reply directly but it will assist us in improving our service."
             rows={6}

@@ -131,6 +131,7 @@ const getsertUser = async (userGroups: string[], user: User | AdapterUser): Prom
         accepted_terms: false,
         accepted_terms_date: "",
         groups: userGroups,
+        contextPrompt: null,
         failed_login_attempts: 0,
         last_failed_login: null,
         history: [`${now}: User created.`],

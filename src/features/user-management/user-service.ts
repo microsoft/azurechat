@@ -21,6 +21,7 @@ export type UserActivity = {
   groups?: string[] | null | undefined
   failed_login_attempts: number
   last_failed_login: Date | null
+  contextPrompt?: string | null
   [key: string]: unknown
 }
 

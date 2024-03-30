@@ -1,6 +1,5 @@
 import { createHash } from "crypto"
 import { getServerSession } from "next-auth"
-// import { RedirectToPage } from "../common/navigation-helpers"
 import { options } from "./auth-api"
 
 export const userSession = async (): Promise<UserModel | null> => {
