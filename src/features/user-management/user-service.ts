@@ -67,27 +67,46 @@ export const UpdateUser = async (
 
   const updateTimestamp = new Date().toISOString()
 
-  const oldUser = await GetUserByUpn(tenantId, user.upn)
+  const oldUserResponse = await GetUserByUpn(tenantId, user.upn)
   const container = await UserContainer()
 
-  if (oldUser.status === "NOT_FOUND") await container.items.upsert(user)
+  if (oldUserResponse.status === "NOT_FOUND") {
+    await container.items.upsert(user)
+    return {
+      status: "OK",
+      response: user,
+    }
+  } else if (oldUserResponse.status === "OK") {
+    const oldUser = oldUserResponse.response
+    let historyUpdated = false
+    const changes: string[] = oldUser.history || []
 
-  if (oldUser.status === "OK") {
-    const changes: string[] = user.history || []
     Object.keys(user).forEach(key => {
-      if (key !== "history" && oldUser.response[key] !== user[key]) {
-        changes.push(`${updateTimestamp}: ${key} changed by ${user.upn}`)
+      if (key !== "history" && key !== "last_login" && key !== "groups" && oldUser[key] !== user[key]) {
+        changes.push(`${updateTimestamp}: ${key} changed from ${oldUser[key]} to ${user[key]} by ${user.upn}`)
+        historyUpdated = true
       }
     })
-    user.history = changes
+
+    if (!arraysAreEqual(user.groups || [], oldUser.groups || [])) {
+      user.groups = user.groups ? [...user.groups] : []
+      user.groups = [...user.groups]
+      historyUpdated = true
+    }
+
+    if (historyUpdated) {
+      user.history = changes
+    }
+
     user.last_login = new Date(updateTimestamp)
 
     const { resource } = await container.items.upsert<UserRecord>(user)
-    if (!resource)
+    if (!resource) {
       return {
         status: "ERROR",
         errors: [{ message: "User could not be updated." }],
       }
+    }
     return {
       status: "OK",
       response: resource,
@@ -96,8 +115,15 @@ export const UpdateUser = async (
 
   return {
     status: "ERROR",
-    errors: [{ message: "User could not be updated." }],
+    errors: [{ message: "Unexpected error occurred while updating user." }],
   }
+}
+
+const arraysAreEqual = (array1: string[], array2: string[]): boolean => {
+  if (array1.length !== array2.length) return false
+  const sortedArray1 = [...array1].sort()
+  const sortedArray2 = [...array2].sort()
+  return sortedArray1.every((value, index) => value === sortedArray2[index])
 }
 
 export const GetUserByUpn = async (tenantId: string, upn: string): ServerActionResponseAsync<UserRecord> => {
