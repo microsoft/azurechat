@@ -222,3 +222,43 @@ export const CreateUserFeedback = async (
     response: resource,
   }
 }
+
+export const migrateChatMessagesForCurrentUser = async (
+  userId: string,
+  tenantId: string
+): ServerActionResponseAsync<ChatMessageModel[]> => {
+  try {
+    const query: SqlQuerySpec = {
+      query: "SELECT * FROM c WHERE c.userId=@userId AND c.tenantId=@tenantId AND c.threadId != null",
+      parameters: [
+        { name: "@userId", value: userId },
+        { name: "@tenantId", value: tenantId },
+      ],
+    }
+
+    const container = await HistoryContainer()
+    const { resources } = await container.items
+      .query<ChatMessageModel>(query, {
+        partitionKey: [tenantId, userId],
+      })
+      .fetchAll()
+
+    for (const resource of resources) {
+      await container.item(resource.id, [tenantId, userId]).patch([
+        { op: "add", path: "/chatThreadId", value: resource.threadId },
+        { op: "remove", path: "/threadId", value: null },
+      ])
+    }
+
+    return {
+      status: "OK",
+      response: resources,
+    }
+  } catch (error) {
+    console.error("Error occurred during chat message migration: ", error)
+    return {
+      status: "ERROR",
+      errors: [{ message: '"Updating your chat messages failed, please contact support"' }],
+    }
+  }
+}

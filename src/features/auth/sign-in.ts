@@ -3,6 +3,7 @@ import { CreateTenant, GetTenantById, type TenantRecord } from "@/features/tenan
 import { hashValue } from "./helpers"
 import { User } from "next-auth"
 import { AdapterUser } from "next-auth/adapters"
+import { migrateChatMessagesForCurrentUser } from "../chat/chat-services/chat-message-service"
 
 export enum SignInErrorType {
   NotAuthorised = "notAuthorised",
@@ -62,7 +63,7 @@ export class UserSignInHandler {
 
         const userUpdate = {
           ...updateFailedLogin(userRecord),
-          groups: [],
+          groups: userGroups,
         }
         const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
         if (updatedUser.status !== "OK") throw updatedUser
@@ -80,6 +81,7 @@ export class UserSignInHandler {
         }
         const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
         if (updatedUser.status !== "OK") throw updatedUser
+        await migrateChatMessagesForCurrentUser(updatedUser.response.id, user.tenantId)
         return { success: true }
       }
 
@@ -106,7 +108,6 @@ const updateFailedLogin = (existingUser: UserRecord): UserRecord => ({
 const resetFailedLogin = (existingUser: UserRecord): UserRecord => ({
   ...existingUser,
   failed_login_attempts: 0,
-  last_failed_login: new Date(),
 })
 
 const isUserInRequiredGroups = (userGroups: string[], requiredGroups: string[]): boolean =>
