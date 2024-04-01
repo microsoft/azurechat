@@ -28,7 +28,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   }, [isLoading, router])
 
   return (
-    <div className="bg-altBackground h-full overflow-y-auto" ref={scrollRef}>
+    <div className="h-full overflow-y-auto bg-altBackground" ref={scrollRef}>
       <div className="flex h-auto justify-center p-4">
         <ChatHeader />
       </div>
