@@ -1,9 +1,8 @@
 param name string = 'azurechat-demo'
 param resourceToken string
 
-param openai_api_version string
-
 param openAiLocation string
+param openai_api_version string
 param openAiSkuName string = 'S0'
 param chatGptDeploymentCapacity int = 30
 param chatGptDeploymentName string = 'chat-gpt-35-turbo'
@@ -14,16 +13,16 @@ param embeddingDeploymentCapacity int = 10
 param embeddingModelName string = 'text-embedding-ada-002'
 
 param dalleLocation string
+param dalleApiVersion string
 param dalleDeploymentCapacity int
 param dalleDeploymentName string
 param dalleModelName string
-param dalleApiVersion string
 
 param gptvisionLocation string
+param gptvisionApiVersion string
 param gptvisionDeploymentCapacity int = 30
 param gptvisionDeploymentName string = 'gpt-4-vision'
 param gptvisionModelName string = 'gpt-4'
-param gptvisionApiVersion string = '2023-12-01-preview'
 param gptvisionModelVersion string = 'vision-preview'
 
 param speechServiceSkuName string = 'S0'
@@ -53,8 +52,9 @@ var cosmos_name = toLower('${name}-cosmos-${resourceToken}')
 var search_name = toLower('${name}search${resourceToken}')
 var webapp_name = toLower('${name}-webapp-${resourceToken}')
 var appservice_name = toLower('${name}-app-${resourceToken}')
-// storage name must be less than 24 chars, alphanumeric only - token is 13
-var storage_prefix = take(name, 8)
+// storage name must be < 24 chars, alphanumeric only. 'sto' is 3 and resourceToken is 13
+var clean_name = replace(replace(name, '-', ''), '_', '')
+var storage_prefix = take(clean_name, 8)
 var storage_name = toLower('${storage_prefix}sto${resourceToken}')
 // keyvault name must be less than 24 chars - token is 13
 var kv_prefix = take(name, 7)

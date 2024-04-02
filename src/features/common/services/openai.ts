@@ -47,7 +47,7 @@ export const OpenAIDALLEInstance = () => {
     baseURL: `https://${process.env.AZURE_OPENAI_DALLE_API_INSTANCE_NAME}.openai.azure.com/openai/deployments/${process.env.AZURE_OPENAI_DALLE_API_DEPLOYMENT_NAME}`,
     defaultQuery: {
       "api-version":
-        process.env.AZURE_OPENAI_DALLE_API_VERSION || "2023-12-01-preview",
+        process.env.AZURE_OPENAI_DALLE_API_VERSION || "2024-02-01",
     },
     defaultHeaders: {
       "api-key": process.env.AZURE_OPENAI_DALLE_API_KEY,

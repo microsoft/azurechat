@@ -22,7 +22,7 @@ Once the model is deployed successfully, update the environment variables in the
 AZURE_OPENAI_DALLE_API_KEY=222222
 AZURE_OPENAI_DALLE_API_INSTANCE_NAME=azurechat-dall-e
 AZURE_OPENAI_DALLE_API_DEPLOYMENT_NAME=dall-e
-AZURE_OPENAI_DALLE_API_VERSION=2023-12-01-preview
+AZURE_OPENAI_DALLE_API_VERSION=2024-02-01
 ```
 
 2. **Azure Blob Storage**: Create a new Azure Blob Storage account and update the environment variables in the `.env.local` file and on Azure App settings.
@@ -44,7 +44,7 @@ Once the model is deployed successfully, update the environment variables in the
 AZURE_OPENAI_VISION_API_KEY=333333
 AZURE_OPENAI_VISION_API_INSTANCE_NAME=azurechat-vision
 AZURE_OPENAI_VISION_API_DEPLOYMENT_NAME=gpt-4-vision
-AZURE_OPENAI_VISION_API_VERSION=2023-12-01-preview
+AZURE_OPENAI_VISION_API_VERSION=2024-02-01
 ```
 
 ## Existing Azure services
