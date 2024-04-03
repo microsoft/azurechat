@@ -26,7 +26,7 @@ export const EasterEgg = (): React.JSX.Element => {
         <div className={`flex items-center justify-center ${textColorClass}`}>
           <Heart className="size-4" fill="currentColor" />
           <p className="mx-2 text-sm">
-            Made with love by Keith Oak, Rahul Shokeen, Ella Salehi, Fred Delage and Bruno Piovan
+            Made with love by Keith Oak, Rahul Shokeen, Ella Salehi, Fred Delage, Bruno Piovan and Jay Sindorff
           </p>
           <Heart className="size-4" fill="currentColor" />
         </div>
