@@ -1,6 +1,6 @@
-import { UserContainer } from "@/features/common/services/cosmos"
+import { hashValue } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { hashValue } from "../auth/helpers"
+import { UserContainer } from "@/features/common/services/cosmos"
 
 export type UserIdentity = {
   id: string

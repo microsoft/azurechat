@@ -1,5 +1,5 @@
-import { Card } from "@/features/ui/card"
 import { StartNewChat } from "@/features/chat/chat-ui/chat-empty-state/start-new-chat"
+import { Card } from "@/features/ui/card"
 
 export const dynamic = "force-dynamic"
 

@@ -1,10 +1,11 @@
 import React from "react"
-import { QgovSvg } from "@/features/ui/qldgovlogo"
-import { QgovMiniSvg } from "@/features/ui/qldgovminilogo"
+
 import Typography from "@/components/typography"
-import { UserComponent } from "@/features/ui/user-login-logout"
 import { MiniMenu } from "@/features/main-menu/mini-menu"
 import { AI_NAME } from "@/features/theme/theme-config"
+import { QgovSvg } from "@/features/ui/qldgovlogo"
+import { QgovMiniSvg } from "@/features/ui/qldgovminilogo"
+import { UserComponent } from "@/features/ui/user-login-logout"
 
 const Sidebar: React.FC = () => {
   return (

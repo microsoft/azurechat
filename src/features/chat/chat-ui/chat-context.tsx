@@ -1,9 +1,12 @@
 "use client"
 
-import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 import { Message } from "ai"
 import { UseChatHelpers, useChat } from "ai/react"
+import { useRouter } from "next/navigation"
 import React, { FC, createContext, useContext, useState } from "react"
+
+import { DataItem } from "@/features/chat/chat-services/chat-api-simple"
+import { transformCosmosToAIModel } from "@/features/chat/chat-services/utils"
 import {
   ChatMessageModel,
   ChatThreadModel,
@@ -12,12 +15,11 @@ import {
   ConversationSensitivity,
   PromptGPTBody,
 } from "@/features/chat/models"
-import { transformCosmosToAIModel } from "../chat-services/utils"
+import { useGlobalMessageContext } from "@/features/globals/global-message-context"
+
 import { FileState, useFileState } from "./chat-file/use-file-state"
 import { SpeechToTextProps, useSpeechToText } from "./chat-speech/use-speech-to-text"
 import { TextToSpeechProps, useTextToSpeech } from "./chat-speech/use-text-to-speech"
-import { useRouter } from "next/navigation"
-import { DataItem } from "../chat-services/chat-api-simple"
 
 interface ChatContextProps extends UseChatHelpers {
   id: string

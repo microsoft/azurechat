@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
-import { getPromptSuggestions } from "@/features/chat/chat-services/prompt-suggestions"
 import React from "react"
+
+import { getPromptSuggestions } from "@/features/chat/chat-services/prompt-suggestions"
 
 interface PromptSuggestionProps {
   newInputValue: string

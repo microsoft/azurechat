@@ -1,16 +1,17 @@
 "use client"
-import React, { FC, useState, useEffect, useRef } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { useGlobalMessageContext } from "@/features/globals/global-message-context"
-import { Button } from "@/features/ui/button"
-import { MenuItem } from "@/components/menu"
 import { FileText, MessageCircle, Trash, Pencil, AudioLines } from "lucide-react"
-import { ChatThreadModel } from "../models"
+import { useParams, useRouter } from "next/navigation"
+import React, { FC, useState, useEffect, useRef } from "react"
+
+import { MenuItem } from "@/components/menu"
+import Typography from "@/components/typography"
 import {
   UpdateChatThreadTitle,
   SoftDeleteChatThreadForCurrentUser,
 } from "@/features/chat/chat-services/chat-thread-service"
-import Typography from "@/components/typography"
+import { ChatThreadModel } from "@/features/chat/models"
+import { useGlobalMessageContext } from "@/features/globals/global-message-context"
+import { Button } from "@/features/ui/button"
 
 interface Prop {
   menuItems: Array<ChatThreadModel>

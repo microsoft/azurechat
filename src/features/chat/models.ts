@@ -52,6 +52,8 @@ export interface ChatMessageModel {
   createdAt: Date
   isDeleted: boolean
   chatThreadId: string
+  /** @deprecated Legacy id - use chatThreadId instead */
+  threadId?: string
   userId: string | undefined
   tenantId: string | undefined
   content: string

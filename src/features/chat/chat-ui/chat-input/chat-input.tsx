@@ -1,13 +1,15 @@
+import { Loader, Send } from "lucide-react"
+import { getSession } from "next-auth/react"
+import { FC, FormEvent, useRef, useMemo } from "react"
+
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
+import { ChatFileSlider } from "@/features/chat/chat-ui/chat-file/chat-file-slider"
+import { convertMarkdownToWordDocument } from "@/features/common/file-export"
+import { AI_NAME } from "@/features/theme/theme-config"
 import { Button } from "@/features/ui/button"
 import { Textarea } from "@/features/ui/textarea"
-import { useChatContext } from "@/features/chat/chat-ui/chat-context"
-import { Loader, Send } from "lucide-react"
-import { FC, FormEvent, useRef, useMemo } from "react"
-import { AI_NAME } from "@/features/theme/theme-config"
-import { ChatFileSlider } from "../chat-file/chat-file-slider"
-import { convertMarkdownToWordDocument } from "@/features/common/file-export"
+
 import ChatInputMenu from "./chat-input-menu"
-import { getSession } from "next-auth/react"
 
 interface Props {}
 

@@ -1,6 +1,7 @@
-import { toast } from "@/features/ui/use-toast"
 import { ToastAction } from "@radix-ui/react-toast"
 import { createContext, useContext } from "react"
+
+import { toast } from "@/features/ui/use-toast"
 
 interface GlobalMessageProps {
   showError: (error: string, reload?: () => void) => void

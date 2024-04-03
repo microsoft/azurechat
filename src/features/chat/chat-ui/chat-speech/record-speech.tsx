@@ -1,7 +1,8 @@
-import { Button } from "@/features/ui/button"
 import { Mic } from "lucide-react"
 import { FC } from "react"
-import { useChatContext } from "../chat-context"
+
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
+import { Button } from "@/features/ui/button"
 
 interface Prop {
   disabled: boolean

@@ -1,14 +1,15 @@
 "use client"
 
-import { Button } from "@/features/ui/button"
 import { MessageSquarePlus } from "lucide-react"
 import { useRouter } from "next/navigation"
+
 import {
   CreateChatThread,
   FindChatThreadByTitleAndEmpty,
   UpdateChatThreadCreatedAt,
-} from "../chat-services/chat-thread-service"
+} from "@/features/chat/chat-services/chat-thread-service"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
+import { Button } from "@/features/ui/button"
 
 export const NewChat = (): JSX.Element => {
   const router = useRouter()

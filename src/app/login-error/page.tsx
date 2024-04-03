@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardDescription } from "@/features/ui/card"
-import { Button } from "@/features/ui/button"
-import { AI_NAME } from "@/features/theme/theme-config"
+
 import { SignInErrorType } from "@/features/auth/sign-in"
+import { AI_NAME } from "@/features/theme/theme-config"
+import { Button } from "@/features/ui/button"
+import { Card, CardContent, CardHeader, CardDescription } from "@/features/ui/card"
 
 const ErrorPage: React.FC = () => {
   const router = useRouter()

@@ -1,11 +1,12 @@
 "use client"
 
-import React from "react"
-import { useSession, signIn, signOut } from "next-auth/react"
 import { LogIn, LogOut } from "lucide-react"
+import { useSession, signIn, signOut } from "next-auth/react"
+import React from "react"
+
+import { signInProvider } from "@/app-global"
 import Typography from "@/components/typography"
 import { Button } from "@/features/ui/button"
-import { signInProvider } from "@/app-global"
 
 export const UserComponent: React.FC = () => {
   const { data: session, status } = useSession({ required: false })

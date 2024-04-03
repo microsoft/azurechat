@@ -1,8 +1,9 @@
 "use client"
 
-import React from "react"
-import { Button } from "./button"
 import { CheckIcon, ClipboardIcon, ThumbsUp, ThumbsDown } from "lucide-react"
+import React from "react"
+
+import { Button } from "./button"
 import { useWindowSize } from "./windowsize"
 
 interface AssistantButtonsProps {

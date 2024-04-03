@@ -41,3 +41,9 @@ infra/aad_setup.sh
 **./playwright-report
 **./blob-report/
 **./playwright/.cache/
+
+# Cache Files
+.eslintjscache
+.eslintmdcache
+.stylelintcache
+.prettiercache

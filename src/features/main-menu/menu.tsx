@@ -1,11 +1,13 @@
 "use client"
 
-import { Button } from "@/features/ui/button"
 import { LayoutDashboard, PanelLeftClose, PanelRightClose, Home } from "lucide-react"
 import Link from "next/link"
-import { ThemeToggle } from "../theme/theme-toggle"
-import { UserProfile } from "../user-profile"
 import { useSession } from "next-auth/react"
+
+import { ThemeToggle } from "@/features/theme/theme-toggle"
+import { Button } from "@/features/ui/button"
+import { UserProfile } from "@/features/user-profile"
+
 import { useMenuContext } from "./menu-context"
 
 export const MainMenu = (): JSX.Element => {

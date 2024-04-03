@@ -1,9 +1,11 @@
-import { CreateUser, GetUserByUpn, UpdateUser, type UserRecord } from "@/features/user-management/user-service"
-import { CreateTenant, GetTenantById, type TenantRecord } from "@/features/tenant-management/tenant-service"
-import { hashValue } from "./helpers"
 import { User } from "next-auth"
 import { AdapterUser } from "next-auth/adapters"
-import { migrateChatMessagesForCurrentUser } from "../chat/chat-services/chat-message-service"
+
+import { migrateChatMessagesForCurrentUser } from "@/features/chat/chat-services/chat-message-service"
+import { CreateTenant, GetTenantById, type TenantRecord } from "@/features/tenant-management/tenant-service"
+import { CreateUser, GetUserByUpn, UpdateUser, type UserRecord } from "@/features/user-management/user-service"
+
+import { hashValue } from "./helpers"
 
 export enum SignInErrorType {
   NotAuthorised = "notAuthorised",

@@ -1,7 +1,9 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import Link from "next/link"
 import { UrlObject } from "url"
+
+import Link from "next/link"
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
 
 const Menu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("flex w-80 flex-col", className)} {...props} />

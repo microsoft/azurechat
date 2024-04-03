@@ -1,5 +1,5 @@
-import { getToken } from "next-auth/jwt"
 import { NextRequest, NextResponse } from "next/server"
+import { getToken } from "next-auth/jwt"
 
 const LOGIN_PAGE = "/login"
 const UNAUTHORISED_PAGE = "/unauthorised"

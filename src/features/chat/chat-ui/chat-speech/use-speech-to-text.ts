@@ -1,4 +1,3 @@
-import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 import {
   AudioConfig,
   AutoDetectSourceLanguageConfig,
@@ -6,6 +5,9 @@ import {
   SpeechRecognizer,
 } from "microsoft-cognitiveservices-speech-sdk"
 import { useRef, useState } from "react"
+
+import { useGlobalMessageContext } from "@/features/globals/global-message-context"
+
 import { GetSpeechToken } from "./speech-service"
 
 export interface SpeechToTextProps {

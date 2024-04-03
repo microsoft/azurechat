@@ -1,8 +1,9 @@
-import Typography from "@/components/typography"
-import { Card } from "@/features/ui/card"
-import { userSession } from "@/features/auth/helpers"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+
+import Typography from "@/components/typography"
+import { userSession } from "@/features/auth/helpers"
+import { Card } from "@/features/ui/card"
 
 export const dynamic = "force-dynamic"
 

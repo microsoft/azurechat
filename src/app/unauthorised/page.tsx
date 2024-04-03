@@ -1,8 +1,9 @@
 "use client"
 
-import { Card } from "@/features/ui/card"
 import { useRouter } from "next/navigation"
 import React from "react"
+
+import { Card } from "@/features/ui/card"
 
 const Home: React.FC = () => {
   const router = useRouter()

@@ -1,5 +1,6 @@
 "use client"
 import { FC } from "react"
+
 import { CitationSlider } from "./citation-slider"
 
 interface Citation {

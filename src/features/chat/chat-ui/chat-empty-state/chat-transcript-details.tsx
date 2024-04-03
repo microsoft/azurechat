@@ -1,5 +1,6 @@
-import React, { useState } from "react"
 import * as Label from "@radix-ui/react-label"
+import React, { useState } from "react"
+
 import { AssociateOffenderWithChatThread } from "@/features/chat/chat-services/chat-thread-service"
 import { Button } from "@/features/ui/button"
 

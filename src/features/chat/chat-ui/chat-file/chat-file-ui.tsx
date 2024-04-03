@@ -1,10 +1,12 @@
-import { Button } from "@/features/ui/button"
-import { Input } from "@/features/ui/input"
 import { ArrowUpCircle, Loader2 } from "lucide-react"
 import { FC, useRef } from "react"
-import { useChatContext } from "../chat-context"
+
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
+import { OffenderTranscriptForm } from "@/features/chat/chat-ui/chat-empty-state/chat-transcript-details"
+import { Button } from "@/features/ui/button"
+import { Input } from "@/features/ui/input"
+
 import { useFileSelection } from "./use-file-selection"
-import { OffenderTranscriptForm } from "../chat-empty-state/chat-transcript-details"
 
 export const ChatFileUI: FC = () => {
   const { id, fileState, chatBody, offenderId } = useChatContext()

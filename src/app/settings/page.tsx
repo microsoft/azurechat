@@ -7,7 +7,7 @@ export default function Home(): JSX.Element {
     <div className="col-span-5 size-full">
       <div className="grid size-full grid-cols-2 grid-rows-2 justify-center">
         <Card className="col-span-1 w-full p-4">
-          <div className="bg-altBackground text-foreground flex h-full flex-col justify-between rounded-lg shadow-sm">
+          <div className="flex h-full flex-col justify-between rounded-lg bg-altBackground text-foreground shadow-sm">
             <CardHeader>
               <CardTitle className="my-2 text-center font-bold">Coming Soon</CardTitle>
             </CardHeader>
@@ -15,7 +15,7 @@ export default function Home(): JSX.Element {
           </div>
         </Card>
         <Card className="col-span-1 w-full p-4">
-          <div className="bg-altBackground text-foreground flex h-full flex-col justify-between rounded-lg shadow-sm">
+          <div className="flex h-full flex-col justify-between rounded-lg bg-altBackground text-foreground shadow-sm">
             <CardHeader>
               <CardTitle className="my-2 text-center font-bold">Coming Soon</CardTitle>
             </CardHeader>
@@ -23,7 +23,7 @@ export default function Home(): JSX.Element {
           </div>
         </Card>
         <Card className="col-span-1 w-full p-4">
-          <div className="bg-altBackground text-foreground flex h-full flex-col justify-between rounded-lg shadow-sm">
+          <div className="flex h-full flex-col justify-between rounded-lg bg-altBackground text-foreground shadow-sm">
             <CardHeader>
               <CardTitle className="my-2 text-center font-bold">Coming Soon</CardTitle>
             </CardHeader>
@@ -31,7 +31,7 @@ export default function Home(): JSX.Element {
           </div>
         </Card>
         <Card className="col-span-1 w-full p-4">
-          <div className="bg-altBackground text-foreground flex h-full flex-col justify-between rounded-lg shadow-sm">
+          <div className="flex h-full flex-col justify-between rounded-lg bg-altBackground text-foreground shadow-sm">
             <CardHeader>
               <CardTitle className="my-2 text-center font-bold">Coming Soon</CardTitle>
             </CardHeader>

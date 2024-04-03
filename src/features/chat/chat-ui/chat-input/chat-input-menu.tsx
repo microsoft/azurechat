@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from "react"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
-import { Button } from "@/features/ui/button"
-import { Menu, File, Clipboard, Bird } from "lucide-react"
 import { Message } from "ai"
-import { useToast } from "@/features/ui/use-toast"
+import { Menu, File, Clipboard, Bird } from "lucide-react"
 import { getSession } from "next-auth/react"
+import React, { useEffect, useRef } from "react"
+
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
+import { Button } from "@/features/ui/button"
+import { useToast } from "@/features/ui/use-toast"
 
 interface ChatInputMenuProps {
   onDocExport: () => void

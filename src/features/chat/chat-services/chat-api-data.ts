@@ -1,14 +1,16 @@
+import { OpenAIStream, StreamingTextResponse } from "ai"
+import { Completion } from "openai/resources/completions"
+
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
+import { PromptGPTProps } from "@/features/chat/models"
 import { OpenAIInstance } from "@/features/common/services/open-ai"
 import { AI_NAME } from "@/features/theme/theme-config"
-import { OpenAIStream, StreamingTextResponse } from "ai"
+
 import { AzureCogDocumentIndex, similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-vector-store"
-import { InitChatSession } from "./chat-thread-service"
-import { AddChatMessage, FindTopChatMessagesForCurrentUser } from "./chat-message-service"
-import { PromptGPTProps } from "../models"
-import { UpdateChatThreadIfUncategorised } from "./chat-utility"
 import { DocumentSearchModel } from "./azure-cog-search/azure-cog-vector-store"
-import { Completion } from "openai/resources/completions"
+import { AddChatMessage, FindTopChatMessagesForCurrentUser } from "./chat-message-service"
+import { InitChatSession } from "./chat-thread-service"
+import { UpdateChatThreadIfUncategorised } from "./chat-utility"
 
 const SYSTEM_PROMPT = `You are ${AI_NAME} who is a helpful AI Assistant.`
 const CONTEXT_PROMPT = ({ context, userQuestion }: { context: string; userQuestion: string }): string => {

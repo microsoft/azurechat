@@ -1,12 +1,14 @@
-import { userSession } from "@/features/auth/helpers"
-import { OpenAIInstance } from "@/features/common/services/open-ai"
 import { JSONValue, OpenAIStream, StreamingTextResponse, experimental_StreamData } from "ai"
-import { InitChatSession } from "./chat-thread-service"
-import { AddChatMessage, FindTopChatMessagesForCurrentUser } from "./chat-message-service"
-import { PromptGPTProps, ChatRole } from "../models"
-import { UpdateChatThreadIfUncategorised } from "./chat-utility"
-import { translator } from "./chat-translator-service"
 import { Completion } from "openai/resources/completions"
+
+import { userSession } from "@/features/auth/helpers"
+import { PromptGPTProps, ChatRole } from "@/features/chat/models"
+import { OpenAIInstance } from "@/features/common/services/open-ai"
+
+import { AddChatMessage, FindTopChatMessagesForCurrentUser } from "./chat-message-service"
+import { InitChatSession } from "./chat-thread-service"
+import { translator } from "./chat-translator-service"
+import { UpdateChatThreadIfUncategorised } from "./chat-utility"
 
 async function buildUserContextPrompt(): Promise<string> {
   const session = await userSession()

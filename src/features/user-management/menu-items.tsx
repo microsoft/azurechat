@@ -1,9 +1,10 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import { getSession } from "next-auth/react"
-import { MenuItem } from "@/components/menu"
 import { FileText } from "lucide-react"
+import { getSession } from "next-auth/react"
+import React, { useEffect, useState } from "react"
+
+import { MenuItem } from "@/components/menu"
 
 export const UserSettings = (): JSX.Element => {
   const [upn, setUPN] = useState<string | null>(null)

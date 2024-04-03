@@ -1,8 +1,9 @@
-import { ApplicationInsights, IConfiguration } from "@microsoft/applicationinsights-web"
-import { ReactPlugin } from "@microsoft/applicationinsights-react-js"
 import { ClickAnalyticsPlugin } from "@microsoft/applicationinsights-clickanalytics-js"
-import { IAppInsightsContext } from "./app-insights-context"
+import { ReactPlugin } from "@microsoft/applicationinsights-react-js"
+import { ApplicationInsights, IConfiguration } from "@microsoft/applicationinsights-web"
 import { createBrowserHistory } from "history"
+
+import { IAppInsightsContext } from "./app-insights-context"
 
 type EventProperties = Record<string, unknown>
 

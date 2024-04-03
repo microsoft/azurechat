@@ -1,10 +1,11 @@
 "use client"
 
-import { AI_NAME } from "@/features/theme/theme-config"
 import { signIn } from "next-auth/react"
+
+import { signInProvider } from "@/app-global"
+import { AI_NAME } from "@/features/theme/theme-config"
 import { Button } from "@/features/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/ui/card"
-import { signInProvider } from "@/app-global"
 
 export const LogIn: React.FC = () => {
   return (

@@ -1,16 +1,17 @@
 "use client"
 
+import { Message } from "ai/react/dist"
 import React, { FC, useState } from "react"
+
+import { Markdown } from "@/components/markdown/markdown"
+import Typography from "@/components/typography"
+import { CreateUserFeedback } from "@/features/chat/chat-services/chat-message-service"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatRole, ChatSentiment, FeedbackType } from "@/features/chat/models"
-import Typography from "../typography"
-import Modal from "@/features/ui/modal"
-import { Markdown } from "../markdown/markdown"
-import AssistantButtons from "@/features/ui/assistant-buttons"
-import { AI_NAME } from "@/features/theme/theme-config"
-import { CreateUserFeedback } from "@/features/chat/chat-services/chat-message-service"
-import { Message } from "ai/react/dist"
 import { showError } from "@/features/globals/global-message-store"
+import { AI_NAME } from "@/features/theme/theme-config"
+import AssistantButtons from "@/features/ui/assistant-buttons"
+import Modal from "@/features/ui/modal"
 
 interface ChatRowProps {
   chatMessageId: string

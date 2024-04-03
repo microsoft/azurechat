@@ -1,5 +1,6 @@
 import { BlobServiceClient, RestError } from "@azure/storage-blob"
-import { ServerActionResponse } from "../server-action-response"
+
+import { ServerActionResponse } from "@/features/common/server-action-response"
 
 const InitBlobServiceClient = (): BlobServiceClient => {
   const acc = process.env.AZURE_STORAGE_ACCOUNT_NAME

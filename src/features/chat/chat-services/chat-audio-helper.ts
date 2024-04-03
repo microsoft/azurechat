@@ -10,10 +10,12 @@ import {
   SpeechRecognizer,
   AudioInputStream,
 } from "microsoft-cognitiveservices-speech-sdk"
-import { arrayBufferToBase64 } from "./chat-document-helper"
-import { GetSpeechToken } from "../chat-ui/chat-speech/speech-service"
-import { AudioOutputFormatImpl } from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioOutputFormat"
 import { FileAudioSource } from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/FileAudioSource"
+import { AudioOutputFormatImpl } from "microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioOutputFormat"
+
+import { GetSpeechToken } from "@/features/chat/chat-ui/chat-speech/speech-service"
+
+import { arrayBufferToBase64 } from "./chat-document-helper"
 
 export const speechToTextRecognizeOnce = async (formData: FormData): Promise<string[]> => {
   const speechToken = await GetSpeechToken()

@@ -1,6 +1,6 @@
 import { userHashedId } from "@/features/auth/helpers"
+import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { TenantContainer } from "@/features/common/services/cosmos"
-import { ServerActionResponseAsync } from "../common/server-action-response"
 
 export type TenantRecord = {
   readonly id: string

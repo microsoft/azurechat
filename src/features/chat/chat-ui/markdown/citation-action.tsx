@@ -1,7 +1,8 @@
 "use server"
 
-import { simpleSearch } from "@/features/chat/chat-services/azure-cog-search/azure-cog-vector-store"
 import { ReactElement } from "react"
+
+import { simpleSearch } from "@/features/chat/chat-services/azure-cog-search/azure-cog-vector-store"
 
 export const CitationAction = async (_previousState: unknown, formData: FormData): Promise<ReactElement> => {
   const id = formData.get("id") as string

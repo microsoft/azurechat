@@ -1,8 +1,9 @@
+import { notFound } from "next/navigation"
+
 import { FindAllChatMessagesForCurrentUser } from "@/features/chat/chat-services/chat-message-service"
 import { FindChatThreadForCurrentUser } from "@/features/chat/chat-services/chat-thread-service"
 import { ChatProvider } from "@/features/chat/chat-ui/chat-context"
 import { ChatUI } from "@/features/chat/chat-ui/chat-ui"
-import { notFound } from "next/navigation"
 
 export const dynamic = "force-dynamic"
 

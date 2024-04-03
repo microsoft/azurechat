@@ -1,4 +1,3 @@
-import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 import {
   AudioConfig,
   ResultReason,
@@ -7,6 +6,9 @@ import {
   SpeechSynthesizer,
 } from "microsoft-cognitiveservices-speech-sdk"
 import { useRef, useState } from "react"
+
+import { useGlobalMessageContext } from "@/features/globals/global-message-context"
+
 import { GetSpeechToken } from "./speech-service"
 
 export interface TextToSpeechProps {

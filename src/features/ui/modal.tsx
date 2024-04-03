@@ -1,9 +1,11 @@
 import React, { FC } from "react"
+
 import Typography from "@/components/typography"
-import { FeedbackTextarea } from "./feedback-textarea"
-import FeedbackButtons from "./feedback-reasons"
-import { Button } from "./button"
 import { FeedbackType } from "@/features/chat/models"
+
+import { Button } from "./button"
+import FeedbackButtons from "./feedback-reasons"
+import { FeedbackTextarea } from "./feedback-textarea"
 
 interface ModalProps {
   chatThreadId: string

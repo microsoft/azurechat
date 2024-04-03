@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
 import { Heart } from "lucide-react"
 import { getSession } from "next-auth/react"
+import React, { useState, useEffect } from "react"
 
 export const EasterEgg = (): React.JSX.Element => {
   const [isEasterEggDay, setIsEasterEggDay] = useState(false)

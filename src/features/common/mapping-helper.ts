@@ -1,5 +1,6 @@
 import { ChatCompletionMessage, ChatCompletionRole } from "openai/resources"
-import { ChatMessageModel, ChatRole } from "../chat/models"
+
+import { ChatMessageModel, ChatRole } from "@/features/chat/models"
 
 export function mapOpenAIChatMessages(messages: ChatMessageModel[]): ChatCompletionMessage[] {
   return messages.map(mapOpenAIChatMessage)

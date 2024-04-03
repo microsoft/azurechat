@@ -1,5 +1,7 @@
 name: "📦 - Publish Artifact"
 
+trigger: none
+
 pr:
   branches:
     include:

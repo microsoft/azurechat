@@ -1,7 +1,8 @@
+import { redirect } from "next/navigation"
+
 import { LogIn } from "@/components/login/login"
 import { userSession } from "@/features/auth/helpers"
 import { Card } from "@/features/ui/card"
-import { redirect } from "next/navigation"
 
 export const dynamic = "force-dynamic"
 

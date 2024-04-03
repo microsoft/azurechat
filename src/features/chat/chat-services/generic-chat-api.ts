@@ -1,11 +1,13 @@
 "use server"
 import "server-only"
-import { OpenAIInstance } from "@/features/common/services/open-ai"
-import { getTenantId, userHashedId } from "@/features/auth/helpers"
-import { translator } from "./chat-translator-service"
 import { ItemDefinition } from "@azure/cosmos"
+
+import { getTenantId, userHashedId } from "@/features/auth/helpers"
+import { ChatRecordType } from "@/features/chat/models"
 import { HistoryContainer } from "@/features/common/services/cosmos"
-import { ChatRecordType } from "../models"
+import { OpenAIInstance } from "@/features/common/services/open-ai"
+
+import { translator } from "./chat-translator-service"
 
 export interface Message {
   role: "function" | "system" | "user" | "assistant"

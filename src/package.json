@@ -8,8 +8,11 @@
     "dev": "next dev --experimental-https --experimental-https-key ./certificates/localhost-key.pem --experimental-https-cert ./certificates/localhost.pem --port 443",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --dir .",
-    "lint:fix": "next lint --dir . --fix",
+    "lint": "npm run lint:js && npm run lint:css",
+    "lint:js": "eslint \"**/*.{js,mjs,ts,tsx}\" --cache --cache-strategy=content --cache-location=.eslintjscache",
+    "lint:css": "stylelint \"**/*.css\" --allow-empty-input --cache --cache-strategy=content --cache-location=.stylelintcache",
+    "prettier": "prettier \"**/*.{js,mjs,ts,tsx,md,mdx,json,yml,css}\" --check --cache --cache-strategy=content --cache-location=.prettiercache",
+    "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix && npm run prettier -- --write",
     "test": "playwright test",
     "prepare": "cd .. && husky src/.husky"
   },
@@ -117,12 +120,20 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.1.2",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-no-relative-import-paths": "^1.5.3",
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-tailwindcss": "^3.15.1",
-    "husky": "^9.0.11",
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.13",
+    "stylelint": "16.2.1",
+    "stylelint-config-standard": "36.0.0",
+    "stylelint-order": "6.0.4",
+    "stylelint-selector-bem-pattern": "4.0.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
+  },
+  "optionalDependencies": {
+    "husky": "^9.0.11"
   }
 }

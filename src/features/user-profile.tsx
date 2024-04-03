@@ -1,6 +1,9 @@
 "use client"
 
+import { LogOut, UserCircle } from "lucide-react"
+import { signOut, useSession } from "next-auth/react"
 import React, { ReactElement } from "react"
+
 import { Avatar, AvatarImage } from "@/features/ui/avatar"
 import { Button } from "@/features/ui/button"
 import {
@@ -11,8 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/features/ui/dropdown-menu"
-import { LogOut, UserCircle } from "lucide-react"
-import { signOut, useSession } from "next-auth/react"
 
 const UserProfile = (): ReactElement => {
   const { data: session } = useSession()

@@ -1,9 +1,11 @@
-import { Button } from "@/features/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/features/ui/sheet"
 import { FC } from "react"
 import { useFormState } from "react-dom"
+
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
+import { Button } from "@/features/ui/button"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/features/ui/sheet"
+
 import { CitationAction } from "./citation-action"
-import { useChatContext } from "../chat-context"
 
 interface SliderProps {
   name: string

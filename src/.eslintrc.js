@@ -1,17 +1,16 @@
 module.exports = {
   extends: [
+    "next",
     "next/core-web-vitals",
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
-    "plugin:tailwindcss/recommended",
-    "plugin:prettier/recommended", // Enables eslint-plugin-prettier and eslint-config-prettier. This will display prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
   ],
-  plugins: ["@typescript-eslint", "react-hooks", "tailwindcss"],
+  plugins: ["@typescript-eslint", "no-relative-import-paths"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaVersion: 2024,
+    ecmaVersion: "latest",
     sourceType: "module",
     project: ["./tsconfig.json", "./tsconfig.eslint.json"],
     tsconfigRootDir: __dirname,
@@ -37,31 +36,6 @@ module.exports = {
     "no-magic-numbers": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
-    "tailwindcss/no-custom-classname": [
-      "warn",
-      {
-        callees: ["classnames", "clsx", "ctl", "cva", "tv"], // Ensure cva is included
-        config: "src/tailwind.config.js", // Adjusted to match your project structure
-        cssFiles: ["src/app/**/*.css"], // Focus on your CSS files, adjust the pattern as needed
-        cssFilesRefreshRate: 5000, // Default, adjust based on performance needs
-        skipClassAttribute: false, // Keep this false to lint class attributes
-        whitelist: [
-          "destructive",
-          "success",
-          "text-foreground",
-          "bg-background",
-          "text-muted-foreground",
-          "border-accent",
-          "text-darkAltButton",
-          "text-siteTitle",
-          "bg-backgroundShade",
-          "border-darkAltButton",
-          "text-primary",
-          "bg-altBackground",
-          "loader",
-        ],
-      },
-    ],
     "@typescript-eslint/no-parameter-properties": 0,
     "@typescript-eslint/no-floating-promises": ["error"],
     "@typescript-eslint/array-type": [0, "generic"],
@@ -89,5 +63,17 @@ module.exports = {
       },
     ],
     "no-console": "warn",
+    "no-relative-import-paths/no-relative-import-paths": ["warn", { allowSameFolder: true, prefix: "@" }],
+    "import/order": [
+      "warn",
+      {
+        groups: ["builtin", "external", "internal", ["sibling", "parent"], "index", "unknown"],
+        "newlines-between": "always",
+        alphabetize: {
+          order: "asc",
+          caseInsensitive: true,
+        },
+      },
+    ],
   },
 }

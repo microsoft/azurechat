@@ -1,7 +1,8 @@
-import React from "react"
-import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 import { XCircle, Ban, FileQuestion } from "lucide-react"
-import { FeedbackType } from "../chat/models"
+import React from "react"
+
+import { FeedbackType } from "@/features/chat/models"
+import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 
 interface FeedbackButtonsProps {
   selectedType: FeedbackType

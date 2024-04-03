@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { AppInsightsContext, defaultContextValue, IAppInsightsContext } from "./app-insights-context"
+
 import { createAppInsights } from "./app-insights"
+import { AppInsightsContext, defaultContextValue, IAppInsightsContext } from "./app-insights-context"
 
 type AppInsightsProviderProps = {
   children: React.ReactNode

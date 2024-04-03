@@ -11,12 +11,12 @@
     --QLD-color-text-muted: #636363;
     --QLD-color-link: #09549f;
     --QLD-color-link-visited: #551a8b;
-    --QLD-color-button-text: #ffffff;
+    --QLD-color-button-text: #fff;
     --QLD-color-button: #09549f;
     --QLD-color-button-hover: #003e7d;
     --QLD-color-focus: #0085b3;
     --QLD-color-border: #ebebeb;
-    --QLD-color-background: #ffffff;
+    --QLD-color-background: #fff;
     --QLD-color-dark-background: #09549f;
     --QLD-color-background-shade: #f5f5f5;
     --QLD-color-underline: #3f7ab4;
@@ -56,12 +56,12 @@
   }
 
   .dark {
-    --QLD-color-siteTitle: #ffffff;
+    --QLD-color-siteTitle: #fff;
     --QLD-color-designAccent: #6bbe27;
-    --QLD-color-heading: #ffffff;
-    --QLD-color-text: #ffffff;
+    --QLD-color-heading: #fff;
+    --QLD-color-text: #fff;
     --QLD-color-text-muted: #deebf9;
-    --QLD-color-link: #ffffff;
+    --QLD-color-link: #fff;
     --QLD-color-link-visited: #e1bbee;
     --QLD-color-button-text: #121940;
     --QLD-color-button: #78ba00;
@@ -72,7 +72,7 @@
     --QLD-color-dark-background: #09549f;
     --QLD-color-background-shade: #04498f;
     --QLD-color-underline: #b5cce2;
-    --QLD-color-hover-underline: #ffffff;
+    --QLD-color-hover-underline: #fff;
     --QLD-color-visited-underline: #e1c2ff;
     --QLD-color-hover-visited-underline: #e1bbee;
     --QLD-color-alt-button: #ffe500;
@@ -105,6 +105,7 @@
     --input: 240 3.7% 15.9%;
     --ring: 214 89% 31%;
   }
+
   :root,
   .dark {
     --QLD-border-width-thin: 1px;
@@ -127,17 +128,14 @@
     100% {
       opacity: 1;
     }
+
     50% {
       opacity: 0;
     }
   }
 
   .loader {
-    display: inline-block;
     animation: spin 1s linear infinite;
-  }
-
-  .loader-more {
-    animation-delay: 0.1s;
+    display: inline-block;
   }
 }

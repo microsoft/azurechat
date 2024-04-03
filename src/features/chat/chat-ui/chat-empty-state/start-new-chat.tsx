@@ -1,12 +1,13 @@
 "use client"
 
-import Typography from "@/components/typography"
-import { Card } from "@/features/ui/card"
-import { AI_NAME } from "@/features/theme/theme-config"
-import { FC } from "react"
-import { NewChat } from "@/features/chat/chat-menu/new-chat"
-import { Button } from "@/features/ui/button"
 import { useRouter } from "next/navigation"
+import { FC } from "react"
+
+import Typography from "@/components/typography"
+import { NewChat } from "@/features/chat/chat-menu/new-chat"
+import { AI_NAME } from "@/features/theme/theme-config"
+import { Button } from "@/features/ui/button"
+import { Card } from "@/features/ui/card"
 
 export const StartNewChat: FC<object> = () => {
   const router = useRouter()

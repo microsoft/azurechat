@@ -1,12 +1,13 @@
+import * as Tooltip from "@radix-ui/react-tooltip"
+import { AudioLines, FileText, MessageCircle } from "lucide-react"
+import { useSession } from "next-auth/react"
 import React, { useEffect, useState } from "react"
 import { FC } from "react"
-import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
-import { AudioLines, FileText, MessageCircle } from "lucide-react"
-import { TooltipProvider } from "@/features/ui/tooltip-provider"
-import * as Tooltip from "@radix-ui/react-tooltip"
+
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatType } from "@/features/chat/models"
-import { useChatContext } from "../chat-context"
-import { useSession } from "next-auth/react"
+import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
+import { TooltipProvider } from "@/features/ui/tooltip-provider"
 
 interface Prop {
   disable: boolean

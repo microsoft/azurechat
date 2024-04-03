@@ -1,8 +1,8 @@
-import { createContext, useContext } from "react"
-import { ApplicationInsights } from "@microsoft/applicationinsights-web"
-import { ReactPlugin } from "@microsoft/applicationinsights-react-js"
-import { History } from "history"
 import { ClickAnalyticsPlugin } from "@microsoft/applicationinsights-clickanalytics-js"
+import { ReactPlugin } from "@microsoft/applicationinsights-react-js"
+import { ApplicationInsights } from "@microsoft/applicationinsights-web"
+import { History } from "history"
+import { createContext, useContext } from "react"
 
 export interface IAppInsightsContext {
   appInsights: ApplicationInsights | undefined

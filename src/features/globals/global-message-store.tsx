@@ -1,5 +1,6 @@
 import { ToastAction } from "@radix-ui/react-toast"
-import { toast } from "../ui/use-toast"
+
+import { toast } from "@/features/ui/use-toast"
 
 interface MessageProp {
   title: string

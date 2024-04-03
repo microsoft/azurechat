@@ -1,8 +1,9 @@
-import React, { useEffect, useState, FC } from "react"
-import { GetUserByUpn } from "@/features/user-management/user-service"
 import { getSession } from "next-auth/react"
-import { UserRecord } from "@/features/user-management/user-service"
+import React, { useEffect, useState, FC } from "react"
+
 import { PromptForm } from "@/features/ui/form"
+import { GetUserByUpn } from "@/features/user-management/user-service"
+import { UserRecord } from "@/features/user-management/user-service"
 
 export const UserDataFetcher: FC = () => {
   const [userData, setUserData] = useState<UserRecord | null>(null)

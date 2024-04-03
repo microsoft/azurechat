@@ -1,6 +1,7 @@
+import { promises as fs } from "fs"
+
 import { Markdown } from "@/components/markdown/markdown"
 import { Card } from "@/features/ui/card"
-import { promises as fs } from "fs"
 
 export const dynamic = "force-dynamic"
 

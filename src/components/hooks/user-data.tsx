@@ -1,6 +1,7 @@
 // Import React hooks in a consolidated manner
-import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
+import { useState, useEffect } from "react"
+
 import { GetUserByUpn } from "@/features/user-management/user-service"
 import { UserRecord } from "@/features/user-management/user-service"
 

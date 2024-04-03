@@ -1,15 +1,17 @@
 import type { Metadata } from "next"
-import { Toaster } from "@/features/ui/toaster"
-import { cn } from "@/lib/utils"
 import { Noto_Sans } from "next/font/google"
+
 import "./globals.css"
-import { Header } from "./header"
-import { NavBar } from "@/features/ui/navbar"
-import { ThemeProvider } from "@/features/theme/theme-provider"
-import { AI_NAME } from "@/features/theme/theme-config"
 import { GlobalConfigProvider } from "@/features/globals/global-client-config-context"
 import { Providers } from "@/features/globals/providers"
+import { AI_NAME } from "@/features/theme/theme-config"
+import { ThemeProvider } from "@/features/theme/theme-provider"
+import { NavBar } from "@/features/ui/navbar"
+import { Toaster } from "@/features/ui/toaster"
+import { cn } from "@/lib/utils"
+
 import { Footer } from "./footer"
+import { Header } from "./header"
 
 const notoSans = Noto_Sans({ subsets: ["latin"], preload: true })
 
@@ -35,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
               <Header />
               <NavBar />
-              <main className="bg-background size-full overflow-auto">{children}</main>
+              <main className="size-full overflow-auto bg-background">{children}</main>
               <Footer />
               <Toaster />
             </ThemeProvider>

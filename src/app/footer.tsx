@@ -1,10 +1,11 @@
-import React from "react"
 import { Mail, CircleHelp, HeartHandshake } from "lucide-react"
+import React from "react"
+
 import Typography from "@/components/typography"
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="border-accent bg-background h-[30px] min-w-[400px] border-t-4 py-5" role="contentinfo">
+    <footer className="h-[30px] min-w-[400px] border-t-4 border-accent bg-background py-5" role="contentinfo">
       <div className="container mx-auto flex size-full items-center justify-between  px-8">
         <a href="https://qchat.ai.qld.gov.au" className="flex items-center" target="_blank" rel="noopener noreferrer">
           <Typography variant="h5">qchat.ai.qld.gov.au</Typography>

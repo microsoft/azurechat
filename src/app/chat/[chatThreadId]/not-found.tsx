@@ -1,5 +1,5 @@
-import { Card } from "@/features/ui/card"
 import { NewChat } from "@/features/chat/chat-menu/new-chat"
+import { Card } from "@/features/ui/card"
 
 export default function NotFound(): JSX.Element {
   return (

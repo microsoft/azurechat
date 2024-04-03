@@ -1,11 +1,12 @@
-import React from "react"
-import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
-import { Brush, CircleDot, Scale } from "lucide-react"
-import { TooltipProvider } from "@/features/ui/tooltip-provider"
 import * as Tooltip from "@radix-ui/react-tooltip"
+import { Brush, CircleDot, Scale } from "lucide-react"
+import React from "react"
 import { FC } from "react"
+
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ConversationStyle } from "@/features/chat/models"
-import { useChatContext } from "../chat-context"
+import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
+import { TooltipProvider } from "@/features/ui/tooltip-provider"
 
 interface Prop {
   disable: boolean

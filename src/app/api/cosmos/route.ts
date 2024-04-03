@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import * as yup from "yup"
+
 import { GetUserByUpn, UpdateUser } from "@/features/user-management/user-service"
 
 const userUpdateSchema = yup

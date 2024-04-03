@@ -1,8 +1,9 @@
+import { promises as fs } from "fs"
+
+import APP_VERSION from "@/app-global"
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
 import { Card } from "@/features/ui/card"
-import { promises as fs } from "fs"
-import APP_VERSION from "@/app-global"
 
 export const dynamic = "force-dynamic"
 

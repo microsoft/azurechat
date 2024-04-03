@@ -1,5 +1,7 @@
 import { FC } from "react"
-import { useChatContext } from "../chat-context"
+
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
+
 import { RecordSpeech } from "./record-speech"
 import { StopSpeech } from "./stop-speech"
 
