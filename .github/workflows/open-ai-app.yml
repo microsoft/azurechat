@@ -98,11 +98,13 @@ jobs:
               echo Setting --startup-file="node server.js" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
               az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg -o none
             elif [ "$slot" = "dev" ]
+            then
               echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }} slot $slot
               az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none --slot $slot
               echo Setting --startup-file="node server.js" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }} slot $slot
               az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg -o none --slot $slot
             else
+            then
               echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }} slot $slot
               az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none --slot $slot
               echo Setting --startup-file="node server.js" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }} slot $slot
