@@ -1,5 +1,3 @@
-import { ZodIssue } from "zod"
-
 export type ServerActionError = {
   message: string
 }
@@ -17,11 +15,3 @@ type ServerActionSuccess<T = unknown> = {
 export type ServerActionResponse<T = unknown> = ServerActionValidationError | ServerActionSuccess<T>
 
 export type ServerActionResponseAsync<T = unknown> = Promise<ServerActionResponse<T>>
-
-export const zodErrorsToServerActionErrors = (errors: ZodIssue[]): ServerActionError[] => {
-  return errors.map(error => {
-    return {
-      message: error.message,
-    }
-  })
-}

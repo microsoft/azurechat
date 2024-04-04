@@ -1,23 +1,21 @@
 FROM node:alpine AS base
 
 RUN apk --no-cache upgrade && \
-    apk add --no-cache ca-certificates libc6-compat \
-    && mkdir -p /etc/pki/ca-trust/source/anchors \
-    && update-ca-certificates
+  apk add --no-cache ca-certificates libc6-compat \
+  && mkdir -p /etc/pki/ca-trust/source/anchors \
+  && update-ca-certificates
 
 WORKDIR /app
-
-RUN npm install -g npm@latest
 
 FROM base AS deps
 
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
 RUN if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then npm ci; \
-    elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
-    else echo "Lockfile not found." && exit 1; \
-    fi
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
 FROM base AS builder
 WORKDIR /app
@@ -42,13 +40,11 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-RUN npm install -g npm@latest
-
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
+  adduser --system --uid 1001 nextjs
 
 # Copy the build output and static files from the builder stage
 COPY --from=builder /app/public ./public
@@ -56,7 +52,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 COPY package.json package-lock.json* ./
-RUN npm install --omit=dev
 
 USER nextjs
 
