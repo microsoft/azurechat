@@ -70,12 +70,18 @@ jobs:
     steps:
       - name: Check Environment
         run: |
-            if [ "${{ github.event.inputs.target_env }}" = "prod" ]
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]
             then
-              echo "AZURE_APP_SERVICE_NAME_VALUE=${{ secrets.AZURE_APP_SERVICE_NAME_PROD }}" >> $GITHUB_ENV
+              if [ "${{ github.event.inputs.target_env }}" = "dev" ]
+              then
+                echo "AZURE_APP_SERVICE_NAME_VALUE=${{ secrets.AZURE_APP_SERVICE_NAME_DEV }}" >> $GITHUB_ENV
+              else
+                echo "AZURE_APP_SERVICE_NAME_VALUE=${{ secrets.AZURE_APP_SERVICE_NAME_PROD }}" >> $GITHUB_ENV
+              fi
             else
-              echo "AZURE_APP_SERVICE_NAME_VALUE=${{ secrets.AZURE_APP_SERVICE_NAME_DEV }}" >> $GITHUB_ENV
+              echo "AZURE_APP_SERVICE_NAME_VALUE=${{ secrets.AZURE_APP_SERVICE_NAME_PROD }}" >> $GITHUB_ENV
             fi
+
       - name: 🍏 Set up Node.js version
         uses: actions/setup-node@v4
         with:
@@ -96,12 +102,15 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-             rg=$(az webapp list --query "[?name=='$AZURE_APP_SERVICE_NAME_VALUE'].resourceGroup" --output tsv)
-             echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service $AZURE_APP_SERVICE_NAME_VALUE
-             az webapp config appsettings set -n $AZURE_APP_SERVICE_NAME_VALUE -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
-             echo Setting --startup-file=\"node server.js\" on app service $AZURE_APP_SERVICE_NAME_VALUE
-             az webapp config set --startup-file="node server.js" -n $AZURE_APP_SERVICE_NAME_VALUE -g $rg -o none
-             sleep 10
+            rg=$(az webapp list --query "[?name=='$AZURE_APP_SERVICE_NAME_VALUE'].resourceGroup" --output tsv)
+            echo "Resource Group: "$rg
+            echo $AZURE_APP_SERVICE_NAME_VALUE
+            echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service $AZURE_APP_SERVICE_NAME_VALUE
+            az webapp config appsettings set -n $AZURE_APP_SERVICE_NAME_VALUE -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
+            echo Setting --startup-file=\"node server.js\" on app service $AZURE_APP_SERVICE_NAME_VALUE
+            az webapp config set --startup-file="node server.js" -n $AZURE_APP_SERVICE_NAME_VALUE -g $rg -o none
+            sleep 10
+
 
       - name: 🚀 Deploy to Azure Web App
         id: deploy-to-webapp
