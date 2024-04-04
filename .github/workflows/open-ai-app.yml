@@ -116,7 +116,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-           app-name: ${{ env.AZURE_APP_SERVICE_NAME_VALUE }}
+           app-name: ${{ env.AZURE_APP_SERVICE_NAME }}
            package: ${{ github.workspace }}/Nextjs-site.zip
 
       - name: 🧹 Cleanup
