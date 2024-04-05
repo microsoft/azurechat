@@ -4,8 +4,8 @@ import { UserSettingsMenu } from "@/features/user-management/user-menu"
 export const dynamic = "force-dynamic"
 
 export const metadata = {
-  title: AI_NAME + " - Settings",
-  description: AI_NAME,
+  title: AI_NAME + " Settings",
+  description: AI_NAME + " - Settings",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {

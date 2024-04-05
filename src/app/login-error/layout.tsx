@@ -1,7 +1,7 @@
 import { AI_NAME } from "@/features/theme/theme-config"
 
 export const metadata = {
-  title: AI_NAME,
+  title: AI_NAME + " Login Error",
   description: AI_NAME + " - Login Error",
 }
 

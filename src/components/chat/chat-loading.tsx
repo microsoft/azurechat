@@ -5,7 +5,7 @@ interface Props {}
 
 const ChatLoading: FC<Props> = () => {
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto size-full py-6">
       <Loader className="animate-spin" />
     </div>
   )

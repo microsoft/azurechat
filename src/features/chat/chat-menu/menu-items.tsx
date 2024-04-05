@@ -96,10 +96,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAfterClose 
 }
 
 export const MenuItems: FC<Prop> = ({ menuItems }) => {
-  const { id } = useParams()
+  const { chatThreadId } = useParams()
   const router = useRouter()
   const { showError } = useGlobalMessageContext()
-  const params = useParams()
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null)
 
   const sendData = async (threadID: string): Promise<void> => {
@@ -133,33 +132,33 @@ export const MenuItems: FC<Prop> = ({ menuItems }) => {
     <>
       {menuItems.map(thread => (
         <MenuItem
-          href={`/chat/${thread.id}`}
-          isSelected={params.id === thread.id}
-          key={thread.id}
+          href={`/chat/${thread.chatThreadId}`}
+          isSelected={chatThreadId === thread.chatThreadId}
+          key={thread.chatThreadId}
           className="hover:item group relative justify-between"
         >
           {thread.chatType === "data" ? (
-            <FileText size={16} className={id === thread.id ? " text-brand" : ""} />
+            <FileText size={16} className={chatThreadId === thread.chatThreadId ? " text-brand" : ""} />
           ) : thread.chatType === "audio" ? (
-            <AudioLines size={16} className={id === thread.id ? " text-brand" : ""} />
+            <AudioLines size={16} className={chatThreadId === thread.chatThreadId ? " text-brand" : ""} />
           ) : (
-            <MessageCircle size={16} className={id === thread.id ? " text-brand" : ""} />
+            <MessageCircle size={16} className={chatThreadId === thread.chatThreadId ? " text-brand" : ""} />
           )}
           <span className="flex flex-1 items-center gap-2 overflow-hidden">
             <span className="truncate">{thread.name}</span>
           </span>
-          {selectedThreadId !== thread.id && (
+          {selectedThreadId !== thread.chatThreadId && (
             <Button
               className="invisible group-hover:visible"
               size="sm"
               variant="default"
               aria-label={`Edit ${thread.name}`}
-              onClick={() => handleOpenModal(thread.id)}
+              onClick={() => handleOpenModal(thread.chatThreadId)}
             >
               <Pencil size={16} />
             </Button>
           )}
-          {selectedThreadId === thread.id && (
+          {selectedThreadId === thread.chatThreadId && (
             <Modal isOpen={true} onClose={handleCloseModal} onSave={handleSaveModal} focusAfterClose={null} />
           )}
           <Button
@@ -171,7 +170,7 @@ export const MenuItems: FC<Prop> = ({ menuItems }) => {
               e.preventDefault()
               const yesDelete = confirm("Are you sure you want to delete this chat?")
               if (yesDelete) {
-                await sendData(thread.id)
+                await sendData(thread.chatThreadId)
               }
             }}
           >
