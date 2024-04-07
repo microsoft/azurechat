@@ -14,7 +14,7 @@ async function generateChatName(chatMessage: string): Promise<string> {
           role: "system",
           content: `- create a succinct title, limited to five words and 20 characters, for the following chat """${chatMessage}""" conversation with a generative AI assistant:
                 - this title should effectively summarise the main topic or theme of the chat.
-                - it will be used in the app's navigation interface, so it should be easily understandable and reflective of the chat's content 
+                - it will be used in the app's navigation interface, so it should be easily understandable and reflective of the chat's content
                 to help users quickly grasp what the conversation was about.`,
         },
       ],
@@ -23,11 +23,8 @@ async function generateChatName(chatMessage: string): Promise<string> {
     if (name) {
       return name.replace(/^"+|"+$/g, "")
     } else {
-      // TODO handle error
-      console.error("Error: Unexpected response structure from OpenAI API.")
+      return name || "New Chat by Error"
     }
-
-    return name || "New Chat by Error"
   } catch (e) {
     console.error("Error generating chat name:", e)
     return "New Chat by Error"

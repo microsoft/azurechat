@@ -7,6 +7,7 @@ import React, { useEffect, useRef } from "react"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { Button } from "@/features/ui/button"
 import { useToast } from "@/features/ui/use-toast"
+import { AI_NAME } from "@/features/theme/theme-config"
 
 interface ChatInputMenuProps {
   onDocExport: () => void
@@ -39,7 +40,7 @@ const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport }) => {
 
       const formattedMessages = messages
         .map(message => {
-          const author = message.role === "system" || message.role === "assistant" ? "AI" : name
+          const author = message.role === "system" || message.role === "assistant" ? AI_NAME : name
           return `${author}: ${message.content}`
         })
         .join("\n")
