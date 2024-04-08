@@ -98,7 +98,7 @@ jobs:
               echo Setting --startup-file="node server.js" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
               az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg -o none
             else
-              echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=true on app service ${{ secrets.AZURE_APP_SERVICE_NAME }} slot dev
+              echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }} slot dev
               az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none --slot dev
               echo Setting --startup-file="node server.js" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }} slot dev
               az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg -o none --slot dev
@@ -111,6 +111,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
            app-name: ${{ secrets.AZURE_APP_SERVICE_NAME }}
+           slot-name: ${{ github.event.inputs.target_env }} # Added this line
            package: ${{ github.workspace }}/Nextjs-site.zip
 
       - name: 🧹 Cleanup
