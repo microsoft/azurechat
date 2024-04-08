@@ -5,15 +5,6 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: [main]
-    
-  # Allow manual workflow trigger
-  workflow_dispatch:
-   inputs:
-    target_env:
-      description: 'Target environment (prod or dev)'
-      required: true
-      default: 'dev'
-
 
 jobs:
   build:
@@ -65,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: ${{ github.event.inputs.target_env == 'prod' && 'Production' || 'Development' }}
+      name: 'Development'
 
     steps:
       - name: 🍏 Set up Node.js version
@@ -87,15 +78,7 @@ jobs:
         uses: azure/CLI@v1
         with:
             inlineScript: |
-              slot=${{ github.event.inputs.target_env }}
               rg=$(az webapp list --query "[?name=='${{ secrets.AZURE_APP_SERVICE_NAME }}'].resourceGroup" --output tsv)
-              if [ "$slot" = "prod" ]
-              then
-                  echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
-                  az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
-                  echo Setting --startup-file="node server.js" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
-                  az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg -o none
-              else
                   echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=true on app service ${{ secrets.AZURE_APP_SERVICE_NAME }} slot dev
                   az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none --slot dev
                   echo Setting --startup-file="node server.js" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }} slot dev
@@ -104,14 +87,13 @@ jobs:
               sleep 10
 
 
-
       - name: 🚀 Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.AZURE_APP_SERVICE_NAME }}
-          slot-name: ${{ github.event.inputs.target_env == 'prod' && '' || 'dev' }}
-          publish-profile: ${{ github.event.inputs.target_env == 'prod' && secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE_PROD || secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE_DEV }}
+          slot-name: 'dev'
+          publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE_DEV }}
           package: ${{ github.workspace }}/Nextjs-site.zip
   
       - name: 🧹 Cleanup
