@@ -29,7 +29,7 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
     >
       <div className="mx-auto w-full max-w-lg overflow-hidden rounded-lg bg-background p-4">
         <div className="mb-4">
-          <Typography id="feedbackHeading" variant="h4" className="text-primary">
+          <Typography id="feedbackHeading" variant="h4" className="text-secondary">
             Submit your feedback
           </Typography>
         </div>
