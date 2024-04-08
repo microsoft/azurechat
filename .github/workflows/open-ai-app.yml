@@ -111,7 +111,8 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
            app-name: ${{ secrets.AZURE_APP_SERVICE_NAME }}
-           slot-name: ${{ github.event.inputs.target_env }} # Added this line
+           slot-name: ${{ github.event.inputs.target_env }}
+           publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE_DEV }}
            package: ${{ github.workspace }}/Nextjs-site.zip
 
       - name: 🧹 Cleanup
