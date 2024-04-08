@@ -116,6 +116,3 @@ jobs:
   
       - name: 🧹 Cleanup
         run: rm ${{ github.workspace }}/Nextjs-site.zip
-
-      - name: 🧹 Cleanup
-        run: rm ${{ github.workspace }}/Nextjs-site.zip
