@@ -123,6 +123,8 @@ export const ChatProvider: FC<Prop> = props => {
           return {
             ...message,
             id: dataItem?.id || message.id,
+            content:
+              (response.data as DataItem[])?.find(d => d.message === message.content)?.translated || message.content,
           }
         }),
         setChatBody,

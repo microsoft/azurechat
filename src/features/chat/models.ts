@@ -56,6 +56,7 @@ export interface ChatMessageModel {
   threadId?: string
   userId: string | undefined
   tenantId: string | undefined
+  originalCompletion: string
   content: string
   role: ChatRole
   context: string

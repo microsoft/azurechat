@@ -1,16 +1,17 @@
-import { OpenAIStream, StreamingTextResponse } from "ai"
+import { OpenAIStream, StreamingTextResponse, experimental_StreamData } from "ai"
 import { Completion } from "openai/resources/completions"
+
+import { AzureCogDocumentIndex, similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-vector-store"
+import { DocumentSearchModel } from "./azure-cog-search/azure-cog-vector-store"
+import { DataItem } from "./chat-api-simple"
+import { AddChatMessage, FindTopChatMessagesForCurrentUser } from "./chat-message-service"
+import { InitChatSession } from "./chat-thread-service"
+import { UpdateChatThreadIfUncategorised } from "./chat-utility"
 
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
 import { PromptGPTProps } from "@/features/chat/models"
 import { OpenAIInstance } from "@/features/common/services/open-ai"
 import { AI_NAME } from "@/features/theme/theme-config"
-
-import { AzureCogDocumentIndex, similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-vector-store"
-import { DocumentSearchModel } from "./azure-cog-search/azure-cog-vector-store"
-import { AddChatMessage, FindTopChatMessagesForCurrentUser } from "./chat-message-service"
-import { InitChatSession } from "./chat-thread-service"
-import { UpdateChatThreadIfUncategorised } from "./chat-utility"
 
 const SYSTEM_PROMPT = `You are ${AI_NAME} who is a helpful AI Assistant.`
 const CONTEXT_PROMPT = ({ context, userQuestion }: { context: string; userQuestion: string }): string => {
@@ -18,11 +19,11 @@ const CONTEXT_PROMPT = ({ context, userQuestion }: { context: string; userQuesti
 - Given the following extracted parts of a document, create a final answer. \n
 - If you don't know the answer, just say that you don't know. Don't try to make up an answer.\n
 - You must always include a citation at the end of your answer and don't include full stop.\n
-- Use the format for your citation {% citation items=[{name:"filename 1", id:"file id", order:"1"}, {name:"filename 2", id:"file id", order:"2"}] /%}\n 
-----------------\n 
-context:\n 
+- Use the format for your citation {% citation items=[{name:"filename 1", id:"file id", order:"1"}, {name:"filename 2", id:"file id", order:"2"}] /%}\n
+----------------\n
+context:\n
 ${context}
-----------------\n 
+----------------\n
 question: ${userQuestion}`
 }
 
@@ -65,13 +66,22 @@ export const ChatAPIData = async (props: PromptGPTProps): Promise<Response> => {
       stream: true,
     })
 
+    const data = new experimental_StreamData()
+
     const stream = OpenAIStream(response as AsyncIterable<Completion>, {
       async onCompletion(completion) {
-        await AddChatMessage(chatThread.id, {
+        // TODO: https://dis-qgcdg.atlassian.net/browse/QGGPT-437
+
+        const addUserMessageResponse = await AddChatMessage(chatThread.id, {
           content: updatedLastHumanMessage.content,
           role: "user",
         })
-        await AddChatMessage(
+
+        if (addUserMessageResponse?.status !== "OK") {
+          throw addUserMessageResponse.errors
+        }
+
+        const addAssistantMessageResponse = await AddChatMessage(
           chatThread.id,
           {
             content: completion,
@@ -80,13 +90,30 @@ export const ChatAPIData = async (props: PromptGPTProps): Promise<Response> => {
           context
         )
 
+        if (addAssistantMessageResponse?.status !== "OK") {
+          throw addAssistantMessageResponse.errors
+        }
+        const item: DataItem = {
+          message: completion,
+          id: addAssistantMessageResponse.response.id,
+          translated: addAssistantMessageResponse.response.content,
+        }
+        data.append(item)
         await UpdateChatThreadIfUncategorised(chatThread, completion)
       },
+      async onFinal() {
+        await data.close()
+      },
+      experimental_streamData: true,
     })
 
-    return new StreamingTextResponse(stream, {
-      headers: { "Content-Type": "text/event-stream" },
-    })
+    return new StreamingTextResponse(
+      stream,
+      {
+        headers: { "Content-Type": "text/event-stream" },
+      },
+      data
+    )
   } catch (e: unknown) {
     if (e instanceof Error) {
       return new Response(e.message, {

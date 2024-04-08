@@ -1,14 +1,18 @@
 import { JSONValue, OpenAIStream, StreamingTextResponse, experimental_StreamData } from "ai"
 import { Completion } from "openai/resources/completions"
 
-import { userSession } from "@/features/auth/helpers"
-import { PromptGPTProps, ChatRole } from "@/features/chat/models"
-import { OpenAIInstance } from "@/features/common/services/open-ai"
-
-import { AddChatMessage, FindTopChatMessagesForCurrentUser } from "./chat-message-service"
+import {
+  AddChatMessage,
+  ChatCompletionMessageTranslated,
+  FindTopChatMessagesForCurrentUser,
+} from "./chat-message-service"
 import { InitChatSession } from "./chat-thread-service"
 import { translator } from "./chat-translator-service"
 import { UpdateChatThreadIfUncategorised } from "./chat-utility"
+
+import { userSession } from "@/features/auth/helpers"
+import { PromptGPTProps, ChatRole } from "@/features/chat/models"
+import { OpenAIInstance } from "@/features/common/services/open-ai"
 
 async function buildUserContextPrompt(): Promise<string> {
   const session = await userSession()
@@ -66,28 +70,24 @@ export const ChatAPISimple = async (props: PromptGPTProps): Promise<Response> =>
 
     const stream = OpenAIStream(response as AsyncIterable<Completion>, {
       async onCompletion(completion: string) {
-        let addedMessage
+        const translatedCompletion = await translator(completion)
+        const message = buildAssistantChatMessage(
+          completion,
+          translatedCompletion.status === "OK" ? translatedCompletion.response : ""
+        )
 
-        try {
-          const translatedCompletion = await translator(completion)
-          if (translatedCompletion.status !== "OK") throw translatedCompletion
-          addedMessage = await AddChatMessage(chatThread.id, {
-            content: translatedCompletion.response,
-            role: "assistant",
-          })
-
-          await UpdateChatThreadIfUncategorised(chatThread, translatedCompletion.response)
-        } catch (_translationError) {
-          addedMessage = await AddChatMessage(chatThread.id, {
-            content: completion,
-            role: "assistant",
-          })
+        const addedMessage = await AddChatMessage(chatThread.id, message)
+        if (addedMessage?.status !== "OK") {
+          throw addedMessage.errors
         }
 
-        if (addedMessage?.status === "OK") {
-          const item: DataItem = { message: completion, id: addedMessage.response.id }
-          data.append(item)
+        const item: DataItem = {
+          message: completion,
+          translated: addedMessage.response.content,
+          id: addedMessage.response.id,
         }
+        data.append(item)
+        message.content && (await UpdateChatThreadIfUncategorised(chatThread, message.content))
       },
       async onFinal() {
         await data.close()
@@ -115,5 +115,19 @@ export const ChatAPISimple = async (props: PromptGPTProps): Promise<Response> =>
 
 export type DataItem = JSONValue & {
   message: string
+  translated: string
   id: string
+}
+
+const buildAssistantChatMessage = (completion: string, translate: string): ChatCompletionMessageTranslated => {
+  if (translate)
+    return {
+      originalCompletion: completion,
+      content: translate,
+      role: "assistant",
+    }
+  return {
+    content: completion,
+    role: "assistant",
+  }
 }
