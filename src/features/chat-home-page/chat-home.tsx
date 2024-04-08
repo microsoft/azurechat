@@ -33,6 +33,8 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
           }
           description={AI_DESCRIPTION}
         ></Hero>
+        
+        {/* Comment out the Extensions part
         <div className="container max-w-4xl flex gap-20 flex-col">
           <div>
             <h2 className="text-2xl font-bold mb-3">Extensions</h2>
@@ -54,6 +56,11 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
             }
 
           </div>
+        </div>
+        */}
+        
+        {/* Comment out the Personas part
+        <div className="container max-w-4xl flex gap-20 flex-col">
           <div>
             <h2 className="text-2xl font-bold mb-3">Personas</h2>
 
@@ -74,6 +81,7 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
             }
           </div>
         </div>
+        */}
         <AddExtension />
       </main>
     </ScrollArea>
