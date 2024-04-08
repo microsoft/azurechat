@@ -23,7 +23,7 @@ export const NavBar: React.FC = () => {
         {" "}
         <div className="container mx-auto hidden md:block">
           <div className="grid grid-cols-12 gap-2">
-            {[...Array(4)].map((_, index) => (
+            {[...Array(5)].map((_, index) => (
               <div key={index} className="relative col-span-2 flex items-center space-x-2">
                 <div className="flex w-full animate-pulse items-center justify-center py-2">
                   <div className="mr-2 h-9 w-5 rounded bg-gray-300"></div>

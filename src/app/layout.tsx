@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
               <Header />
               <NavBar />
-              <main className="size-full overflow-auto bg-background">{children}</main>
+              <main className="size-full overflow-auto bg-altBackground">{children}</main>
               <Footer />
               <Toaster />
             </ThemeProvider>

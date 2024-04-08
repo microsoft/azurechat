@@ -42,9 +42,13 @@ export const ChatRow: FC<ChatRowProps> = props => {
         setThumbsUpClicked(prevState => !prevState)
         setThumbsDownClicked(false)
         setIsIconChecked(false)
-        CreateUserFeedback(props.chatMessageId, FeedbackType.None, ChatSentiment.Positive, "", props.chatThreadId)
-          .then(res => console.log(res))
-          .catch(err => console.error(err))
+        CreateUserFeedback(
+          props.chatMessageId,
+          FeedbackType.None,
+          ChatSentiment.Positive,
+          "",
+          props.chatThreadId
+        ).catch(err => console.error(err))
         break
       case "ThumbsDown":
         setThumbsDownClicked(prevState => !prevState)
