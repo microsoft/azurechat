@@ -1,3 +1,6 @@
+import { CreateChatAndRedirect } from "@/features/chat-page/chat-services/chat-thread-service";
+import { ChatContextMenu } from "@/features/chat-page/chat-menu/chat-context-menu";
+import { NewChat } from "@/features/chat-page/chat-menu/new-chat";
 import { AddExtension } from "@/features/extensions-page/add-extension/add-new-extension";
 import { ExtensionCard } from "@/features/extensions-page/extension-card/extension-card";
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
@@ -33,6 +36,12 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
           }
           description={AI_DESCRIPTION}
         ></Hero>
+
+        <div className="flex p-2 px-3 justify-center">
+          <form action={CreateChatAndRedirect} className="flex gap-2 pr-3">
+              <NewChat />
+          </form>
+        </div>
         
         {/* Comment out the Extensions part
         <div className="container max-w-4xl flex gap-20 flex-col">
