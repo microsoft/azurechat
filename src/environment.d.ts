@@ -44,6 +44,7 @@ declare global {
       NEXT_PUBLIC_API_URL: string
       NEXT_PUBLIC_AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING: string
       NEXT_PUBLIC_FEATURE_TRANSLATOR: string
+      NEXT_PUBLIC_GTAG: string
       NEXTAUTH_SECRET: string
       NEXTAUTH_URL: string
       PROMPT_BUTTON_ENABLED: string

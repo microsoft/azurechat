@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils"
 import { Footer } from "./footer"
 import { Header } from "./header"
 
+import { GoogleAnalytics } from "@next/third-parties/google"
+
 const notoSans = Noto_Sans({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
@@ -30,9 +32,12 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic"
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+  const isProd = process.env.NEXT_PUBLIC_ENV === "production"
+
   return (
     <html lang="en-AU" suppressHydrationWarning className="size-full overflow-hidden text-sm">
       <body className={cn(notoSans.className, "flex size-full min-w-[400px] flex-col bg-background")}>
+        {isProd && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTAG || "notset"} />}
         <GlobalConfigProvider>
           <Providers>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
