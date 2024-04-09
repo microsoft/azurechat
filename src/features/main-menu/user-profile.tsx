@@ -55,7 +55,11 @@ export const UserProfile = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="flex gap-2"
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={() =>
+            signOut({
+              callbackUrl: "/.auth/logout",
+            })
+          }
         >
           <LogOut {...menuIconProps} size={18} />
           <span>Log out</span>
