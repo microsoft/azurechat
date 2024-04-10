@@ -39,7 +39,7 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
 
         <div className="flex p-2 px-3 justify-center">
           <form action={CreateChatAndRedirect} className="flex gap-2 pr-3">
-              <NewChat />
+              <NewChat size="lg" textSize="20px"/>
           </form>
         </div>
         
