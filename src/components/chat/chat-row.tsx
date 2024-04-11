@@ -16,13 +16,16 @@ import Modal from "@/features/ui/modal"
 interface ChatRowProps {
   chatMessageId: string
   name: string
-  message: Message & { sentiment?: ChatSentiment; feedback?: FeedbackType; reason?: string }
+  message: Message & {
+    sentiment?: ChatSentiment
+    feedback?: FeedbackType
+    reason?: string
+    contentFilterResult?: unknown
+  }
   type: ChatRole
   chatThreadId: string
-  contentSafetyWarning?: string
+  showAssistantButtons: boolean
 }
-
-const TEMPORARY_ID_LENGTH = 7 // TODO: if chatMessageId length is 7, it's the temp id; investigate for a better solution
 
 export const ChatRow: FC<ChatRowProps> = props => {
   const [isIconChecked, setIsIconChecked] = useState(false)
@@ -121,13 +124,14 @@ export const ChatRow: FC<ChatRowProps> = props => {
     closeModal?.()
   }
 
-  const safetyWarning = props.contentSafetyWarning ? (
+  const safetyWarning = props.message.contentFilterResult ? (
     <div
       className="prose prose-slate max-w-none break-words rounded-md bg-alert text-center text-sm text-primary dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base"
       tabIndex={0}
       aria-label="Content Safety Warning"
     >
-      {props.contentSafetyWarning}
+      This message may have triggered our content safety warnings, please rephrase your message, start a new chat or
+      reach out to support if you have concerns.
     </div>
   ) : null
 
@@ -165,7 +169,7 @@ export const ChatRow: FC<ChatRowProps> = props => {
         <div className="sr-only" aria-live="assertive">
           {feedbackMessage}
         </div>
-        {props.type === "assistant" && props.chatMessageId.length !== TEMPORARY_ID_LENGTH && (
+        {props.type === "assistant" && props.showAssistantButtons && (
           <AssistantButtons
             isIconChecked={isIconChecked}
             thumbsUpClicked={thumbsUpClicked}

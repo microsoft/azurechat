@@ -65,7 +65,7 @@ export interface ChatMessageModel {
   sentiment: ChatSentiment
   reason: string
   systemPrompt: string
-  contentSafetyWarning: string
+  contentFilterResult?: unknown
 }
 
 export interface ChatThreadModel {
@@ -89,9 +89,9 @@ export interface ChatThreadModel {
   systemPrompt?: string
   contextPrompt?: string
   metaPrompt?: string
-  contentSafetyWarning?: string
   prompts: []
   selectedPrompt: string
+  contentFilterTriggerCount?: number
 }
 
 export interface PromptGPTBody {
@@ -133,4 +133,8 @@ export interface ChatUtilityModel {
   content: string
   role: ChatRole
   type: ChatRecordType.Utility
+}
+
+export type CreateCompletionMessage = {
+  completionId: string
 }

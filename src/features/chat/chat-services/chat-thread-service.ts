@@ -224,7 +224,6 @@ export const CreateChatThread = async (): ServerActionResponseAsync<ChatThreadMo
       createdAt: new Date(),
       isDeleted: false,
       isDisabled: false,
-      contentSafetyWarning: "",
       chatType: ChatType.Simple,
       conversationStyle: ConversationStyle.Precise,
       conversationSensitivity: ConversationSensitivity.Official,
@@ -257,14 +256,14 @@ export const CreateChatThread = async (): ServerActionResponseAsync<ChatThreadMo
   }
 }
 
-export const InitChatSession = async (
-  props: PromptGPTProps
-): ServerActionResponseAsync<{
+export type InitChatSessionResponse = {
   chatThreadId: string
   updatedLastHumanMessage: ChatMessageModel
   chats: ChatMessageModel[]
   chatThread: ChatThreadModel
-}> => {
+}
+
+export const InitChatSession = async (props: PromptGPTProps): ServerActionResponseAsync<InitChatSessionResponse> => {
   const { messages, id: chatThreadId, chatType, conversationStyle, conversationSensitivity, chatOverFileName } = props
 
   const lastHumanMessage = messages[messages.length - 1]
@@ -299,7 +298,6 @@ export const InitChatSession = async (
     sentiment: ChatSentiment.Neutral,
     reason: "",
     systemPrompt: "",
-    contentSafetyWarning: "",
     createdAt: new Date(),
     role: ChatRole.User,
   }
