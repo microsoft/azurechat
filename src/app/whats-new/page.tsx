@@ -23,5 +23,5 @@ export default async function Home(): Promise<JSX.Element> {
 }
 
 const loadContent = async (): Promise<string> => {
-  return await fs.readFile(process.cwd() + "/public/update.md", "utf8")
+  return await fs.readFile(process.cwd() + "/public/whats-new.md", "utf8")
 }

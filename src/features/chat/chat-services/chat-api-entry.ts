@@ -1,5 +1,7 @@
 import { ChatCompletionMessageParam } from "openai/resources"
 
+import { ChatRole, PromptGPTProps } from "@/features/chat/models"
+
 import { ChatAPI } from "./chat-api"
 import {
   buildDataChatContextPrompt,
@@ -9,8 +11,6 @@ import {
 } from "./chat-api-helper"
 import { InitChatSession } from "./chat-thread-service"
 import { translator } from "./chat-translator-service"
-
-import { ChatRole, PromptGPTProps } from "@/features/chat/models"
 
 const dataChatTypes = ["data", "mssql", "audio"]
 

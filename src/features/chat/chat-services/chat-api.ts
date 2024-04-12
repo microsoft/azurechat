@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { JSONValue, Message, OpenAIStream, StreamingTextResponse, experimental_StreamData } from "ai"
 import { APIError } from "openai"
 import { ChatCompletionChunk, ChatCompletionMessageParam } from "openai/resources"
@@ -41,14 +42,13 @@ export const ChatAPI = async (
   if (addMessageResponse.status !== "OK") throw addMessageResponse
 
   const data = new experimental_StreamData()
-
+  //TODO: Fix Liniting indent problem
   let response
   try {
     response =
       contentFilterTriggerCount >= maxContentFilterTriggerCountAllowed
         ? makeContentFilterResponse(true)
-        : await openAI.chat.completions.create(
-          {
+        : await openAI.chat.completions.create({
             messages: [
               {
                 role: ChatRole.System,
@@ -59,8 +59,7 @@ export const ChatAPI = async (
             ],
             model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
             stream: true,
-          }
-        )
+          })
   } catch (exception) {
     if (exception instanceof APIError && exception.status === 400 && exception.code === "content_filter") {
       const contentFilterResult = exception.error as unknown

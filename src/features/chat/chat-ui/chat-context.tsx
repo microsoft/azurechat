@@ -5,10 +5,6 @@ import { UseChatHelpers, useChat } from "ai/react"
 import { useRouter } from "next/navigation"
 import React, { FC, FormEvent, createContext, useContext, useRef, useState } from "react"
 
-import { FileState, useFileState } from "./chat-file/use-file-state"
-import { SpeechToTextProps, useSpeechToText } from "./chat-speech/use-speech-to-text"
-import { TextToSpeechProps, useTextToSpeech } from "./chat-speech/use-text-to-speech"
-
 import { DataItem, maxContentFilterTriggerCountAllowed } from "@/features/chat/chat-services/chat-api"
 import { transformCosmosToAIModel } from "@/features/chat/chat-services/utils"
 import {
@@ -22,6 +18,10 @@ import {
 } from "@/features/chat/models"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 import { uniqueId } from "@/lib/utils"
+
+import { FileState, useFileState } from "./chat-file/use-file-state"
+import { SpeechToTextProps, useSpeechToText } from "./chat-speech/use-speech-to-text"
+import { TextToSpeechProps, useTextToSpeech } from "./chat-speech/use-text-to-speech"
 
 interface ChatContextProps extends UseChatHelpers {
   id: string

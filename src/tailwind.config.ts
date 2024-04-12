@@ -136,6 +136,10 @@ const config: Config = {
       transitionTimingFunction: {
         "custom-ease": "cubic-bezier(0.87, 0, 0.13, 1)",
       },
+      zIndex: {
+        "10": "10",
+        "50": "50",
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],

@@ -2,9 +2,6 @@
 import "server-only"
 import { SqlQuerySpec } from "@azure/cosmos"
 
-import { FindAllChatDocumentsForCurrentUser } from "./chat-document-service"
-import { FindAllChatMessagesForCurrentUser } from "./chat-message-service"
-
 import { getCurrentUser, getTenantId, userHashedId, userSession } from "@/features/auth/helpers"
 import { deleteDocuments } from "@/features/chat/chat-services/azure-cog-search/azure-cog-vector-store"
 import { DEFAULT_MONTHS_AGO } from "@/features/chat/constants"
@@ -25,6 +22,9 @@ import { RedirectToChatThread } from "@/features/common/navigation-helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { HistoryContainer } from "@/features/common/services/cosmos"
 import { uniqueId } from "@/lib/utils"
+
+import { FindAllChatDocumentsForCurrentUser } from "./chat-document-service"
+import { FindAllChatMessagesForCurrentUser } from "./chat-message-service"
 
 export const FindAllChatThreadForCurrentUser = async (): ServerActionResponseAsync<ChatThreadModel[]> => {
   try {

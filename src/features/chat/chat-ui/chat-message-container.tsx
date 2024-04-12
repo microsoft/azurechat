@@ -2,14 +2,14 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useEffect, useRef } from "react"
 
-import { useChatContext } from "./chat-context"
-import { ChatHeader } from "./chat-header"
-
 import ChatLoading from "@/components/chat/chat-loading"
 import ChatRow from "@/components/chat/chat-row"
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor"
 import { ChatRole } from "@/features/chat/models"
 import { AI_NAME } from "@/features/theme/theme-config"
+
+import { useChatContext } from "./chat-context"
+import { ChatHeader } from "./chat-header"
 
 interface Props {
   chatThreadId: string

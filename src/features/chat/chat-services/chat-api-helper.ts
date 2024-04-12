@@ -1,9 +1,9 @@
-import { AzureCogDocumentIndex, similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-vector-store"
-import { DocumentSearchModel } from "./azure-cog-search/azure-cog-vector-store"
-
 import { userSession } from "@/features/auth/helpers"
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
 import { AI_NAME } from "@/features/theme/theme-config"
+
+import { DocumentSearchModel } from "./azure-cog-search/azure-cog-vector-store"
+import { AzureCogDocumentIndex, similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-vector-store"
 
 async function buildUserContextPrompt(): Promise<string> {
   const session = await userSession()

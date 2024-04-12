@@ -2,19 +2,6 @@
 
 Before you start chatting with our automated assistant, we need to share a few important points to make sure you understand how to best use this service and what to expect.
 
-## What's New?
-
-**23rd Feb** - We've updated QChat with new features to enhance your experience:
-
-1. A fresh user interface for easier navigation.
-2. The ability to select Sensitivity Labels for improved security.
-3. A Chat Style Selector to customize your interaction into Precise, Balanced, or Creative modes.
-4. The new document upload feature, allowing for RAG-rated chats.
-
-**13 Dec** - We've made changes to how QChat works behind the scenes, while we don't expect any issues please reach out if you do experience any new problems using <qchat@chde.qld.gov.au>.
-
-**8 Nov** - We've updated our help links on this site and additionally made the GPT4 model available for your use. We've also made changes to ensure the replies you get are more aligned to the Queensland Government context.
-
 ## What Is This Service?
 
 QChat is a text-based virtual assistant powered by a Large Language Model, not a real human. It's designed to help you with day-to-day tasks in your role, such as drafting correspondence or developing written content, help you brainstorm ideas or solve problems, and point you in the right direction for further thinking or research.

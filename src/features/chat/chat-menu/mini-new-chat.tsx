@@ -35,7 +35,7 @@ export const MiniNewChat = (): JSX.Element => {
   }
 
   return (
-    <div className="absolute right-4 top-4 lg:hidden">
+    <div className="absolute right-4 top-4 z-50 lg:hidden">
       <Button
         aria-label="Start a new chat"
         role="button"
