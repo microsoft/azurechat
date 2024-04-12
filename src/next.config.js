@@ -84,6 +84,11 @@ const nextConfig = {
   redirects() {
     return [
       {
+        source: "/chatai",
+        destination: "/chat",
+        permanent: true,
+      },
+      {
         source: "/login",
         destination: "/api/auth/signin/azure-ad",
         permanent: true,
