@@ -3,6 +3,7 @@ import { FC } from "react"
 import { FindChatThreadForCurrentUser, UpsertChatThread } from "@/features/chat/chat-services/chat-thread-service"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatFileUI } from "@/features/chat/chat-ui/chat-file/chat-file-ui"
+import { showError } from "@/features/globals/global-message-store"
 import { Card } from "@/features/ui/card"
 
 import { EasterEgg } from "./chat-easter-egg"
@@ -23,7 +24,7 @@ export const ChatMessageEmptyState: FC<Prop> = () => {
       const upseted = await UpsertChatThread({ ...threadResponse.response, selectedPrompt: prompt })
       if (upseted.status !== "OK") throw upseted
     } catch (error) {
-      console.error("Prompt button not selected", error)
+      showError("Prompt button not selected" + error)
     }
   }
 

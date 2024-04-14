@@ -4,9 +4,6 @@ import { Noto_Sans } from "next/font/google"
 
 import "./globals.css"
 
-import { Footer } from "./footer"
-import { Header } from "./header"
-
 import { GlobalConfigProvider } from "@/features/globals/global-client-config-context"
 import { Providers } from "@/features/globals/providers"
 import { AI_NAME } from "@/features/theme/theme-config"
@@ -14,6 +11,9 @@ import { ThemeProvider } from "@/features/theme/theme-provider"
 import { NavBar } from "@/features/ui/navbar"
 import { Toaster } from "@/features/ui/toaster"
 import { cn } from "@/lib/utils"
+
+import { Footer } from "./footer"
+import { Header } from "./header"
 
 const notoSans = Noto_Sans({ subsets: ["latin"] })
 

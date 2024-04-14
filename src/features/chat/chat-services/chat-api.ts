@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { JSONValue, Message, OpenAIStream, StreamingTextResponse, experimental_StreamData } from "ai"
+import { JSONValue, Message, OpenAIStream, StreamData, StreamingTextResponse } from "ai"
 import { APIError } from "openai"
 import { ChatCompletionChunk, ChatCompletionMessageParam } from "openai/resources"
 import { Completion } from "openai/resources/completions"
@@ -25,7 +25,6 @@ export const ChatAPI = async (
   translate: (input: string) => Promise<string>
 ): Promise<Response> => {
   const openAI = OpenAIInstance()
-
   const historyResponse = await FindTopChatMessagesForCurrentUser(chatThread.id)
   if (historyResponse.status !== "OK") throw historyResponse
 
@@ -41,7 +40,7 @@ export const ChatAPI = async (
   )
   if (addMessageResponse.status !== "OK") throw addMessageResponse
 
-  const data = new experimental_StreamData()
+  const data = new StreamData()
   //TODO: Fix Liniting indent problem
   let response
   try {

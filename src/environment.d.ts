@@ -54,6 +54,7 @@ declare global {
       QGAIP_QCHAT_APP_URI: string
       QGAIP_QCHAT_FQDN_URI: string
       SYSTEM_PROMPT: string
+      WEBAPPNAME: string
     }
   }
 }

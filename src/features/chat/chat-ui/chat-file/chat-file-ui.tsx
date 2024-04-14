@@ -1,12 +1,12 @@
 import { ArrowUpCircle, Loader2 } from "lucide-react"
 import { FC, useRef } from "react"
 
+import { useFileSelection } from "./use-file-selection"
+
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { OffenderTranscriptForm } from "@/features/chat/chat-ui/chat-empty-state/chat-transcript-details"
 import { Button } from "@/features/ui/button"
 import { Input } from "@/features/ui/input"
-
-import { useFileSelection } from "./use-file-selection"
 
 export const ChatFileUI: FC = () => {
   const { id, fileState, chatBody, offenderId } = useChatContext()
@@ -70,7 +70,8 @@ export const ChatFileUI: FC = () => {
         </Button>
       </form>
       <p id="file-upload-description" className="text-sm text-muted-foreground">
-        {uploadButtonLabel || "Select a file to upload."}
+        {uploadButtonLabel ||
+          "Select a file to upload, please note files are not stored in their original format and may be cleared from the system after thirty days."}
       </p>
       {chatBody.chatType === "audio" && offenderId != null && (
         <div>

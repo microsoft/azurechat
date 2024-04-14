@@ -1,11 +1,11 @@
-name: "📦 - Publish Artifact"
+name: "📦 - Publish Artifact $(Build.BuildId)"
 
-trigger: none
-
-pr:
+trigger:
   branches:
     include:
       - main
+
+pr: none
 
 variables:
   - name: poolName
@@ -22,7 +22,6 @@ stages:
         steps:
           - checkout: self
             clean: "true"
-
           - task: NodeTool@0
             inputs:
               versionSpec: "20.x"
@@ -44,10 +43,9 @@ stages:
         steps:
           - checkout: self
             clean: true
-
           - task: PublishPipelineArtifact@1
             displayName: "Publish Artifact"
             inputs:
               targetPath: "$(Build.SourcesDirectory)/src"
-              artifact: "drop"
+              artifactName: "drop-$(Build.BuildId)"
               publishLocation: "pipeline"

@@ -2,7 +2,7 @@ import { Document, Packer, Paragraph, HeadingLevel } from "docx"
 import { saveAs } from "file-saver"
 import { marked } from "marked"
 
-import { toast } from "@/features/ui/use-toast"
+import { showError, showSuccess } from "@/features/globals/global-message-store"
 
 import { CustomRenderer } from "./custom-renderer"
 import { createParagraphFromHtml, processCitationsInText } from "./word-document-utils"
@@ -46,15 +46,12 @@ export const convertMarkdownToWordDocument = async (
   Packer.toBlob(doc)
     .then(blob => {
       saveAs(blob, fileName)
-      toast({
+      showSuccess({
         title: "Success",
         description: "Chat exported to Word document",
       })
     })
     .catch(_err => {
-      toast({
-        title: "Error",
-        description: "Failed to export chat to Word document",
-      })
+      showError("Failed to export chat to Word document")
     })
 }

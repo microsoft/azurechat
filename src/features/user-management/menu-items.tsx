@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react"
 import React, { useEffect, useState } from "react"
 
 import { MenuItem } from "@/components/menu"
+import { showError } from "@/features/globals/global-message-store"
 
 export const UserSettings = (): JSX.Element => {
   const [upn, setUPN] = useState<string | null>(null)
@@ -18,7 +19,7 @@ export const UserSettings = (): JSX.Element => {
           setUPN(session.user.upn)
         }
       } catch (error) {
-        console.error("Failed to get session:", error)
+        showError("Failed to get session:" + error)
       }
     }
 

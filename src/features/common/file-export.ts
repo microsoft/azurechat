@@ -3,7 +3,7 @@ import { IPropertiesOptions } from "docx/build/file/core-properties/properties"
 import { saveAs } from "file-saver"
 import { marked } from "marked"
 
-import { toast } from "@/features/ui/use-toast"
+import { showError, showSuccess } from "@/features/globals/global-message-store"
 
 interface MessageType {
   role: string
@@ -301,21 +301,17 @@ export const convertMarkdownToWordDocument = async (
     lastModifiedBy: coreProperties.lastModifiedBy,
     sections: [{ children: messageParagraphs }],
   })
-  console.log(doc)
 
   Packer.toBlob(doc)
     .then(blob => {
       saveAs(blob, fileName)
-      toast({
+      showSuccess({
         title: "Success",
         description: "Chat exported to Word document",
       })
     })
     .catch(() => {
-      toast({
-        title: "Error",
-        description: "Failed to export chat to Word document",
-      })
+      showError("Failed to export chat to Word document")
     })
 }
 

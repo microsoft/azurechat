@@ -4,6 +4,8 @@ import * as Form from "@radix-ui/react-form"
 import { useSession } from "next-auth/react"
 import React, { useState, useEffect } from "react"
 
+import { showError } from "@/features/globals/global-message-store"
+
 interface PromptFormProps {}
 
 export const PromptForm: React.FC<PromptFormProps> = () => {
@@ -21,7 +23,7 @@ export const PromptForm: React.FC<PromptFormProps> = () => {
 
   const handleSubmit = async (formData: FormData): Promise<void> => {
     if (!session?.user) {
-      console.error("No session data available")
+      showError("No session data available")
       return
     }
 
@@ -48,7 +50,7 @@ export const PromptForm: React.FC<PromptFormProps> = () => {
       }
       setServerErrors({ contextPrompt: false })
     } catch (error) {
-      console.error("Failed to submit the form:", error)
+      showError("Failed to submit the form:" + error)
       setServerErrors({ contextPrompt: true })
     }
   }

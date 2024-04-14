@@ -6,11 +6,15 @@ Below are the updates for the Queensland Government QChat Virtual Assistant.
 
 - If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the Queensland Government AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
 
-## 🛡️ Version 1.3.7 Updates
+## 👨🏻‍💻 Version 1.3.8 Updates - 15 APR 2024
+
+- **Minor Software Changes:** This update has some security enhancements to keep QChat secure and ready to assist you!
+
+## 🛡️ Version 1.3.7 Updates - 12 APR 2024
 
 - **Enhanced Content Safety Measures:** This update introduces significant improvements to our content safety protocols. QChat will now more effectively identify messages that potentially breach our content safety guidelines. Such messages will be flagged with a clear warning. Furthermore, if three messages in a row are flagged for content safety violations, the ongoing conversation will be temporarily locked to prevent the exchange of new messages. We encourage users to make use of the feedback options provided if they encounter any messages that they believe should have been flagged but were not. This helps us continually refine and enhance our content safety measures.
 
-## 🆕 Version 1.3.5 Updates
+## 🆕 Version 1.3.5 Updates - 5 APR 2024
 
 - **Display Name Context:** Since version 1.3.5, QChat now has access to your Display Name as additional context when responding to you. This enhancement aims to personalise your interaction with QChat further.
 
@@ -23,7 +27,7 @@ Below are the updates for the Queensland Government QChat Virtual Assistant.
 
 - Significant UI and accessibility changes have been made to ensure a more user-friendly and inclusive experience for all users. These improvements aim to enhance navigation, readability, and overall interaction with QChat.
 
-## Version 1.0.1 Updates
+## Version 1.0.1 Updates 23 FEB 2024
 
 ### 📂 Chat with File & 🔑 Important Note
 

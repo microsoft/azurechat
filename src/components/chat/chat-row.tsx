@@ -52,7 +52,7 @@ export const ChatRow: FC<ChatRowProps> = props => {
           ChatSentiment.Positive,
           "",
           props.chatThreadId
-        ).catch(err => console.error(err))
+        ).catch(err => showError(err))
         break
       case "ThumbsDown":
         setThumbsDownClicked(prevState => !prevState)
