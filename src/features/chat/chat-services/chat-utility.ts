@@ -22,9 +22,8 @@ async function generateChatName(chatMessage: string): Promise<string> {
 
     if (name) {
       return name.replace(/^"+|"+$/g, "")
-    } else {
-      return name || "New Chat by Error"
     }
+    return name || "New Chat by Error"
   } catch (e) {
     console.error("Error generating chat name:", e)
     return "New Chat by Error"

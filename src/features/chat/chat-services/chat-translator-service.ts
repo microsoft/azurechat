@@ -71,9 +71,8 @@ async function translateFunction(
 
   if (Array.isArray(translations)) {
     return translations.map(translation => translation.translations[0].text)
-  } else {
-    throw new Error("Translation API returned an error response.")
   }
+  throw new Error("Translation API returned an error response.")
 }
 
 function revertCase(originalText: string, translatedText: string): string {

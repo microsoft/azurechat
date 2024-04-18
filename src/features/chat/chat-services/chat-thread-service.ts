@@ -1,30 +1,27 @@
 "use server"
 import "server-only"
+
 import { SqlQuerySpec } from "@azure/cosmos"
 
-import { FindAllChatDocumentsForCurrentUser } from "./chat-document-service"
-import { FindAllChatMessagesForCurrentUser } from "./chat-message-service"
-
-import { getCurrentUser, getTenantId, userHashedId, userSession } from "@/features/auth/helpers"
+import { getTenantId, userHashedId, userSession } from "@/features/auth/helpers"
 import { deleteDocuments } from "@/features/chat/chat-services/azure-cog-search/azure-cog-vector-store"
 import { DEFAULT_MONTHS_AGO } from "@/features/chat/constants"
 import {
-  ChatMessageModel,
   ChatRecordType,
-  ChatRole,
-  ChatSentiment,
   ChatThreadModel,
   ChatType,
   ConversationSensitivity,
   ConversationStyle,
-  FeedbackType,
-  PromptGPTProps,
+  PromptProps,
 } from "@/features/chat/models"
 import { xMonthsAgo } from "@/features/common/date-helper"
 import { RedirectToChatThread } from "@/features/common/navigation-helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { HistoryContainer } from "@/features/common/services/cosmos"
 import { uniqueId } from "@/lib/utils"
+
+import { FindAllChatDocumentsForCurrentUser } from "./chat-document-service"
+import { FindAllChatMessagesForCurrentUser } from "./chat-message-service"
 
 export const FindAllChatThreadForCurrentUser = async (): ServerActionResponseAsync<ChatThreadModel[]> => {
   try {
@@ -189,12 +186,12 @@ export const UpsertChatThread = async (chatThread: ChatThreadModel): ServerActio
   }
 }
 
-const EnsureChatThreadOperation = async (chatThreadID: string): ServerActionResponseAsync<ChatThreadModel> => {
-  const response = await FindChatThreadForCurrentUser(chatThreadID)
+const EnsureChatThreadOperation = async (chatThreadId: string): ServerActionResponseAsync<ChatThreadModel> => {
+  const response = await FindChatThreadForCurrentUser(chatThreadId)
   if (response.status !== "OK") return response
 
-  const [currentUser, hashedId] = await Promise.all([getCurrentUser(), userHashedId()])
-  if (!currentUser.qchatAdmin && response.response.userId !== hashedId)
+  const [currentUser, hashedId] = await Promise.all([userSession(), userHashedId()])
+  if (!currentUser?.qchatAdmin && response.response.userId !== hashedId)
     return {
       status: "ERROR",
       errors: [{ message: "Unauthorized access" }],
@@ -228,9 +225,6 @@ export const CreateChatThread = async (): ServerActionResponseAsync<ChatThreadMo
       conversationStyle: ConversationStyle.Precise,
       conversationSensitivity: ConversationSensitivity.Official,
       type: ChatRecordType.Thread,
-      systemPrompt: "",
-      contextPrompt: "",
-      metaPrompt: "",
       chatOverFileName: "",
       prompts: [],
       selectedPrompt: "",
@@ -257,16 +251,11 @@ export const CreateChatThread = async (): ServerActionResponseAsync<ChatThreadMo
 }
 
 export type InitChatSessionResponse = {
-  chatThreadId: string
-  updatedLastHumanMessage: ChatMessageModel
-  chats: ChatMessageModel[]
   chatThread: ChatThreadModel
 }
 
-export const InitChatSession = async (props: PromptGPTProps): ServerActionResponseAsync<InitChatSessionResponse> => {
-  const { messages, id: chatThreadId, chatType, conversationStyle, conversationSensitivity, chatOverFileName } = props
-
-  const lastHumanMessage = messages[messages.length - 1]
+export const InitThreadSession = async (props: PromptProps): ServerActionResponseAsync<InitChatSessionResponse> => {
+  const { id: chatThreadId, chatType, conversationStyle, conversationSensitivity, chatOverFileName } = props
 
   const currentChatThreadResponse = await EnsureChatThreadOperation(chatThreadId)
   if (currentChatThreadResponse.status !== "OK") return currentChatThreadResponse
@@ -274,7 +263,12 @@ export const InitChatSession = async (props: PromptGPTProps): ServerActionRespon
   const chatMessagesResponse = await FindAllChatMessagesForCurrentUser(chatThreadId)
   if (chatMessagesResponse.status !== "OK") return chatMessagesResponse
 
-  const [userId, tenantId] = await Promise.all([userHashedId(), getTenantId()])
+  const user = await userSession()
+  if (!user)
+    return {
+      status: "ERROR",
+      errors: [{ message: "No active user session" }],
+    }
 
   const updatedChatThreadResponse = await UpsertChatThread({
     ...currentChatThreadResponse.response,
@@ -285,29 +279,9 @@ export const InitChatSession = async (props: PromptGPTProps): ServerActionRespon
   })
   if (updatedChatThreadResponse.status !== "OK") return updatedChatThreadResponse
 
-  const updatedLastHumanMessage: ChatMessageModel = {
-    ...lastHumanMessage,
-    isDeleted: false,
-    chatThreadId,
-    userId: userId,
-    tenantId: tenantId,
-    context: "",
-    originalCompletion: "",
-    type: ChatRecordType.Message,
-    feedback: FeedbackType.None,
-    sentiment: ChatSentiment.Neutral,
-    reason: "",
-    systemPrompt: "",
-    createdAt: new Date(),
-    role: ChatRole.User,
-  }
-
   return {
     status: "OK",
     response: {
-      chatThreadId,
-      updatedLastHumanMessage,
-      chats: chatMessagesResponse.response,
       chatThread: updatedChatThreadResponse.response,
     },
   }

@@ -1,28 +1,9 @@
 import { userHashedId } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { TenantContainer } from "@/features/common/services/cosmos"
+import { arraysAreEqual } from "@/lib/utils"
 
-export type TenantRecord = {
-  readonly id: string
-  readonly tenantId: string
-  primaryDomain: string | null | undefined
-  email: string | null | undefined
-  supportEmail: string | null | undefined
-  dateCreated: string | null | undefined
-  dateUpdated: string | null | undefined
-  dateOnBoarded: Date | null | undefined
-  dateOffBoarded: Date | null | undefined
-  modifiedBy: string | null | undefined
-  createdBy: string | null | undefined
-  departmentName: string | null | undefined
-  groups: string[] | null | undefined
-  administrators: string[] | null | undefined
-  features: string[] | null | undefined
-  serviceTier: string | null | undefined
-  history?: string[]
-  requiresGroupLogin: boolean
-  [key: string]: unknown
-}
+import { TenantPreferences, TenantRecord } from "./models"
 
 export const GetTenantById = async (tenantId: string): ServerActionResponseAsync<TenantRecord> => {
   try {
@@ -68,7 +49,6 @@ export const CheckGroupsForTenant = async (
       response: groupsToCheck.some(group => (tenantResponse.response.groups ?? []).includes(group)),
     }
   } catch (e) {
-    console.error(e)
     return {
       status: "ERROR",
       errors: [{ message: `${e}` }],
@@ -96,7 +76,6 @@ export const CreateTenant = async (tenant: TenantRecord, userUpn: string): Serve
       response: undefined,
     }
   } catch (e) {
-    console.error(e)
     return {
       status: "ERROR",
       errors: [{ message: `${e}` }],
@@ -109,42 +88,64 @@ export const UpdateTenant = async (tenant: TenantRecord): ServerActionResponseAs
     if (!tenant.id) throw new Error("Tenant must have an id to be updated.")
 
     const container = await TenantContainer()
-    const { resource } = await container.item(tenant.id).read<TenantRecord>()
+    const tenantResponse = await GetTenantById(tenant.id)
 
-    if (!resource)
-      return {
-        status: "NOT_FOUND",
-        errors: [{ message: `Tenant with id ${tenant.id} not found` }],
-      }
-
-    if (!resource.history) resource.history = []
+    if (tenantResponse.status !== "OK") throw tenantResponse
+    const oldTenant = tenantResponse.response
 
     const currentUser = await userHashedId()
-    const changes: string[] = []
     const updateTimestamp = new Date().toISOString()
-    Object.entries(tenant).forEach(([key, newValue]) => {
-      const oldValue = resource[key]
-      if (newValue !== oldValue && key !== "history") {
-        changes.push(`${updateTimestamp}: ${key} changed from ${oldValue} to ${newValue} by ${currentUser}`)
-      }
-    })
 
-    const updatedHistory = [...resource.history, ...changes]
-
-    const updatedTenant = {
-      ...resource,
-      ...tenant,
-      history: updatedHistory,
-      dateUpdated: updateTimestamp,
+    // update tenant history
+    const keysToTrack: (keyof TenantRecord)[] = [
+      "primaryDomain",
+      "email",
+      "supportEmail",
+      "dateOnBoarded",
+      "dateOffBoarded",
+      "groups",
+      "departmentName",
+      "administrators",
+      "features",
+      "serviceTier",
+      "requiresGroupLogin",
+    ]
+    for (const k of keysToTrack) {
+      const key: keyof TenantRecord = k
+      if (
+        (Array.isArray(oldTenant[key]) &&
+          Array.isArray(tenant[key]) &&
+          arraysAreEqual(oldTenant[key] as [], tenant[key] as [])) ||
+        oldTenant[key] === tenant[key]
+      )
+        continue
+      tenant.history = [
+        ...(oldTenant.history || []),
+        `${updateTimestamp}: ${key} changed from ${oldTenant[key]} to ${tenant[key]} by ${currentUser}`,
+      ]
     }
 
-    await container.items.upsert(updatedTenant)
+    // update tenant preferences history
+    for (const k in tenant.preferences) {
+      const key = k as keyof TenantPreferences
+      if (key === "history" || oldTenant.preferences?.[key] === tenant.preferences[key]) continue
+      ;(tenant.preferences || { history: [] }).history = [
+        ...(oldTenant.preferences?.history || []),
+        {
+          updatedBy: currentUser,
+          updatedOn: updateTimestamp,
+          setting: key,
+          value: tenant.preferences[key],
+        },
+      ]
+    }
+
+    await container.items.upsert({ ...oldTenant, ...tenant })
     return {
       status: "OK",
       response: undefined,
     }
   } catch (e) {
-    console.error(e)
     return {
       status: "ERROR",
       errors: [{ message: `${e}` }],

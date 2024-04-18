@@ -42,7 +42,7 @@ export const CodeBlock: FC<Props> = memo(({ language, children }): JSX.Element =
   }
 
   return (
-    <div className="group relative z-10">
+    <div className="group relative z-20">
       <Prism language={language} style={atomDark} PreTag="pre">
         {children}
       </Prism>

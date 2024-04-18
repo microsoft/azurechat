@@ -1,135 +1,143 @@
-/* eslint-disable indent */
-import { JSONValue, Message, OpenAIStream, StreamData, StreamingTextResponse } from "ai"
-import { APIError } from "openai"
-import { ChatCompletionChunk, ChatCompletionMessageParam } from "openai/resources"
-import { Completion } from "openai/resources/completions"
+import { OpenAIStream, StreamingTextResponse, JSONValue, StreamData } from "ai"
+import { BadRequestError } from "openai"
+import { ChatCompletionChunk, ChatCompletionMessageParam, Completion } from "openai/resources"
+import { Stream } from "openai/streaming"
 
 import {
-  UpsertChatMessage,
-  FindTopChatMessagesForCurrentUser,
-  ChatCompletionMessageTranslated,
-} from "./chat-message-service"
-import { UpsertChatThread } from "./chat-thread-service"
-import { UpdateChatThreadIfUncategorised } from "./chat-utility"
-
-import { ChatRole, CreateCompletionMessage, ChatThreadModel, ChatMessageModel } from "@/features/chat/models"
+  ChatMessageModel,
+  ChatRecordType,
+  ChatRole,
+  ChatSentiment,
+  ChatThreadModel,
+  FeedbackType,
+  PromptMessage,
+  PromptProps,
+} from "@/features/chat/models"
 import { mapOpenAIChatMessages } from "@/features/common/mapping-helper"
-import { ServerActionResponse } from "@/features/common/server-action-response"
 import { OpenAIInstance } from "@/features/common/services/open-ai"
 
-export const ChatAPI = async (
-  systemPrompt: string,
-  userMessage: ChatCompletionMessageParam,
-  chatThread: ChatThreadModel,
-  updatedLastHumanMessage: ChatMessageModel,
-  translate: (input: string) => Promise<string>
-): Promise<Response> => {
-  const openAI = OpenAIInstance()
-  const historyResponse = await FindTopChatMessagesForCurrentUser(chatThread.id)
-  if (historyResponse.status !== "OK") throw historyResponse
+import { buildDataChatMessages, buildSimpleChatMessages, getContextPrompts } from "./chat-api-helper"
+import { FindTopChatMessagesForCurrentUser, UpsertChatMessage } from "./chat-message-service"
+import { InitThreadSession, UpsertChatThread } from "./chat-thread-service"
+import { translator } from "./chat-translator-service"
+import { UpdateChatThreadIfUncategorised } from "./chat-utility"
 
-  let contentFilterTriggerCount = chatThread.contentFilterTriggerCount ?? 0
+const dataChatTypes = ["data", "mssql", "audio"]
+export const MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED = 3
 
-  const addMessageResponse = await UpsertChatMessage(
-    chatThread.id,
-    {
+export const ChatApi = async (props: PromptProps): Promise<Response> => {
+  try {
+    const threadSession = await InitThreadSession(props)
+    if (threadSession.status !== "OK") throw threadSession
+
+    const { chatThread } = threadSession.response
+    const updatedLastHumanMessage = props.messages[props.messages.length - 1]
+
+    let userMessage: ChatCompletionMessageParam
+    let metaPrompt: ChatCompletionMessageParam
+    let translate: (input: string) => Promise<string>
+
+    if (props.chatType === "simple" || !dataChatTypes.includes(props.chatType)) {
+      const res = await buildSimpleChatMessages(updatedLastHumanMessage)
+      userMessage = res.userMessage
+      metaPrompt = res.systemMessage
+
+      translate = async (input: string): Promise<string> => {
+        const translatedCompletion = await translator(input)
+        return translatedCompletion.status === "OK" ? translatedCompletion.response : ""
+      }
+    } else {
+      const res = await buildDataChatMessages(updatedLastHumanMessage, chatThread.chatThreadId)
+      userMessage = res.userMessage
+      metaPrompt = res.systemMessage
+
+      // TODO: https://dis-qgcdg.atlassian.net/browse/QGGPT-437
+      translate = async (_input: string): Promise<string> => await Promise.resolve("")
+    }
+
+    if ((chatThread.contentFilterTriggerCount || 0) >= MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED) {
+      return new Response(JSON.stringify({ error: "This thread is locked" }), { status: 400 })
+    }
+
+    const historyResponse = await FindTopChatMessagesForCurrentUser(chatThread.id)
+    if (historyResponse.status !== "OK") throw historyResponse
+
+    const data = new StreamData()
+
+    const { response, contentFilterResult, updatedThread } = await getChatResponse(
+      chatThread,
+      metaPrompt,
+      userMessage,
+      historyResponse.response,
+      updatedLastHumanMessage,
+      data
+    )
+
+    const contextPrompts = await getContextPrompts()
+    const chatMessageResponse = await UpsertChatMessage({
+      id: updatedLastHumanMessage.id,
+      createdAt: new Date(),
+      type: ChatRecordType.Message,
+      isDeleted: false,
       content: updatedLastHumanMessage.content,
       role: ChatRole.User,
-    },
-    updatedLastHumanMessage.id
-  )
-  if (addMessageResponse.status !== "OK") throw addMessageResponse
+      chatThreadId: chatThread.id,
+      userId: chatThread.userId,
+      tenantId: chatThread.tenantId,
+      context: "",
+      systemPrompt: contextPrompts.metaPrompt,
+      tenantPrompt: contextPrompts.tenantPrompt,
+      userPrompt: contextPrompts.userPrompt,
+      contentFilterResult,
+    })
+    if (chatMessageResponse.status !== "OK") throw chatMessageResponse
 
-  const data = new StreamData()
-  //TODO: Fix Liniting indent problem
-  let response
-  try {
-    response =
-      contentFilterTriggerCount >= maxContentFilterTriggerCountAllowed
-        ? makeContentFilterResponse(true)
-        : await openAI.chat.completions.create({
-            messages: [
-              {
-                role: ChatRole.System,
-                content: systemPrompt,
-              },
-              ...mapOpenAIChatMessages([...historyResponse.response]),
-              userMessage,
-            ],
-            model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
-            stream: true,
-          })
-  } catch (exception) {
-    if (exception instanceof APIError && exception.status === 400 && exception.code === "content_filter") {
-      const contentFilterResult = exception.error as unknown
-      contentFilterTriggerCount++
+    const stream = OpenAIStream(response as AsyncIterable<Completion>, {
+      async onCompletion(completion: string) {
+        const translatedCompletion = await translate(completion)
+        const addedMessage = await UpsertChatMessage({
+          id: props.data.completionId,
+          createdAt: new Date(),
+          type: ChatRecordType.Message,
+          isDeleted: false,
+          originalCompletion: translatedCompletion ? completion : "",
+          content: translatedCompletion ? translatedCompletion : completion,
+          role: ChatRole.Assistant,
+          chatThreadId: chatThread.id,
+          userId: chatThread.userId,
+          tenantId: chatThread.tenantId,
+          feedback: FeedbackType.None,
+          sentiment: ChatSentiment.Neutral,
+          reason: "",
+        })
+        if (addedMessage?.status !== "OK") throw addedMessage.errors
 
-      let upsertResponse: ServerActionResponse<unknown> = await UpsertChatMessage(
-        chatThread.id,
-        {
-          ...addMessageResponse.response,
-          contentFilterResult,
-        },
-        updatedLastHumanMessage.id
-      )
-      if (upsertResponse.status !== "OK") throw upsertResponse
+        data.append({
+          id: addedMessage.response.id,
+          content: addedMessage.response.content,
+        })
 
-      upsertResponse = await UpsertChatThread({ ...chatThread, contentFilterTriggerCount })
-      if (upsertResponse.status !== "OK") throw upsertResponse
+        addedMessage.response.content &&
+          (await UpdateChatThreadIfUncategorised(updatedThread, addedMessage.response.content))
+      },
+      async onFinal() {
+        await data.close()
+      },
+      experimental_streamData: true,
+    })
 
-      data.append({
-        id: addMessageResponse.response.id,
-        content: addMessageResponse.response.content,
-        contentFilterResult,
-        contentFilterTriggerCount,
-      } as DataItem)
+    return new StreamingTextResponse(stream, { headers: { "Content-Type": "text/event-stream" } }, data)
+  } catch (error) {
+    const errorResponse = error instanceof Error ? error.message : "An unknown error occurred."
+    const errorStatusText = error instanceof Error ? error.toString() : "Unknown Error"
 
-      response = makeContentFilterResponse(contentFilterTriggerCount >= maxContentFilterTriggerCountAllowed)
-    } else {
-      throw exception
-    }
+    return new Response(errorResponse, {
+      status: 500,
+      statusText: errorStatusText,
+    })
   }
-
-  const stream = OpenAIStream(response as AsyncIterable<Completion>, {
-    async onCompletion(completion: string) {
-      const translatedCompletion = await translate(completion)
-      const message = buildAssistantChatMessage(completion, translatedCompletion)
-
-      const completionMessage = updatedLastHumanMessage as typeof updatedLastHumanMessage & CreateCompletionMessage
-      const addedMessage = await UpsertChatMessage(chatThread.id, message, completionMessage.completionId)
-      if (addedMessage?.status !== "OK") {
-        throw addedMessage.errors
-      }
-
-      data.append({
-        id: addedMessage.response.id,
-        content: addedMessage.response.content,
-      } as DataItem)
-
-      message.content && (await UpdateChatThreadIfUncategorised(chatThread, message.content))
-    },
-    async onFinal() {
-      await data.close()
-    },
-    experimental_streamData: true,
-  })
-
-  return new StreamingTextResponse(
-    stream,
-    {
-      headers: { "Content-Type": "text/event-stream" },
-    },
-    data
-  )
 }
 
-export type DataItem = JSONValue &
-  Message & {
-    contentFilterResult?: unknown
-    contentFilterTriggerCount: number
-  }
-
-export const maxContentFilterTriggerCountAllowed = 3
 async function* makeContentFilterResponse(lockChatThread: boolean): AsyncGenerator<ChatCompletionChunk> {
   yield {
     choices: [
@@ -150,15 +158,53 @@ async function* makeContentFilterResponse(lockChatThread: boolean): AsyncGenerat
   }
 }
 
-const buildAssistantChatMessage = (completion: string, translate: string): ChatCompletionMessageTranslated => {
-  if (translate)
+async function getChatResponse(
+  chatThread: ChatThreadModel,
+  systemPrompt: ChatCompletionMessageParam,
+  userMessage: ChatCompletionMessageParam,
+  history: ChatMessageModel[],
+  addMessage: PromptMessage,
+  data: StreamData
+): Promise<{
+  response: AsyncGenerator<ChatCompletionChunk> | Stream<ChatCompletionChunk>
+  contentFilterResult?: JSONValue
+  updatedThread: ChatThreadModel
+}> {
+  let contentFilterTriggerCount = chatThread.contentFilterTriggerCount ?? 0
+
+  try {
+    const openAI = OpenAIInstance()
     return {
-      originalCompletion: completion,
-      content: translate,
-      role: "assistant",
+      response: await openAI.chat.completions.create({
+        messages: [systemPrompt, ...mapOpenAIChatMessages(history), userMessage],
+        model: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
+        stream: true,
+      }),
+      updatedThread: chatThread,
     }
-  return {
-    content: completion,
-    role: "assistant",
+  } catch (exception) {
+    if (!(exception instanceof BadRequestError) || exception.code !== "content_filter") throw exception
+
+    const contentFilterResult = exception.error as JSONValue
+    contentFilterTriggerCount++
+
+    data.append({
+      id: addMessage.id,
+      content: addMessage.content,
+      contentFilterResult,
+      contentFilterTriggerCount,
+    })
+
+    const upadatedThread = await UpsertChatThread({
+      ...chatThread,
+      contentFilterTriggerCount,
+    })
+    if (upadatedThread.status !== "OK") throw upadatedThread.errors
+
+    return {
+      response: makeContentFilterResponse(contentFilterTriggerCount >= MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED),
+      contentFilterResult,
+      updatedThread: upadatedThread.response,
+    }
   }
 }

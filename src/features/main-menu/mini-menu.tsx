@@ -9,6 +9,7 @@ import { useTheme } from "next-themes"
 import React from "react"
 
 import { signInProvider } from "@/app-global"
+
 import { cn } from "@/lib/utils"
 
 import { useMiniMenuContext } from "./mini-menu-context"
@@ -56,7 +57,6 @@ export const MiniMenu: React.FC = () => {
       icon: SpellCheck2,
       ariaLabel: "Help with factual errors",
     },
-    // { name: 'Settings', href: '/settings', icon: UserCog, ariaLabel: 'Navigate to settings' },
   ]
 
   const handleMenuClose = (): void => {

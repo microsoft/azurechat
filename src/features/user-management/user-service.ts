@@ -1,31 +1,9 @@
 import { hashValue } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { UserContainer } from "@/features/common/services/cosmos"
+import { arraysAreEqual } from "@/lib/utils"
 
-export type UserIdentity = {
-  id: string
-  userId: string
-  tenantId: string
-  email: string | null | undefined
-  name: string | null | undefined
-  upn: string
-  qchatAdmin: boolean
-}
-
-export type UserActivity = {
-  last_login: Date | null | undefined
-  first_login: Date | null | undefined
-  accepted_terms: boolean | null | undefined
-  accepted_terms_date: string | null | undefined
-  history?: string[]
-  groups?: string[] | null | undefined
-  failed_login_attempts: number
-  last_failed_login: Date | null
-  contextPrompt?: string | null
-  [key: string]: unknown
-}
-
-export type UserRecord = UserIdentity & UserActivity
+import { UserPreferences, UserRecord } from "./models"
 
 export const CreateUser = async (user: UserRecord): ServerActionResponseAsync<UserRecord> => {
   user.failed_login_attempts = 0
@@ -49,8 +27,6 @@ export const CreateUser = async (user: UserRecord): ServerActionResponseAsync<Us
       response: resource,
     }
   } catch (error) {
-    // TODO
-    console.error(error)
     return {
       status: "ERROR",
       errors: [{ message: `${error}` }],
@@ -65,8 +41,6 @@ export const UpdateUser = async (
 ): ServerActionResponseAsync<UserRecord> => {
   if (!tenantId?.trim() || !userId?.trim()) throw new Error("TenantId and UserID are required to update a user.")
 
-  const updateTimestamp = new Date().toISOString()
-
   const oldUserResponse = await GetUserByUpn(tenantId, user.upn)
   const container = await UserContainer()
 
@@ -76,31 +50,52 @@ export const UpdateUser = async (
       status: "OK",
       response: user,
     }
-  } else if (oldUserResponse.status === "OK") {
+  }
+  if (oldUserResponse.status === "OK") {
     const oldUser = oldUserResponse.response
-    let historyUpdated = false
-    const changes: string[] = oldUser.history || []
 
-    Object.keys(user).forEach(key => {
-      if (key !== "history" && key !== "last_login" && key !== "groups" && oldUser[key] !== user[key]) {
-        changes.push(`${updateTimestamp}: ${key} changed from ${oldUser[key]} to ${user[key]} by ${user.upn}`)
-        historyUpdated = true
+    const updateTimestamp = new Date().toISOString()
+
+    // update user history
+    const keysToTrack: (keyof UserRecord)[] = [
+      "email",
+      "name",
+      "upn",
+      "qchatAdmin",
+      "first_login",
+      "accepted_terms_date",
+    ]
+    for (const key of keysToTrack) {
+      if (oldUser[key] !== user[key]) {
+        user.history = [
+          ...(user.history || []),
+          `${updateTimestamp}: ${key} changed from ${oldUser[key]} to ${user[key]} by ${user.upn}`,
+        ]
       }
-    })
+    }
+
+    // update user preferences history
+    for (const k in user.preferences) {
+      const key = k as keyof UserPreferences
+      if (key === "history" || oldUser.preferences?.[key] === user.preferences[key]) continue
+      user.preferences.history = [
+        ...(user.preferences.history || []),
+        {
+          updatedOn: updateTimestamp,
+          setting: key,
+          value: user.preferences[key],
+        },
+      ]
+    }
 
     if (!arraysAreEqual(user.groups || [], oldUser.groups || [])) {
       user.groups = user.groups ? [...user.groups] : []
       user.groups = [...user.groups]
-      historyUpdated = true
-    }
-
-    if (historyUpdated) {
-      user.history = changes
     }
 
     user.last_login = new Date(updateTimestamp)
 
-    const { resource } = await container.items.upsert<UserRecord>(user)
+    const { resource } = await container.items.upsert<UserRecord>({ ...oldUser, ...user })
     if (!resource) {
       return {
         status: "ERROR",
@@ -117,13 +112,6 @@ export const UpdateUser = async (
     status: "ERROR",
     errors: [{ message: "Unexpected error occurred while updating user." }],
   }
-}
-
-const arraysAreEqual = (array1: string[], array2: string[]): boolean => {
-  if (array1.length !== array2.length) return false
-  const sortedArray1 = [...array1].sort()
-  const sortedArray2 = [...array2].sort()
-  return sortedArray1.every((value, index) => value === sortedArray2[index])
 }
 
 export const GetUserByUpn = async (tenantId: string, upn: string): ServerActionResponseAsync<UserRecord> => {
@@ -148,8 +136,6 @@ export const GetUserByUpn = async (tenantId: string, upn: string): ServerActionR
       response: resources[0],
     }
   } catch (error) {
-    // TODO
-    console.error(error)
     return {
       status: "ERROR",
       errors: [{ message: `${error}` }],

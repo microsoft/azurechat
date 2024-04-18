@@ -2,8 +2,8 @@
 import { useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
 
+import { UserRecord } from "@/features/user-management/models"
 import { GetUserByUpn } from "@/features/user-management/user-service"
-import { UserRecord } from "@/features/user-management/user-service"
 
 interface UseUserDataReturnType {
   userData: UserRecord | null

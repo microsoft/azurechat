@@ -2,14 +2,14 @@ import { Loader, Send } from "lucide-react"
 import { getSession } from "next-auth/react"
 import { FC, FormEvent, useRef, useMemo } from "react"
 
-import ChatInputMenu from "./chat-input-menu"
-
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatFileSlider } from "@/features/chat/chat-ui/chat-file/chat-file-slider"
 import { convertMarkdownToWordDocument } from "@/features/common/file-export"
 import { AI_NAME } from "@/features/theme/theme-config"
 import { Button } from "@/features/ui/button"
 import { Textarea } from "@/features/ui/textarea"
+
+import ChatInputMenu from "./chat-input-menu"
 
 interface Props {}
 
@@ -77,7 +77,7 @@ const ChatInput: FC<Props> = () => {
   }
 
   return (
-    <form onSubmit={submit} className="z-80 absolute bottom-0 flex w-full items-center">
+    <form onSubmit={submit} className="absolute bottom-0 z-80 flex w-full items-center">
       <div className="container relative mx-auto flex max-w-4xl items-center gap-2 py-2">
         {fileChatVisible && <ChatFileSlider />}
         <Textarea

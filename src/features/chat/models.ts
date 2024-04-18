@@ -1,5 +1,3 @@
-import { Message } from "ai"
-
 export enum ConversationStyle {
   Creative = "creative",
   Balanced = "balanced",
@@ -56,16 +54,24 @@ export interface ChatMessageModel {
   threadId?: string
   userId: string | undefined
   tenantId: string | undefined
-  originalCompletion: string
   content: string
-  role: ChatRole
-  context: string
   type: ChatRecordType.Message
+  role: ChatRole
+}
+export interface UserChatMessageModel extends ChatMessageModel {
+  role: ChatRole.User
+  context: string
+  systemPrompt: string
+  tenantPrompt: string
+  userPrompt: string
+  contentFilterResult?: unknown
+}
+export interface AssistantChatMessageModel extends ChatMessageModel {
+  originalCompletion: string
+  role: ChatRole.Assistant
   feedback: FeedbackType
   sentiment: ChatSentiment
   reason: string
-  systemPrompt: string
-  contentFilterResult?: unknown
 }
 
 export interface ChatThreadModel {
@@ -86,15 +92,12 @@ export interface ChatThreadModel {
   type: ChatRecordType.Thread
   offenderId?: string
   isDisabled: boolean
-  systemPrompt?: string
-  contextPrompt?: string
-  metaPrompt?: string
   prompts: []
   selectedPrompt: string
   contentFilterTriggerCount?: number
 }
 
-export interface PromptGPTBody {
+export interface PromptBody {
   id: string
   chatType: ChatType
   conversationStyle: ConversationStyle
@@ -103,12 +106,18 @@ export interface PromptGPTBody {
   tenantId: string
   userId: string
   offenderId?: string
-  contextPrompt?: string
   chatThreadName?: string
 }
 
-export interface PromptGPTProps extends PromptGPTBody {
-  messages: Message[]
+export interface PromptMessage {
+  id: string
+  content: string
+  role: ChatRole
+}
+
+export interface PromptProps extends PromptBody {
+  messages: PromptMessage[]
+  data: { completionId: string }
 }
 
 export interface ChatDocumentModel {
@@ -133,8 +142,4 @@ export interface ChatUtilityModel {
   content: string
   role: ChatRole
   type: ChatRecordType.Utility
-}
-
-export type CreateCompletionMessage = {
-  completionId: string
 }

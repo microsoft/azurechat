@@ -34,7 +34,7 @@ const ErrorPage: React.FC = () => {
   }, [])
 
   const handleSupportRedirect = (): void => {
-    void router.push("/support")
+    router.push("/support")
   }
 
   const handleForGovRedirect = (): void => {

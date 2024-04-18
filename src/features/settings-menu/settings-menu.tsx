@@ -4,14 +4,14 @@ import React from "react"
 
 import { Menu, MenuContent, MenuHeader } from "@/components/menu"
 
-import { UserSettings } from "./menu-items"
+import { SettingsMenuItems } from "./settings-menu-items"
 
-export const UserSettingsMenu: React.FC = () => {
+export const SettingsMenu: React.FC = () => {
   return (
     <Menu className="col-span-1 hidden h-full w-auto overflow-auto bg-background p-2 sm:block md:block">
-      <MenuHeader className="justify-end"></MenuHeader>
+      <MenuHeader className="justify-end" />
       <MenuContent>
-        <UserSettings />
+        <SettingsMenuItems />
       </MenuContent>
     </Menu>
   )

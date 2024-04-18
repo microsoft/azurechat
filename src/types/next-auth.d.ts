@@ -9,7 +9,6 @@ declare module "next-auth" {
       tenantId: string
       upn: string
       userId: string
-      contextPrompt?: string
     } & DefaultSession["user"]
   }
   interface Token {

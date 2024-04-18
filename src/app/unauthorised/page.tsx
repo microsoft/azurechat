@@ -18,10 +18,10 @@ const Home: React.FC = () => {
   }
 
   return (
-    <Card className="items-top justify-left flex h-full flex-1 p-10">
-      <div className="flex flex-col">
+    <Card className="items-top flex size-full flex-1 justify-center p-10">
+      <div className="size-full items-center">
         {" "}
-        <h1 className="text-xl font-semibold">You are not authorised to view this page</h1>
+        <h3 className="text-xl font-semibold">You are not authorised to view this page</h3>
         <p className="mt-5">
           Please{" "}
           <button

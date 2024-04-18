@@ -158,7 +158,6 @@ function useToast(): {
   toasts: ToasterToast[]
   toast: (props: Toast) => { id: string; dismiss: () => void; update: (props: ToasterToast) => void }
   dismiss: (toastId?: string) => void
-  // eslint-disable-next-line indent
 } {
   const [state, setState] = React.useState<State>(memoryState)
 

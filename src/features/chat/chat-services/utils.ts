@@ -2,20 +2,13 @@ import { Message } from "ai"
 
 import { ChatMessageModel, ConversationStyle } from "@/features/chat/models"
 
-export const transformCosmosToAIModel = (chats: Array<ChatMessageModel>): Array<Message> => {
-  return chats.map(chat => {
-    return {
-      role: chat.role,
-      content: chat.content,
-      id: chat.id,
-      createdAt: chat.createdAt,
-      feedback: chat.feedback,
-      sentiment: chat.sentiment,
-      reason: chat.reason,
-      contentFilterResult: chat.contentFilterResult,
-    }
-  })
-}
+export const transformCosmosToAIModel = (chats: Array<ChatMessageModel>): Array<Message> =>
+  chats.map(chat => ({
+    id: chat.id,
+    content: chat.content,
+    role: chat.role,
+    createdAt: chat.createdAt,
+  }))
 
 export const transformConversationStyleToTemperature = (conversationStyle: ConversationStyle): number => {
   switch (conversationStyle) {

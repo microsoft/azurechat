@@ -19,7 +19,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   const { data: session } = useSession()
   const router = useRouter()
   const scrollRef = useRef<HTMLDivElement>(null)
-  const { messages, isLoading } = useChatContext()
+  const { messages, isLoading, chatThreadLocked } = useChatContext()
 
   useChatScrollAnchor(messages, scrollRef)
 
@@ -44,6 +44,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
             type={message.role as ChatRole}
             chatThreadId={chatThreadId}
             showAssistantButtons={index === messages.length - 1 ? !isLoading : true}
+            threadLocked={index === messages.length - 1 && chatThreadLocked}
           />
         ))}
         {isLoading && <ChatLoading />}

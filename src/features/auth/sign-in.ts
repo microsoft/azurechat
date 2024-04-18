@@ -2,8 +2,10 @@ import { User } from "next-auth"
 import { AdapterUser } from "next-auth/adapters"
 
 import { migrateChatMessagesForCurrentUser } from "@/features/chat/chat-services/chat-message-service"
-import { CreateTenant, GetTenantById, type TenantRecord } from "@/features/tenant-management/tenant-service"
-import { CreateUser, GetUserByUpn, UpdateUser, type UserRecord } from "@/features/user-management/user-service"
+import { type TenantRecord } from "@/features/tenant-management/models"
+import { CreateTenant, GetTenantById } from "@/features/tenant-management/tenant-service"
+import { UserRecord } from "@/features/user-management/models"
+import { CreateUser, GetUserByUpn, UpdateUser } from "@/features/user-management/user-service"
 
 import { hashValue } from "./helpers"
 
@@ -56,9 +58,10 @@ export class UserSignInHandler {
           departmentName: null,
           groups: [],
           administrators: groupAdmins,
-          features: null,
+          features: [],
           serviceTier: null,
           history: [`${now}: Tenant created by user ${user.upn} on failed login.`],
+          preferences: { contextPrompt: "" },
         }
         const tenant = await CreateTenant(tenantRecord, user.upn)
         if (tenant.status !== "OK") throw tenant
@@ -134,10 +137,13 @@ const getsertUser = async (userGroups: string[], user: User | AdapterUser): Prom
         accepted_terms: false,
         accepted_terms_date: "",
         groups: userGroups,
-        contextPrompt: null,
         failed_login_attempts: 0,
         last_failed_login: null,
         history: [`${now}: User created.`],
+        preferences: {
+          contextPrompt: "",
+          history: [],
+        },
       })
       if (createUserResponse.status !== "OK") throw createUserResponse
       return createUserResponse.response

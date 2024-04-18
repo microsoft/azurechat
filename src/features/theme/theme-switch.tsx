@@ -17,10 +17,9 @@ export function ThemeSwitch(): JSX.Element {
   return (
     <Tabs defaultValue={resolvedTheme} aria-label="Theme Switch">
       <TabsList className="flex h-10 w-[70px] items-center justify-center gap-1">
-        {" "}
         {isThemeLoading ? (
           <div className="flex size-full items-center justify-center">
-            <span className="flex size-[35px] items-center justify-center rounded-md opacity-50">...</span>{" "}
+            <span className="flex size-[35px] items-center justify-center rounded-md opacity-50">...</span>
           </div>
         ) : (
           <>

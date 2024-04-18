@@ -7,7 +7,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "prettier",
   ],
-  plugins: ["@typescript-eslint", "no-relative-import-paths"],
+  plugins: ["@typescript-eslint", "no-relative-import-paths", "import"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
@@ -16,7 +16,6 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   rules: {
-    indent: ["error", 2, { SwitchCase: 1 }],
     "linebreak-style": ["error", "unix"],
     quotes: ["error", "double", { avoidEscape: true, allowTemplateLiterals: false }],
     semi: ["error", "never"],
@@ -67,6 +66,18 @@ module.exports = {
     "import/order": [
       "warn",
       {
+        pathGroups: [
+          {
+            pattern: "{@/features,@/components,@/ui,@/services,@/lib}/**",
+            group: "internal",
+            position: "after",
+          },
+          {
+            pattern: "@/app-global",
+            group: "internal",
+            position: "before",
+          },
+        ],
         groups: ["builtin", "external", "internal", ["sibling", "parent"], "index", "unknown"],
         "newlines-between": "always",
         alphabetize: {
@@ -75,5 +86,6 @@ module.exports = {
         },
       },
     ],
+    "no-else-return": ["warn", { allowElseIf: false }],
   },
 }

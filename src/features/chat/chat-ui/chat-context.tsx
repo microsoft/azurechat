@@ -1,20 +1,21 @@
 "use client"
 
-import { ChatRequestOptions, CreateMessage, Message } from "ai"
+import { ChatRequestOptions, JSONValue, Message } from "ai"
 import { UseChatHelpers, useChat } from "ai/react"
 import { useRouter } from "next/navigation"
 import React, { FC, FormEvent, createContext, useContext, useRef, useState } from "react"
 
-import { DataItem, maxContentFilterTriggerCountAllowed } from "@/features/chat/chat-services/chat-api"
+import { MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED } from "@/features/chat/chat-services/chat-api"
 import { transformCosmosToAIModel } from "@/features/chat/chat-services/utils"
 import {
-  ChatMessageModel,
   ChatThreadModel,
   ChatType,
   ConversationStyle,
   ConversationSensitivity,
-  PromptGPTBody,
-  CreateCompletionMessage,
+  PromptBody,
+  PromptMessage,
+  ChatRole,
+  ChatMessageModel,
 } from "@/features/chat/models"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 import { uniqueId } from "@/lib/utils"
@@ -25,8 +26,8 @@ import { TextToSpeechProps, useTextToSpeech } from "./chat-speech/use-text-to-sp
 
 interface ChatContextProps extends UseChatHelpers {
   id: string
-  setChatBody: (body: PromptGPTBody) => void
-  chatBody: PromptGPTBody
+  setChatBody: (body: PromptBody) => void
+  chatBody: PromptBody
   fileState: FileState
   onChatTypeChange: (value: ChatType) => void
   onConversationStyleChange: (value: ConversationStyle) => void
@@ -37,6 +38,7 @@ interface ChatContextProps extends UseChatHelpers {
   closeModal?: () => void
   offenderId?: string
   chatThreadLocked: boolean
+  messages: PromptMessage[]
 }
 
 const ChatContext = createContext<ChatContextProps | null>(null)
@@ -61,7 +63,7 @@ export const ChatProvider: FC<Prop> = props => {
 
   const fileState = useFileState()
 
-  const [chatBody, setBody] = useState<PromptGPTBody>({
+  const [chatBody, setBody] = useState<PromptBody>({
     id: props.chatThread.id,
     chatType: props.chatThread.chatType,
     conversationStyle: props.chatThread.conversationStyle,
@@ -108,7 +110,7 @@ export const ChatProvider: FC<Prop> = props => {
   const openModal = (): void => setIsModalOpen(true)
   const closeModal = (): void => setIsModalOpen(false)
 
-  const setChatBody = (body: PromptGPTBody): void => {
+  const setChatBody = (body: PromptBody): void => {
     setBody(body)
   }
 
@@ -127,7 +129,7 @@ export const ChatProvider: FC<Prop> = props => {
   }
 
   function onError(error: Error): void {
-    showError(error.message, response.reload)
+    showError(error.message)
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>, options: ChatRequestOptions = {}): Promise<void> => {
@@ -140,11 +142,10 @@ export const ChatProvider: FC<Prop> = props => {
     await response.append(
       {
         id: uniqueId(),
-        completionId: nextCompletionId,
         content: response.input,
-        role: "user",
-      } as CreateMessage & CreateCompletionMessage,
-      options
+        role: ChatRole.User,
+      },
+      { ...options, data: { completionId: nextCompletionId } }
     )
 
     response.setInput("")
@@ -154,18 +155,19 @@ export const ChatProvider: FC<Prop> = props => {
     <ChatContext.Provider
       value={{
         ...response,
-        messages: response.messages.map(message => {
-          const dataItem = (response.data as DataItem[])?.find(data => data.id === message.id)
-
-          return {
-            ...message,
-            ...(dataItem as Message),
-          }
-        }),
-        chatThreadLocked: [
-          props.chatThread.contentFilterTriggerCount ?? 0,
-          ...((response.data as DataItem[]) ?? []).map(message => message.contentFilterTriggerCount ?? 0),
-        ].some(count => count >= maxContentFilterTriggerCountAllowed),
+        messages: response.messages
+          .map(m => ({ id: m.id, content: m.content, role: m.role }) as PromptMessage)
+          .map(message => {
+            const dataItem = (response.data as (JSONValue & Message)[])?.find(
+              data => data.id === message.id
+            ) as PromptMessage
+            return {
+              ...message,
+              ...dataItem,
+            }
+          }),
+        chatThreadLocked:
+          (props.chatThread?.contentFilterTriggerCount || 0) >= MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED,
         handleSubmit,
         setChatBody,
         chatBody,

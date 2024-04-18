@@ -26,6 +26,7 @@ interface ChatRowProps {
   type: ChatRole
   chatThreadId: string
   showAssistantButtons: boolean
+  threadLocked?: boolean
 }
 
 export const ChatRow: FC<ChatRowProps> = props => {
@@ -145,14 +146,16 @@ export const ChatRow: FC<ChatRowProps> = props => {
   ) : null
 
   return (
-    <article className="container mx-auto flex flex-col py-1 pb-4">
-      <section className="flex-col gap-4 overflow-hidden rounded-md bg-background p-4">
-        <header className="flex w-full items-center justify-between">
-          <Typography variant="h3" className="flex-1 capitalize text-heading" tabIndex={0}>
+    <article className={"container mx-auto flex flex-col py-1 pb-4"}>
+      <section
+        className={`prose prose-slate max-w-none flex-col gap-4 overflow-hidden break-words rounded-md bg-background p-4 text-sm text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base ${props.threadLocked && "border-4 border-error"}`}
+      >
+        <div className="flex w-full items-center justify-between">
+          <Typography variant="h3" className="flex-1 mt-0 text-heading" tabIndex={0}>
             {props.name}
           </Typography>
           {process.env.NODE_ENV === "development" && (
-            <Typography variant="h3" className="flex-1 capitalize text-heading" tabIndex={0}>
+            <Typography variant="h3" className="flex-1 mt-0 text-heading" tabIndex={0}>
               {props.chatMessageId}
             </Typography>
           )}
@@ -167,7 +170,7 @@ export const ChatRow: FC<ChatRowProps> = props => {
             onClose={handleModalClose}
             onSubmit={handleModalSubmit}
           />
-        </header>
+        </div>
         <div
           className="prose prose-slate max-w-none break-words text-sm text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base"
           tabIndex={0}
