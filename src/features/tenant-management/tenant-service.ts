@@ -1,9 +1,8 @@
 import { userHashedId } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { TenantContainer } from "@/features/common/services/cosmos"
+import { TenantPreferences, TenantRecord } from "@/features/tenant-management/models"
 import { arraysAreEqual } from "@/lib/utils"
-
-import { TenantPreferences, TenantRecord } from "./models"
 
 export const GetTenantById = async (tenantId: string): ServerActionResponseAsync<TenantRecord> => {
   try {

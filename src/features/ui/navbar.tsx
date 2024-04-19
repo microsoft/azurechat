@@ -12,54 +12,47 @@ interface LinkItem {
   name: string
   href: string
   icon?: React.ElementType
-  condition?: (session: Session | null) => boolean
+  condition?: "authenticated" | "admin"
 }
 
 const links: LinkItem[] = [
   { name: "Home", href: "/", icon: HomeIcon },
-  {
-    name: "Settings",
-    href: "/settings/tenant",
-    icon: UserRoundCog,
-    condition: session => !!session?.user?.qchatAdmin,
-  },
-  { name: "Prompt Guide", href: "/prompt-guide", icon: BookMarked, condition: session => !!session?.user },
-  { name: "What's new", href: "/whats-new", icon: CloudUpload, condition: session => !!session?.user },
-  {
-    name: "Factual Errors",
-    href: "/hallucinations",
-    icon: SpellCheck2,
-    condition: session => !!session?.user,
-  },
+  { name: "Settings", href: "/settings", icon: UserRoundCog, condition: "admin" },
+  { name: "Prompt Guide", href: "/prompt-guide", icon: BookMarked, condition: "authenticated" },
+  { name: "What's new", href: "/whats-new", icon: CloudUpload, condition: "authenticated" },
+  { name: "Factual Errors", href: "/hallucinations", icon: SpellCheck2, condition: "authenticated" },
   // Further links can be added with or without conditions
 ]
 
-const placeholders = links.map(link => ({ name: link.name }))
+const validateCondition = (link: LinkItem) => (session: Session | null) => {
+  if (link.condition === "authenticated" && !session?.user) return false
+  if (link.condition === "admin" && !session?.user?.qchatAdmin) return false
+  return true
+}
+
+const placeholders = links.filter(link => link.condition !== "admin").map(link => ({ name: link.name }))
 
 export const NavBar: React.FC = () => {
   const { data: session, status } = useSession()
 
-  const visibleLinks = links.filter(link => !link.condition || link.condition(session))
+  const visibleLinks = links.filter(link => !link.condition || validateCondition(link)(session))
 
   return (
     <nav aria-label="Main navigation" className="m:h-[44px] border-b-4 border-accent bg-backgroundShade">
       <div className="container mx-auto hidden md:block">
-        <div className="grid grid-cols-12 gap-2">
+        <div className="flex w-full justify-between gap-2">
           {status === "loading"
             ? placeholders.map(link => (
-                <div key={link.name} className="relative col-span-2 flex items-center space-x-2">
-                  <div className="flex w-full animate-pulse items-center justify-center py-2">
+                <div key={link.name} className="flex items-center space-x-2">
+                  <div className="flex w-full animate-pulse items-center justify-center p-2">
                     <div className="mr-2 h-8 w-5 rounded bg-gray-300"></div>
                     <div className="h-8 w-24 rounded bg-gray-300"></div>
                   </div>
                 </div>
               ))
             : visibleLinks.map(link => (
-                <div key={link.name} className="relative col-span-2 flex items-center space-x-2">
-                  <a
-                    href={link.href}
-                    className="group flex w-full items-center justify-center py-2 hover:bg-altBackground"
-                  >
+                <div key={link.name} className="flex items-center space-x-2 hover:bg-altBackground">
+                  <a href={link.href} className="group flex w-full items-center justify-center p-2">
                     {link.icon &&
                       React.createElement(link.icon, {
                         className: "h-8 w-5 mr-2",
@@ -70,7 +63,7 @@ export const NavBar: React.FC = () => {
                   </a>
                 </div>
               ))}
-          <div className="col-span-2 flex min-h-[40px] items-center justify-end">
+          <div className="flex min-h-[40px] items-center justify-end">
             <ThemeSwitch />
           </div>
         </div>

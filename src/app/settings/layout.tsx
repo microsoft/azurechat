@@ -1,4 +1,4 @@
-import { SettingsMenu } from "@/features/settings-menu/settings-menu"
+import { SettingsMenu } from "@/features/settings/settings-menu"
 import { AI_NAME } from "@/features/theme/theme-config"
 import { Card } from "@/features/ui/card"
 

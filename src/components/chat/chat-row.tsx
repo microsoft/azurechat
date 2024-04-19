@@ -151,11 +151,11 @@ export const ChatRow: FC<ChatRowProps> = props => {
         className={`prose prose-slate max-w-none flex-col gap-4 overflow-hidden break-words rounded-md bg-background p-4 text-sm text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base ${props.threadLocked && "border-4 border-error"}`}
       >
         <div className="flex w-full items-center justify-between">
-          <Typography variant="h3" className="flex-1 mt-0 text-heading" tabIndex={0}>
+          <Typography variant="h3" className="mt-0 flex-1 text-heading" tabIndex={0}>
             {props.name}
           </Typography>
           {process.env.NODE_ENV === "development" && (
-            <Typography variant="h3" className="flex-1 mt-0 text-heading" tabIndex={0}>
+            <Typography variant="h3" className="mt-0 flex-1 text-heading" tabIndex={0}>
               {props.chatMessageId}
             </Typography>
           )}

@@ -1,4 +1,4 @@
-import { TenantDetailsForm } from "@/features/tenant-management/tenant-details.form"
+import { TenantDetailsForm } from "@/features/settings/tenant-details.form"
 
 export const dynamic = "force-dynamic"
 

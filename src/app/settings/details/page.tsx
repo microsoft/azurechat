@@ -1,4 +1,4 @@
-import { UserDetailsForm } from "@/features/user-management/user-details-form"
+import { UserDetailsForm } from "@/features/settings/user-details-form"
 
 export const dynamic = "force-dynamic"
 

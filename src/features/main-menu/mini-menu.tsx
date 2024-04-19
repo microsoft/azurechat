@@ -2,7 +2,7 @@
 
 import { UrlObject } from "url"
 
-import { CloudUpload, SpellCheck2, X, LogIn, LogOut, Moon, Sun, Home, Bookmark } from "lucide-react"
+import { CloudUpload, SpellCheck2, X, LogIn, LogOut, Moon, Sun, Home, Bookmark, UserCog } from "lucide-react"
 import Link from "next/link"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useTheme } from "next-themes"
@@ -19,24 +19,23 @@ interface MiniMenuItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
   icon: React.ElementType
   name: string
   ariaLabel: string
-  onClick: () => void
-  //not working as expected
+  closeMenu: () => void
 }
 
-const MiniMenuItem: React.FC<MiniMenuItemProps> = ({ href, icon: Icon, name, ariaLabel, onClick, ...props }) => {
+const MiniMenuItem: React.FC<MiniMenuItemProps> = ({ href, icon: Icon, name, ariaLabel, closeMenu, ...props }) => {
   const menuItemClass = cn(
     "cursor-pointer px-6 py-2 text-sm hover:bg-accent hover:text-accent-foreground flex items-center whitespace-nowrap",
     props.className
   )
 
   return (
-    <div className={menuItemClass} onClick={onClick} role="button" tabIndex={0} aria-label={ariaLabel}>
-      <Icon className="mr-2 size-4" aria-hidden="true" />
-      {name}
-      <Link href={href} passHref={true}>
+    <Link href={href} passHref={true} onClick={closeMenu}>
+      <div className={menuItemClass} role="button" tabIndex={0} aria-label={ariaLabel}>
+        <Icon className="mr-2 size-4" aria-hidden="true" />
+        {name}
         <span className="hidden"></span>
-      </Link>
-    </div>
+      </div>
+    </Link>
   )
 }
 
@@ -49,6 +48,7 @@ export const MiniMenu: React.FC = () => {
 
   const menuItems = [
     { name: "Home", href: "/chat", icon: Home, ariaLabel: "Navigate to home page" },
+    { name: "Settings", href: "/settings/details", icon: UserCog, ariaLabel: "Navigate to settings" },
     { name: "Prompt Guide", href: "/prompt-guide", icon: Bookmark, ariaLabel: "Navigate to prompt guide" },
     { name: "What's New", href: "/whats-new", icon: CloudUpload, ariaLabel: "Navigate to what's new page" },
     {
@@ -100,7 +100,7 @@ export const MiniMenu: React.FC = () => {
           </h2>
           <div className="mt-16 p-2">
             {menuItems.map(item => (
-              <MiniMenuItem key={item.name} onClick={handleMenuClose} {...item} />
+              <MiniMenuItem key={item.name} closeMenu={handleMenuClose} {...item} />
             ))}
             <div
               onClick={() => {

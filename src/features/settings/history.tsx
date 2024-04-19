@@ -5,8 +5,7 @@ import { showError } from "@/features/globals/global-message-store"
 import { Button } from "@/features/ui/button"
 import { Card } from "@/features/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table"
-
-import { FindAllChatThreadsForReporting } from "./history-service"
+import { FindAllChatThreadsForReporting } from "@/features/user-management/history-service"
 
 export type ReportingProp = {
   searchParams: {

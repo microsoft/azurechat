@@ -7,10 +7,9 @@ import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
 import { showError } from "@/features/globals/global-message-store"
 import { showSuccess } from "@/features/globals/global-message-store"
+import { TenantDetails } from "@/features/tenant-management/models"
 import { Button } from "@/features/ui/button"
 import { CardSkeleton } from "@/features/ui/card-skeleton"
-
-import { TenantDetails } from "./models"
 
 interface PromptFormProps {}
 
