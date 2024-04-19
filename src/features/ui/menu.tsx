@@ -22,7 +22,7 @@ const MenuBar = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "bg-background z-10 p-2 w-16 flex flex-col justify-between h-full items-stretch border-r",
+      "bg-secondary z-10 p-2 w-16 flex flex-col justify-between h-full items-stretch border-r text-white",
       className
     )}
     {...props}
