@@ -2,6 +2,12 @@
 
 import { SqlQuerySpec } from "@azure/cosmos"
 
+import { AzureCogDocumentIndex, indexDocuments } from "./azure-cog-search/azure-cog-vector-store"
+import { speechToTextRecognizeOnce } from "./chat-audio-helper"
+import { arrayBufferToBase64, customBeginAnalyzeDocument } from "./chat-document-helper"
+import { chunkDocumentWithOverlap } from "./text-chunk"
+import { isNotNullOrEmpty } from "./utils"
+
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
 import { DEFAULT_MONTHS_AGO } from "@/features/chat/constants"
 import { ChatDocumentModel, ChatRecordType } from "@/features/chat/models"
@@ -9,12 +15,6 @@ import { xMonthsAgo } from "@/features/common/date-helper"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { HistoryContainer } from "@/features/common/services/cosmos"
 import { uniqueId } from "@/lib/utils"
-
-import { AzureCogDocumentIndex, indexDocuments } from "./azure-cog-search/azure-cog-vector-store"
-import { speechToTextRecognizeOnce } from "./chat-audio-helper"
-import { arrayBufferToBase64, customBeginAnalyzeDocument } from "./chat-document-helper"
-import { chunkDocumentWithOverlap } from "./text-chunk"
-import { isNotNullOrEmpty } from "./utils"
 
 const MAX_DOCUMENT_SIZE = process.env.MAX_DOCUMENT_SIZE as unknown as number
 
@@ -71,21 +71,21 @@ const ensureSearchIsConfigured = (): boolean => {
   return true
 }
 
-export const UploadDocument = async (formData: FormData): ServerActionResponseAsync<string[]> => {
+export const UploadDocument = async (formData: FormData): ServerActionResponseAsync<[string[], string?]> => {
   try {
     const isConfigValid = ensureSearchIsConfigured()
     if (!isConfigValid) throw new Error("Azure Search is not configured")
 
     const chatType = formData.get("chatType") as string
-    let fileContent: string[]
+    let fileContent: [string[], string?]
     if (chatType === "audio") {
       const docs = await speechToTextRecognizeOnce(formData)
       const splitDocuments = chunkDocumentWithOverlap(docs.join("\n"))
-      fileContent = splitDocuments
+      fileContent = [splitDocuments, docs.join("\n")]
     } else {
       const docs = await LoadFile(formData, chatType)
       const splitDocuments = chunkDocumentWithOverlap(docs.join("\n"))
-      fileContent = splitDocuments
+      fileContent = [splitDocuments, undefined]
     }
     return {
       status: "OK",
@@ -103,7 +103,8 @@ export const IndexDocuments = async (
   fileName: string,
   docs: string[],
   chatThreadId: string,
-  order: number
+  order: number,
+  contentsToSave?: string
 ): ServerActionResponseAsync<AzureCogDocumentIndex[]> => {
   try {
     const [userId, tenantId] = await Promise.all([userHashedId(), getTenantId()])
@@ -130,6 +131,7 @@ export const IndexDocuments = async (
       isDeleted: false,
       tenantId,
       name: fileName,
+      contents: contentsToSave,
     }
     const container = await HistoryContainer()
     const { resource } = await container.items.upsert<ChatDocumentModel>(modelToSave)

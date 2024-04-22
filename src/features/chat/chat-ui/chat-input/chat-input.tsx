@@ -14,13 +14,11 @@ import ChatInputMenu from "./chat-input-menu"
 interface Props {}
 
 const ChatInput: FC<Props> = () => {
-  const { setInput, handleSubmit, isLoading, input, chatBody, isModalOpen, messages } = useChatContext()
+  const { setInput, handleSubmit, isLoading, input, chatBody, isModalOpen, messages, fileState } = useChatContext()
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isDataChat = useMemo(() => chatBody.chatType === "data" || chatBody.chatType === "audio", [chatBody.chatType])
-  const fileChatVisible = useMemo(
-    () => (chatBody.chatType === "data" || chatBody.chatType === "audio") && chatBody.chatOverFileName,
-    [chatBody.chatType, chatBody.chatOverFileName]
-  )
+  const fileChatVisible = (chatBody.chatType === "data" || chatBody.chatType === "audio") && chatBody.chatOverFileName
+
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Australia/Brisbane"
   const getNameInline = async (): Promise<string> => {
     const session = await getSession()
@@ -52,7 +50,7 @@ const ChatInput: FC<Props> = () => {
 
   const submit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
-    if (!isModalOpen) {
+    if (!isModalOpen && !fileState.isUploadingFile) {
       handleSubmit(e)
       setInput("")
     }
@@ -65,7 +63,7 @@ const ChatInput: FC<Props> = () => {
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>): void => {
     if (event.key === "Enter" && !event.shiftKey && !isModalOpen) {
       event.preventDefault()
-      if (!isLoading) {
+      if (!isLoading && !fileState.isUploadingFile) {
         handleSubmit(event as unknown as FormEvent<HTMLFormElement>)
         setInput("")
       }
@@ -102,13 +100,15 @@ const ChatInput: FC<Props> = () => {
                 aria-label="Submit your message"
                 aria-busy={isLoading ? "true" : "false"}
               >
-                {isLoading ? (
+                {isLoading || fileState.isUploadingFile ? (
                   <Loader className="animate-spin" aria-hidden="true" size={16} />
                 ) : (
                   <Send aria-hidden="true" size={16} />
                 )}
               </Button>
-              {!isLoading && <ChatInputMenu onDocExport={exportDocument} messageCopy={messages} />}
+              {!isLoading && !fileState.isUploadingFile && (
+                <ChatInputMenu onDocExport={exportDocument} messageCopy={messages} />
+              )}
             </>
           ) : null}
         </div>

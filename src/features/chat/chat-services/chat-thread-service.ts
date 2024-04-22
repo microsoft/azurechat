@@ -115,6 +115,26 @@ export const UpdateChatThreadTitle = async (
   }
 }
 
+export const UpdateChatThreadToFileDetails = async (
+  chatThreadId: string,
+  newType: ChatType,
+  chatOverFileName: string
+): ServerActionResponseAsync<ChatThreadModel> => {
+  try {
+    const response = await FindChatThreadForCurrentUser(chatThreadId)
+    if (response.status !== "OK") return response
+    const chatThread = response.response
+    chatThread.chatType = newType
+    chatThread.chatOverFileName = chatOverFileName
+    return await UpsertChatThread(chatThread)
+  } catch (error) {
+    return {
+      status: "ERROR",
+      errors: [{ message: `${error}` }],
+    }
+  }
+}
+
 export const SoftDeleteChatThreadForCurrentUser = async (
   chatThreadId: string
 ): ServerActionResponseAsync<ChatThreadModel> => {

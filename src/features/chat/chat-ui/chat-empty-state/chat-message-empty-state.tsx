@@ -15,7 +15,7 @@ import { PromptButton } from "./prompt-buttons-UI"
 interface Prop {}
 
 export const ChatMessageEmptyState: FC<Prop> = () => {
-  const { setInput, id, input } = useChatContext()
+  const { chatBody, setInput, id, input } = useChatContext()
   const handlePromptSelected = async (prompt: string, prompts: string[]): Promise<void> => {
     try {
       setInput(prompt)
@@ -32,8 +32,7 @@ export const ChatMessageEmptyState: FC<Prop> = () => {
     }
   }
 
-  const { fileState }: { fileState: { showFileUpload: string } } = useChatContext()
-  const { showFileUpload } = fileState
+  const { fileState } = useChatContext()
 
   return (
     <div className="max:h-5/6 container mx-auto grid w-full max-w-3xl grid-cols-5 items-center justify-center gap-9 overflow-auto p-4 pb-[80px]">
@@ -49,9 +48,9 @@ export const ChatMessageEmptyState: FC<Prop> = () => {
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-sm">How would you like to chat?</p>
-          <ChatTypeSelector disable={false} />
+          <ChatTypeSelector disable={fileState.isUploadingFile || !!chatBody.chatOverFileName} />
         </div>
-        {showFileUpload === "data" || showFileUpload === "audio" ? (
+        {chatBody.chatType === "data" || chatBody.chatType === "audio" ? (
           <ChatFileUI />
         ) : (
           <div className="flex flex-col gap-1"></div>

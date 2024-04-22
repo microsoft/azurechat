@@ -263,18 +263,6 @@ export const convertMarkdownToWordDocument = async (
   userName: string,
   chatThreadName: string
 ): Promise<void> => {
-  const renderer = new CustomRenderer()
-  marked.use({ renderer })
-
-  const coreProperties: IPropertiesOptions = {
-    title: chatThreadName,
-    subject: chatThreadName,
-    creator: aiName,
-    lastModifiedBy: aiName,
-    numbering: numbering,
-    sections: [],
-  }
-
   const messageParagraphPromises = messages.map(async message => {
     const author = message.role === "system" || message.role === "assistant" ? aiName : userName
     const authorParagraph = new Paragraph({
@@ -290,7 +278,51 @@ export const convertMarkdownToWordDocument = async (
     return [authorParagraph, ...contentParagraphs, new Paragraph({ style: "MyCustomParagraph" })]
   })
 
-  const messageParagraphs = (await Promise.all(messageParagraphPromises)).flat()
+  await convertParagraphsToWordDocument(messageParagraphPromises, fileName, aiName, chatThreadName)
+}
+
+export const convertTranscriptionToWordDocument = async (
+  transcriptions: string[],
+  audioFileName: string,
+  saveFileName: string,
+  aiName: string,
+  chatThreadName: string
+): Promise<void> => {
+  const messageParagraphPromises = transcriptions.map(async transcription => {
+    const authorParagraph = new Paragraph({
+      text: `${audioFileName}:`,
+      heading: HeadingLevel.HEADING_2,
+      style: "MyCustomHeading1",
+    })
+
+    const content = await marked.parse(transcription)
+    const contentParagraphs = createParagraphFromHtml(content)
+
+    return [authorParagraph, ...contentParagraphs, new Paragraph({ style: "MyCustomParagraph" })]
+  })
+
+  await convertParagraphsToWordDocument(messageParagraphPromises, saveFileName, aiName, chatThreadName)
+}
+
+const convertParagraphsToWordDocument = async (
+  paragraphs: Promise<Paragraph[]>[],
+  fileName: string,
+  aiName: string,
+  chatThreadName: string
+): Promise<void> => {
+  const renderer = new CustomRenderer()
+  marked.use({ renderer })
+
+  const coreProperties: IPropertiesOptions = {
+    title: chatThreadName,
+    subject: chatThreadName,
+    creator: aiName,
+    lastModifiedBy: aiName,
+    numbering: numbering,
+    sections: [],
+  }
+
+  const messageParagraphs = (await Promise.all(paragraphs)).flat()
 
   const doc = new Document({
     numbering: numbering,

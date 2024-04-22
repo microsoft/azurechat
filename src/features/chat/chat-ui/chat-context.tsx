@@ -16,6 +16,7 @@ import {
   ChatRole,
   AssistantChatMessageModel,
   UserChatMessageModel,
+  ChatDocumentModel,
 } from "@/features/chat/models"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 import { uniqueId } from "@/lib/utils"
@@ -39,6 +40,7 @@ interface ChatContextProps extends UseChatHelpers {
   offenderId?: string
   chatThreadLocked: boolean
   messages: PromptMessage[]
+  documents: ChatDocumentModel[]
 }
 
 const ChatContext = createContext<ChatContextProps | null>(null)
@@ -47,6 +49,7 @@ interface Prop {
   id: string
   chats: Array<UserChatMessageModel | AssistantChatMessageModel>
   chatThread: ChatThreadModel
+  documents: ChatDocumentModel[]
   offenderId?: string
   chatThreadName?: ChatThreadModel["name"]
 }
@@ -113,7 +116,6 @@ export const ChatProvider: FC<Prop> = props => {
   const closeModal = (): void => setIsModalOpen(false)
 
   const onChatTypeChange = (value: ChatType): void => {
-    fileState.setShowFileUpload(value)
     fileState.setIsFileNull(true)
     setChatBody(prev => ({ ...prev, chatType: value }))
   }
@@ -156,6 +158,7 @@ export const ChatProvider: FC<Prop> = props => {
             ...dataItem,
           }
         }),
+        documents: props.documents,
         chatThreadLocked:
           (props.chatThread?.contentFilterTriggerCount || 0) >= MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED,
         handleSubmit,
