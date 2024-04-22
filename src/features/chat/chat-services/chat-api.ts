@@ -114,6 +114,7 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
 
         data.append({
           id: addedMessage.response.id,
+          role: addedMessage.response.role,
           content: addedMessage.response.content,
         })
 
@@ -123,7 +124,6 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
       async onFinal() {
         await data.close()
       },
-      experimental_streamData: true,
     })
 
     return new StreamingTextResponse(stream, { headers: { "Content-Type": "text/event-stream" } }, data)
@@ -191,6 +191,7 @@ async function getChatResponse(
     data.append({
       id: addMessage.id,
       content: addMessage.content,
+      role: addMessage.role,
       contentFilterResult,
       contentFilterTriggerCount,
     })

@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation"
 import React, { FC, FormEvent, createContext, useContext, useRef, useState } from "react"
 
 import { MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED } from "@/features/chat/chat-services/chat-api"
-import { transformCosmosToAIModel } from "@/features/chat/chat-services/utils"
 import {
   ChatThreadModel,
   ChatType,
@@ -15,7 +14,8 @@ import {
   PromptBody,
   PromptMessage,
   ChatRole,
-  ChatMessageModel,
+  AssistantChatMessageModel,
+  UserChatMessageModel,
 } from "@/features/chat/models"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 import { uniqueId } from "@/lib/utils"
@@ -45,7 +45,7 @@ const ChatContext = createContext<ChatContextProps | null>(null)
 interface Prop {
   children: React.ReactNode
   id: string
-  chats: Array<ChatMessageModel>
+  chats: Array<UserChatMessageModel | AssistantChatMessageModel>
   chatThread: ChatThreadModel
   offenderId?: string
   chatThreadName?: ChatThreadModel["name"]
@@ -63,7 +63,7 @@ export const ChatProvider: FC<Prop> = props => {
 
   const fileState = useFileState()
 
-  const [chatBody, setBody] = useState<PromptBody>({
+  const [chatBody, setChatBody] = useState<PromptBody>({
     id: props.chatThread.id,
     chatType: props.chatThread.chatType,
     conversationStyle: props.chatThread.conversationStyle,
@@ -78,6 +78,8 @@ export const ChatProvider: FC<Prop> = props => {
   const { textToSpeech } = speechSynthesizer
   const { isMicrophoneUsed, resetMicrophoneUsed } = speechRecognizer
 
+  const onError = (error: Error): void => showError(error.message)
+
   const [nextId, setNextId] = useState<string | undefined>(undefined)
   const nextIdRef = useRef(nextId)
   nextIdRef.current = nextId
@@ -86,7 +88,7 @@ export const ChatProvider: FC<Prop> = props => {
     onError,
     id: props.id,
     body: chatBody,
-    initialMessages: transformCosmosToAIModel(props.chats),
+    initialMessages: props.chats,
     onFinish: (lastMessage: Message) => {
       if (isMicrophoneUsed) {
         textToSpeech(lastMessage.content)
@@ -110,27 +112,17 @@ export const ChatProvider: FC<Prop> = props => {
   const openModal = (): void => setIsModalOpen(true)
   const closeModal = (): void => setIsModalOpen(false)
 
-  const setChatBody = (body: PromptBody): void => {
-    setBody(body)
-  }
-
   const onChatTypeChange = (value: ChatType): void => {
     fileState.setShowFileUpload(value)
     fileState.setIsFileNull(true)
-    setChatBody({ ...chatBody, chatType: value })
+    setChatBody(prev => ({ ...prev, chatType: value }))
   }
 
-  const onConversationStyleChange = (value: ConversationStyle): void => {
-    setChatBody({ ...chatBody, conversationStyle: value })
-  }
+  const onConversationStyleChange = (value: ConversationStyle): void =>
+    setChatBody(prev => ({ ...prev, conversationStyle: value }))
 
-  const onConversationSensitivityChange = (value: ConversationSensitivity): void => {
-    setChatBody({ ...chatBody, conversationSensitivity: value })
-  }
-
-  function onError(error: Error): void {
-    showError(error.message)
-  }
+  const onConversationSensitivityChange = (value: ConversationSensitivity): void =>
+    setChatBody(prev => ({ ...prev, conversationSensitivity: value }))
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>, options: ChatRequestOptions = {}): Promise<void> => {
     e.preventDefault()
@@ -155,17 +147,15 @@ export const ChatProvider: FC<Prop> = props => {
     <ChatContext.Provider
       value={{
         ...response,
-        messages: response.messages
-          .map(m => ({ id: m.id, content: m.content, role: m.role }) as PromptMessage)
-          .map(message => {
-            const dataItem = (response.data as (JSONValue & Message)[])?.find(
-              data => data.id === message.id
-            ) as PromptMessage
-            return {
-              ...message,
-              ...dataItem,
-            }
-          }),
+        messages: response.messages.map<PromptMessage>(message => {
+          const dataItem = (response.data as (JSONValue & PromptMessage)[])?.find(
+            data => data?.id === message.id
+          ) as PromptMessage
+          return {
+            ...message,
+            ...dataItem,
+          }
+        }),
         chatThreadLocked:
           (props.chatThread?.contentFilterTriggerCount || 0) >= MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED,
         handleSubmit,

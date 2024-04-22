@@ -16,7 +16,7 @@ import { HistoryContainer } from "@/features/common/services/cosmos"
 
 export const FindAllChatMessagesForCurrentUser = async (
   chatThreadId: string
-): ServerActionResponseAsync<ChatMessageModel[]> => {
+): ServerActionResponseAsync<(UserChatMessageModel | AssistantChatMessageModel)[]> => {
   try {
     const [userId, tenantId] = await Promise.all([userHashedId(), getTenantId()])
     const query: SqlQuerySpec = {
@@ -31,7 +31,7 @@ export const FindAllChatMessagesForCurrentUser = async (
       ],
     }
     const container = await HistoryContainer()
-    const result = await container.items.query<ChatMessageModel>(query).fetchAll()
+    const result = await container.items.query<UserChatMessageModel | AssistantChatMessageModel>(query).fetchAll()
     return {
       status: "OK",
       response: result.resources,
@@ -47,7 +47,7 @@ export const FindAllChatMessagesForCurrentUser = async (
 export const FindTopChatMessagesForCurrentUser = async (
   chatThreadId: string,
   top = 30
-): ServerActionResponseAsync<ChatMessageModel[]> => {
+): ServerActionResponseAsync<(UserChatMessageModel | AssistantChatMessageModel)[]> => {
   try {
     const [userId, tenantId] = await Promise.all([userHashedId(), getTenantId()])
     const query: SqlQuerySpec = {
@@ -63,7 +63,7 @@ export const FindTopChatMessagesForCurrentUser = async (
       ],
     }
     const container = await HistoryContainer()
-    const result = await container.items.query<ChatMessageModel>(query).fetchAll()
+    const result = await container.items.query<UserChatMessageModel | AssistantChatMessageModel>(query).fetchAll()
     return {
       status: "OK",
       response: result.resources,
@@ -79,7 +79,7 @@ export const FindTopChatMessagesForCurrentUser = async (
 export const FindChatMessageForCurrentUser = async (
   chatThreadId: string,
   messageId: string
-): ServerActionResponseAsync<ChatMessageModel> => {
+): ServerActionResponseAsync<UserChatMessageModel | AssistantChatMessageModel> => {
   try {
     const [userId, tenantId] = await Promise.all([userHashedId(), getTenantId()])
     const query: SqlQuerySpec = {
@@ -95,7 +95,7 @@ export const FindChatMessageForCurrentUser = async (
       ],
     }
     const container = await HistoryContainer()
-    const result = await container.items.query<ChatMessageModel>(query).fetchAll()
+    const result = await container.items.query<UserChatMessageModel | AssistantChatMessageModel>(query).fetchAll()
     return {
       status: "OK",
       response: result.resources[0],
@@ -115,10 +115,10 @@ export type ChatCompletionMessageTranslated = AssistantChatMessageModel & {
 
 export const UpsertChatMessage = async (
   message: UserChatMessageModel | AssistantChatMessageModel
-): ServerActionResponseAsync<ChatMessageModel> => {
+): ServerActionResponseAsync<UserChatMessageModel | AssistantChatMessageModel> => {
   try {
     const container = await HistoryContainer()
-    const { resource } = await container.items.upsert<ChatMessageModel>(message)
+    const { resource } = await container.items.upsert<UserChatMessageModel | AssistantChatMessageModel>(message)
 
     if (!resource) {
       return {

@@ -15,7 +15,6 @@ import {
   PromptProps,
 } from "@/features/chat/models"
 import { xMonthsAgo } from "@/features/common/date-helper"
-import { RedirectToChatThread } from "@/features/common/navigation-helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { HistoryContainer } from "@/features/common/services/cosmos"
 import { uniqueId } from "@/lib/utils"
@@ -212,7 +211,7 @@ export const CreateChatThread = async (): ServerActionResponseAsync<ChatThreadMo
     const modelToSave: ChatThreadModel = {
       name: "New Chat",
       previousChatName: "",
-      chatCategory: "Uncategorised",
+      chatCategory: "None",
       useName: session.name,
       userId,
       id,
@@ -392,10 +391,4 @@ export const AssociateOffenderWithChatThread = async (
     status: "OK",
     response: resource,
   }
-}
-
-export const CreateChatAndRedirect = async (): Promise<void> => {
-  const response = await CreateChatThread()
-  if (response.status !== "OK") return
-  RedirectToChatThread(response.response.id)
 }

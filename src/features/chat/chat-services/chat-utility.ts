@@ -1,6 +1,6 @@
 "use server"
 import "server-only"
-import { ChatThreadModel } from "@/features/chat/models"
+import { CATEGORIES, ChatThreadModel } from "@/features/chat/models"
 
 import { UpsertChatThread } from "./chat-thread-service"
 import { GenericChatAPI } from "./generic-chat-api"
@@ -30,48 +30,29 @@ async function generateChatName(chatMessage: string): Promise<string> {
   }
 }
 
-async function generateChatCategory(chatMessage: string, previousAttempt: string | null = null): Promise<string> {
+async function generateChatCategory(
+  chatMessage: string,
+  previousAttempt: string | null = null
+): Promise<ChatThreadModel["chatCategory"]> {
   const apiName = "generateChatCategory"
-  const categories = [
-    "Information Processing and Management",
-    "Communication and Interaction",
-    "Decision Support and Advisory",
-    "Educational and Training Services",
-    "Operational Efficiency and Automation",
-    "Finance and Banking",
-    "Public Engagement and Services",
-    "Innovation and Development",
-    "Creative Assistance",
-    "Lifestyle and Personal Productivity",
-    "Entertainment and Engagement",
-    "Emotional and Mental Support",
-  ]
 
-  let prompt = `Based on the content of the following message: "${chatMessage}", please categorise it into only one of the specified categories. The response must strictly be one of these exact phrases:\n${categories.join("\n")}\nExample response: "Information Processing and Management"`
+  let prompt = `Based on the content of the following message: "${chatMessage}", please categorise it into only one of the specified categories. The response must strictly be one of these exact phrases:\n${CATEGORIES.join("\n")}\nExample response: "Information Processing and Management"`
 
   if (previousAttempt !== null) {
-    prompt = `The previous attempt to categorise the following message was not successful. The response "${previousAttempt}" did not match any of the expected categories. Please review the message again and categorise it correctly using only one of the specified categories. The expected response must be one of these exact phrases:\n${categories.join("\n")}\nMessage: "${chatMessage}"\nExample response: "Information Processing and Management"`
+    prompt = `The previous attempt to categorise the following message was not successful. The response "${previousAttempt}" did not match any of the expected categories. Please review the message again and categorise it correctly using only one of the specified categories. The expected response must be one of these exact phrases:\n${CATEGORIES.join("\n")}\nMessage: "${chatMessage}"\nExample response: "Information Processing and Management"`
   }
 
   try {
     const rawCategory = await GenericChatAPI(apiName, { messages: [{ role: "system", content: prompt }] })
 
-    if (rawCategory) {
-      const category = rawCategory.replace(/^"|"$/g, "")
-      if (categories.includes(category)) {
-        return category
-      }
-    }
+    const category = (rawCategory || "").replace(/^"|"$/g, "")
+    if (CATEGORIES.map(String).includes(category)) return category as ChatThreadModel["chatCategory"]
 
-    if (previousAttempt === null) {
-      return await generateChatCategory(chatMessage, rawCategory)
-    }
-
-    return "Uncategorised"
+    if (previousAttempt === null) return await generateChatCategory(chatMessage, rawCategory)
   } catch (_e) {
     console.log(`Error generating chat category: ${_e}`)
-    return "Uncategorised"
   }
+  return "Uncategorised"
 }
 
 export async function UpdateChatThreadIfUncategorised(
@@ -79,7 +60,7 @@ export async function UpdateChatThreadIfUncategorised(
   content: string
 ): Promise<ChatThreadModel> {
   try {
-    if (chatThread.chatCategory === "Uncategorised") {
+    if (["Uncategorised", "None"].includes(chatThread.chatCategory)) {
       const [chatCategory, name, previousChatName] = await Promise.all([
         generateChatCategory(content),
         generateChatName(content),

@@ -1,3 +1,5 @@
+import { Message } from "ai"
+
 export enum ConversationStyle {
   Creative = "creative",
   Balanced = "balanced",
@@ -78,7 +80,7 @@ export interface ChatThreadModel {
   id: string
   name: string
   previousChatName: string
-  chatCategory: string
+  chatCategory: (typeof CATEGORIES)[number] | "Uncategorised" | "None"
   createdAt: Date
   userId: string
   tenantId: string
@@ -92,7 +94,7 @@ export interface ChatThreadModel {
   type: ChatRecordType.Thread
   offenderId?: string
   isDisabled: boolean
-  prompts: []
+  prompts: string[]
   selectedPrompt: string
   contentFilterTriggerCount?: number
 }
@@ -109,10 +111,11 @@ export interface PromptBody {
   chatThreadName?: string
 }
 
-export interface PromptMessage {
-  id: string
-  content: string
-  role: ChatRole
+export interface PromptMessage extends Message {
+  contentFilterResult?: unknown
+  sentiment?: ChatSentiment
+  feedback?: FeedbackType
+  reason?: string
 }
 
 export interface PromptProps extends PromptBody {
@@ -143,3 +146,18 @@ export interface ChatUtilityModel {
   role: ChatRole
   type: ChatRecordType.Utility
 }
+
+export const CATEGORIES = [
+  "Information Processing and Management",
+  "Communication and Interaction",
+  "Decision Support and Advisory",
+  "Educational and Training Services",
+  "Operational Efficiency and Automation",
+  "Finance and Banking",
+  "Public Engagement and Services",
+  "Innovation and Development",
+  "Creative Assistance",
+  "Lifestyle and Personal Productivity",
+  "Entertainment and Engagement",
+  "Emotional and Mental Support",
+] as const

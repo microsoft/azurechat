@@ -1,9 +1,9 @@
 import * as Tooltip from "@radix-ui/react-tooltip"
 import { Shield, ShieldAlert, ShieldX } from "lucide-react"
-import React from "react"
 import { FC } from "react"
 
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
+import { ConversationSensitivity } from "@/features/chat/models"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 import { TooltipProvider } from "@/features/ui/tooltip-provider"
 
@@ -12,14 +12,17 @@ interface Prop {
 }
 
 export const ChatSensitivitySelector: FC<Prop> = ({ disable }) => {
-  const { chatBody } = useChatContext()
+  const { onConversationSensitivityChange, chatBody } = useChatContext()
 
   return (
     <TooltipProvider>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
           <div>
-            <Tabs defaultValue={chatBody.conversationSensitivity}>
+            <Tabs
+              defaultValue={chatBody.conversationSensitivity}
+              onValueChange={value => onConversationSensitivityChange(value as ConversationSensitivity)}
+            >
               <TabsList aria-label="Conversation Sensitivity" className="grid h-12 w-full grid-cols-3 items-stretch">
                 <TabsTrigger
                   value="official"

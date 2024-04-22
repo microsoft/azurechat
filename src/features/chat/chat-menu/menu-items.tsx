@@ -100,10 +100,11 @@ export const MenuItems: FC<Prop> = ({ menuItems }) => {
   const router = useRouter()
   const { showError } = useGlobalMessageContext()
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null)
+  const [items, setItems] = useState<ChatThreadModel[]>(menuItems)
 
-  const sendData = async (threadID: string): Promise<void> => {
-    await SoftDeleteChatThreadForCurrentUser(threadID)
-    router.refresh()
+  const handleDelete = async (threadId: string): Promise<void> => {
+    await SoftDeleteChatThreadForCurrentUser(threadId)
+    setItems(prev => prev.filter(item => item.chatThreadId !== threadId))
     router.replace("/chat")
   }
 
@@ -130,7 +131,7 @@ export const MenuItems: FC<Prop> = ({ menuItems }) => {
 
   return (
     <>
-      {menuItems.map(thread => (
+      {items.map(thread => (
         <MenuItem
           href={`/chat/${thread.chatThreadId}`}
           isSelected={chatThreadId === thread.chatThreadId}
@@ -170,7 +171,7 @@ export const MenuItems: FC<Prop> = ({ menuItems }) => {
               e.preventDefault()
               const yesDelete = confirm("Are you sure you want to delete this chat?")
               if (yesDelete) {
-                await sendData(thread.chatThreadId)
+                await handleDelete(thread.chatThreadId)
               }
             }}
           >
