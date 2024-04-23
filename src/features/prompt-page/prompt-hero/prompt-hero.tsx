@@ -15,7 +15,7 @@ export const PromptHero = () => {
         "Prompt templates are statements or questions meant to help users get creative without having to come up with ideas from scratch."
       }
     >
-      <HeroButton
+      {/* <HeroButton
         title="Add New Prompt"
         description="Build your own prompt template"
         icon={<Book />}
@@ -65,7 +65,7 @@ Generate a response with the following points:
             userId: "",
           })
         }
-      />
+      /> */}
     </Hero>
   );
 };

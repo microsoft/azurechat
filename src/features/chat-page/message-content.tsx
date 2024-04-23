@@ -32,33 +32,33 @@ const MessageContent: React.FC<MessageContentProps> = ({ message }) => {
     );
   }
 
-  if (message.role === "tool" || message.role === "function") {
-    return (
-      <div className="py-3">
-        <Accordion
-          type="multiple"
-          className="bg-background rounded-md border p-2"
-        >
-          <AccordionItem value="item-1" className="">
-            <AccordionTrigger className="text-sm py-1 items-center gap-2">
-              <div className="flex gap-2 items-center">
-                <FunctionSquare
-                  size={18}
-                  strokeWidth={1.4}
-                  className="text-muted-foreground"
-                />{" "}
-                Show {message.name}{" "}
-                {message.name === "tool" ? "output" : "function"}
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <RecursiveUI documentField={toJson(message.content)} />
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
-    );
-  }
+  // if (message.role === "tool" || message.role === "function") {
+  //   return (
+  //     <div className="py-3">
+  //       <Accordion
+  //         type="multiple"
+  //         className="bg-background rounded-md border p-2"
+  //       >
+  //         <AccordionItem value="item-1" className="">
+  //           <AccordionTrigger className="text-sm py-1 items-center gap-2">
+  //             <div className="flex gap-2 items-center">
+  //               <FunctionSquare
+  //                 size={18}
+  //                 strokeWidth={1.4}
+  //                 className="text-muted-foreground"
+  //               />{" "}
+  //               Show {message.name}{" "}
+  //               {message.name === "tool" ? "output" : "function"}
+  //             </div>
+  //           </AccordionTrigger>
+  //           <AccordionContent>
+  //             <RecursiveUI documentField={toJson(message.content)} />
+  //           </AccordionContent>
+  //         </AccordionItem>
+  //       </Accordion>
+  //     </div>
+  //   );
+  // }
 
   return null;
 };
