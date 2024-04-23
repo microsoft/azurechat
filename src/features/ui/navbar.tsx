@@ -40,10 +40,10 @@ export const NavBar: React.FC = () => {
   return (
     <nav aria-label="Main navigation" className="m:h-[44px] border-b-4 border-accent bg-backgroundShade">
       <div className="container mx-auto hidden md:block">
-        <div className="flex w-full justify-between gap-2">
+        <div dir="ltr" className="grid grid-cols-12 gap-2">
           {status === "loading"
             ? placeholders.map(link => (
-                <div key={link.name} className="flex items-center space-x-2">
+                <div key={link.name} className="relative col-span-2 flex items-center space-x-2">
                   <div className="flex w-full animate-pulse items-center justify-center p-2">
                     <div className="mr-2 h-8 w-5 rounded bg-gray-300"></div>
                     <div className="h-8 w-24 rounded bg-gray-300"></div>
@@ -51,7 +51,7 @@ export const NavBar: React.FC = () => {
                 </div>
               ))
             : visibleLinks.map(link => (
-                <div key={link.name} className="flex items-center space-x-2 hover:bg-altBackground">
+                <div key={link.name} className="relative col-span-2 flex items-center space-x-2 hover:bg-altBackground">
                   <a href={link.href} className="group flex w-full items-center justify-center p-2">
                     {link.icon &&
                       React.createElement(link.icon, {
@@ -63,7 +63,7 @@ export const NavBar: React.FC = () => {
                   </a>
                 </div>
               ))}
-          <div className="flex min-h-[40px] items-center justify-end">
+          <div className="relative col-span-2 flex min-h-[40px] items-center justify-end">
             <ThemeSwitch />
           </div>
         </div>

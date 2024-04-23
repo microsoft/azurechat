@@ -5,9 +5,9 @@ import React, { useState, FormEvent, useEffect } from "react"
 
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
-import { showError } from "@/features/globals/global-message-store"
-import { showSuccess } from "@/features/globals/global-message-store"
+import { showError, showSuccess } from "@/features/globals/global-message-store"
 import { TenantDetails } from "@/features/tenant-management/models"
+import SystemPrompt from "@/features/theme/readable-systemprompt"
 import { Button } from "@/features/ui/button"
 import { CardSkeleton } from "@/features/ui/card-skeleton"
 
@@ -65,14 +65,52 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
   }
 
   return (
-    <Form.Root className="size-full w-[500px] pt-5" onSubmit={handleSubmit}>
+    <Form.Root className="grid size-full w-full grid-cols-1 gap-8 pt-5 md:grid-cols-2" onSubmit={handleSubmit}>
       <div className="mb-4">
         <Typography variant="h4" className="font-bold underline underline-offset-2">
-          TENANT INFORMATION
+          Department Information
+        </Typography>
+        <Typography variant="h5" className="mt-2">
+          <strong>Notice:</strong> Updating the context prompt here will append the message to the global system
+          message. This setting is regularly audited by the Queensland Government AI Unit.
+        </Typography>
+        <Typography variant="h5">Current Prompt:</Typography>
+        <div className="mt-2 rounded-md border-2 p-2">
+          {isLoading ? <CardSkeleton /> : <Markdown content={contextPrompt || "Not set"} />}
+        </div>
+        <Form.Field className="mb-4 mt-2" name="contextPrompt" serverInvalid={serverErrors.contextPrompt}>
+          <Form.Label htmlFor="contextPrompt" className="block">
+            New Context Prompt:
+          </Form.Label>
+          <Form.Control asChild>
+            <textarea
+              id="contextPrompt"
+              className="mt-2 w-full rounded-md border-2 p-2"
+              placeholder="Enter new context prompt..."
+              rows={4}
+              maxLength={200}
+              required
+            />
+          </Form.Control>
+          {serverErrors.contextPrompt && (
+            <Form.Message role="alert" className="text-QLD-alert mt-2">
+              Error updating context prompt. Please try again.
+            </Form.Message>
+          )}
+        </Form.Field>
+        {!isLoading && (
+          <Form.Submit asChild>
+            <Button type="submit" variant="default" disabled={isSubmitting}>
+              {isSubmitting ? "Updating..." : "Update"}
+            </Button>
+          </Form.Submit>
+        )}
+        <Typography variant="p" className="mt-4">
+          Current System Prompt: <SystemPrompt />
         </Typography>
       </div>
-      <div className="mb-4">
-        <Typography variant="h5">
+      <div>
+        <Typography variant="h5" className="mb-4">
           Domain:
           {isLoading ? (
             <CardSkeleton />
@@ -82,9 +120,7 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
             </div>
           )}
         </Typography>
-      </div>
-      <div className="mb-4">
-        <Typography variant="h5">
+        <Typography variant="h5" className="mb-4">
           Support Email:
           {isLoading ? (
             <CardSkeleton />
@@ -94,9 +130,7 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
             </div>
           )}
         </Typography>
-      </div>
-      <div className="mb-4">
-        <Typography variant="h5">
+        <Typography variant="h5" className="mb-4">
           Department Name:
           {isLoading ? (
             <CardSkeleton />
@@ -106,12 +140,10 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
             </div>
           )}
         </Typography>
-      </div>
-      <div className="mb-4">
-        <Typography variant="h5">
+        <Typography variant="h5" className="mb-4">
           Administrators:
           {isLoading ? (
-            <CardSkeleton size="lg" />
+            <CardSkeleton />
           ) : (
             tenant?.administrators?.map(admin => (
               <div key={admin}>
@@ -121,39 +153,6 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
           )}
         </Typography>
       </div>
-      <div className="mb-4">
-        <Typography variant="h5">Current Prompt:</Typography>
-        <div className="mt-2 rounded-md border-2 p-2">
-          {isLoading ? <CardSkeleton /> : <Markdown content={contextPrompt || "Not set"} />}
-        </div>
-      </div>
-      <Form.Field className="mb-4" name="contextPrompt" serverInvalid={serverErrors.contextPrompt}>
-        <Form.Label htmlFor="contextPrompt" className="block ">
-          New Context Prompt:
-        </Form.Label>
-        <Form.Control asChild>
-          <textarea
-            id="contextPrompt"
-            className="mt-2 w-full rounded-md border-2 p-2"
-            placeholder="Enter new context prompt..."
-            rows={6}
-            maxLength={200}
-            required
-          />
-        </Form.Control>
-        {serverErrors.contextPrompt && (
-          <Form.Message role="alert" className="mt-2 text-red-600">
-            Error updating context prompt. Please try again.
-          </Form.Message>
-        )}
-      </Form.Field>
-      {!isLoading && (
-        <Form.Submit asChild>
-          <Button type="submit" variant="default" disabled={isSubmitting}>
-            {isSubmitting ? "Updating..." : "Update"}
-          </Button>
-        </Form.Submit>
-      )}
     </Form.Root>
   )
 }

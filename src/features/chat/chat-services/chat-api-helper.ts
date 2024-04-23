@@ -15,7 +15,7 @@ const DEFAULT_SYSTEM_PROMPT = `
 - You will respond to questions in accordance with rules of Queensland government. \n`.replace(/\s+/g, "^")
 
 const buildSimpleChatSystemPrompt = async (): Promise<string> => {
-  const metaPrompt = process.env.SYSTEM_PROMPT || DEFAULT_SYSTEM_PROMPT
+  const metaPrompt = process.env.NEXT_PUBLIC_SYSTEM_PROMPT || DEFAULT_SYSTEM_PROMPT
   const [tenant, user] = await getTenantAndUser()
 
   const tenantContextPrompt = (tenant.preferences?.contextPrompt || "").trim()
@@ -30,7 +30,7 @@ export const getContextPrompts = async (): Promise<{
 }> => {
   const [tenant, user] = await getTenantAndUser()
   return {
-    metaPrompt: process.env.SYSTEM_PROMPT || DEFAULT_SYSTEM_PROMPT,
+    metaPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || DEFAULT_SYSTEM_PROMPT,
     tenantPrompt: (tenant.preferences?.contextPrompt || "").trim(),
     userPrompt: (user.preferences?.contextPrompt || "").trim(),
   }

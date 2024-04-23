@@ -14,14 +14,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
     <>
       <div className="grid size-full grid-cols-6 overflow-hidden">
         <SettingsMenu />
-        <div className="col-span-5 size-full">
-          <Card className="col-span-6 flex h-full flex-1 items-center justify-center sm:col-span-6 md:col-span-5 lg:col-span-4 xl:col-span-5">
-            <div className="col-span-5 h-full bg-altBackground text-foreground shadow-sm">
-              <section className="container mx-auto size-full max-w-3xl justify-center gap-9 bg-altBackground">
+        <div className="col-span-6 size-full overflow-auto sm:col-span-5">
+          <Card className="col-span-6 flex size-full flex-1 items-center justify-center overflow-auto sm:col-span-6 md:col-span-5 lg:col-span-4 xl:col-span-5">
+            <div className="size-full bg-altBackground text-foreground shadow-sm">
+              <section className="container mx-auto size-full justify-center gap-4 bg-altBackground">
                 {children}
-                <div className="col-span-5 gap-8 py-8 sm:col-span-6">
-                  <div className="prose prose-slate max-w-4xl break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"></div>
-                </div>
               </section>
             </div>
           </Card>

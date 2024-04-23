@@ -45,6 +45,7 @@ declare global {
       NEXT_PUBLIC_AZURE_APPLICATIONINSIGHTS_CONNECTION_STRING: string
       NEXT_PUBLIC_FEATURE_TRANSLATOR: string
       NEXT_PUBLIC_GTAG: string
+      NEXT_PUBLIC_SYSTEM_PROMPT: string
       NEXT_TELEMETRY_DISABLED: string
       NEXTAUTH_SECRET: string
       NEXTAUTH_URL: string
@@ -54,7 +55,6 @@ declare global {
       QGAIP_APIM_HEALTHCHECK_URI: string
       QGAIP_QCHAT_APP_URI: string
       QGAIP_QCHAT_FQDN_URI: string
-      SYSTEM_PROMPT: string
       WEBAPPNAME: string
     }
   }
