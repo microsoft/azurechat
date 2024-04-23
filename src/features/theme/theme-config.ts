@@ -1,4 +1,4 @@
-export const AI_NAME = "Azure Chat";
+export const AI_NAME = "Frend Chat";
 export const AI_DESCRIPTION = "Azure Chat is a friendly AI assistant.";
 export const CHAT_DEFAULT_PERSONA = AI_NAME + " default";
 
