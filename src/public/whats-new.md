@@ -6,9 +6,11 @@ Below are the updates for the Queensland Government QChat Virtual Assistant.
 
 - If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the Queensland Government AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
 
-## 👨🏻‍💻 Version 1.4.0 Updates - 19 APR 2024
+## 👨🏻‍💻 Version 1.4.0 Updates - 25 APR 2024
 
 - **New User and Department Context Settings:** Behind the scenes we're preparing QChat to take your own personal User Context Prompt - where you can provide information for QChat to use in every conversation. We can't wait to release this functionality for you shorlty.
+
+- **Call Transcription Updates:** We've introduced a new interface for our call transcription test cases, now you will be able to toggle between asking QChat questions about the call transcriptions and reviewing or downloading the call transcript.
 
 ## 👨🏻‍💻 Version 1.3.8 Updates - 15 APR 2024
 
