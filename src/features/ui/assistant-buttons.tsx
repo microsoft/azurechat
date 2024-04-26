@@ -54,9 +54,10 @@ export const FleschButton: React.FC<FleschButtonProps> = ({ fleschScore }) => {
             className="rounded-md bg-primary-foreground p-2 text-sm text-foreground shadow-lg"
           >
             <p>
-              <strong>Readability:</strong> Flesch-Kincaid Score, based on sentence length and the syllables per word.
-              <br /> Increasing score indicates greater difficulty in understanding the document.
-              <br /> For example, a score of 8 implies comprehension by an eighth grader.
+              <strong>Flesch-Kincaid Score (KFKS):</strong> The Flesch-Kincaid Score below shows how easy or difficult it is to understand the writing. 
+              <br /> The higher the score, the easier it is to read. 
+              <br />Aim for a score near 8 to make sure most people find the message clear. 
+              <br />This includes younger readers and those who are still learning English.
             </p>
           </Tooltip.Content>
         </Tooltip.Root>
