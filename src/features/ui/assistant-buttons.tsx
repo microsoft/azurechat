@@ -55,8 +55,8 @@ export const FleschButton: React.FC<FleschButtonProps> = ({ fleschScore }) => {
           >
             <p>
               <strong>Flesch-Kincaid Score (KFKS):</strong> The Flesch-Kincaid Score below shows how easy or difficult it is to understand the writing. 
-              <br /> The higher the score, the easier it is to read. 
-              <br />Aim for a score near 8 to make sure most people find the message clear. 
+              <br /> The higher the score, the more difficult it is to read. 
+              <br />Aim for a score of 8 to make sure most people find the message clear. 
               <br />This includes younger readers and those who are still learning English.
             </p>
           </Tooltip.Content>
