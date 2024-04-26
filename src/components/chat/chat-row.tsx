@@ -5,12 +5,13 @@ import React, { FC, useState } from "react"
 
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
+import { calculateFleschKincaidScore } from "@/features/chat/chat-services/chat-flesch"
 import { CreateUserFeedback } from "@/features/chat/chat-services/chat-message-service"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatRole, ChatSentiment, FeedbackType, PromptMessage } from "@/features/chat/models"
 import { showError } from "@/features/globals/global-message-store"
 import { AI_NAME } from "@/features/theme/theme-config"
-import AssistantButtons from "@/features/ui/assistant-buttons"
+import { AssistantButtons, FleschButton } from "@/features/ui/assistant-buttons"
 import Modal from "@/features/ui/modal"
 
 interface ChatRowProps {
@@ -120,6 +121,8 @@ export const ChatRow: FC<ChatRowProps> = props => {
     closeModal?.()
   }
 
+  const fleshScore = calculateFleschKincaidScore(props.message.content)
+
   const safetyWarning = props.message.contentFilterResult ? (
     <div
       className="mt-2 flex max-w-none justify-center space-x-2 rounded-md bg-alert p-2 text-sm text-primary md:text-base"
@@ -149,10 +152,13 @@ export const ChatRow: FC<ChatRowProps> = props => {
             {props.name}
           </Typography>
           {process.env.NODE_ENV === "development" && (
-            <Typography variant="h3" className="mt-0 flex-1 text-heading" tabIndex={0}>
+            <Typography variant="h4" className="mt-0 flex-1 text-center text-heading" tabIndex={0}>
               {props.chatMessageId}
             </Typography>
           )}
+          <div className="flex items-center">
+            {props.showAssistantButtons && <FleschButton fleschScore={fleshScore} />}
+          </div>
           <Modal
             chatThreadId={props.chatThreadId}
             chatMessageId={props.chatMessageId}
@@ -175,6 +181,7 @@ export const ChatRow: FC<ChatRowProps> = props => {
         <div className="sr-only" aria-live="assertive">
           {feedbackMessage}
         </div>
+
         {props.type === "assistant" && props.showAssistantButtons && (
           <AssistantButtons
             isIconChecked={isIconChecked}

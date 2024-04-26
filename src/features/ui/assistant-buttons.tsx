@@ -1,9 +1,10 @@
 "use client"
-
-import { CheckIcon, ClipboardIcon, ThumbsUp, ThumbsDown } from "lucide-react"
+import * as Tooltip from "@radix-ui/react-tooltip"
+import { CheckIcon, ClipboardIcon, ThumbsUp, ThumbsDown, BookOpenText } from "lucide-react"
 import React from "react"
 
 import { Button } from "./button"
+import { TooltipProvider } from "./tooltip-provider"
 import { useWindowSize } from "./windowsize"
 
 interface AssistantButtonsProps {
@@ -15,14 +16,11 @@ interface AssistantButtonsProps {
   handleThumbsDownClick: () => void
 }
 
-export const AssistantButtons: React.FC<AssistantButtonsProps> = ({
-  isIconChecked,
-  thumbsUpClicked,
-  thumbsDownClicked,
-  handleCopyButton,
-  handleThumbsUpClick,
-  handleThumbsDownClick,
-}) => {
+interface FleschButtonProps {
+  fleschScore: number
+}
+
+const useButtonStyles = () => {
   const { width } = useWindowSize()
   let iconSize = 10
   let buttonClass = "h-9"
@@ -35,6 +33,47 @@ export const AssistantButtons: React.FC<AssistantButtonsProps> = ({
     iconSize = 16
   }
 
+  return { iconSize, buttonClass }
+}
+
+export const FleschButton: React.FC<FleschButtonProps> = ({ fleschScore }) => {
+  const { iconSize } = useButtonStyles()
+
+  return (
+    <div className="container  relative flex w-full justify-end  gap-4 p-2">
+      <TooltipProvider>
+        <Tooltip.Root>
+          <Tooltip.Trigger>
+            <div className="flex items-center justify-center gap-2">
+              <BookOpenText size={iconSize} />
+              {fleschScore}
+            </div>
+          </Tooltip.Trigger>
+          <Tooltip.Content
+            side="top"
+            className="rounded-md bg-primary-foreground p-2 text-sm text-foreground shadow-lg"
+          >
+            <p>
+              <strong>Readability:</strong> Flesch-Kincaid Score, based on sentence length and the syllables per word.
+              <br /> Increasing score indicates greater difficulty in understanding the document.
+              <br /> For example, a score of 8 implies comprehension by an eighth grader.
+            </p>
+          </Tooltip.Content>
+        </Tooltip.Root>
+      </TooltipProvider>
+    </div>
+  )
+}
+
+export const AssistantButtons: React.FC<AssistantButtonsProps> = ({
+  isIconChecked,
+  thumbsUpClicked,
+  thumbsDownClicked,
+  handleCopyButton,
+  handleThumbsUpClick,
+  handleThumbsDownClick,
+}) => {
+  const { iconSize, buttonClass } = useButtonStyles()
   return (
     <div className="container flex w-full gap-4 p-2">
       <Button

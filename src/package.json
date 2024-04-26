@@ -1,6 +1,6 @@
 {
   "name": "src",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "scripts": {
     "tidy": "npm upgrade && npm i && npm run lint:fix && npm run build",
@@ -80,6 +80,7 @@
     "docx": "^8.5.0",
     "eventsource-parser": "^1.1.2",
     "file-saver": "^2.0.5",
+    "flesch": "^2.0.1",
     "ip": "^2.0.1",
     "lucide-react": "^0.368.0",
     "marked": "^12.0.1",
@@ -96,6 +97,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "server-only": "^0.0.1",
     "sharp": "^0.33.3",
+    "syllable": "^5.0.1",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "valtio": "^1.13.2",
