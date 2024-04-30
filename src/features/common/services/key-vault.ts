@@ -10,7 +10,8 @@ export const AzureKeyVaultInstance = () => {
       "Azure Key vault is not configured correctly, check environment variables."
     );
   }
-  const url = `https://${keyVaultName}.vault.azure.net`;
+  const endpointSuffix = process.env.AZURE_KEY_VAULT_ENDPOINT_SUFFIX || "vault.azure.net";
+  const url = `https://${keyVaultName}.${endpointSuffix}`;
 
   return new SecretClient(url, credential);
 };

@@ -15,8 +15,9 @@ export const AzureAISearchCredentials = () => {
       "One or more Azure AI Search environment variables are not set"
     );
   }
+  const endpointSuffix = process.env.AZURE_SEARCH_ENDPOINT_SUFFIX || "search.windows.net";
 
-  const endpoint = `https://${searchName}.search.windows.net`;
+  const endpoint = `https://${searchName}.${endpointSuffix}`;
   return {
     apiKey,
     endpoint,

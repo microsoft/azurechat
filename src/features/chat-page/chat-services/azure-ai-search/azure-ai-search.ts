@@ -129,8 +129,9 @@ export const ExtensionSimilaritySearch = async (props: {
       input: searchText,
       model: "",
     });
+    const endpointSuffix = process.env.AZURE_SEARCH_ENDPOINT_SUFFIX || "search.windows.net";
 
-    const endpoint = `https://${searchName}.search.windows.net`;
+    const endpoint = `https://${searchName}.${endpointSuffix}`;
 
     const searchClient = new SearchClient(
       endpoint,
