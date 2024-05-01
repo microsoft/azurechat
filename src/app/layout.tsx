@@ -6,7 +6,7 @@ import "./globals.css"
 
 import { GlobalConfigProvider } from "@/features/globals/global-client-config-context"
 import { Providers } from "@/features/globals/providers"
-import { AI_NAME } from "@/features/theme/theme-config"
+import { AI_AUTHOR, AI_NAME, AI_TAGLINE, APP_URL } from "@/features/theme/theme-config"
 import { ThemeProvider } from "@/features/theme/theme-provider"
 import { NavBar } from "@/features/ui/navbar"
 import { Toaster } from "@/features/ui/toaster"
@@ -18,16 +18,16 @@ import { Header } from "./header"
 const notoSans = Noto_Sans({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://qchat.ai.qld.gov.au"),
+  metadataBase: new URL(APP_URL),
   title: AI_NAME,
   applicationName: AI_NAME,
-  authors: [{ name: "Queensland Government AI Unit", url: "https://www.qld.gov.au" }],
-  description: AI_NAME + " the Queensland Government's AI Chatbot",
-  generator: "Queensland Government AI Unit",
-  keywords: ["Queensland", "Government", "AI", "Chatbot", "GenerativeAI", "VirtualAssistant", AI_NAME],
+  authors: [{ name: AI_AUTHOR, url: APP_URL }],
+  description: AI_NAME + " " + AI_TAGLINE,
+  generator: AI_AUTHOR,
+  keywords: ["AI", "Chatbot", "GenerativeAI", "VirtualAssistant", AI_NAME, AI_AUTHOR],
   referrer: "no-referrer",
-  creator: "Queensland Government AI Unit",
-  publisher: "Queensland Government AI Unit",
+  creator: AI_AUTHOR,
+  publisher: AI_AUTHOR,
   robots: "no-index, follow",
   icons: {
     icon: "/favicon.ico",

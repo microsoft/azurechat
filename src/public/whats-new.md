@@ -6,6 +6,10 @@ Below are the updates for the Queensland Government QChat Virtual Assistant.
 
 - If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the Queensland Government AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
 
+## Version 1.4.2 Updates - 1 MAY 2024
+
+- **Bugfixes and Support Upgrades:** We have added some minor bugfixes to the platform to keep it in tip top shape.
+
 ## 📝 Version 1.4.1 Updates - 26 APR 2024
 
 - **Display Flesch-Kincaid Score Level Feature:** A new feature was introduced to calculate the readability scores, which reflects the education grade level required to comprehend the text. The Flesch-Kincaid Score below shows how easy or difficult it is to understand the writing. The higher the score, the more difficult it is to read. Aim for a score near 8 to make sure most people find the message clear. This includes younger readers and those who are still learning English. You can click [here](https://www.forgov.qld.gov.au/pay-benefits-and-policy/culture-and-inclusion/workplace-inclusion-and-diversity/build-accessible,-inclusive-and-diverse-workplaces#Expand-your-inclusive-language-vocabulary) for more information on writing inclusive communications and campaigns from the Public Sector Commission.

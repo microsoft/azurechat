@@ -54,6 +54,10 @@ export const ChatFileUI: FC = () => {
           required
           disabled={isUploadingFile}
           accept={acceptedFileType}
+          data-file-types={acceptedFileType}
+          data-max-size="10"
+          data-max-files="3"
+          multiple={true}
           aria-describedby="file-upload-description"
           onChange={e => {
             const files = e.currentTarget.files
@@ -84,7 +88,7 @@ export const ChatFileUI: FC = () => {
       </form>
       <p id="file-upload-description" className="text-sm text-muted-foreground">
         {uploadButtonLabel ||
-          "Select a file to upload, please note files are not stored in their original format and may be cleared from the system after thirty days."}
+          "Select a file to upload, please note files are not stored in their original format and may be cleared from the system after thirty days. You can upload up to 3 pdf files, each not exceeding 10mb in size."}
       </p>
       {chatBody.chatType === "audio" && offenderId != null && (
         <div>

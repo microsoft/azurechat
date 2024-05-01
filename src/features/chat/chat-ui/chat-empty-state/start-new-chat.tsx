@@ -5,7 +5,7 @@ import { FC } from "react"
 
 import Typography from "@/components/typography"
 import { NewChat } from "@/features/chat/chat-menu/new-chat"
-import { AI_NAME } from "@/features/theme/theme-config"
+import { AI_NAME, AI_TAGLINE } from "@/features/theme/theme-config"
 import { Button } from "@/features/ui/button"
 import { Card } from "@/features/ui/card"
 
@@ -20,14 +20,14 @@ export const StartNewChat: FC<object> = () => {
         <Typography variant="h4" className="text-2xl text-siteTitle" id="startChatTitle">
           {AI_NAME}
           <br />
-          The Queensland Government AI Assistant
+          {AI_TAGLINE}
         </Typography>
         <div className="flex flex-col gap-2">
           <p>
-            QChat, your text-based virtual assistant, is equipped with cutting-edge Generative AI technology to empower
-            you in your role within the Queensland Government.
+            {AI_NAME}, your text-based virtual assistant, is equipped with cutting-edge Generative AI technology to
+            empower you.
           </p>
-          <p>Let QChat assist you in accomplishing remarkable outcomes.</p>
+          <p>Let {AI_NAME} assist you in accomplishing remarkable outcomes.</p>
           <p className="hidden lg:block">
             Press the plus button below to get started or select one of your existing chats from the left-hand panel.
           </p>

@@ -11,9 +11,10 @@ interface SpeechTokenResponse {
 
 export const GetSpeechToken = async (): Promise<SpeechTokenResponse> => {
   if (
-    process.env.AZURE_SPEECH_REGION === undefined ||
-    process.env.AZURE_SPEECH_KEY === undefined ||
-    process.env.AZURE_SPEECH_STT_URL === undefined
+    process.env.REGION_NAME === undefined ||
+    process.env.APIM_KEY === undefined ||
+    process.env.APIM_BASE_WSS === undefined ||
+    process.env.APIM_BASE === undefined
   ) {
     return {
       error: true,
@@ -25,10 +26,10 @@ export const GetSpeechToken = async (): Promise<SpeechTokenResponse> => {
     }
   }
 
-  const response = await fetch(`${process.env.AZURE_SPEECH_URL}/sts/v1.0/issueToken`, {
+  const response = await fetch(`${process.env.APIM_BASE}/sts/v1.0/issueToken`, {
     method: "POST",
     headers: {
-      "api-key": process.env.AZURE_SPEECH_KEY!,
+      "api-key": process.env.APIM_KEY!,
     },
     cache: "no-store",
   })
@@ -38,9 +39,9 @@ export const GetSpeechToken = async (): Promise<SpeechTokenResponse> => {
       error: true,
       errorMessage: response.statusText || "Error fetching token",
       token: "",
-      region: process.env.AZURE_SPEECH_REGION,
-      sttUrl: process.env.AZURE_SPEECH_STT_URL,
-      apimKey: process.env.AZURE_SPEECH_KEY,
+      region: process.env.REGION_NAME,
+      sttUrl: process.env.APIM_BASE_WSS,
+      apimKey: process.env.APIM_KEY,
     }
   }
 
@@ -48,8 +49,8 @@ export const GetSpeechToken = async (): Promise<SpeechTokenResponse> => {
     error: false,
     errorMessage: "",
     token: await response.text(),
-    region: process.env.AZURE_SPEECH_REGION,
-    sttUrl: process.env.AZURE_SPEECH_STT_URL,
-    apimKey: process.env.AZURE_SPEECH_KEY,
+    region: process.env.REGION_NAME,
+    sttUrl: process.env.APIM_BASE_WSS,
+    apimKey: process.env.APIM_KEY,
   }
 }

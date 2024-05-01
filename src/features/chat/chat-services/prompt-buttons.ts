@@ -2,17 +2,9 @@
 import "server-only"
 import { GenericChatAPI } from "./generic-chat-api"
 
-function getBooleanEnv(variable: string): boolean {
-  return process.env[variable]?.toLowerCase() === "true"
-}
-
 export const PromptButtons = async (): Promise<string[]> => {
   const apiName = "generatePromptButtons"
   const defaultPrompts = ["Summarise the below article into three key points:", "Provide a summary of the below text:"]
-
-  if (!getBooleanEnv("PROMPT_BUTTON_ENABLED")) {
-    return defaultPrompts
-  }
 
   try {
     const promptButtons = await GenericChatAPI(apiName, {

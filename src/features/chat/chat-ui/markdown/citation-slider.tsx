@@ -2,6 +2,7 @@ import { FC } from "react"
 import { useFormState } from "react-dom"
 
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
+import { AI_NAME } from "@/features/theme/theme-config"
 import { Button } from "@/features/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/features/ui/sheet"
 
@@ -62,12 +63,12 @@ export const CitationSlider: FC<SliderProps> = props => {
           <div className="text-sm text-muted-foreground">
             <br></br>
             <p>
-              The citation presented is a specific snippet from your document, selected by QChat through
+              The citation presented is a specific snippet from your document, selected by {AI_NAME} through
               Retrieval-Augmented Generation (RAG) for its relevance to your question.
             </p>
             <br></br>
             <p>
-              If the snippets seem unrelated, it might suggest that QChat needs more context or clearer questions to
+              If the snippets seem unrelated, it might suggest that {AI_NAME} needs more context or clearer questions to
               accurately pinpoint the right information. This method aims to deliver focused and relevant insights, but
               sometimes it may need further clarification to match your question precisely.
             </p>

@@ -21,11 +21,11 @@ type DocumentIntelligenceObject = {
 }
 const customDocumentIntelligenceObject = (modelId?: string, resultId?: string): DocumentIntelligenceObject => {
   const apiVersion = "2023-07-31"
-  const analyzeDocumentUrl = `${process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT}/formrecognizer/documentModels/${modelId}:analyze?api-version=${apiVersion}&locale=en-GB`
-  const analyzeResultUrl = `${process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT}/formrecognizer/documentModels/${modelId}/analyzeResults/${resultId}?api-version=${apiVersion}`
+  const analyzeDocumentUrl = `${process.env.APIM_BASE}/formrecognizer/documentModels/${modelId}:analyze?api-version=${apiVersion}&locale=en-GB`
+  const analyzeResultUrl = `${process.env.APIM_BASE}/formrecognizer/documentModels/${modelId}/analyzeResults/${resultId}?api-version=${apiVersion}`
   const diHeaders = {
     "Content-Type": "application/json",
-    "api-key": process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY,
+    "api-key": process.env.APIM_KEY,
   }
 
   return {

@@ -1,15 +1,18 @@
 import { Mail, CircleHelp, HeartHandshake } from "lucide-react"
 import React from "react"
 
+import { SUPPORT_EMAIL } from "@/app-global"
+
 import Typography from "@/components/typography"
+import { APP_URL } from "@/features/theme/theme-config"
 
 export const Footer: React.FC = () => {
   return (
     <footer className="h-[30px] min-w-[400px] border-t-4 border-accent bg-background py-5" role="contentinfo">
       <div className="container mx-auto flex size-full items-center justify-between  px-8">
         <div>
-          <a href="https://qchat.ai.qld.gov.au" className="flex items-center" target="_blank" rel="noopener noreferrer">
-            <Typography variant="h4">qchat.ai.qld.gov.au</Typography>
+          <a href={APP_URL} className="flex items-center" target="_blank" rel="noopener noreferrer">
+            <Typography variant="h4">{APP_URL}</Typography>
           </a>
         </div>
         <div>
@@ -26,7 +29,7 @@ export const Footer: React.FC = () => {
         </div>
         <div>
           <a
-            href="mailto:qchat@chde.qld.gov.au"
+            href={"mailto:" + { SUPPORT_EMAIL }}
             className="flex items-center"
             target="_blank"
             rel="noopener noreferrer"

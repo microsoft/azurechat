@@ -30,6 +30,7 @@ export const createAppInsights = (): IAppInsightsContext | null => {
         [clickPlugin.identifier]: { autoCapture: true },
         [reactPlugin.identifier]: { history: browserHistory },
       },
+      disablePageUnloadEvents: ["unload"],
     }
 
     const appInsights = new ApplicationInsights({ config })

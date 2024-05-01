@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
 
 import { SignInErrorType } from "@/features/auth/sign-in"
-import { AI_NAME } from "@/features/theme/theme-config"
+import { AI_NAME, INTRANET_NAME, INTRANET_URL } from "@/features/theme/theme-config"
 import { Button } from "@/features/ui/button"
 import { Card, CardContent, CardHeader, CardDescription } from "@/features/ui/card"
 
@@ -37,9 +37,8 @@ const ErrorPage: React.FC = () => {
     router.push("/support")
   }
 
-  const handleForGovRedirect = (): void => {
-    window.location.href =
-      "https://www.forgov.qld.gov.au/information-and-communication-technology/qchat/qchat-assistant"
+  const handleIntranetRedirect = (): void => {
+    window.location.href = INTRANET_URL
   }
 
   return (
@@ -52,11 +51,11 @@ const ErrorPage: React.FC = () => {
         <CardContent className="grid items-center justify-center gap-4">
           {displaySupportButton && (
             <Button variant="link" className="max-w-[300px]" onClick={handleSupportRedirect}>
-              Contact QChat Support
+              Contact {AI_NAME} Support
             </Button>
           )}
-          <Button variant="link" className="max-w-[300px]" onClick={handleForGovRedirect}>
-            Find out more about QChat on ForGov
+          <Button variant="link" className="max-w-[300px]" onClick={handleIntranetRedirect}>
+            Find out more about {AI_NAME} on {INTRANET_NAME}
           </Button>
         </CardContent>
       </Card>

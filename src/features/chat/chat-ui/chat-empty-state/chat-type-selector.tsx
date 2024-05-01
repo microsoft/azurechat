@@ -6,6 +6,7 @@ import { FC } from "react"
 
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatType } from "@/features/chat/models"
+import { AI_NAME } from "@/features/theme/theme-config"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 import { TooltipProvider } from "@/features/ui/tooltip-provider"
 
@@ -75,10 +76,10 @@ export const ChatTypeSelector: FC<Prop> = props => {
         </Tooltip.Trigger>
         <Tooltip.Content side="top" className="rounded-md bg-primary-foreground p-2 text-sm text-foreground shadow-lg">
           <p>
-            <strong>General</strong> - chats are turn by turn conversations with the QChat Assistant.
+            <strong>General</strong> - chats are turn by turn conversations with the {AI_NAME} Assistant.
           </p>
           <p>
-            <strong>File</strong> - Upload PDF files to QChat for questions or task completion based on it.
+            <strong>File</strong> - Upload PDF files to {AI_NAME} for questions or task completion based on it.
           </p>
           {isAllowedTenant && (
             <p>

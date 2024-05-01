@@ -2,10 +2,6 @@ import createClient, { ErrorResponseOutput, TranslatedTextItemOutput } from "@az
 
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 
-export function getBooleanEnv(variable: string): boolean {
-  return process.env[variable]?.toLowerCase() === "true"
-}
-
 export const extractCitations = (context: string): { text: string; citations: string[] } => {
   const citationRegex = /({% citation items=.*?)%}/g
   const citations: string[] = []
@@ -18,9 +14,6 @@ export const extractCitations = (context: string): { text: string; citations: st
 }
 
 export async function translator(input: string): ServerActionResponseAsync<string> {
-  if (!getBooleanEnv("NEXT_PUBLIC_FEATURE_TRANSLATOR") || typeof input !== "string")
-    return { status: "OK", response: input }
-
   const codeBlockPattern = /(```[\s\S]*?```)/g
   const codeBlocks: string[] = []
   let i = 0
@@ -50,9 +43,9 @@ async function translateFunction(
   translatedTo: string,
   translatedFrom: string
 ): Promise<string[]> {
-  const apiKey = process.env.AZURE_TRANSLATOR_KEY
-  const endpoint = process.env.AZURE_TRANSLATOR_URL
-  const region = process.env.AZURE_SPEECH_REGION
+  const apiKey = process.env.APIM_KEY
+  const endpoint = process.env.APIM_BASE + "/translator/text/v3.0"
+  const region = process.env.REGION_NAME
 
   if (!apiKey || !endpoint || !region) {
     throw new Error("Missing configuration for Azure Translator.")

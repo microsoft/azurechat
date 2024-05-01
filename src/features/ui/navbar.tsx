@@ -30,7 +30,7 @@ const validateCondition = (link: LinkItem) => (session: Session | null) => {
   return true
 }
 
-const placeholders = links.filter(link => link.condition !== "admin").map(link => ({ name: link.name }))
+const placeholders = links.filter(link => link.condition).map(link => ({ name: link.name }))
 
 export const NavBar: React.FC = () => {
   const { data: session, status } = useSession()

@@ -170,7 +170,7 @@ export const embedDocuments = async (documents: Array<AzureCogDocumentIndex>): P
 }
 
 const baseIndexUrl = (): string => {
-  return `${process.env.QGAIP_APIM_BASE}/indexes/${process.env.AZURE_SEARCH_INDEX_NAME}`
+  return `${process.env.APIM_BASE}/indexes/${process.env.AZURE_SEARCH_INDEX_NAME}`
 }
 
 const fetcher = async (url: string, init?: RequestInit): Promise<unknown> => {
@@ -179,7 +179,7 @@ const fetcher = async (url: string, init?: RequestInit): Promise<unknown> => {
     cache: "no-store",
     headers: {
       "Content-Type": "application/json",
-      "api-key": process.env.AZURE_SEARCH_API_KEY,
+      "api-key": process.env.APIM_KEY,
     },
   })
 

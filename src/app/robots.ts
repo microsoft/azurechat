@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       disallow: "/",
     },
-    sitemap: "https://qchat.ai.qld.gov.au/sitemap.xml",
+    sitemap: process.env.NEXTAUTH_URL + "/sitemap.xml",
   }
 }

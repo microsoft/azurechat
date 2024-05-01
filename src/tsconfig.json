@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "alwaysStrict": true,
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -14,6 +15,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "removeComments": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "typeRoots": ["./types", "./node_modules/@types"],

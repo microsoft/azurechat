@@ -26,7 +26,7 @@ const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport }) => {
   }, [])
 
   const fairClickHandler = (): void => {
-    const fairInput = "Help me complete a Queensland Government Fast AI Risk Assessment (FAIRA)"
+    const fairInput = "Help me complete a Queensland Government Foundational AI Risk Assessment (FAIRA)"
     setInput(fairInput)
     setTimeout(() => {
       handleSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>)
@@ -84,7 +84,7 @@ const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport }) => {
           >
             <div tabIndex={0} ref={firstMenuItemRef} style={{ display: "flex", alignItems: "center", padding: "5px" }}>
               <Bird size={20} className="mr-2" aria-hidden="true" />
-              Complete a Fast AI Risk Assessment
+              Complete a Foundational AI Risk Assessment
             </div>
           </DropdownMenu.Item>
           <DropdownMenu.Separator className="my-2 h-px bg-secondary" />

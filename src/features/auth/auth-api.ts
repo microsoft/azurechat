@@ -29,7 +29,7 @@ const configureIdentityProvider = (): Provider[] => {
           url: process.env.AZURE_AD_AUTHORIZATION_ENDPOINT,
           params: {
             client_id: process.env.AZURE_AD_CLIENT_ID,
-            redirect_uri: process.env.AZURE_AD_REDIRECT_URL,
+            redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/azure-ad",
             response_type: "code",
           },
         },
@@ -39,7 +39,7 @@ const configureIdentityProvider = (): Provider[] => {
             client_id: process.env.AZURE_AD_CLIENT_ID,
             client_secret: process.env.AZURE_AD_CLIENT_SECRET,
             grant_type: "authorization_code",
-            redirect_uri: process.env.AZURE_AD_REDIRECT_URL,
+            redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/azure-ad",
           },
         },
         userinfo: process.env.AZURE_AD_USERINFO_ENDPOINT,

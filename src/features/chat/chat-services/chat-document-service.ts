@@ -2,21 +2,19 @@
 
 import { SqlQuerySpec } from "@azure/cosmos"
 
-import { AzureCogDocumentIndex, indexDocuments } from "./azure-cog-search/azure-cog-vector-store"
-import { speechToTextRecognizeOnce } from "./chat-audio-helper"
-import { arrayBufferToBase64, customBeginAnalyzeDocument } from "./chat-document-helper"
-import { chunkDocumentWithOverlap } from "./text-chunk"
-import { isNotNullOrEmpty } from "./utils"
-
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
-import { DEFAULT_MONTHS_AGO } from "@/features/chat/constants"
+import { DEFAULT_MONTHS_AGO, MAX_DOCUMENT_SIZE } from "@/features/chat/constants"
 import { ChatDocumentModel, ChatRecordType } from "@/features/chat/models"
 import { xMonthsAgo } from "@/features/common/date-helper"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { HistoryContainer } from "@/features/common/services/cosmos"
 import { uniqueId } from "@/lib/utils"
 
-const MAX_DOCUMENT_SIZE = process.env.MAX_DOCUMENT_SIZE as unknown as number
+import { AzureCogDocumentIndex, indexDocuments } from "./azure-cog-search/azure-cog-vector-store"
+import { speechToTextRecognizeOnce } from "./chat-audio-helper"
+import { arrayBufferToBase64, customBeginAnalyzeDocument } from "./chat-document-helper"
+import { chunkDocumentWithOverlap } from "./text-chunk"
+import { isNotNullOrEmpty } from "./utils"
 
 const LoadFile = async (formData: FormData, chatType: string): Promise<string[]> => {
   try {
@@ -44,7 +42,7 @@ const LoadFile = async (formData: FormData, chatType: string): Promise<string[]>
 const ensureSearchIsConfigured = (): boolean => {
   const isSearchConfigured =
     isNotNullOrEmpty(process.env.AZURE_SEARCH_NAME) &&
-    isNotNullOrEmpty(process.env.AZURE_SEARCH_API_KEY) &&
+    isNotNullOrEmpty(process.env.APIM_KEY) &&
     isNotNullOrEmpty(process.env.AZURE_SEARCH_INDEX_NAME) &&
     isNotNullOrEmpty(process.env.AZURE_SEARCH_API_VERSION)
 
@@ -54,8 +52,7 @@ const ensureSearchIsConfigured = (): boolean => {
   }
 
   const isDocumentIntelligenceConfigured =
-    isNotNullOrEmpty(process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT) &&
-    isNotNullOrEmpty(process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY)
+    isNotNullOrEmpty(process.env.APIM_BASE) && isNotNullOrEmpty(process.env.APIM_KEY)
 
   if (!isDocumentIntelligenceConfigured) {
     console.error("Azure document intelligence environment variables are not configured.")

@@ -165,7 +165,7 @@ export const MenuItems: FC<Prop> = ({ menuItems }) => {
           <Button
             className="invisible group-hover:visible"
             size={"sm"}
-            variant="default"
+            variant="destructive"
             aria-label="Delete Chat"
             onClick={async e => {
               e.preventDefault()

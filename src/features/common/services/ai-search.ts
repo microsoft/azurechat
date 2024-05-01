@@ -1,7 +1,7 @@
 import { AzureKeyCredential, SearchClient, SearchIndexClient, SearchIndexerClient } from "@azure/search-documents"
 
 export const AzureAISearchCredentials = (): { apiKey: string; endpoint: string; indexName: string } => {
-  const apiKey = process.env.AZURE_SEARCH_API_KEY
+  const apiKey = process.env.APIM_KEY
   const searchName = process.env.AZURE_SEARCH_NAME
   const indexName = process.env.AZURE_SEARCH_INDEX_NAME
 

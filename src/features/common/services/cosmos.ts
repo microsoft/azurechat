@@ -4,9 +4,9 @@ let _cosmosClient: CosmosClient | null = null
 const CosmosInstance = (): CosmosClient => {
   if (_cosmosClient) return _cosmosClient
 
-  const endpoint = process.env.AZURE_COSMOSDB_URI
+  const endpoint = process.env.APIM_BASE
   const key = process.env.AZURE_COSMOSDB_KEY
-  const defaultHeaders = { "api-key": process.env.AZURE_SEARCH_API_KEY }
+  const defaultHeaders = { "api-key": process.env.APIM_KEY || "" }
   if (!endpoint || !key) throw new Error("Azure Cosmos DB is not configured. Please configure it in the .env file.")
 
   _cosmosClient = new CosmosClient({ endpoint, key, defaultHeaders })

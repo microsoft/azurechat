@@ -20,7 +20,7 @@ interface FleschButtonProps {
   fleschScore: number
 }
 
-const useButtonStyles = () => {
+const useButtonStyles = (): { iconSize: number; buttonClass: string } => {
   const { width } = useWindowSize()
   let iconSize = 10
   let buttonClass = "h-9"
