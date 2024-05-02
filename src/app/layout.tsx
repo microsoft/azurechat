@@ -43,6 +43,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
 
   return (
     <html lang="en-AU" suppressHydrationWarning className="size-full overflow-hidden text-sm">
+      <head>
+        <link rel="stylesheet" href="https://use.typekit.net/fse2tsb.css" />
+      </head>
       <body className={cn(notoSans.className, "flex size-full min-w-[400px] flex-col bg-background")}>
         {isProd && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTAG || "notset"} />}
         <GlobalConfigProvider>

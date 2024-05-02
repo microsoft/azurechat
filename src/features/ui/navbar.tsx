@@ -40,7 +40,7 @@ export const NavBar: React.FC = () => {
   return (
     <nav aria-label="Main navigation" className="m:h-[44px] border-b-4 border-accent bg-backgroundShade">
       <div className="container mx-auto hidden md:block">
-        <div dir="ltr" className="grid grid-cols-12 gap-2">
+        <div dir="ltr" className="justify-right grid grid-cols-12 gap-2">
           {status === "loading"
             ? placeholders.map(link => (
                 <div key={link.name} className="relative col-span-2 flex items-center space-x-2">
@@ -63,6 +63,7 @@ export const NavBar: React.FC = () => {
                   </a>
                 </div>
               ))}
+          {!session && status !== "loading" && <div className="col-span-8"></div>}
           <div className="relative col-span-2 flex min-h-[40px] items-center justify-end">
             <ThemeSwitch />
           </div>

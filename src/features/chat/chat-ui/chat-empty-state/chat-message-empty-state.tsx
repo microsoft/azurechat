@@ -35,7 +35,7 @@ export const ChatMessageEmptyState: FC<Prop> = () => {
   const { fileState } = useChatContext()
 
   return (
-    <div className="max:h-5/6 container mx-auto grid w-full max-w-3xl grid-cols-5 items-center justify-center gap-9 overflow-auto p-4 pb-[80px]">
+    <div className="max:h-5/6 container mx-auto grid w-full max-w-3xl grid-cols-5 items-center justify-center gap-9 overflow-auto p-4 pb-[130px]">
       <Card className="col-span-5 flex flex-col gap-2 p-5 ">
         <EasterEgg />
         <div className="flex flex-col gap-1">

@@ -4,7 +4,7 @@ import React from "react"
 import { SUPPORT_EMAIL } from "@/app-global"
 
 import Typography from "@/components/typography"
-import { APP_URL } from "@/features/theme/theme-config"
+import { APP_URL, APP_VANITY_URL } from "@/features/theme/theme-config"
 
 export const Footer: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
       <div className="container mx-auto flex size-full items-center justify-between  px-8">
         <div>
           <a href={APP_URL} className="flex items-center" target="_blank" rel="noopener noreferrer">
-            <Typography variant="h4">{APP_URL}</Typography>
+            <Typography variant="h4">{APP_VANITY_URL}</Typography>
           </a>
         </div>
         <div>

@@ -76,7 +76,7 @@ const ChatInput: FC<Props> = () => {
 
   return (
     <form onSubmit={submit} className="absolute bottom-0 z-70 flex w-full items-center">
-      <div className="container relative mx-auto flex max-w-4xl items-center gap-2 py-2">
+      <div className="container relative mx-auto flex items-center gap-2 py-2">
         {fileChatVisible && <ChatFileSlider />}
         <Textarea
           id="chatMessage"
@@ -84,9 +84,10 @@ const ChatInput: FC<Props> = () => {
           value={input}
           placeholder="Send a message"
           aria-label="Send a message"
-          className="md:rows-4 rows-2 min-h-fit resize-none bg-background py-4 pr-[80px] shadow-sm"
+          className="bg-background py-4 pr-[80px] shadow-sm"
           onChange={onChange}
           onKeyDown={onKeyDown}
+          rows={6}
         />
         <div className="absolute bottom-0 right-0 mb-4 mr-2 flex h-full items-end px-8">
           {!isDataChat || (isDataChat && fileChatVisible) ? (
