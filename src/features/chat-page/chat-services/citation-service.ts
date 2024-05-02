@@ -106,7 +106,7 @@ export const FormatCitations = (citation: any[]) => {
     withoutEmbedding.push({
       score: d.score,
       document: {
-        metadata: d.document.metadata,
+        metadata: d.document.metadata || d.document.title,
         pageContent: d.document.pageContent || d.document.content || d.document.chunk,
         chatThreadId: d.document.chatThreadId,
         id: "",
