@@ -1,4 +1,4 @@
-import APP_VERSION from "@/app-global"
+import { APP_VERSION } from "@/app-global"
 
 export const VersionDisplay = (): JSX.Element => {
   return (

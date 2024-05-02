@@ -1,11 +1,11 @@
 "use server"
-import APP_VERSION from "@/app-global"
+import { APP_VERSION } from "@/app-global"
 
 export const appVersionDetails = async (): Promise<{
   version: string
   isOutdated: boolean
 }> => {
-  const appVersion = await fetch("https://raw.githubusercontent.com/kpqdap/azurechat/main/src/package.json", {
+  const appVersion = await fetch("https://raw.githubusercontent.com/QDAP-DATAAI/qchat/main/src/package.json", {
     cache: "no-cache",
   })
 

@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
 
-import APP_VERSION from "@/app-global"
+import { APP_VERSION } from "@/app-global"
 
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
