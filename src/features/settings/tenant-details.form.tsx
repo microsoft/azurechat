@@ -88,7 +88,7 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
               className="mt-2 w-full rounded-md border-2 p-2"
               placeholder="Enter new context prompt..."
               rows={4}
-              maxLength={200}
+              maxLength={400}
               required
             />
           </Form.Control>

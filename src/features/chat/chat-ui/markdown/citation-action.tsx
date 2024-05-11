@@ -2,6 +2,7 @@
 
 import { ReactElement } from "react"
 
+import Typography from "@/components/typography"
 import { simpleSearch } from "@/features/chat/chat-services/azure-cog-search/azure-cog-vector-store"
 
 export const CitationAction = async (_previousState: unknown, formData: FormData): Promise<ReactElement> => {
@@ -20,11 +21,13 @@ export const CitationAction = async (_previousState: unknown, formData: FormData
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-sm border p-2">
-        <div className="font-bold">File name</div>
-        <div>{firstResult.metadata}</div>
+      <div className="rounded-sm p-2">
+        <Typography variant="h2">File name</Typography>
+        <Typography variant="p">{firstResult.metadata}</Typography>
+        <br />
+        <Typography variant="h2">File content:</Typography>
+        <Typography variant="p">{firstResult.pageContent}</Typography>
       </div>
-      <p>{firstResult.pageContent}</p>
     </div>
   )
 }

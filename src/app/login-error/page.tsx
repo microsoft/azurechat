@@ -42,8 +42,8 @@ const ErrorPage: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <Card className="flex min-w-[300px] max-w-[700px] flex-col gap-2">
+    <div className="flex size-full items-center justify-center">
+      <Card className="flex min-w-[300px] max-w-[700px] flex-col gap-2 rounded-md">
         <CardHeader className="items-center justify-center gap-2">
           Uh-oh we ran into an error signing you in!
           <CardDescription className="items-center justify-center">{errorMessage}</CardDescription>

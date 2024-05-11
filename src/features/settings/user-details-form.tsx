@@ -91,7 +91,7 @@ This approach helps us interact with you in the most effective and considerate m
   }
 
   return (
-    <Form.Root className="grid size-full min-w-[400px] grid-cols-1 gap-8 pt-5 md:grid-cols-2" onSubmit={handleSubmit}>
+    <Form.Root className="grid size-full grid-cols-1 gap-8 pt-5 md:grid-cols-2" onSubmit={handleSubmit}>
       <div className="mb-4 md:col-span-1">
         <Typography variant="h4" className="pt-4 font-bold text-siteTitle">
           Your Details
@@ -104,7 +104,11 @@ This approach helps us interact with you in the most effective and considerate m
                 <CardSkeleton />
               </div>
             )}
-            {!isLoading && <span className="ml-2">{session?.user?.name}</span>}
+            {!isLoading && (
+              <Typography variant="span" className="ml-2">
+                {session?.user?.name}
+              </Typography>
+            )}
           </Typography>
         </div>
         <div className="m-2">
@@ -115,7 +119,11 @@ This approach helps us interact with you in the most effective and considerate m
                 <CardSkeleton />
               </div>
             )}
-            {!isLoading && <span className="ml-2">{session?.user?.email}</span>}
+            {!isLoading && (
+              <Typography variant="span" className="ml-2">
+                {session?.user?.email}
+              </Typography>
+            )}
           </Typography>
         </div>
         <div className="mb-4">
@@ -134,7 +142,7 @@ This approach helps us interact with you in the most effective and considerate m
               className="border-1 w-full rounded-md p-2"
               placeholder="Enter new context prompt..."
               rows={6}
-              maxLength={250}
+              maxLength={400}
               required
             />
           </Form.Control>

@@ -61,7 +61,7 @@ const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport }) => {
           aria-haspopup="true"
           aria-expanded="false"
           aria-controls="chat-input-options"
-          aria-label="Open chat input options menu"
+          ariaLabel="Open chat input options menu"
           type="button"
           variant="ghost"
           size="icon"

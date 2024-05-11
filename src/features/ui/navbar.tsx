@@ -12,12 +12,12 @@ interface LinkItem {
   name: string
   href: string
   icon?: React.ElementType
-  condition?: "authenticated" | "admin"
+  condition?: "unauthenticated" | "authenticated" | "admin"
 }
 
 const links: LinkItem[] = [
-  { name: "Home", href: "/", icon: HomeIcon },
-  { name: "Settings", href: "/settings", icon: UserRoundCog, condition: "admin" },
+  { name: "Home", href: "/", icon: HomeIcon, condition: "unauthenticated" },
+  { name: "Settings", href: "/settings", icon: UserRoundCog, condition: "authenticated" },
   { name: "Prompt Guide", href: "/prompt-guide", icon: BookMarked, condition: "authenticated" },
   { name: "What's new", href: "/whats-new", icon: CloudUpload, condition: "authenticated" },
   { name: "Factual Errors", href: "/hallucinations", icon: SpellCheck2, condition: "authenticated" },
@@ -26,7 +26,6 @@ const links: LinkItem[] = [
 
 const validateCondition = (link: LinkItem) => (session: Session | null) => {
   if (link.condition === "authenticated" && !session?.user) return false
-  if (link.condition === "admin" && !session?.user?.qchatAdmin) return false
   return true
 }
 
@@ -40,7 +39,7 @@ export const NavBar: React.FC = () => {
   return (
     <nav aria-label="Main navigation" className="m:h-[44px] border-b-4 border-accent bg-backgroundShade">
       <div className="container mx-auto hidden md:block">
-        <div dir="ltr" className="justify-right grid grid-cols-12 gap-2">
+        <div dir="ltr" className="justify-right grid grid-cols-12">
           {status === "loading"
             ? placeholders.map(link => (
                 <div key={link.name} className="relative col-span-2 flex items-center space-x-2">

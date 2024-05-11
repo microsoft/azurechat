@@ -7,11 +7,13 @@ interface Props {}
 
 const ChatLoading: FC<Props> = () => {
   return (
-    <div className="justify-left container mx-auto flex items-center space-x-4 py-3 pl-10">
-      <Typography variant="p" className="animate-pulse">
-        Crafting a response...
-      </Typography>
-      <Loader className="animate-pulse" size={12} />
+    <div className="container pt-2">
+      <div className="justify-left flex items-center rounded-md bg-information p-3">
+        <Typography variant="p" className="animate-pulse font-semibold text-white">
+          Crafting a response...
+        </Typography>
+        <Loader className="animate-pulse" size={12} />
+      </div>
     </div>
   )
 }

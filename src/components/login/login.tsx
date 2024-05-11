@@ -11,15 +11,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/fea
 export const LogIn: React.FC = () => {
   return (
     <div className="flex h-full items-center justify-center">
-      <Card className="flex min-w-[300px] flex-col gap-2">
-        <CardHeader className="gap-2">
-          <CardTitle className="flex gap-2 text-2xl">
-            <span className="text-siteTitle">{AI_NAME}</span>
-          </CardTitle>
+      <Card className="flex min-w-[300px] flex-col rounded-md">
+        <CardHeader className="gap-2 p-4">
+          <CardTitle className="flex gap-2 text-2xl text-siteTitle">{AI_NAME}</CardTitle>
           <CardDescription>Login in with your Queensland Government account</CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-4">
-          <Button onClick={async () => await signIn(signInProvider)}>Log in to {AI_NAME}</Button>
+        <CardContent className="grid justify-center p-4">
+          <Button onClick={async () => await signIn(signInProvider)} className="max-w-[200px]">
+            Log in to {AI_NAME}
+          </Button>
         </CardContent>
       </Card>
     </div>

@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 
+import Typography from "@/components/typography"
 import { showError } from "@/features/globals/global-message-store"
 import { Button } from "@/features/ui/button"
 import { Card } from "@/features/ui/card"
@@ -30,8 +31,12 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
     <Card className="flex h-full overflow-y-auto pt-8">
       <div className="container mx-auto max-w-5xl space-y-8">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Chat Reporting</h2>
-          <p className="text-muted-foreground">Your history for this month</p>
+          <Typography variant="h2" className="text-2xl font-bold tracking-tight">
+            Chat Reporting
+          </Typography>
+          <Typography variant="p" className="text-muted-foreground">
+            Your history for this month
+          </Typography>
         </div>
         <div className="flex items-center space-x-2">
           <Card className="flex-1">

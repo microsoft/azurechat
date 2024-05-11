@@ -9,51 +9,53 @@ import { UserComponent } from "@/features/ui/user-login-logout"
 
 const Sidebar: React.FC = () => {
   return (
-    <>
-      <div className="grid h-full grid-cols-12 items-center gap-2 md:grid-cols-6">
-        <div className="col-span-2 hidden border-r-2 border-accent pr-3 md:col-span-2 md:block md:scale-75">
-          <QgovSvg />
+    <div className="bg-altBackground">
+      <div className="container justify-center py-2">
+        <div className="grid grid-cols-12 items-center">
+          <div className="col-span-2 hidden justify-self-center border-r-2 border-r-accent md:col-span-3 md:block lg:col-span-2">
+            <QgovSvg className="hidden scale-75 md:block" />
+          </div>
+          <div className="col-span-5 px-4 font-meta">
+            <Typography variant="h1" className="font-bold tracking-wider text-siteTitle">
+              {AI_NAME}
+            </Typography>
+            <Typography variant="h2" className="hidden whitespace-nowrap text-textMuted md:block">
+              {AI_TAGLINE}
+            </Typography>
+          </div>
+          <div className="col-span-5"></div>
         </div>
-        <div className="font-meta font-nums col-span-4 m-0 flex flex-col p-0 text-xl font-bold leading-snug antialiased md:col-span-3">
-          <Typography variant="h1" className="tracking-wider text-siteTitle">
-            {AI_NAME}
-          </Typography>
-          <Typography variant="h2" className="hidden whitespace-nowrap pb-0 tracking-normal text-textMuted sm:block">
-            {AI_TAGLINE}
-          </Typography>
-        </div>
-        <div className="col-span-6 hidden md:col-span-1 md:block"></div>
       </div>
-    </>
+    </div>
   )
 }
 
 export const Header: React.FC = () => {
   return (
-    <header className="xs:h-[32px] flex w-full flex-col sm:h-[98px]">
-      <div className="h-[32px] bg-darkbackground text-white">
-        <div className="mx-auto flex h-full items-center justify-between px-8 py-2">
-          <div className="block scale-75 md:hidden lg:hidden">
-            <QgovMiniSvg />
-          </div>
-          <div className="container mx-auto hidden h-[32px] w-full grid-cols-3 items-center md:grid">
-            <Typography variant="span" aria-label={"Site domain:" + APP_VANITY_URL} className="col-span-2">
+    <header className="flex w-full flex-col bg-darkbackground text-white">
+      <div className="container flex h-14 items-center justify-between">
+        <div className="hidden md:grid md:w-full md:grid-cols-12 md:items-center">
+          <div className="col-span-2 justify-self-center">
+            <Typography variant="span" ariaLabel={"Site domain:" + APP_VANITY_URL}>
               {APP_VANITY_URL}
             </Typography>
-            <div className="justify-self-end">
-              <UserComponent />
-            </div>
           </div>
-          <div className="block h-[32px] grid-cols-4 flex-col py-2 md:hidden ">
+          <div className="col-span-8 justify-self-center"></div>
+          <div className="col-span-2 justify-self-end">
+            <UserComponent />
+          </div>
+        </div>
+        <div className="grid w-full grid-cols-12 md:hidden">
+          <div className="col-span-4 flex justify-self-center">
+            <QgovMiniSvg />
+          </div>
+          <div className="col-span-4 flex justify-self-center"></div>
+          <div className="col-span-4 flex justify-self-end">
             <MiniMenu />
           </div>
         </div>
       </div>
-      <div className="block bg-altBackground py-2 sm:h-[66px]">
-        <div className="container mx-auto flex items-center">
-          <Sidebar />
-        </div>
-      </div>
+      <Sidebar />
     </header>
   )
 }

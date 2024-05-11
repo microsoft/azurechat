@@ -1,13 +1,12 @@
 import { User } from "next-auth"
 import { AdapterUser } from "next-auth/adapters"
 
+import { hashValue } from "@/features/auth/helpers"
 import { migrateChatMessagesForCurrentUser } from "@/features/chat/chat-services/chat-message-service"
 import { type TenantRecord } from "@/features/tenant-management/models"
 import { CreateTenant, GetTenantById } from "@/features/tenant-management/tenant-service"
 import { UserRecord } from "@/features/user-management/models"
 import { CreateUser, GetUserByUpn, UpdateUser } from "@/features/user-management/user-service"
-
-import { hashValue } from "./helpers"
 
 export enum SignInErrorType {
   NotAuthorised = "notAuthorised",
@@ -30,7 +29,9 @@ export class UserSignInHandler {
     try {
       const groupAdmins = process.env.ADMIN_EMAIL_ADDRESS?.split(",").map(string => string.toLowerCase().trim())
       const tenantResponse = await GetTenantById(user.tenantId)
+      console.log("Tenant response:", tenantResponse)
       const userRecord = await getsertUser(userGroups, user)
+      console.log("User record:", userRecord)
 
       if (tenantResponse.status === "ERROR" || tenantResponse.status === "UNAUTHORIZED") {
         return {

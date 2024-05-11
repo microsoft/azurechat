@@ -22,7 +22,7 @@ export const UserComponent: React.FC = () => {
         <Button
           onClick={async () => await signOut({ callbackUrl: "/" })}
           className="flex items-center text-white"
-          aria-label="Log out"
+          ariaLabel="Log out"
           variant="link"
         >
           <LogOut className="mr-2 text-darkAltButton" size={20} aria-hidden="true" />
@@ -32,7 +32,7 @@ export const UserComponent: React.FC = () => {
         <Button
           onClick={async () => await signIn(signInProvider, { callbackUrl: "/" })}
           className="flex items-center text-white"
-          aria-label="Log in"
+          ariaLabel="Log in"
           variant="link"
         >
           <LogIn className="mr-2 text-darkAltButton" size={20} aria-hidden="true" />

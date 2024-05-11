@@ -77,19 +77,19 @@ const ChatInput: FC<Props> = () => {
   return (
     <form onSubmit={submit} className="absolute bottom-0 z-70 flex w-full items-center">
       <div className="container relative mx-auto flex items-center gap-2 py-2">
-        {fileChatVisible && <ChatFileSlider />}
         <Textarea
           id="chatMessage"
           name="chatMessage"
           value={input}
-          placeholder="Send a message"
+          placeholder="Send a message, or use the right hand menu to export your chat to document, add another document or more."
           aria-label="Send a message"
-          className="bg-background py-4 pr-[80px] shadow-sm"
+          className="bg-background py-4 pr-[40px]"
           onChange={onChange}
           onKeyDown={onKeyDown}
-          rows={6}
+          rows={4}
+          disabled={isLoading || fileState.isUploadingFile}
         />
-        <div className="absolute bottom-0 right-0 mb-4 mr-2 flex h-full items-end px-8">
+        <div className="absolute bottom-0 right-5 mb-4 mr-5 grid h-auto items-end">
           {!isDataChat || (isDataChat && fileChatVisible) ? (
             <>
               <Button
@@ -98,7 +98,7 @@ const ChatInput: FC<Props> = () => {
                 variant="ghost"
                 ref={buttonRef}
                 disabled={isLoading}
-                aria-label="Submit your message"
+                ariaLabel="Submit your message"
                 aria-busy={isLoading ? "true" : "false"}
               >
                 {isLoading || fileState.isUploadingFile ? (
@@ -107,6 +107,7 @@ const ChatInput: FC<Props> = () => {
                   <Send aria-hidden="true" size={16} />
                 )}
               </Button>
+              {fileChatVisible && <ChatFileSlider />}
               {!isLoading && !fileState.isUploadingFile && (
                 <ChatInputMenu onDocExport={exportDocument} messageCopy={messages} />
               )}

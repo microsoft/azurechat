@@ -53,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
               <Header />
               <NavBar />
-              <main className="size-full overflow-auto bg-altBackground">{children}</main>
+              <main className="grid size-full grid-cols-12 overflow-auto bg-pattern-bg bg-repeat">{children}</main>
               <Footer />
               <Toaster />
             </ThemeProvider>

@@ -1,4 +1,4 @@
-import { FileText } from "lucide-react"
+import { FilePlus } from "lucide-react"
 
 import { Button } from "@/features/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/features/ui/sheet"
@@ -10,8 +10,8 @@ export const ChatFileSlider = (): JSX.Element => {
     <div>
       <Sheet>
         <SheetTrigger asChild>
-          <Button size="icon" variant={"default"}>
-            <FileText size={16} />
+          <Button size="icon" variant={"ghost"}>
+            <FilePlus size={16} />
           </Button>
         </SheetTrigger>
         <SheetContent>

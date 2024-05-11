@@ -4,6 +4,7 @@ import { LogOut, UserCircle } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 import React, { ReactElement } from "react"
 
+import Typography from "@/components/typography"
 import { Avatar, AvatarImage } from "@/features/ui/avatar"
 import { Button } from "@/features/ui/button"
 import {
@@ -36,15 +37,21 @@ const UserProfile = (): ReactElement => {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{session?.user?.name ?? "Anonymous"}</p>
-            <p className="text-xs leading-none text-muted-foreground">{session?.user?.email ?? "No email provided"}</p>
-            <p className="text-xs leading-none text-muted-foreground">{session?.user?.qchatAdmin ? "Admin" : ""}</p>
+            <Typography variant="p" className="font-medium leading-none">
+              {session?.user?.name ?? "Anonymous"}
+            </Typography>
+            <Typography variant="p" className="leading-none text-muted-foreground">
+              {session?.user?.email ?? "No email provided"}
+            </Typography>
+            <Typography variant="p" className="leading-none text-muted-foreground">
+              {session?.user?.qchatAdmin ? "Admin" : ""}
+            </Typography>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={async () => await signOut({ callbackUrl: "/" })}>
           <LogOut className="mr-2 size-4" />
-          <span>Log out</span>
+          <Typography variant="span">Log out</Typography>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

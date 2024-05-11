@@ -2,7 +2,6 @@ import { redirect } from "next/navigation"
 
 import { LogIn } from "@/components/login/login"
 import { userSession } from "@/features/auth/helpers"
-import { Card } from "@/features/ui/card"
 
 export const dynamic = "force-dynamic"
 
@@ -12,8 +11,8 @@ export default async function Home(): Promise<JSX.Element> {
     redirect("/chat")
   }
   return (
-    <Card className="relative flex h-full flex-1 items-center justify-center overflow-hidden">
+    <div className="col-span-12 size-full">
       <LogIn />
-    </Card>
+    </div>
   )
 }

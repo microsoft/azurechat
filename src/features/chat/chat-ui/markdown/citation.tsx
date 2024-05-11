@@ -1,6 +1,8 @@
 "use client"
 import { FC } from "react"
 
+import Typography from "@/components/typography"
+
 import { CitationSlider } from "./citation-slider"
 
 interface Citation {
@@ -40,12 +42,14 @@ export const Citation: FC<Props> = (props: Props) => {
   )
 
   return (
-    <div className="mt-4 flex flex-col gap-2 rounded-md border p-4">
+    <div className="mt-2 flex flex-col gap-2 rounded-md bg-altBackgroundShade p-4">
       {Object.entries(citations).map(([name, items], index: number) => {
         return (
-          <div key={index} className="flex flex-col gap-2">
-            <div className="text-sm font-semibold">{name}</div>
-            <div className="flex gap-2">
+          <div key={index} className="grid grid-cols-3 items-center gap-2">
+            <Typography variant="span" className="font-semibold">
+              {name}
+            </Typography>
+            <div className="col-span-2 flex gap-2">
               {items.map((item, index: number) => {
                 return (
                   <div key={index}>

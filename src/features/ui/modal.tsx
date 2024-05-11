@@ -39,7 +39,7 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
             id={props.chatMessageId + "Feedback text id"}
             aria-label="Enter your feedback"
             placeholder="Please provide any additional details about the message or your feedback, our team will not reply directly but it will assist us in improving our service."
-            rows={6}
+            rows={4}
             className="w-full rounded border border-gray-300 bg-background p-4"
             value={props.feedbackReason}
             onChange={event => props.onFeedbackReasonChange(event.target.value)}
@@ -58,7 +58,7 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
           >
             Submit
           </Button>
-          <Button variant="secondary" onClick={props.onClose}>
+          <Button variant="destructive" onClick={props.onClose}>
             Close
           </Button>
         </div>

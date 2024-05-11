@@ -4,7 +4,7 @@ interface QgovSvgProps {
   className?: string
 }
 
-export const QgovSvg: React.FC<QgovSvgProps> = () => (
+export const QgovSvg: React.FC<QgovSvgProps> = props => (
   <svg
     width="170"
     height="56"
@@ -13,7 +13,7 @@ export const QgovSvg: React.FC<QgovSvgProps> = () => (
     xmlns="https://www.w3.org/2000/svg"
     role="img"
     aria-labelledby="QueenslandGovernmentLogo"
-    className="text-siteTitle"
+    className={"text-siteTitle " + props.className}
   >
     <title id="QueenslandGovernmentLogo">Queensland Government</title>
     <g clipPath="url(#clip0)">

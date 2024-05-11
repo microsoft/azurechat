@@ -4,6 +4,7 @@ import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
+import Typography from "@/components/typography"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 
 export function ThemeSwitch(): JSX.Element {
@@ -19,7 +20,13 @@ export function ThemeSwitch(): JSX.Element {
       <TabsList className="flex h-10 w-[70px] items-center justify-center gap-1">
         {isThemeLoading ? (
           <div className="flex size-full items-center justify-center">
-            <span className="flex size-[35px] items-center justify-center rounded-md opacity-50">...</span>
+            <Typography
+              variant="span"
+              className="flex size-[35px] items-center justify-center rounded-md opacity-50"
+              ariaLabel="Loading themes..."
+            >
+              ...
+            </Typography>
           </div>
         ) : (
           <>

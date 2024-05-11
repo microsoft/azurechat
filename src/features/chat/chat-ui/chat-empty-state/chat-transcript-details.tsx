@@ -1,6 +1,7 @@
 import * as Label from "@radix-ui/react-label"
 import React, { useState } from "react"
 
+import Typography from "@/components/typography"
 import { AssociateOffenderWithChatThread } from "@/features/chat/chat-services/chat-thread-service"
 import { Button } from "@/features/ui/button"
 
@@ -34,15 +35,17 @@ export const OffenderTranscriptForm = ({ chatThreadId }: OffenderTranscriptFormP
   return (
     <div className="bg-background p-5">
       {isIdSaved ? (
-        <div className="text-sm text-muted-foreground">Offender ID {offenderId} saved.</div>
+        <Typography variant="p" className=" text-muted-foreground">
+          Offender ID {offenderId} saved.
+        </Typography>
       ) : (
         <form onSubmit={handleSubmit}>
           <div className="flex grid-cols-3 flex-wrap items-center gap-[15px]">
-            <Label.Root htmlFor="offenderID" className="text-sm leading-[35px] text-muted-foreground">
+            <Label.Root htmlFor="offenderID" className="leading-[35px] text-muted-foreground">
               Offender&apos;s Identification Number:
             </Label.Root>
             <input
-              className="bg-inputBackground shadow-blackA6 inline-flex h-[35px] w-[200px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-sm leading-none text-muted-foreground shadow-[0_0_0_1px] outline-none selection:bg-accent selection:text-foreground focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="bg-inputBackground shadow-blackA6 inline-flex h-[35px] w-[200px] appearance-none items-center justify-center rounded-[4px] px-[10px] leading-none text-muted-foreground shadow-[0_0_0_1px] outline-none selection:bg-accent selection:text-foreground focus:ring-2 focus:ring-primary focus:ring-offset-2"
               type="text"
               id="offenderID"
               name="offenderID"
@@ -59,7 +62,7 @@ export const OffenderTranscriptForm = ({ chatThreadId }: OffenderTranscriptFormP
             </Button>
           </div>
           {message && (
-            <div aria-live="polite" className="text-sm text-muted-foreground">
+            <div aria-live="polite" className="text-muted-foreground">
               {message}
             </div>
           )}

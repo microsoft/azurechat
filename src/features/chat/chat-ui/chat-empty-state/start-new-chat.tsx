@@ -13,31 +13,35 @@ export const StartNewChat: FC<object> = () => {
   const router = useRouter()
   return (
     <section
-      className="container mx-auto grid size-full max-w-3xl grid-cols-3 items-center justify-center gap-9 bg-altBackground"
+      className="container mx-auto grid size-full max-w-3xl grid-cols-3 items-center justify-center gap-9"
       aria-labelledby="startChatTitle"
     >
-      <Card className="col-span-3 flex flex-col gap-5 bg-altBackgroundShade p-5">
+      <Card className="col-span-3 flex flex-col gap-5 rounded-md p-5">
         <Typography variant="h4" className="text-2xl text-siteTitle" id="startChatTitle">
           {AI_NAME}
           <br />
           {AI_TAGLINE}
         </Typography>
         <div className="flex flex-col gap-2">
-          <p>
+          <Typography variant="p">
             {AI_NAME}, your text-based virtual assistant, is equipped with cutting-edge Generative AI technology to
-            empower you.
-          </p>
-          <p>Let {AI_NAME} assist you in accomplishing remarkable outcomes.</p>
-          <p className="hidden lg:block">
-            Press the plus button below to get started or select one of your existing chats from the left-hand panel.
-          </p>
-          <p className="lg:hidden">Press the plus button below to get started.</p>
+            empower you. Let {AI_NAME} assist you in accomplishing remarkable outcomes.
+          </Typography>
         </div>
-        <div className="-mx-5 -mb-5 inline-flex items-center justify-center border-t bg-muted p-5">
-          <NewChat aria-label="Start a new chat" />
-          <Button onClick={() => router.push("/terms")} variant="link" className="text-foreground">
-            By starting a new chat you agree to the {AI_NAME} Terms and Conditions, click here to view them.
-          </Button>
+        <div className="-mx-5 -mb-5 grid grid-cols-3 items-center justify-center rounded-bl-md rounded-br-md bg-muted p-5">
+          <div>
+            <NewChat />
+          </div>
+          <div className="col-span-2">
+            <Button
+              onClick={() => router.push("/terms")}
+              variant="link"
+              className="text-sm text-foreground"
+              ariaLabel="Terms and Conditions"
+            >
+              By starting a chat you agree to the {AI_NAME} Terms and Conditions.
+            </Button>
+          </div>
         </div>
       </Card>
     </section>

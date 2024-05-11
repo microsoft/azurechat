@@ -17,11 +17,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   if (!session) return redirect("/")
 
   return (
-    <div className="grid h-full grid-cols-6 overflow-hidden bg-card/100">
-      <ChatMenuContainer>
-        <ChatMenu />
-      </ChatMenuContainer>
-      {children}
-    </div>
+    <>
+      <div className="col-span-3 size-full overflow-hidden">
+        <ChatMenuContainer>
+          <ChatMenu />
+        </ChatMenuContainer>
+      </div>
+      <div className="col-span-9 size-full overflow-hidden">{children}</div>
+    </>
   )
 }

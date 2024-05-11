@@ -6,7 +6,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const Menu = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("flex w-80 flex-col", className)} {...props} />
+  <div ref={ref} className={cn("size-full overflow-auto bg-altBackground p-2", className)} {...props} />
 ))
 
 Menu.displayName = "Menu"
@@ -36,8 +36,8 @@ const MenuItem: React.FC<MenuItemProps> = ({ href, isSelected, children, classNa
       href={href}
       className={cn(
         className,
-        "flex border-separate items-center gap-2 rounded-md border-2 border-transparent p-2 text-sm font-medium transition-colors hover:border-altButtonHover hover:bg-altBackgroundShade",
-        isSelected ? "border-altBorder bg-altBackgroundShade" : ""
+        "flex border-separate items-center gap-2 rounded-md border-2 border-transparent p-2 text-base font-medium transition-colors hover:border-altButtonHover hover:bg-backgroundShade",
+        isSelected ? "border-altBorder bg-backgroundShade" : ""
       )}
       {...props}
     >

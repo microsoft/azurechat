@@ -6,7 +6,7 @@ import { SettingsMenuItems } from "./settings-menu-items"
 
 export const SettingsMenu: React.FC = () => {
   return (
-    <Menu className="col-span-1 hidden size-full overflow-auto bg-background p-2 sm:block md:block">
+    <Menu className="col-span-1 size-full overflow-auto bg-background p-2">
       <MenuHeader className="justify-end" />
       <MenuContent>
         <SettingsMenuItems />

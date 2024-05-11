@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic"
 export default function Home(): JSX.Element {
   return (
     <Card>
-      <div className="flex h-full flex-col justify-between rounded-lg bg-altBackground text-center text-foreground shadow-sm">
+      <div className="flex h-full flex-col justify-between rounded-lg bg-altBackground text-center text-foreground">
         <CardHeader>
           <CardTitle className="my-2 font-bold">Coming Soon</CardTitle>
         </CardHeader>

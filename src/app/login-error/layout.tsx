@@ -8,7 +8,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <>
-      <div className="flex size-full items-center justify-center bg-altBackground">{children}</div>
+      <div className="col-span-12 size-full">{children}</div>
     </>
   )
 }

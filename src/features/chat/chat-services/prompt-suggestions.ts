@@ -9,7 +9,7 @@ export const getPromptSuggestions = async (input: string): Promise<string[]> => 
       messages: [
         {
           role: "system",
-          content: `- create a succinct prompt suggestion, to complete the chat inside double quotes ""  ${input} "" without repeating the chat.
+          content: `- create a succinct prompt suggestion, to complete the chat inside double quotes "" ${input} "" without repeating the chat.
                 - this prompt will complete the user input with the most relevant words.`,
         },
       ],

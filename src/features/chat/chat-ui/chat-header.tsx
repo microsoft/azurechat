@@ -1,24 +1,21 @@
 import { FC } from "react"
 
-import { MiniNewChat } from "@/features/chat/chat-menu/mini-new-chat"
-
 import { useChatContext } from "./chat-context"
+import { ChatFilesDisplay } from "./chat-file/chat-file-list"
 import { ChatSelectedOptions } from "./chat-header-display/chat-selected-options"
 
 interface Prop {}
 
 export const ChatHeader: FC<Prop> = () => {
   const { chatBody } = useChatContext()
+  const files = chatBody.chatOverFileName.split(", ")
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex items-start gap-2">
       <ChatSelectedOptions />
-      <div className="flex h-2 gap-2">
-        <p className="items-center text-sm" tabIndex={0}>
-          {chatBody.chatOverFileName}
-        </p>
+      <div className="hidden sm:block">
+        {chatBody.chatOverFileName.length != 0 && <ChatFilesDisplay files={files} />}
       </div>
-      <MiniNewChat />
     </div>
   )
 }

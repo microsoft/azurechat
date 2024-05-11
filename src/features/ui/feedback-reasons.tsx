@@ -21,7 +21,7 @@ const FeedbackButtons: React.FC<FeedbackButtonsProps> = ({ selectedType, onFeedb
           )
         }
       >
-        <TabsList className="grid h-12 w-full grid-cols-3 items-stretch">
+        <TabsList className="grid size-full grid-cols-3 items-stretch">
           <TabsTrigger
             value={FeedbackType.HarmfulUnsafe}
             className="flex grow items-center justify-center gap-2 px-3 py-2"

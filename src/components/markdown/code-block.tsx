@@ -48,7 +48,7 @@ export const CodeBlock: FC<Props> = memo(({ language, children }): JSX.Element =
       </Prism>
       <Button
         onClick={handleCopy}
-        className="absolute right-2 top-2 h-7 p-1 text-sm focus:bg-accent focus:text-link"
+        className="absolute right-2 top-2 h-7 p-1 text-base focus:bg-accent focus:text-link"
         title="Copy code"
       >
         <ClipboardIcon size={14} />

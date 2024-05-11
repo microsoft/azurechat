@@ -8,8 +8,6 @@ const requireAuth: string[] = [
   "/api",
   "/chat",
   "/hallucinations",
-  "/persona",
-  "/prompt",
   "/prompt-guide",
   "/reporting",
   "/settings",

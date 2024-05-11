@@ -35,8 +35,8 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   const documentsWithTranscriptions = documents.filter(document => document.contents)
 
   return (
-    <div className="h-full overflow-y-auto bg-altBackground" ref={scrollRef}>
-      <div className="flex h-auto justify-center p-4">
+    <div className="h-full overflow-y-auto" ref={scrollRef}>
+      <div className="flex h-auto justify-center p-2">
         <ChatHeader />
       </div>
 
@@ -44,7 +44,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
         <SectionTabs selectedTab={selectedTab} onSelectedTabChange={setSelectedTab} />
       ) : undefined}
 
-      <div className="flex flex-1 flex-col justify-end pb-[130px]">
+      <div className="flex flex-1 flex-col justify-end pb-[140px]">
         {selectedTab === "chat"
           ? messages.map((message, index) => (
               <ChatRow
@@ -73,8 +73,12 @@ interface SectionTabsProps {
 }
 
 const SectionTabs: React.FC<SectionTabsProps> = ({ selectedTab, onSelectedTabChange }) => (
-  <Tabs defaultValue={selectedTab} onValueChange={onSelectedTabChange as (x: string) => void} className="container">
-    <TabsList aria-label="Conversation Type" className="grid h-12 w-full grid-cols-2 items-stretch">
+  <Tabs
+    defaultValue={selectedTab}
+    onValueChange={onSelectedTabChange as (x: string) => void}
+    className="container pb-2"
+  >
+    <TabsList aria-label="Conversation Type" className="grid size-full grid-cols-2 items-stretch">
       <TabsTrigger value="chat" className="flex gap-2" role="tab" aria-selected={true}>
         Chat
       </TabsTrigger>

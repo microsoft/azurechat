@@ -13,7 +13,7 @@ export const ChatUI: FC<Prop> = () => {
   const { id, messages, chatThreadLocked } = useChatContext()
 
   return (
-    <div className="relative col-span-6 h-full flex-1 overflow-hidden bg-altBackground shadow-md sm:text-lg md:col-span-5 lg:col-span-4 lg:text-xl xl:col-span-5">
+    <div className="relative col-span-9 h-full flex-1 bg-pattern-bg shadow-md sm:text-base lg:text-lg">
       {messages.length !== 0 ? <ChatMessageContainer chatThreadId={id} /> : <ChatMessageEmptyState />}
       {!chatThreadLocked && <ChatInput />}
     </div>

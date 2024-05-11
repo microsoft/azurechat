@@ -32,6 +32,8 @@ stages:
           - script: npm run build
             displayName: "Build the app"
             workingDirectory: $(Build.SourcesDirectory)/src
+            env:
+              NEXT_TELEMETRY_DISABLED: "1"
 
   - stage: PublishArtifact
     displayName: "📦 - Publish Artifact"

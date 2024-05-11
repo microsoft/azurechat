@@ -10,6 +10,7 @@ import React from "react"
 
 import { signInProvider } from "@/app-global"
 
+import Typography from "@/components/typography"
 import { cn } from "@/lib/utils"
 
 import { useMiniMenuContext } from "./mini-menu-context"
@@ -24,7 +25,7 @@ interface MiniMenuItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
 
 const MiniMenuItem: React.FC<MiniMenuItemProps> = ({ href, icon: Icon, name, ariaLabel, closeMenu, ...props }) => {
   const menuItemClass = cn(
-    "cursor-pointer px-6 py-2 text-sm hover:bg-accent hover:text-accent-foreground flex items-center whitespace-nowrap",
+    "cursor-pointer px-6 py-2 hover:bg-accent hover:text-accent-foreground flex items-center whitespace-nowrap",
     props.className
   )
 
@@ -78,7 +79,10 @@ export const MiniMenu: React.FC = () => {
         {isMenuOpen ? (
           <X className="items-center hover:bg-link" aria-hidden="true" />
         ) : (
-          <div className="pl-2 text-darkAltButton" aria-hidden="true" />
+          <div
+            className="hover:text-darkAltButtonHover rounded-md pl-2 text-darkAltButton hover:bg-buttonHover"
+            aria-hidden="true"
+          />
         )}
         Menu
       </div>
@@ -95,9 +99,9 @@ export const MiniMenu: React.FC = () => {
               <X />
             </div>
           </div>
-          <h2 id="menu-heading" className="sr-only">
+          <Typography variant="h2" id="menu-heading" className="sr-only">
             Menu
-          </h2>
+          </Typography>
           <div className="mt-16 p-2">
             {menuItems.map(item => (
               <MiniMenuItem key={item.name} closeMenu={handleMenuClose} {...item} />
@@ -107,7 +111,7 @@ export const MiniMenu: React.FC = () => {
                 toggleTheme()
                 handleMenuClose()
               }}
-              className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 text-sm text-link hover:bg-accent hover:text-accent-foreground"
+              className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 text-link hover:bg-accent hover:text-accent-foreground"
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               role="button"
               tabIndex={0}
@@ -121,7 +125,7 @@ export const MiniMenu: React.FC = () => {
                   await signOut({ callbackUrl: "/" })
                   handleMenuClose()
                 }}
-                className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 hover:bg-accent hover:text-accent-foreground"
                 aria-label="Logout"
                 role="button"
                 tabIndex={0}
@@ -135,7 +139,7 @@ export const MiniMenu: React.FC = () => {
                   await signIn(signInProvider)
                   handleMenuClose()
                 }}
-                className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 hover:bg-accent hover:text-accent-foreground"
                 aria-label="Login"
                 role="button"
                 tabIndex={0}

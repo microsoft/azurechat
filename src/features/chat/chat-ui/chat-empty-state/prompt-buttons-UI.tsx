@@ -27,7 +27,7 @@ export const PromptButton: React.FC<Prop> = ({ onPromptSelected, selectedPrompt 
 
   return (
     <div className="space-container">
-      <ul aria-live="polite" className="mb-2 w-full ">
+      <ul aria-live="polite" className="mb-2 w-full">
         {prompts.map((prompt, index) => (
           <li key={index} className="mb-2 rounded bg-background text-foreground">
             <Button

@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react"
 import React, { useEffect, useState } from "react"
 import { FC } from "react"
 
+import Typography from "@/components/typography"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatType } from "@/features/chat/models"
 import { AI_NAME } from "@/features/theme/theme-config"
@@ -39,7 +40,7 @@ export const ChatTypeSelector: FC<Prop> = props => {
                 onChatTypeChange(value as ChatType)
               }}
             >
-              <TabsList aria-label="Conversation Type" className="grid h-12 w-full grid-cols-3 items-stretch">
+              <TabsList aria-label="Conversation Type" className="grid size-full grid-cols-3 items-stretch">
                 <TabsTrigger
                   value="simple"
                   className="flex gap-2"
@@ -48,7 +49,7 @@ export const ChatTypeSelector: FC<Prop> = props => {
                   aria-selected={chatBody.chatType === "simple"}
                   aria-disabled={props.disable ? "true" : undefined}
                 >
-                  <MessageCircle size={20} aria-hidden="true" /> General
+                  <MessageCircle size={16} aria-hidden="true" /> General
                 </TabsTrigger>
                 <TabsTrigger
                   value="data"
@@ -58,7 +59,7 @@ export const ChatTypeSelector: FC<Prop> = props => {
                   aria-selected={chatBody.chatType === "data"}
                   aria-disabled={props.disable ? "true" : undefined}
                 >
-                  <FileText size={20} aria-hidden="true" /> File
+                  <FileText size={16} aria-hidden="true" /> File
                 </TabsTrigger>
                 <TabsTrigger
                   value="audio"
@@ -68,29 +69,29 @@ export const ChatTypeSelector: FC<Prop> = props => {
                   aria-selected={chatBody.chatType === "audio"}
                   aria-disabled={!isAllowedTenant || props.disable ? "true" : undefined}
                 >
-                  <AudioLines size={20} aria-hidden="true" /> Transcribe
+                  <AudioLines size={16} aria-hidden="true" /> Transcribe
                 </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
         </Tooltip.Trigger>
-        <Tooltip.Content side="top" className="rounded-md bg-primary-foreground p-2 text-sm text-foreground shadow-lg">
-          <p>
+        <Tooltip.Content side="top" className="rounded-md bg-primary-foreground p-4 text-foreground shadow-lg">
+          <Typography variant="p">
             <strong>General</strong> - chats are turn by turn conversations with the {AI_NAME} Assistant.
-          </p>
-          <p>
+            <br />
             <strong>File</strong> - Upload PDF files to {AI_NAME} for questions or task completion based on it.
-          </p>
-          {isAllowedTenant && (
-            <p>
-              <strong>Transcription</strong> - Available for authorised agencies.
-            </p>
-          )}
-          {!isAllowedTenant && (
-            <p>
-              <strong>Transcription</strong> - is restricted to authorised agencies.
-            </p>
-          )}
+            <br />
+            {isAllowedTenant && (
+              <>
+                <strong>Transcription</strong> - Available for authorised agencies.
+              </>
+            )}
+            {!isAllowedTenant && (
+              <>
+                <strong>Transcription</strong> - is restricted to authorised agencies.
+              </>
+            )}
+          </Typography>
           <Tooltip.Arrow className="fill-primary-foreground" />
         </Tooltip.Content>
       </Tooltip.Root>
