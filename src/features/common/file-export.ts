@@ -67,12 +67,12 @@ const customStyles: IStylesOptions = {
       next: "Normal",
       quickFormat: true,
       run: {
-        font: "Aptos", // Monospaced font for code
-        size: 20, // Smaller size for code blocks
+        font: "Aptos",
+        size: 20,
         color: "006633",
       },
       paragraph: {
-        spacing: { after: 120 }, // Adjust spacing to your liking
+        spacing: { after: 120 },
       },
     },
     {
@@ -231,7 +231,7 @@ const createParagraphFromHtml = (html: string): Paragraph[] => {
             paragraphs.push(
               new Paragraph({
                 children: [new TextRun({ text: textContentTrimmed, bold: true })],
-                indent: { left: 720 }, // This indentation might need adjustment based on your document's styling needs
+                indent: { left: 720 },
               })
             )
             break
@@ -252,7 +252,7 @@ const createParagraphFromHtml = (html: string): Paragraph[] => {
     }
   }
 
-  Array.from(doc.body.children).forEach(processNode) // Use children for direct child elements
+  Array.from(doc.body.children).forEach(processNode)
   return paragraphs
 }
 

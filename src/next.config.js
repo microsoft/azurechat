@@ -78,7 +78,6 @@ const nextConfig = {
   },
   experimental: {
     instrumentationHook: true,
-    serverComponentsExternalPackages: ["@azure/storage-blob"],
     serverActions: {
       allowedOrigins: ["*.ai.qld.gov.au", "qggptprodopenai.azurewebsites.net", "qggptdevopenai.azurewebsites.net"],
     },
