@@ -24,7 +24,7 @@ const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value:
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src *.typekit.net 'self' 'unsafe-inline'; frame-ancestors 'self'; img-src 'self' https://www.google.com https://www.google.com.au data:; font-src *.typekit.net 'self' data:; connect-src 'self'  https://js.monitor.azure.com https://qdap-dev-apim.azure-api.net https://qdap-prd-apim.developer.azure-api.net *.ai.qld.gov.au https://australiaeast-1.in.applicationinsights.azure.com https://australiaeast.livediagnostics.monitor.azure.com https://analytics.google.com https://www.google-analytics.com https://stats.g.doubleclick.net; media-src 'self'; frame-src 'self'; object-src 'none'; upgrade-insecure-requests",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src *.typekit.net 'self' 'unsafe-inline'; frame-ancestors 'self'; img-src 'self' https://www.google.com https://www.google.com.au data:; font-src *.typekit.net 'self' data:; connect-src 'self'  https://js.monitor.azure.com https://qdap-dev-apim.azure-api.net https://qdap-prd-apim.developer.azure-api.net *.ai.qld.gov.au *.applicationinsights.azure.com https://australiaeast.livediagnostics.monitor.azure.com https://analytics.google.com https://www.google-analytics.com https://stats.g.doubleclick.net; media-src 'self'; frame-src 'self'; object-src 'none'; upgrade-insecure-requests",
   },
   {
     key: "Referrer-Policy",
