@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic"
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
-  const isProd = process.env.NEXT_PUBLIC_ENV === "production"
+  const isProd = process.env.NODE_ENV === "production"
 
   return (
     <html lang="en-AU" suppressHydrationWarning className="size-full overflow-hidden text-sm">
@@ -47,7 +47,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
         <link rel="stylesheet" href="https://use.typekit.net/fse2tsb.css" />
       </head>
       <body className={cn(notoSans.className, "flex size-full min-w-[400px] flex-col bg-background")}>
-        {isProd && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTAG || "notset"} />}
         <GlobalConfigProvider>
           <Providers>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
@@ -60,6 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
           </Providers>
         </GlobalConfigProvider>
       </body>
+      {isProd && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTAG || "notset"} />}
     </html>
   )
 }
