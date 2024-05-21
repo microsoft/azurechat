@@ -64,10 +64,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
-  compress: false,
-  compiler: {
-    removeConsole: process.env.NODE_ENV !== "development",
-  },
   logging: {
     fetches: {
       fullUrl: true,
