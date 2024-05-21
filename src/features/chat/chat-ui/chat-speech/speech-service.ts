@@ -26,7 +26,7 @@ export const GetSpeechToken = async (): Promise<SpeechTokenResponse> => {
     }
   }
 
-  const response = await fetch(`${process.env.APIM_BASE}/sts/v1.0/issueToken`, {
+  const response = await fetch(`${process.env.APIM_BASE}/sts/v2.0/issueToken`, {
     method: "POST",
     headers: {
       "api-key": process.env.APIM_KEY!,

@@ -1,15 +1,19 @@
 import { Container, CosmosClient, PartitionKeyDefinitionVersion, PartitionKeyKind } from "@azure/cosmos"
 
+import { GetCosmosAccessToken } from "./cosmos-auth"
+
 let _cosmosClient: CosmosClient | null = null
-const CosmosInstance = (): CosmosClient => {
+const CosmosInstance = (authToken: string): CosmosClient => {
   if (_cosmosClient) return _cosmosClient
 
   const endpoint = process.env.APIM_BASE
-  const key = process.env.AZURE_COSMOSDB_KEY
-  const defaultHeaders = { "api-key": process.env.APIM_KEY || "" }
-  if (!endpoint || !key) throw new Error("Azure Cosmos DB is not configured. Please configure it in the .env file.")
+  const defaultHeaders = {
+    "api-key": process.env.APIM_KEY || "",
+    Authorization: `type=aad&ver=1.0&sig=${authToken}`,
+  }
+  if (!endpoint) throw new Error("Azure Cosmos DB is not configured. Please configure it in the .env file.")
 
-  _cosmosClient = new CosmosClient({ endpoint, key, defaultHeaders })
+  _cosmosClient = new CosmosClient({ endpoint: endpoint, defaultHeaders: defaultHeaders })
   return _cosmosClient
 }
 
@@ -20,7 +24,8 @@ export const HistoryContainer = async (): Promise<Container> => {
   const dbName = process.env.AZURE_COSMOSDB_DB_NAME || "localdev"
   const containerName = process.env.AZURE_COSMOSDB_CHAT_CONTAINER_NAME || "history"
 
-  const client = CosmosInstance()
+  const authToken = await GetCosmosAccessToken()
+  const client = CosmosInstance(authToken)
   const { database } = await client.databases.createIfNotExists({ id: dbName })
   const { container } = await database.containers.createIfNotExists({
     id: containerName,
@@ -42,7 +47,8 @@ export const UserContainer = async (): Promise<Container> => {
   const dbName = process.env.AZURE_COSMOSDB_DB_NAME || "localdev"
   const containerName = process.env.AZURE_COSMOSDB_USER_CONTAINER_NAME || "users"
 
-  const client = CosmosInstance()
+  const authToken = await GetCosmosAccessToken()
+  const client = CosmosInstance(authToken)
   const { database } = await client.databases.createIfNotExists({ id: dbName })
   const { container } = await database.containers.createIfNotExists({
     id: containerName,
@@ -64,7 +70,8 @@ export const TenantContainer = async (): Promise<Container> => {
   const dbName = process.env.AZURE_COSMOSDB_DB_NAME || "localdev"
   const containerName = process.env.AZURE_COSMOSDB_TENANT_CONTAINER_NAME || "tenants"
 
-  const client = CosmosInstance()
+  const authToken = await GetCosmosAccessToken()
+  const client = CosmosInstance(authToken)
   const { database } = await client.databases.createIfNotExists({ id: dbName })
   const { container } = await database.containers.createIfNotExists({
     id: containerName,
