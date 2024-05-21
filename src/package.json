@@ -85,7 +85,7 @@
     "@testing-library/react": "^15.0.2",
     "@types/estree": "^1.0.5",
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.12.11",
     "@types/prismjs": "^1.26.3",
     "@types/react": "^18.2.78",
     "@types/react-dom": "^18.2.25",

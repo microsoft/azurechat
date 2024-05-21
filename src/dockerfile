@@ -9,12 +9,12 @@ WORKDIR /app
 
 FROM base AS deps
 
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+COPY package.json package-lock.json* ./
 
-RUN if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
+RUN if [ -f package-lock.json ]; then \
+  npm ci; \
+  else \
+  echo "Lockfile not found." && exit 1; \
   fi
 
 FROM base AS builder
@@ -34,6 +34,7 @@ ENV NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=$APPLICATION_INSIGHTS
 ENV NEXT_PUBLIC_FEATURE_TRANSCRIBE_TENANTS=$FEATURE_TRANSCRIBE_TENANTS
 ENV NEXT_PUBLIC_GTAG=$GTAG
 ENV NEXT_PUBLIC_SYSTEM_PROMPT=$SYSTEM_PROMPT
+ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build
@@ -47,7 +48,6 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs && \
   adduser --system --uid 1001 nextjs
 
-# Copy the build output and static files from the builder stage
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
