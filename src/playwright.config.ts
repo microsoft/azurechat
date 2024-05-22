@@ -2,7 +2,7 @@ import { loadEnvConfig } from "@next/env"
 import { defineConfig, devices } from "@playwright/test"
 
 const config = defineConfig({
-  testDir: "./tests",
+  testDir: "./tests/e2e",
   testMatch: "**/*.test.ts",
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

@@ -2,34 +2,26 @@ import createClient, { ErrorResponseOutput, TranslatedTextItemOutput } from "@az
 
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 
-export const extractCitations = (context: string): { text: string; citations: string[] } => {
-  const citationRegex = /({% citation items=.*?)%}/g
-  const citations: string[] = []
-  let cleanText = context.replace(citationRegex, (match, citation) => {
-    citations.push(citation.trim())
-    return match
-  })
-  cleanText = cleanText.replace(/{% citation items=.*?%}/g, "").trim()
-  return { text: cleanText, citations }
-}
-
 export async function translator(input: string): ServerActionResponseAsync<string> {
-  const codeBlockPattern = /(```[\s\S]*?```)/g
-  const codeBlocks: string[] = []
-  let i = 0
-
-  const processedText = input.replace(codeBlockPattern, match => {
-    codeBlocks.push(match)
-    return `__codeblock_${i++}__`
-  })
-
   try {
-    const translatedTexts = await translateFunction([{ text: processedText.toLowerCase() }], "en-GB", "en-US")
-    let result = translatedTexts.length <= 0 ? processedText : revertCase(processedText, translatedTexts[0])
-
-    codeBlocks.forEach((codeBlock, index) => {
-      result = result.replace(`__codeblock_${index}__`, codeBlock)
+    // Extract code blocks from the input text
+    const codeBlocks: string[] = []
+    const processedText = input.replace(/(```[\s\S]*?```)/g, match => {
+      codeBlocks.push(match)
+      return `__codeblock_${codeBlocks.length - 1}__`
     })
+
+    // Translate the text
+    const translatedTexts = await translateFunction([{ text: processedText.toLowerCase() }], "en-GB", "en-US")
+
+    // Revert the case of the translated text
+    const revertedText = translatedTexts.length <= 0 ? processedText : revertCase(processedText, translatedTexts[0])
+
+    // Replace the code blocks back to the original text
+    const result = codeBlocks.reduce(
+      (acc, codeBlock, index) => acc.replace(`__codeblock_${index}__`, `${codeBlock}`),
+      revertedText
+    )
 
     return { status: "OK", response: result }
   } catch (error) {
@@ -68,18 +60,38 @@ async function translateFunction(
   throw new Error("Translation API returned an error response.")
 }
 
-function revertCase(originalText: string, translatedText: string): string {
-  const originalWords = originalText.split(" ")
-  const translatedWords = translatedText.split(" ")
+export function revertCase(originalText: string, translatedText: string): string {
+  const originalWords = originalText.split(/\b/)
+  const translatedWords = translatedText.split(/\b/)
+  let result = ""
+  let wordIndex = 0
 
-  return originalWords
-    .map((originalWord, i) => {
-      const translatedWord = translatedWords[i] || ""
-      return [...translatedWord]
-        .map((char, index) =>
-          index < originalWord.length && originalWord.charAt(index).match(/[A-Z]/) ? char.toUpperCase() : char
-        )
-        .join("")
-    })
-    .join(" ")
+  while (wordIndex < translatedWords.length) {
+    const originalWord = originalWords[wordIndex] || ""
+    const translatedWord = translatedWords[wordIndex]
+    wordIndex++
+
+    const isUpperWord = /^[A-Z]*$/.test(originalWord)
+    if (isUpperWord) {
+      result += translatedWord.toUpperCase()
+      continue
+    }
+
+    let word = ""
+    for (let index = 0; index < translatedWord.length; index++) {
+      if (index >= originalWord.length) {
+        word += translatedWord.substring(index)
+        continue
+      }
+
+      const originalChar = originalWord.charAt(index)
+      const translatedChar = translatedWord[index]
+
+      if (!/[A-Z]|[a-z]/.test(originalChar)) word += originalChar
+      else if (/[A-Z]/.test(originalChar)) word += translatedChar.toUpperCase()
+      else word += translatedChar
+    }
+    result += word
+  }
+  return result
 }
