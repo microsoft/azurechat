@@ -40,7 +40,7 @@ export const dynamic = "force-dynamic"
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   const isProd = process.env.NODE_ENV === "production"
-
+  const googleAnalyticsId = process.env.NEXT_PUBLIC_GTAG
   return (
     <html lang="en-AU" suppressHydrationWarning className="size-full overflow-hidden text-sm">
       <head>
@@ -59,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
           </Providers>
         </GlobalConfigProvider>
       </body>
-      {isProd && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GTAG || "notset"} />}
+      {isProd && googleAnalyticsId && <GoogleAnalytics gaId={googleAnalyticsId} />}{" "}
     </html>
   )
 }
