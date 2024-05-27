@@ -33,7 +33,7 @@ const configureIdentityProvider = (): Provider[] => {
             client_id: process.env.AZURE_AD_CLIENT_ID,
             redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/azure-ad",
             response_type: "code",
-            scope: "openid profile email User.Read offline_access",
+            scope: "openid profile email User.Read",
           },
         },
         token: {
