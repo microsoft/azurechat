@@ -87,59 +87,78 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
     const temp = tenant?.preferences.contextPrompt || ""
     setContextPrompt(newContextPrompt)
 
-    const response = await fetch("/api/tenant/details", {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contextPrompt: newContextPrompt,
-      }),
-    })
+    try {
+      const response = await fetch("/api/tenant/details", {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contextPrompt: newContextPrompt,
+        }),
+      })
 
-    const data: ErrorResponse = await parseJSON(response)
+      const data: ErrorResponse = await parseJSON(response)
 
-    if (!response.ok) {
-      showError(extractErrorMessage(data), logError)
+      if (!response.ok) {
+        showError(extractErrorMessage(data), logError)
+        setContextPrompt(temp)
+        setServerErrors({ ...serverErrors, contextPrompt: true })
+      } else {
+        showSuccess({ title: "Success", description: "Tenant Context prompt updated successfully!" }, logEvent)
+        try {
+          const res = await fetchDetails()
+          setTenant(res)
+        } catch (error) {
+          logError(new Error("Error fetching details"), { error })
+        }
+        ;(e.target as HTMLFormElement)?.reset()
+      }
+    } catch (error) {
+      logError(new Error("Error submitting context prompt"), { error })
+      showError("An error occurred while updating the context prompt. Please try again later.", logError)
       setContextPrompt(temp)
       setServerErrors({ ...serverErrors, contextPrompt: true })
-    } else {
-      showSuccess({ title: "Success", description: "Tenant Context prompt updated successfully!" }, logEvent)
-      await fetchDetails().then(res => setTenant(res))
-      ;(e.target as HTMLFormElement)?.reset()
+    } finally {
+      setIsSubmittingContextPrompt(false)
     }
-
-    setIsSubmittingContextPrompt(false)
   }
 
   const handleClearContextPrompt = async (): Promise<void> => {
     setIsSubmittingContextPrompt(true)
     setServerErrors({ ...serverErrors, contextPrompt: false })
 
-    const response = await fetch("/api/tenant/details", {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contextPrompt: "",
-      }),
-    })
+    try {
+      const response = await fetch("/api/tenant/details", {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contextPrompt: "",
+        }),
+      })
 
-    const data: ErrorResponse = await parseJSON(response)
+      const data: ErrorResponse = await parseJSON(response)
 
-    if (!response.ok) {
-      showError(extractErrorMessage(data), logError)
+      if (!response.ok) {
+        showError(extractErrorMessage(data), logError)
+        setServerErrors({ ...serverErrors, contextPrompt: true })
+      } else {
+        showSuccess({ title: "Success", description: "Context prompt cleared successfully!" }, logEvent)
+        const res = await fetchDetails()
+        setTenant(res)
+        setContextPrompt("")
+      }
+    } catch (error) {
+      logError(new Error("Error clearing context prompt"), { error })
+      showError("An error occurred while clearing the context prompt. Please try again later.", logError)
       setServerErrors({ ...serverErrors, contextPrompt: true })
-    } else {
-      showSuccess({ title: "Success", description: "Context prompt cleared successfully!" }, logEvent)
-      await fetchDetails().then(res => setTenant(res))
-      setContextPrompt("")
+    } finally {
+      setIsSubmittingContextPrompt(false)
     }
-
-    setIsSubmittingContextPrompt(false)
   }
 
   const handleValidateAndSubmitGroups = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -149,92 +168,103 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
     setIsSubmittingGroups(true)
     setServerErrors({ ...serverErrors, groups: false })
 
-    // Call the validation API
-    const validationResponse = await fetch("/api/tenant/groups", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        groupGuids: newGroupGuids.split(",").map(guid => guid.trim()),
-      }),
-    })
+    try {
+      const validationResponse = await fetch("/api/tenant/groups", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          groupGuids: newGroupGuids.split(",").map(guid => guid.trim()),
+        }),
+      })
 
-    const validationData: { guid: string; name: string | null; isValid: boolean }[] | ErrorResponse =
-      await parseJSON(validationResponse)
+      const validationData: { guid: string; name: string | null; isValid: boolean }[] | ErrorResponse =
+        await parseJSON(validationResponse)
 
-    if (!validationResponse.ok) {
-      const errorMsg = extractErrorMessage(validationData as ErrorResponse)
-      showError(errorMsg, logError)
+      if (!validationResponse.ok) {
+        const errorMsg = extractErrorMessage(validationData as ErrorResponse)
+        showError(errorMsg, logError)
+        setServerErrors({ ...serverErrors, groups: true })
+        setIsSubmittingGroups(false)
+        return
+      }
+
+      const invalidGroups = (validationData as { guid: string; name: string | null; isValid: boolean }[]).filter(
+        group => !group.isValid
+      )
+      if (invalidGroups.length > 0) {
+        showError(`Invalid groups: ${invalidGroups.map(group => group.guid).join(", ")}`, logError)
+        setServerErrors({ ...serverErrors, groups: true })
+        setIsSubmittingGroups(false)
+        return
+      }
+
+      const response = await fetch("/api/tenant/details", {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          groups: newGroupGuids.split(",").map(guid => guid.trim()),
+        }),
+      })
+
+      const data: ErrorResponse = await parseJSON(response)
+
+      if (!response.ok) {
+        showError(extractErrorMessage(data), logError)
+        setServerErrors({ ...serverErrors, groups: true })
+      } else {
+        showSuccess({ title: "Success", description: "Groups updated successfully!" }, logEvent)
+        const res = await fetchDetails()
+        setTenant(res)
+        ;(e.target as HTMLFormElement)?.reset()
+      }
+    } catch (error) {
+      logError(new Error("Error validating and submitting groups"), { error })
+      showError("An error occurred while updating groups. Please try again later.", logError)
       setServerErrors({ ...serverErrors, groups: true })
+    } finally {
       setIsSubmittingGroups(false)
-      return
     }
-
-    // Check if any group is invalid
-    const invalidGroups = (validationData as { guid: string; name: string | null; isValid: boolean }[]).filter(
-      group => !group.isValid
-    )
-    if (invalidGroups.length > 0) {
-      showError(`Invalid groups: ${invalidGroups.map(group => group.guid).join(", ")}`, logError)
-      setServerErrors({ ...serverErrors, groups: true })
-      setIsSubmittingGroups(false)
-      return
-    }
-
-    // Proceed with the update if validation is successful
-    const response = await fetch("/api/tenant/details", {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        groups: newGroupGuids.split(",").map(guid => guid.trim()),
-      }),
-    })
-
-    const data: ErrorResponse = await parseJSON(response)
-
-    if (!response.ok) {
-      showError(extractErrorMessage(data), logError)
-      setServerErrors({ ...serverErrors, groups: true })
-    } else {
-      showSuccess({ title: "Success", description: "Groups updated successfully!" }, logEvent)
-      await fetchDetails().then(res => setTenant(res))
-      ;(e.target as HTMLFormElement)?.reset()
-    }
-
-    setIsSubmittingGroups(false)
   }
 
   const handleDeleteGroup = async (group: string): Promise<void> => {
     setIsSubmittingGroups(true)
     setServerErrors({ ...serverErrors, groups: false })
 
-    const response = await fetch("/api/tenant/groups", {
-      method: "DELETE",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        groupGuids: [group],
-      }),
-    })
+    try {
+      const response = await fetch("/api/tenant/groups", {
+        method: "DELETE",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          groupGuids: [group],
+        }),
+      })
 
-    const data: ErrorResponse = await parseJSON(response)
+      const data: ErrorResponse = await parseJSON(response)
 
-    if (!response.ok) {
-      showError(extractErrorMessage(data), logError)
+      if (!response.ok) {
+        showError(extractErrorMessage(data), logError)
+        setServerErrors({ ...serverErrors, groups: true })
+      } else {
+        showSuccess({ title: "Success", description: "Group deleted successfully!" }, logEvent)
+        setDeleteGroupId("")
+        const res = await fetchDetails()
+        setTenant(res)
+      }
+    } catch (error) {
+      logError(new Error("Error deleting group"), { error })
+      showError("An error occurred while deleting the group. Please try again later.", logError)
       setServerErrors({ ...serverErrors, groups: true })
-    } else {
-      showSuccess({ title: "Success", description: "Group deleted successfully!" }, logEvent)
-      setDeleteGroupId("")
-      await fetchDetails().then(res => setTenant(res))
+    } finally {
+      setIsSubmittingGroups(false)
     }
-
-    setIsSubmittingGroups(false)
   }
 
   const handleSwitchChange = async (isChecked: boolean): Promise<void> => {
@@ -264,9 +294,8 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
         setTenant(tenantDetails)
       }
     } catch (error) {
-      showError("An error occurred while updating group login requirement.", logError, () => {
-        throw error
-      })
+      logError(new Error("Error updating group login requirement"), { error })
+      showError("An error occurred while updating group login requirement.", logError)
       setServerErrors({ ...serverErrors, groups: true })
     } finally {
       setIsSubmittingGroups(false)
@@ -414,7 +443,6 @@ export const TenantDetailsForm: React.FC<PromptFormProps> = () => {
                   onCheckedChange={handleSwitchChange}
                 />
               </div>
-              {/* TODO fix the initial state not rendering correctly */}
               <div className="mt-2 flex justify-between p-4">
                 <Typography variant="p">
                   Please note that{" "}
