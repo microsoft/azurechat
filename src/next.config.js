@@ -126,6 +126,15 @@ const nextConfig = {
           },
         ],
       },
+      {
+        source: "/pattern.png",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
     ]
   },
   poweredByHeader: false,

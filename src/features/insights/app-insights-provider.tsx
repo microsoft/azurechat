@@ -18,6 +18,7 @@ export const AppInsightsProvider: React.FunctionComponent<AppInsightsProviderPro
       }
     }
 
+    // eslint-disable-next-line no-console
     initialize().catch(error => console.error("Failed to initialize AppInsights:", error))
   }, [])
 

@@ -15,6 +15,7 @@ export interface IAppInsightsContext {
 }
 
 const defaultLogFunction = (): void => {
+  // eslint-disable-next-line no-console
   console.warn("Application Insights is not initialized.")
 }
 

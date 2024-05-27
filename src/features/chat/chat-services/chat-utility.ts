@@ -25,6 +25,7 @@ async function generateChatName(chatMessage: string): Promise<string> {
     }
     return name || "New Chat by Error"
   } catch (e) {
+    // TODO handle error
     console.error("Error generating chat name:", e)
     return "New Chat by Error"
   }
@@ -73,10 +74,12 @@ export async function UpdateChatThreadIfUncategorised(
         throw new Error(response.errors.join(", "))
       }
     } else {
+      //TOD handle console log
       console.log("Chat thread already has a category, skipping category generation.")
     }
     return chatThread
   } catch (e) {
+    // TODO handle error
     console.error("Failed to update chat thread due to an error:", e) // Log caught error
     throw e
   }

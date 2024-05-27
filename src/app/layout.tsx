@@ -59,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
           </Providers>
         </GlobalConfigProvider>
       </body>
-      {isProd && googleAnalyticsId && <GoogleAnalytics gaId={googleAnalyticsId} />}{" "}
+      {isProd && googleAnalyticsId && <GoogleAnalytics gaId={googleAnalyticsId} />}
     </html>
   )
 }

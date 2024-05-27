@@ -6,7 +6,9 @@ import AzureADProvider from "next-auth/providers/azure-ad"
 import { UserSignInHandler, SignInErrorType } from "./sign-in"
 
 export interface AuthToken extends JWT {
-  qchatAdmin?: boolean
+  admin: boolean
+  globalAdmin: boolean
+  tenantAdmin: boolean
   exp: number
   iat: number
   refreshExpiresIn: number
@@ -31,6 +33,7 @@ const configureIdentityProvider = (): Provider[] => {
             client_id: process.env.AZURE_AD_CLIENT_ID,
             redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/azure-ad",
             response_type: "code",
+            scope: "openid profile email User.Read offline_access",
           },
         },
         token: {
@@ -44,22 +47,24 @@ const configureIdentityProvider = (): Provider[] => {
         },
         userinfo: process.env.AZURE_AD_USERINFO_ENDPOINT,
         profile: profile => {
-          const email = profile.email != undefined ? profile.email?.toLowerCase() : profile.upn.toLowerCase()
-          const qchatAdmin = adminEmails.includes(email)
-          profile.tenantId = profile.employee_idp
-          profile.secGroups = profile.employee_groups
-          if (process.env.NODE_ENV === "development") {
-            profile.tenantId = profile.tid
-            profile.secGroups = profile.groups
-          }
+          const upn = profile.upn.toLowerCase()
+          const email = profile.email != undefined ? profile.email?.toLowerCase() : upn
+
+          const admin = adminEmails.includes(email || upn) ? true : false
+          const globalAdmin = profile.roles?.includes("GlobalAdmin") ? true : false
+
+          profile.tenantId = profile.employee_idp || profile.tid
+          profile.secGroups = profile.employee_groups || profile.groups
           return {
             ...profile,
             id: profile.sub,
             name: profile.name,
-            email: profile.email ?? profile.upn,
-            upn: profile.upn,
-            qchatAdmin: qchatAdmin,
-            userId: profile.upn,
+            email: email,
+            upn: upn,
+            admin: admin,
+            globalAdmin: globalAdmin,
+            tenantAdmin: globalAdmin,
+            userId: upn,
           }
         },
       })
@@ -67,6 +72,8 @@ const configureIdentityProvider = (): Provider[] => {
   }
   return providers
 }
+
+//TODO - Figure out and assign tenant admin here?
 
 export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -98,7 +105,9 @@ export const options: NextAuthOptions = {
     jwt({ token, user }) {
       const authToken = token as AuthToken
       if (user) {
-        authToken.qchatAdmin = user.qchatAdmin ?? false
+        authToken.admin = user.admin ?? false
+        authToken.globalAdmin = user.globalAdmin ?? false
+        authToken.tenantAdmin = user.tenantAdmin ?? false
         authToken.tenantId = user.tenantId ?? ""
         authToken.upn = user.upn ?? ""
         authToken.userId = user.userId ?? ""
@@ -107,7 +116,9 @@ export const options: NextAuthOptions = {
     },
     session({ session, token }) {
       const authToken = token as AuthToken
-      session.user.qchatAdmin = authToken.qchatAdmin ?? false
+      session.user.admin = authToken.admin ?? false
+      session.user.globalAdmin = authToken.globalAdmin ?? false
+      session.user.tenantAdmin = authToken.tenantAdmin ?? false
       session.user.tenantId = authToken.tenantId ? String(authToken.tenantId) : ""
       session.user.upn = authToken.upn ? String(authToken.upn) : ""
       session.user.userId = authToken.userId ? String(authToken.userId) : ""

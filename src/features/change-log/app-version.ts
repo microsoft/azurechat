@@ -6,7 +6,7 @@ export const appVersionDetails = async (): Promise<{
   isOutdated: boolean
 }> => {
   const appVersion = await fetch("https://raw.githubusercontent.com/QDAP-DATAAI/qchat/main/src/package.json", {
-    cache: "no-cache",
+    cache: "no-store",
   })
 
   const version = (await appVersion.json()).version as string

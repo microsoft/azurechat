@@ -210,7 +210,7 @@ const EnsureChatThreadOperation = async (chatThreadId: string): ServerActionResp
   if (response.status !== "OK") return response
 
   const [currentUser, hashedId] = await Promise.all([userSession(), userHashedId()])
-  if (!currentUser?.qchatAdmin && response.response.userId !== hashedId)
+  if (!currentUser?.admin && response.response.userId !== hashedId)
     return {
       status: "ERROR",
       errors: [{ message: "Unauthorized access" }],

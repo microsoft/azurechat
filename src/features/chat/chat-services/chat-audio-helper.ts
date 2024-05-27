@@ -72,9 +72,11 @@ async function _recognizeOnceFromFile(recognizer: SpeechRecognizer): Promise<str
 const handleCanceledReason = (result: SpeechRecognitionResult): void => {
   // TODO handle error
   const cancellation = CancellationDetails.fromResult(result)
+  //TODO handle error
   console.error(`CANCELED: Reason=${cancellation.reason}`)
 
   if (cancellation.reason === CancellationReason.Error) {
+    //TODO handle error
     console.error(`CANCELED: ErrorCode=${cancellation.ErrorCode}`)
     console.error(`CANCELED: ErrorDetails=${cancellation.errorDetails}`)
     console.error("CANCELED: Did you set the speech resource key and region values?")

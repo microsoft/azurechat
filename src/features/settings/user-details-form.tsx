@@ -2,11 +2,12 @@
 
 import * as Form from "@radix-ui/react-form"
 import { useSession } from "next-auth/react"
-import React, { useState, FormEvent, useEffect } from "react"
+import React, { useState, useEffect, FormEvent } from "react"
 
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
 import { showError, showSuccess } from "@/features/globals/global-message-store"
+import { useAppInsightsContext } from "@/features/insights/app-insights-context"
 import { Button } from "@/features/ui/button"
 import { CardSkeleton } from "@/features/ui/card-skeleton"
 import { UserPreferences } from "@/features/user-management/models"
@@ -14,8 +15,10 @@ import { UserPreferences } from "@/features/user-management/models"
 interface PromptFormProps {}
 
 export const UserDetailsForm: React.FC<PromptFormProps> = () => {
+  const { logError } = useAppInsightsContext()
   const { data: session } = useSession()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isClearing, setIsClearing] = useState(false)
   const [serverErrors, setServerErrors] = useState({ contextPrompt: false })
   const [contextPrompt, setContextPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(true)
@@ -45,17 +48,17 @@ This approach helps us interact with you in the most effective and considerate m
   useEffect(() => {
     if (!session?.user) return
     async function fetchPreferences(): Promise<UserPreferences> {
-      const res = await fetch("/api/user/details", { method: "GET" })
+      const res = await fetch("/api/user/details", { method: "GET", cache: "no-store" })
       return (await res.json()).data as UserPreferences
     }
     fetchPreferences()
       .then(res => setContextPrompt(res.contextPrompt))
-      .catch(err => {
-        console.error("Failed to fetch user preferences:", err)
+      .catch(error => {
+        logError(new Error("Failed to fetch user preferences"), { error: error.message })
         showError("User settings couldn't be loaded, please try again.")
       })
       .finally(() => setIsLoading(false))
-  }, [session])
+  }, [logError, session])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
@@ -72,6 +75,7 @@ This approach helps us interact with you in the most effective and considerate m
 
     const response = await fetch("/api/user/details", {
       method: "POST",
+      cache: "no-store",
       body: JSON.stringify({
         contextPrompt: newContextPrompt,
         upn: session.user.upn,
@@ -90,8 +94,32 @@ This approach helps us interact with you in the most effective and considerate m
     setIsSubmitting(false)
   }
 
+  const handleClearContextPrompt = async (): Promise<void> => {
+    setIsClearing(true)
+    setServerErrors({ contextPrompt: false })
+
+    const response = await fetch("/api/user/details", {
+      method: "POST",
+      cache: "no-store",
+      body: JSON.stringify({
+        contextPrompt: "",
+        upn: session?.user?.upn,
+        tenantId: session?.user?.tenantId,
+      }),
+    })
+
+    if (!response.ok) {
+      showError("Context prompt could not be cleared. Please try again later.")
+    } else {
+      showSuccess({ title: "Success", description: "Context prompt cleared successfully!" })
+      setContextPrompt("")
+    }
+
+    setIsClearing(false)
+  }
+
   return (
-    <Form.Root className="grid size-full grid-cols-1 gap-8 pt-5 md:grid-cols-2" onSubmit={handleSubmit}>
+    <Form.Root className="grid size-full grid-cols-1 gap-8 p-4 md:grid-cols-2" onSubmit={handleSubmit}>
       <div className="mb-4 md:col-span-1">
         <Typography variant="h4" className="pt-4 font-bold text-siteTitle">
           Your Details
@@ -113,7 +141,7 @@ This approach helps us interact with you in the most effective and considerate m
         </div>
         <div className="m-2">
           <Typography variant="h5" className="flex items-center">
-            Name:
+            Email:
             {isLoading && (
               <div className="ml-2">
                 <CardSkeleton />
@@ -142,7 +170,7 @@ This approach helps us interact with you in the most effective and considerate m
               className="border-1 w-full rounded-md p-2"
               placeholder="Enter new context prompt..."
               rows={6}
-              maxLength={400}
+              maxLength={500}
               required
             />
           </Form.Control>
@@ -156,13 +184,13 @@ This approach helps us interact with you in the most effective and considerate m
         {!isLoading && (
           <div className="flex justify-end">
             <Form.Submit asChild>
-              <Button type="submit" variant="default" disabled={isSubmitting} className="mr-2">
+              <Button type="submit" variant="default" disabled={isSubmitting || isClearing} className="mr-2">
                 {isSubmitting ? "Updating..." : "Update"}
               </Button>
             </Form.Submit>
-            {/* <Button onClick={async e => handleSubmit(e, true)} variant="destructive" disabled={isSubmitting}>
-              Remove Current Prompt
-            </Button> */}
+            <Button onClick={handleClearContextPrompt} variant="destructive" disabled={isClearing || isSubmitting}>
+              {isClearing ? "Clearing..." : "Clear Context Prompt"}
+            </Button>
           </div>
         )}
       </div>

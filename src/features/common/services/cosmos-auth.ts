@@ -20,6 +20,7 @@ export const GetCosmosAccessToken = async (): Promise<string> => {
     headers: {
       "api-key": process.env.APIM_KEY!,
     },
+    cache: "no-store",
   })
   return response.text()
 }

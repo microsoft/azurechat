@@ -133,8 +133,17 @@ export const ChatRow: FC<ChatRowProps> = props => {
         <OctagonAlert size={20} />
       </div>
       <div className="flex flex-grow items-center justify-center text-center">
-        This message has triggered our content safety warnings, please rephrase your message, start a new chat or reach
-        out to support if you have concerns.
+        <Typography variant="p" className="m-0">
+          This message has triggered one of our content safety warnings, please rephrase your message, start a new chat,
+          or reach out to{" "}
+          <a href="/support" className="text-primary underline" aria-label="Go to support page">
+            support
+          </a>{" "}
+          if you have concerns.
+        </Typography>
+      </div>
+      <div className="flex items-center justify-center">
+        <OctagonAlert size={20} />
       </div>
     </div>
   ) : null

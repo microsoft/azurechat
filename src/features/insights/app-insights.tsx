@@ -7,8 +7,20 @@ import { IAppInsightsContext } from "./app-insights-context"
 
 type EventProperties = Record<string, unknown>
 
+let appInsightsInstance: ApplicationInsights | null = null
+
+export const logAppInsightsError = (error: Error, properties?: EventProperties): void => {
+  if (appInsightsInstance) {
+    appInsightsInstance.trackException({ exception: error, properties })
+  } else {
+    // eslint-disable-next-line no-console
+    console.error("Application Insights is not initialized.", error)
+  }
+}
+
 export const createAppInsights = (): IAppInsightsContext | null => {
   if (typeof window === "undefined") {
+    // eslint-disable-next-line no-console
     console.warn("Application Insights cannot be initialized server-side.")
     return null
   }
@@ -37,6 +49,8 @@ export const createAppInsights = (): IAppInsightsContext | null => {
     appInsights.loadAppInsights()
     appInsights.trackPageView()
 
+    appInsightsInstance = appInsights
+
     return {
       appInsights,
       reactPlugin,
@@ -46,14 +60,14 @@ export const createAppInsights = (): IAppInsightsContext | null => {
         appInsights.trackEvent({ name }, properties)
       },
       logError: (error: Error, properties?: EventProperties) => {
-        appInsights.trackException({ exception: error, properties })
+        logAppInsightsError(error, properties)
       },
       logInfo: (message: string, properties?: EventProperties) => {
         appInsights.trackTrace({ message, properties })
       },
     }
   } catch (error) {
-    console.error("Failed to initialize Application Insights", error)
+    logAppInsightsError(new Error("Failed to initialize Application Insights"), { error })
     return null
   }
 }

@@ -5,7 +5,7 @@ export async function GET(_req: Request): Promise<Response> {
       throw new Error("Health check URL is not defined")
     }
 
-    const response = await fetch(healthCheckUrl)
+    const response = await fetch(healthCheckUrl, { cache: "no-store" })
 
     if (response.status !== 200) {
       throw new Error("API Management health check failed")

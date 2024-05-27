@@ -49,6 +49,7 @@ export async function customBeginAnalyzeDocument(
     method: "POST",
     headers: analyzeDocumentHeaders,
     body: JSON.stringify(analyzeDocumentBody),
+    cache: "no-store",
   })
 
   if (!response.ok) {
@@ -80,6 +81,7 @@ async function customGetAnalyzeResult(modelId: string, resultId: string): Promis
       const response = await fetch(analyzeResultUrl, {
         method: "GET",
         headers: analyzeDocumentHeaders,
+        cache: "no-store",
       })
 
       if (!response.ok) throw new Error("Failed to fetch result." + (await response.json()))

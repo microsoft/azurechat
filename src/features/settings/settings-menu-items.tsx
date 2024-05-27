@@ -1,8 +1,7 @@
 import { UserRoundCog, FileClock, CircleHelp, Building2 } from "lucide-react"
 
 import { isTenantAdmin } from "@/features/auth/helpers"
-
-import { SettingsMenuItem } from "./settings-menu-item"
+import { SettingsMenuItem } from "@/features/settings/settings-menu-item"
 
 const menuItems = [
   { url: "/settings/details", icon: <UserRoundCog size={16} />, text: "Your details" },

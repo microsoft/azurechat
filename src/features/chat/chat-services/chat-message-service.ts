@@ -200,6 +200,7 @@ export const migrateChatMessagesForCurrentUser = async (
       response: resources,
     }
   } catch (error) {
+    // TODO handle error
     console.error("Error occurred during chat message migration: ", error)
     return {
       status: "ERROR",

@@ -1,4 +1,3 @@
-// Import React hooks in a consolidated manner
 import { useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
 
@@ -43,6 +42,7 @@ export function useUserData(): UseUserDataReturnType {
 
     if (status === "authenticated") {
       fetchData().catch(err => {
+        //TODO handle error
         console.error("Error fetching data:", err)
       })
     }

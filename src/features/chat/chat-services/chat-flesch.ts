@@ -30,6 +30,7 @@ export function calculateFleschKincaidScore(text: string): number {
 
     return Math.round(fleschKincaidScore)
   } catch (error) {
+    // TODO handle error
     console.error("Error calculating Flesch-Kincaid score:", error)
     return -1
   }

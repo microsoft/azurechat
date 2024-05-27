@@ -63,7 +63,7 @@ export const NavBar: React.FC = () => {
                 </div>
               ))}
           {!session && status !== "loading" && <div className="col-span-8"></div>}
-          <div className="relative col-span-2 flex min-h-[40px] items-center justify-end">
+          <div className="relative col-span-2 flex min-h-[40px] items-center justify-center">
             <ThemeSwitch />
           </div>
         </div>

@@ -7,7 +7,11 @@ interface MessageProp {
   description: string
 }
 
-export const showError = (error: string, reload?: () => void): void => {
+export const showError = (
+  error: string,
+  logError?: (error: Error, properties?: Record<string, unknown>) => void,
+  reload?: () => void
+): void => {
   toast({
     variant: "destructive",
     description: error,
@@ -22,7 +26,17 @@ export const showError = (error: string, reload?: () => void): void => {
       </ToastAction>
     ) : undefined,
   })
+  if (logError) {
+    logError(new Error(error))
+  }
 }
-export const showSuccess = (message: MessageProp): void => {
+
+export const showSuccess = (
+  message: MessageProp,
+  logEvent?: (name: string, properties?: Record<string, unknown>) => void
+): void => {
   toast(message)
+  if (logEvent) {
+    logEvent(message.title, { description: message.description })
+  }
 }

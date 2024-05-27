@@ -24,6 +24,7 @@ export const PromptButtons = async (): Promise<string[]> => {
     const prompts = JSON.parse(promptButtons as unknown as string) as string[]
 
     if (!Array.isArray(prompts) || prompts.some(prompt => typeof prompt !== "string")) {
+      // TODO handle error
       console.error("Error: Unexpected prompt button structure from API.")
       return defaultPrompts
     }
@@ -31,6 +32,7 @@ export const PromptButtons = async (): Promise<string[]> => {
     const filteredPrompts = prompts.filter(prompt => typeof prompt === "string")
     return filteredPrompts.length > 0 ? filteredPrompts : defaultPrompts
   } catch (error) {
+    // TODO handle error
     console.error(`An error occurred: ${error}`)
     return defaultPrompts
   }

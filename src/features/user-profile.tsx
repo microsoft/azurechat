@@ -44,7 +44,7 @@ const UserProfile = (): ReactElement => {
               {session?.user?.email ?? "No email provided"}
             </Typography>
             <Typography variant="p" className="leading-none text-muted-foreground">
-              {session?.user?.qchatAdmin ? "Admin" : ""}
+              {session?.user?.admin ? "Admin" : ""}
             </Typography>
           </div>
         </DropdownMenuLabel>
