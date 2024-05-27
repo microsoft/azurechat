@@ -3,6 +3,7 @@
 import { OctagonAlert } from "lucide-react"
 import React, { FC, useState } from "react"
 
+import ErrorBoundary from "@/components/chat/error-boundary"
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
 import { calculateFleschKincaidScore } from "@/features/chat/chat-services/chat-flesch"
@@ -13,7 +14,6 @@ import { showError } from "@/features/globals/global-message-store"
 import { AI_NAME } from "@/features/theme/theme-config"
 import { AssistantButtons, FleschButton } from "@/features/ui/assistant-buttons"
 import Modal from "@/features/ui/modal"
-
 interface ChatRowProps {
   chatMessageId: string
   name: string
@@ -150,52 +150,56 @@ export const ChatRow: FC<ChatRowProps> = props => {
 
   return (
     <article className={"container mx-auto flex flex-col py-1 pb-2"}>
-      <section
-        className={`prose prose-slate max-w-none flex-col gap-4 overflow-hidden break-words rounded-md px-4 py-2 text-base text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base ${props.threadLocked && "border-4 border-error"} ${props.type === "assistant" && "bg-backgroundShade"} ${props.type != "assistant" && "bg-altBackgroundShade"}`}
-      >
-        <div className="flex w-full items-center justify-between">
-          {props.type === "assistant" && (
-            <Typography variant="h3" className="m-0 flex-1 text-heading" tabIndex={0}>
-              {props.name}
-            </Typography>
-          )}
-          <div className="flex items-center gap-4">
-            {props.type === "assistant" && props.showAssistantButtons && (
-              <AssistantButtons
-                isIconChecked={isIconChecked}
-                thumbsUpClicked={thumbsUpClicked}
-                thumbsDownClicked={thumbsDownClicked}
-                handleCopyButton={handleCopyButton}
-                handleThumbsUpClick={handleThumbsUpClick}
-                handleThumbsDownClick={handleThumbsDownClick}
-              />
-            )}
-            {props.type === "assistant" && props.showAssistantButtons && <FleschButton fleschScore={fleshScore} />}
-          </div>
-          <Modal
-            chatThreadId={props.chatThreadId}
-            chatMessageId={props.chatMessageId}
-            feedbackType={feedbackType}
-            onFeedbackTypeChange={setFeedbackType}
-            feedbackReason={feedbackReason}
-            onFeedbackReasonChange={setFeedbackReason}
-            open={isFeedbackModalOpen}
-            onClose={handleModalClose}
-            onSubmit={handleModalSubmit}
-          />
-        </div>
-        <div
-          className="prose prose-slate max-w-none break-words text-base text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base"
-          tabIndex={0}
+      <ErrorBoundary>
+        <section
+          className={`prose prose-slate max-w-none flex-col gap-4 overflow-hidden break-words rounded-md px-4 py-2 text-base text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base ${props.threadLocked && "border-4 border-error"} ${props.type === "assistant" && "bg-backgroundShade"} ${props.type != "assistant" && "bg-altBackgroundShade"}`}
         >
-          {props.type === "assistant" && <Markdown content={props.message.content} />}
-          {props.type != "assistant" && <Markdown content={"**" + props.name + "**" + ": " + props.message.content} />}
-        </div>
-        {safetyWarning}
-        <div className="sr-only" aria-live="assertive">
-          {feedbackMessage}
-        </div>
-      </section>
+          <div className="flex w-full items-center justify-between">
+            {props.type === "assistant" && (
+              <Typography variant="h3" className="m-0 flex-1 text-heading" tabIndex={0}>
+                {props.name}
+              </Typography>
+            )}
+            <div className="flex items-center gap-4">
+              {props.type === "assistant" && props.showAssistantButtons && (
+                <AssistantButtons
+                  isIconChecked={isIconChecked}
+                  thumbsUpClicked={thumbsUpClicked}
+                  thumbsDownClicked={thumbsDownClicked}
+                  handleCopyButton={handleCopyButton}
+                  handleThumbsUpClick={handleThumbsUpClick}
+                  handleThumbsDownClick={handleThumbsDownClick}
+                />
+              )}
+              {props.type === "assistant" && props.showAssistantButtons && <FleschButton fleschScore={fleshScore} />}
+            </div>
+            <Modal
+              chatThreadId={props.chatThreadId}
+              chatMessageId={props.chatMessageId}
+              feedbackType={feedbackType}
+              onFeedbackTypeChange={setFeedbackType}
+              feedbackReason={feedbackReason}
+              onFeedbackReasonChange={setFeedbackReason}
+              open={isFeedbackModalOpen}
+              onClose={handleModalClose}
+              onSubmit={handleModalSubmit}
+            />
+          </div>
+          <div
+            className="prose prose-slate max-w-none break-words text-base text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base"
+            tabIndex={0}
+          >
+            {props.type === "assistant" && <Markdown content={props.message.content} />}
+            {props.type != "assistant" && (
+              <Markdown content={"**" + props.name + "**" + ": " + props.message.content} />
+            )}
+          </div>
+          {safetyWarning}
+          <div className="sr-only" aria-live="assertive">
+            {feedbackMessage}
+          </div>
+        </section>
+      </ErrorBoundary>
     </article>
   )
 }
