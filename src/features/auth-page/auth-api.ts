@@ -15,8 +15,8 @@ const configureIdentityProvider = () => {
   if (process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET) {
     providers.push(
       GitHubProvider({
-        clientId: process.env.AUTH_GITHUB_ID!,
-        clientSecret: process.env.AUTH_GITHUB_SECRET!,
+        clientId: process.env.AUTH_GITHUB_ID,
+        clientSecret: process.env.AUTH_GITHUB_SECRET,
         async profile(profile) {
           const newProfile = {
             ...profile,
@@ -35,9 +35,9 @@ const configureIdentityProvider = () => {
   ) {
     providers.push(
       AzureADProvider({
-        clientId: process.env.AZURE_AD_CLIENT_ID!,
-        clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
-        tenantId: process.env.AZURE_AD_TENANT_ID!,
+        clientId: process.env.AZURE_AD_CLIENT_ID,
+        clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
+        tenantId: process.env.AZURE_AD_TENANT_ID,
         async profile(profile) {
           const newProfile = {
             ...profile,
