@@ -1,5 +1,5 @@
 import { HeroButton } from "@/features/ui/hero";
-import { PocketKnife } from "lucide-react";
+import { Blocks } from "lucide-react";
 import { extensionStore } from "../extension-store";
 
 export const NewExtension = () => {
@@ -7,7 +7,7 @@ export const NewExtension = () => {
     <HeroButton
       title="New Extension"
       description="Create a new extension with your own internal API"
-      icon={<PocketKnife />}
+      icon={<Blocks />}
       onClick={() => extensionStore.newAndOpenSlider()}
     />
   );

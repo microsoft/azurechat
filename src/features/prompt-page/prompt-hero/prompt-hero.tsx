@@ -1,6 +1,6 @@
 "use client";
 import { Hero, HeroButton } from "@/features/ui/hero";
-import { Book, BookImage, NotebookPen } from "lucide-react";
+import { BookText, BookImage, NotebookPen } from "lucide-react";
 import { promptStore } from "../prompt-store";
 
 export const PromptHero = () => {
@@ -8,7 +8,7 @@ export const PromptHero = () => {
     <Hero
       title={
         <>
-          <Book size={36} strokeWidth={1.5} /> Prompt Library
+          <BookText size={36} strokeWidth={1.5} /> Prompt Library
         </>
       }
       description={
@@ -18,7 +18,7 @@ export const PromptHero = () => {
       <HeroButton
         title="Add New Prompt"
         description="Build your own prompt template"
-        icon={<Book />}
+        icon={<BookText />}
         onClick={() => promptStore.newPrompt()}
       />
       <HeroButton

@@ -1,11 +1,6 @@
 "use client";
 import { cn } from "@/ui/lib";
-import {
-  CheckIcon,
-  ClipboardIcon,
-  PocketKnife,
-  UserCircle,
-} from "lucide-react";
+import { CheckIcon, ClipboardIcon, Blocks, UserCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarImage } from "../../avatar";
 import { Button } from "../../button";
@@ -56,11 +51,7 @@ export const ChatMessageArea = (props: {
     case "tool":
     case "function":
       profile = (
-        <PocketKnife
-          size={28}
-          strokeWidth={1.4}
-          className="text-muted-foreground"
-        />
+        <Blocks size={28} strokeWidth={1.4} className="text-muted-foreground" />
       );
       break;
     default:

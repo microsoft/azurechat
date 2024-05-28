@@ -12,7 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/ui/sheet";
-import { Book } from "lucide-react";
+import { BookText } from "lucide-react";
 import { FC } from "react";
 import { inputPromptStore, useInputPromptState } from "./input-prompt-store";
 
@@ -35,7 +35,7 @@ export const PromptSlider: FC<SliderProps> = (props) => {
           onClick={() => inputPromptStore.openPrompt()}
           aria-label="Open prompt library"
         >
-          <Book size={16} />
+          <BookText size={16} />
         </Button>
       </SheetTrigger>
 

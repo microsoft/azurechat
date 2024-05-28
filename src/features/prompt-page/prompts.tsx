@@ -1,5 +1,5 @@
 import { AI_NAME } from "@/features/theme/theme-config";
-import { Book } from "lucide-react";
+import { BookText } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -28,7 +28,7 @@ export const Prompts = (props: {
     <Dialog open={open} onOpenChange={setOpen} modal={false}>
       <DialogTrigger asChild>
         <Button size="icon" type="button" variant={"ghost"}>
-          <Book size={16} />
+          <BookText size={16} />
         </Button>
       </DialogTrigger>
       <DialogContent className="min-w-[300px] md:h-[800px] md:min-w-[800px] lg:h-[800px] lg:min-w-[800px] ">
