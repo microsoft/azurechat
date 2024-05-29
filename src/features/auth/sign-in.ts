@@ -79,13 +79,11 @@ export class UserSignInHandler {
         const tenant = await CreateTenant(tenantRecord, user.upn)
         if (tenant.status !== STATUS_OK) throw tenant
 
-        const isTenantAdmin = tenantRecord.administrators.includes(user.upn || user.email || "") ? true : false
-
         const userUpdate = {
           ...resetFailedLogin(userRecord),
           groups: userGroups,
           globalAdmin: user.globalAdmin,
-          tenantAdmin: isTenantAdmin,
+          tenantAdmin: user.tenantAdmin,
         }
         const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
         if (updatedUser.status !== STATUS_OK) throw updatedUser
@@ -97,8 +95,6 @@ export class UserSignInHandler {
       if (tenantResponse.status !== STATUS_OK) throw tenantResponse
       const tenant = tenantResponse.response
 
-      const isTenantAdmin = tenant.administrators.includes(user.upn || user.email || "") ? true : false
-
       const userHasRequiredGroupAccess =
         !tenant.requiresGroupLogin || isUserInRequiredGroups(userGroups, tenant.groups || [])
 
@@ -106,8 +102,8 @@ export class UserSignInHandler {
         const userUpdate = {
           ...resetFailedLogin(userRecord),
           groups: userGroups,
-          globalAdmin: user.globalAdmin || false,
-          tenantAdmin: isTenantAdmin,
+          globalAdmin: user.globalAdmin,
+          tenantAdmin: user.tenantAdmin,
         }
 
         const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
@@ -156,11 +152,11 @@ const getsertUser = async (userGroups: string[], user: User | AdapterUser): Prom
       const createUserResponse = await CreateUser({
         id: hashValue(user.upn),
         tenantId: user.tenantId,
-        email: user.email ?? user.upn,
-        name: user.name ?? "",
+        email: user.email,
+        name: user.name,
         upn: user.upn,
         userId: user.upn,
-        admin: user.admin ?? false,
+        admin: user.admin,
         last_login: now,
         first_login: now,
         accepted_terms: false,
@@ -168,8 +164,8 @@ const getsertUser = async (userGroups: string[], user: User | AdapterUser): Prom
         groups: userGroups,
         failed_login_attempts: 0,
         last_failed_login: null,
-        tenantAdmin: user.tenantAdmin ?? false,
-        globalAdmin: user.globalAdmin ?? false,
+        tenantAdmin: user.tenantAdmin,
+        globalAdmin: user.globalAdmin,
         history: [`${now}: User created.`],
         preferences: {
           contextPrompt: CONTEXT_PROMPT_DEFAULT,
@@ -185,5 +181,21 @@ const getsertUser = async (userGroups: string[], user: User | AdapterUser): Prom
     // TODO handle error
     console.error("Error upserting user:", error)
     throw error
+  }
+}
+
+export async function isTenantAdmin(user: User | AdapterUser): Promise<boolean> {
+  try {
+    const tenantResponse = await GetTenantById(user.tenantId)
+    if (tenantResponse.status !== STATUS_OK) {
+      return false
+    }
+
+    const tenant = tenantResponse.response
+    const normalisedUserIdentifier = (user.upn || user.email || "")?.toLowerCase()
+    const isTenantAdmin = tenant.administrators.map(admin => admin.toLowerCase()).includes(normalisedUserIdentifier)
+    return isTenantAdmin
+  } catch (_error) {
+    return false
   }
 }

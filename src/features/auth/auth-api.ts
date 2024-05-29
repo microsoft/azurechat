@@ -3,7 +3,7 @@ import { JWT } from "next-auth/jwt"
 import { Provider } from "next-auth/providers"
 import AzureADProvider from "next-auth/providers/azure-ad"
 
-import { UserSignInHandler, SignInErrorType } from "./sign-in"
+import { UserSignInHandler, SignInErrorType, isTenantAdmin } from "./sign-in"
 
 export interface AuthToken extends JWT {
   admin: boolean
@@ -12,6 +12,9 @@ export interface AuthToken extends JWT {
   exp: number
   iat: number
   refreshExpiresIn: number
+  tenantId: string
+  userId: string
+  upn: string
 }
 
 const configureIdentityProvider = (): Provider[] => {
@@ -45,25 +48,25 @@ const configureIdentityProvider = (): Provider[] => {
           },
         },
         userinfo: process.env.AZURE_AD_USERINFO_ENDPOINT,
-        profile: profile => {
-          const upn = profile.upn.toLowerCase()
-          const email = profile.email != undefined ? profile.email?.toLowerCase() : upn
-
-          const admin = adminEmails.includes(email || upn) ? true : false
+        profile: async profile => {
+          const upnLower = profile.upn.toLowerCase()
+          const email = profile.email?.toLowerCase() ?? upnLower
+          const admin = adminEmails.includes(email || upnLower)
           const globalAdmin = profile.roles?.includes("GlobalAdmin") ? true : false
-
           profile.tenantId = profile.employee_idp || profile.tid
-          profile.secGroups = profile.employee_groups || profile.groups
+          profile.groups = profile.groups || profile.employee_groups
+
+          const tenantAdmin = await isTenantAdmin(profile)
           return {
             ...profile,
             id: profile.sub,
             name: profile.name,
             email: email,
-            upn: upn,
+            upn: profile.upn,
             admin: admin,
             globalAdmin: globalAdmin,
-            tenantAdmin: globalAdmin,
-            userId: upn,
+            tenantAdmin: tenantAdmin,
+            userId: profile.upn,
           }
         },
       })
@@ -71,8 +74,6 @@ const configureIdentityProvider = (): Provider[] => {
   }
   return providers
 }
-
-//TODO - Figure out and assign tenant admin here?
 
 export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -84,7 +85,7 @@ export const options: NextAuthOptions = {
       }
 
       try {
-        const groups = user?.secGroups ?? []
+        const groups = user?.groups ?? []
         const signInCallbackResponse = await UserSignInHandler.handleSignIn(user, groups)
         if (signInCallbackResponse.success) {
           return true
@@ -104,23 +105,23 @@ export const options: NextAuthOptions = {
     jwt({ token, user }) {
       const authToken = token as AuthToken
       if (user) {
-        authToken.admin = user.admin ?? false
-        authToken.globalAdmin = user.globalAdmin ?? false
-        authToken.tenantAdmin = user.tenantAdmin ?? false
-        authToken.tenantId = user.tenantId ?? ""
-        authToken.upn = user.upn ?? ""
-        authToken.userId = user.userId ?? ""
+        authToken.admin = user.admin
+        authToken.globalAdmin = user.globalAdmin
+        authToken.tenantAdmin = user.tenantAdmin
+        authToken.tenantId = user.tenantId
+        authToken.upn = user.upn
+        authToken.userId = user.userId
       }
       return authToken
     },
     session({ session, token }) {
       const authToken = token as AuthToken
-      session.user.admin = authToken.admin ?? false
-      session.user.globalAdmin = authToken.globalAdmin ?? false
-      session.user.tenantAdmin = authToken.tenantAdmin ?? false
-      session.user.tenantId = authToken.tenantId ? String(authToken.tenantId) : ""
-      session.user.upn = authToken.upn ? String(authToken.upn) : ""
-      session.user.userId = authToken.userId ? String(authToken.userId) : ""
+      session.user.admin = authToken.admin
+      session.user.globalAdmin = authToken.globalAdmin
+      session.user.tenantAdmin = authToken.tenantAdmin
+      session.user.tenantId = authToken.tenantId
+      session.user.upn = authToken.upn
+      session.user.userId = authToken.userId
       return session
     },
   },

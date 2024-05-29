@@ -23,6 +23,6 @@ declare module "next-auth" {
     tenantId: string
     upn: string
     userId: string
-    secGroups: string[]
+    groups: string[]
   }
 }

@@ -1,4 +1,3 @@
-import { hashValue } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { UserContainer } from "@/features/common/services/cosmos"
 import { arraysAreEqual } from "@/lib/utils"
@@ -117,16 +116,11 @@ export const UpdateUser = async (
 }
 
 export const GetUserByUpn = async (tenantId: string, upn: string): ServerActionResponseAsync<UserRecord> => {
-  const lowerUpn = upn.toLowerCase()
-  const lowerHashUpn = hashValue(lowerUpn)
-
   const query = {
-    query:
-      "SELECT * FROM c WHERE c.tenantId = @tenantId AND (LOWER(c.upn) = @lowerUpn OR LOWER(c.upn) = @lowerHashUpn)",
+    query: "SELECT * FROM c WHERE c.tenantId = @tenantId AND c.upn = @upn",
     parameters: [
       { name: "@tenantId", value: tenantId },
-      { name: "@lowerUpn", value: lowerUpn },
-      { name: "@lowerHashUpn", value: lowerHashUpn },
+      { name: "@upn", value: upn },
     ],
   }
   try {
