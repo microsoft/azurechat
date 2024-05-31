@@ -83,18 +83,27 @@ const rewriteTexts = (action: "Simplify" | "Improve" | "Explain", message: strin
   switch (action) {
     case "Simplify":
       return `Simplify the text below, consider length, readability and tone of voice:
+
 ===Text to simplify===
+
   ${message}
+
 ===End of text to simplify===`
     case "Improve":
       return `Improve the text below, consider inclusive language, length, readability and tone of voice:
+
 ===Text to improve===
+
   ${message}
+
 ===End of text to improve===`
     case "Explain":
       return `Explain why the text below is not in line with our safety or ethical checks:
+
 ===Text to reword===
+
   ${message}
+
 ===End of text to reword===`
     default:
       return "Unknown action"

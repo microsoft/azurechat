@@ -6,6 +6,14 @@ Below are the updates for the Queensland Government QChat Virtual Assistant.
 
 - If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the Queensland Government AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
 
+## 🌟🌟🌟 Version 1.4.7 Updates - 31 May 2024
+
+- **Shiny New Button Alert! 🌟 Rewrite with Suggestions:** Ever felt like your messages could use a sprinkle of sparkle? Fear not! We've rolled out a twinkling new button that magically transforms your text before your very eyes! Whether it's simplifying an overcomplicated ramble or jazzing up a snooze-worthy sentence, the Rewrite with Suggestions button is here to make your words shine. Just one click and voila! Your words are looking snazzier already.
+
+- **Feedback Finesse:** Encountered a snag? Tell us about it! We've upped our error logging game so we can pounce on those pesky problem gremlins faster than ever.
+
+- **Performance Pep-Up:** As always, we've tinkered under the hood to make sure your QChat experience is faster, smoother, and more reliable. Because waiting is so last season.
+
 ## 🐞 Version 1.4.6 Updates - 27 MAY 2024
 
 - **System Fixes:** We've introduced some additiona fixes to support error logging and interaction.

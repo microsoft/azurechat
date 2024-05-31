@@ -1,6 +1,6 @@
 {
   "name": "src",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "private": true,
   "scripts": {
     "report": "npx ts-node --project tsconfig.script.json generate-model-report.ts",
