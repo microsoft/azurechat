@@ -50,7 +50,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
               <ChatRow
                 key={message.id}
                 chatMessageId={message.id}
-                name={message.role === ChatRole.User ? session?.user?.name || "" : AI_NAME}
+                name={message.role === ChatRole.User ? session?.user?.name || "You" : AI_NAME}
                 message={message}
                 type={message.role as ChatRole}
                 chatThreadId={chatThreadId}

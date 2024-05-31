@@ -121,21 +121,3 @@
     @apply border-border;
   }
 }
-
-@layer utilities {
-  @keyframes spin {
-    0%,
-    100% {
-      opacity: 1;
-    }
-
-    50% {
-      opacity: 0;
-    }
-  }
-
-  .loader {
-    animation: spin 1s linear infinite;
-    display: inline-block;
-  }
-}

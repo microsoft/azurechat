@@ -110,3 +110,25 @@ export const TenantContainer = async (): Promise<Container> => {
   _tenantContainer = container
   return _tenantContainer
 }
+
+let _smartGenContainer: Container | null = null
+export const SmartGenContainer = async (): Promise<Container> => {
+  if (_smartGenContainer) return _smartGenContainer
+
+  const dbName = process.env.AZURE_COSMOSDB_DB_NAME || "localdev"
+  const containerName = process.env.AZURE_COSMOSDB_SMART_GEN_CONTAINER_NAME || "smart-gen"
+
+  const client = await CosmosInstance()
+  const { database } = await client.databases.createIfNotExists({ id: dbName })
+  const { container } = await database.containers.createIfNotExists({
+    id: containerName,
+    partitionKey: {
+      paths: ["/tenantId", "/userId"],
+      kind: PartitionKeyKind.MultiHash,
+      version: PartitionKeyDefinitionVersion.V2,
+    },
+  })
+
+  _smartGenContainer = container
+  return _smartGenContainer
+}

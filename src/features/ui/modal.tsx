@@ -25,7 +25,7 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
       role="dialog"
       aria-modal="true"
       aria-labelledby="feedbackHeading"
-      className={`fixed inset-0 z-90 flex items-center justify-center bg-black ${props.open ? "block" : "hidden"}`}
+      className={`fixed inset-0 z-90 flex items-center justify-center bg-black/50 ${props.open ? "block" : "hidden"}`}
     >
       <div className="z-90 mx-auto w-full max-w-lg overflow-hidden rounded-lg bg-background p-4">
         <div className="mb-4">
@@ -58,7 +58,7 @@ export default function Modal(props: ModalProps): ReturnType<FC> {
           >
             Submit
           </Button>
-          <Button variant="destructive" onClick={props.onClose}>
+          <Button variant="secondary" onClick={props.onClose}>
             Close
           </Button>
         </div>
