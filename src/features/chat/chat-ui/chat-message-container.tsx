@@ -24,7 +24,10 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   const { messages, documents, isLoading, chatThreadLocked } = useChatContext()
   const [selectedTab, setSelectedTab] = useState<SectionTabsProps["selectedTab"]>("chat")
 
-  useChatScrollAnchor(messages, scrollRef)
+  const [previousScrollTop, setPreviousScrollTop] = useState(0)
+  const [supressScrolling, setSupressScrolling] = useState(false)
+
+  useChatScrollAnchor(messages, scrollRef, !supressScrolling)
 
   useEffect(() => {
     if (!isLoading) {
@@ -32,10 +35,25 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
     }
   }, [isLoading, router])
 
+  useEffect(() => {
+    if (isLoading) {
+      setSupressScrolling(false)
+    }
+  }, [isLoading])
+
+  const onScroll = (e: React.UIEvent<HTMLDivElement>): void => {
+    if (isLoading) {
+      if (e.currentTarget.scrollTop < previousScrollTop) {
+        setSupressScrolling(true)
+      }
+      setPreviousScrollTop(e.currentTarget.scrollTop)
+    }
+  }
+
   const documentsWithTranscriptions = documents.filter(document => document.contents)
 
   return (
-    <div className="h-full overflow-y-auto" ref={scrollRef}>
+    <div className="h-full overflow-y-auto" ref={scrollRef} onScroll={onScroll}>
       <div className="flex h-auto justify-center p-2">
         <ChatHeader />
       </div>
