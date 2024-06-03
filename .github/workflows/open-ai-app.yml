@@ -82,11 +82,20 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
+            echo "Fetching resource group for app service ${{ secrets.AZURE_APP_SERVICE_NAME }}"
             rg=$(az webapp list --query "[?name=='${{ secrets.AZURE_APP_SERVICE_NAME }}'].resourceGroup" --output tsv)
-            echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
-            az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
-            echo Setting --startup-file=\"node server.js\" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
-            az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg -o none
+            if [ -z "$rg" ]; then
+              echo "Error: Resource group not found for app service ${{ secrets.AZURE_APP_SERVICE_NAME }}"
+              exit 1
+            fi
+            echo "Resource group found: $rg"
+
+            echo "Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}"
+            az webapp config appsettings set --name ${{ secrets.AZURE_APP_SERVICE_NAME }} --resource-group "$rg" --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
+
+            echo "Setting --startup-file='node server.js' on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}"
+            az webapp config set --startup-file="node server.js" --name ${{ secrets.AZURE_APP_SERVICE_NAME }} --resource-group "$rg" -o none
+
             sleep 10
 
       - name: 🚀 Deploy to Azure Web App
