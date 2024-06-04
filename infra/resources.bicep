@@ -3,6 +3,8 @@ param resourceToken string
 
 param openai_api_version string
 
+param webapp_name string = 'quabot'
+
 param openAiLocation string
 param openAiSkuName string = 'S0'
 param chatGptDeploymentCapacity int = 30
@@ -51,13 +53,12 @@ var form_recognizer_name = toLower('${name}-form-${resourceToken}')
 var speech_service_name = toLower('${name}-speech-${resourceToken}')
 var cosmos_name = toLower('${name}-cosmos-${resourceToken}')
 var search_name = toLower('${name}search${resourceToken}')
-var webapp_name = toLower('${name}-webapp-${resourceToken}')
 var appservice_name = toLower('${name}-app-${resourceToken}')
 // storage name must be less than 24 chars, alphanumeric only - token is 13
 var storage_prefix = take(name, 8)
 var storage_name = toLower('${storage_prefix}sto${resourceToken}')
 // keyvault name must be less than 24 chars - token is 13
-var kv_prefix = take(name, 7)
+var kv_prefix = take(name, 8)
 var keyVaultName = toLower('${kv_prefix}-kv-${resourceToken}')
 var la_workspace_name = toLower('${name}-la-${resourceToken}')
 var diagnostic_setting_name = 'AppServiceConsoleLogs'

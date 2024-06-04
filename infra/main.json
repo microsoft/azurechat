@@ -80,9 +80,7 @@
     },
     "dalleLocation": {
       "type": "string",
-      "allowedValues": [
-        "swedencentral"
-      ],
+      "allowedValues": ["swedencentral"],
       "metadata": {
         "description": "Location for the OpenAI DALL-E 3 instance resource group"
       }
@@ -105,10 +103,7 @@
     },
     "gptvisionLocation": {
       "type": "string",
-      "allowedValues": [
-        "swedencentral",
-        "westus"
-      ],
+      "allowedValues": ["swedencentral", "westus"],
       "metadata": {
         "description": "Location for the GPT vision instance resource"
       }
@@ -413,7 +408,7 @@
             "speech_service_name": "[toLower(format('{0}-speech-{1}', parameters('name'), parameters('resourceToken')))]",
             "cosmos_name": "[toLower(format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken')))]",
             "search_name": "[toLower(format('{0}search{1}', parameters('name'), parameters('resourceToken')))]",
-            "webapp_name": "[toLower(format('{0}-webapp-{1}', parameters('name'), parameters('resourceToken')))]",
+            "webapp_name": "quadrachatintelligence",
             "appservice_name": "[toLower(format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
             "storage_prefix": "[take(parameters('name'), 8)]",
             "storage_name": "[toLower(format('{0}sto{1}', variables('storage_prefix'), parameters('resourceToken')))]",
@@ -915,9 +910,7 @@
                 "resource": {
                   "id": "[variables('historyContainerName')]",
                   "partitionKey": {
-                    "paths": [
-                      "/userId"
-                    ],
+                    "paths": ["/userId"],
                     "kind": "Hash"
                   }
                 }
@@ -934,9 +927,7 @@
                 "resource": {
                   "id": "[variables('configContainerName')]",
                   "partitionKey": {
-                    "paths": [
-                      "/userId"
-                    ],
+                    "paths": ["/userId"],
                     "kind": "Hash"
                   }
                 }
