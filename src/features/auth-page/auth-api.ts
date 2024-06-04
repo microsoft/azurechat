@@ -57,7 +57,7 @@ const configureIdentityProvider = () => {
   // (Useful when a dev doesn't have access to create app registration in their tenant)
   // This currently takes any username and makes a user with it, ignores password
   // Refer to: https://next-auth.js.org/configuration/providers/credentials
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "development") {
     providers.push(
       CredentialsProvider({
         name: "localdev",
