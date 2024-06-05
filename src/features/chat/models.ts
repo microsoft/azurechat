@@ -75,6 +75,7 @@ export interface AssistantChatMessageModel extends ChatMessageModel {
   feedback: FeedbackType
   sentiment: ChatSentiment
   reason: string
+  isPartial?: boolean
 }
 
 export interface ChatThreadModel {

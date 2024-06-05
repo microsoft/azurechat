@@ -1,4 +1,4 @@
-import { Loader, Send } from "lucide-react"
+import { Loader, Send, StopCircle } from "lucide-react"
 import { getSession } from "next-auth/react"
 import { FC, FormEvent, useRef, useMemo } from "react"
 
@@ -14,7 +14,7 @@ import ChatInputMenu from "./chat-input-menu"
 interface Props {}
 
 const ChatInput: FC<Props> = () => {
-  const { setInput, handleSubmit, isLoading, input, chatBody, isModalOpen, messages, fileState } = useChatContext()
+  const { setInput, handleSubmit, isLoading, input, chatBody, isModalOpen, messages, fileState, stop } = useChatContext()
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isDataChat = useMemo(() => chatBody.chatType === "data" || chatBody.chatType === "audio", [chatBody.chatType])
   const fileChatVisible = (chatBody.chatType === "data" || chatBody.chatType === "audio") && chatBody.chatOverFileName
@@ -50,7 +50,9 @@ const ChatInput: FC<Props> = () => {
 
   const submit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
-    if (!isModalOpen && !fileState.isUploadingFile) {
+    if (isLoading) {
+      stop()
+    } else if (!isModalOpen && !fileState.isUploadingFile) {
       handleSubmit(e)
       setInput("")
     }
@@ -97,12 +99,14 @@ const ChatInput: FC<Props> = () => {
                 type="submit"
                 variant="ghost"
                 ref={buttonRef}
-                disabled={isLoading}
+                disabled={isLoading && fileState.isUploadingFile}
                 ariaLabel="Submit your message"
-                aria-busy={isLoading ? "true" : "false"}
+                aria-busy={isLoading && fileState.isUploadingFile ? "true" : "false"}
               >
-                {isLoading || fileState.isUploadingFile ? (
+                {isLoading && fileState.isUploadingFile ? (
                   <Loader className="animate-spin" aria-hidden="true" size={16} />
+                ) : isLoading ? (
+                  <StopCircle aria-hidden="true" size={16} />
                 ) : (
                   <Send aria-hidden="true" size={16} />
                 )}
