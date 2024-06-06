@@ -2,7 +2,7 @@
 
 import { Button } from "@/features/ui/button";
 import { LoadingIndicator } from "@/features/ui/loading";
-import { Plus } from "lucide-react";
+import { MessageCirclePlus } from "lucide-react";
 import { useFormStatus } from "react-dom";
 
 export const NewChat = () => {
@@ -12,10 +12,14 @@ export const NewChat = () => {
     <Button
       aria-disabled={pending}
       size={"default"}
-      className="flex gap-2"
+      className="flex gap-2 bg-primary text-white w-full mr-8"
       variant={"outline"}
     >
-      {pending ? <LoadingIndicator isLoading={pending} /> : <Plus size={18} />}
+      {pending ? (
+        <LoadingIndicator isLoading={pending} />
+      ) : (
+        <MessageCirclePlus size={18} />
+      )}
       New Chat
     </Button>
   );
