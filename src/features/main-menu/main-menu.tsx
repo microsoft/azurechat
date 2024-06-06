@@ -23,11 +23,11 @@ export const MainMenu = async () => {
 
   return (
     <Menu>
-      <MenuBar>
+      <MenuBar className="bg-gradient-to-t from-[#2b3d64]/30 to-[#24538D]/30 border-0">
         <MenuItemContainer>
           <MenuItem tooltip="Home" asChild>
             <MenuLink href="/chat" ariaLabel="Go to the Home page">
-              <Home {...menuIconProps} />
+              <Home {...menuIconProps} className="dark:text-white" />
             </MenuLink>
           </MenuItem>
           <MenuTrayToggle />
