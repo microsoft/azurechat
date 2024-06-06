@@ -61,7 +61,7 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
                 }}
                 profilePicture={
                   message.role === "assistant"
-                    ? "/org-icon.png"
+                    ? "/QuaBot_Light_Icon.svg"
                     : session?.user?.image
                 }
               >
