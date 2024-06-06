@@ -8,6 +8,8 @@ import { Hero } from "@/features/ui/hero";
 import { ScrollArea } from "@/features/ui/scroll-area";
 import Image from "next/image";
 import { FC } from "react";
+import { cn } from "@/ui/lib";
+import { ralewaySans } from "../../app/fonts";
 
 interface ChatPersonaProps {
   personas: PersonaModel[];
@@ -17,18 +19,18 @@ interface ChatPersonaProps {
 export const ChatHome: FC<ChatPersonaProps> = (props) => {
   return (
     <ScrollArea className="flex-1">
-      <main className="flex flex-1 flex-col gap-6 pb-6">
+      <main className="flex flex-1 flex-col gap-6 pb-6 dark:bg-opacity-25 dark:bg-[#262626] bg-[#FFFFFF] bg-opacity-25 m-4 rounded-md border-0 h-screen">
         <Hero
           title={
             <>
               <Image
-                src={"/org-icon.png"}
+                src={"/QuaBot_Light_Icon.svg"}
                 width={60}
                 height={60}
                 quality={100}
-                alt="Quadra Icon"
+                alt="QuaBot Icon"
               />{" "}
-              {AI_NAME}
+              <span className={cn(ralewaySans.className)}>{AI_NAME}</span>
             </>
           }
           description={AI_DESCRIPTION}
