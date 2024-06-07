@@ -72,10 +72,10 @@ export const LogIn: FC<LoginProps> = (props) => {
         />
         <Card className="bg-[#E32FAB] bg-opacity-25 border-solid border-white border-opacity-20 backdrop-blur-[8px] m-8 min-h-[458px] pt-8 pl-8 h-full">
           <CardTitle className="text-3xl text-white">
-            Welcome to QuaBot!
+            Welcome to Q Bot!
           </CardTitle>
           <CardDescription className="text-white pt-3 pr-4 font-thin text-base">
-            QuaBot is here to assist with your tasks quickly and efficiently.
+            Q Bot is here to assist with your tasks quickly and efficiently.
           </CardDescription>
           <img
             src={"login_ilustration3.svg"}
