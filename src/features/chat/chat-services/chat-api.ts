@@ -16,6 +16,7 @@ import {
 } from "@/features/chat/models"
 import { mapOpenAIChatMessages } from "@/features/common/mapping-helper"
 import { OpenAIInstance } from "@/features/common/services/open-ai"
+import logger from "@/features/insights/app-insights"
 
 import { buildDataChatMessages, buildSimpleChatMessages, getContextPrompts } from "./chat-api-helper"
 import { calculateFleschKincaidScore } from "./chat-flesch"
@@ -171,6 +172,8 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
   } catch (error) {
     const errorResponse = error instanceof Error ? error.message : "An unknown error occurred."
     const errorStatusText = error instanceof Error ? error.toString() : "Unknown Error"
+
+    logger.error("ChatApi error", { error })
 
     return new Response(errorResponse, {
       status: 500,

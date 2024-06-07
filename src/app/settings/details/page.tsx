@@ -1,7 +1,25 @@
-import { UserDetailsForm } from "@/features/settings/user-details-form"
+import { ContextGuide, UserDetailsForm } from "@/features/settings/user-details"
+import { UserPreferences } from "@/features/user-management/models"
+import { GetUserPreferences } from "@/features/user-management/user-service"
+
+const getUserPreferences = async (): Promise<UserPreferences> => {
+  const result = await GetUserPreferences()
+  if (result.status !== "OK") throw new Error("Failed to get user preferences")
+  return result.response
+}
 
 export const dynamic = "force-dynamic"
+export default async function Home(): Promise<JSX.Element> {
+  const preferences = await getUserPreferences()
 
-export default function Home(): JSX.Element {
-  return <UserDetailsForm />
+  return (
+    <div className="mb-8 grid size-full w-full grid-cols-1 gap-8 p-4 pt-5 sm:grid-cols-2 sm:gap-2">
+      <div>
+        <UserDetailsForm preferences={preferences} />
+      </div>
+      <div>
+        <ContextGuide />
+      </div>
+    </div>
+  )
 }

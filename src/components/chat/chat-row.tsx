@@ -1,9 +1,9 @@
 "use client"
 
-import { OctagonAlert } from "lucide-react"
+import { OctagonAlert, SearchX } from "lucide-react"
 import React, { FC, useState } from "react"
 
-import ErrorBoundary from "@/components/chat/error-boundary"
+import ErrorBoundary from "@/components/error-boundary"
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
 import { calculateFleschKincaidScore } from "@/features/chat/chat-services/chat-flesch"
@@ -32,9 +32,9 @@ export const ChatRow: FC<ChatRowProps> = props => {
 
   return (
     <article className={"container mx-auto flex flex-col py-1 pb-2"}>
-      <ErrorBoundary>
+      <ErrorBoundary fallback={<ErrorSection />}>
         <section
-          className={`prose prose-slate max-w-none flex-col gap-4 overflow-hidden break-words rounded-md px-4 py-2 text-base text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base ${props.threadLocked && "border-4 border-error"} ${props.type === "assistant" && "bg-backgroundShade"} ${props.type != "assistant" && "bg-altBackgroundShade"}`}
+          className={`prose prose-slate max-w-full flex-col gap-4 overflow-hidden break-words rounded-md px-4 py-2 text-base text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base ${props.threadLocked && "border-4 border-error"} ${props.type === "assistant" && "bg-backgroundShade"} ${props.type != "assistant" && "bg-altBackgroundShade"}`}
         >
           {props.type === "assistant" && (
             <div className="flex w-full items-center justify-between">
@@ -56,10 +56,10 @@ export const ChatRow: FC<ChatRowProps> = props => {
             </div>
           )}
           <div
-            className="prose prose-slate max-w-none break-words text-base text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base"
+            className="prose prose-slate max-w-full break-words text-base text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base"
             tabIndex={0}
           >
-            <div className="flex w-full items-center justify-between">
+            <div className="flex size-full items-center justify-between">
               <Markdown content={content} />
               {!!props.message.contentFilterResult && (
                 <RewriteMessageButton
@@ -83,6 +83,9 @@ export const ChatRow: FC<ChatRowProps> = props => {
                 This message has triggered our content safety warnings, please rephrase your message, start a new chat
                 or reach out to support if you have concerns.
               </div>
+              <div className="flex items-center justify-center">
+                <OctagonAlert size={20} />
+              </div>
             </div>
           )}
           <div className="sr-only" aria-live="assertive">
@@ -94,3 +97,21 @@ export const ChatRow: FC<ChatRowProps> = props => {
   )
 }
 export default ChatRow
+
+const ErrorSection = (): JSX.Element => (
+  <div
+    className="my-2 flex max-w-none justify-center space-x-2 rounded-md bg-backgroundShade p-2 text-base text-text md:text-base"
+    tabIndex={0}
+  >
+    <div className="flex items-center justify-center text-alert">
+      <SearchX size={20} />
+    </div>
+    <div className="flex flex-grow items-center justify-center text-center">
+      Oops! Looks like there&apos;s a hiccup, and we can&apos;t show the response right now. But no worries, feel free
+      to keep the conversation going!
+    </div>
+    <div className="flex items-center justify-center text-alert">
+      <SearchX size={20} />
+    </div>
+  </div>
+)

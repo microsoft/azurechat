@@ -2,6 +2,8 @@
 import "server-only"
 import { AnalyzeResult } from "@azure/ai-form-recognizer"
 
+import logger from "@/features/insights/app-insights"
+
 export async function arrayBufferToBase64(buffer: ArrayBuffer): Promise<string> {
   const binary = new Uint8Array(buffer)
   let base64String = ""
@@ -100,7 +102,7 @@ async function customGetAnalyzeResult(modelId: string, resultId: string): Promis
 
     return analyzedResult
   } catch (e) {
-    console.error(e)
+    logger.error("Error in fetching analyze result", { error: e instanceof Error ? e.message : e })
     throw e
   }
 }

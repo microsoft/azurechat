@@ -6,6 +6,7 @@ import "./globals.css"
 
 import { GlobalConfigProvider } from "@/features/globals/global-client-config-context"
 import { Providers } from "@/features/globals/providers"
+import { applicationInsights } from "@/features/insights/app-insights"
 import { AI_AUTHOR, AI_NAME, AI_TAGLINE, APP_URL } from "@/features/theme/theme-config"
 import { ThemeProvider } from "@/features/theme/theme-provider"
 import { NavBar } from "@/features/ui/navbar"
@@ -37,6 +38,9 @@ export const metadata: Metadata = {
 }
 
 export const dynamic = "force-dynamic"
+
+if (process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING)
+  applicationInsights.initialize(process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING)
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   const isProd = process.env.NODE_ENV === "production"

@@ -8,6 +8,7 @@ import { ChatDocumentModel, ChatRecordType } from "@/features/chat/models"
 import { xMonthsAgo } from "@/features/common/date-helper"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { HistoryContainer } from "@/features/common/services/cosmos"
+import logger from "@/features/insights/app-insights"
 import { uniqueId } from "@/lib/utils"
 
 import { AzureCogDocumentIndex, indexDocuments } from "./azure-cog-search/azure-cog-vector-store"
@@ -47,7 +48,7 @@ const ensureSearchIsConfigured = (): boolean => {
     isNotNullOrEmpty(process.env.AZURE_SEARCH_API_VERSION)
 
   if (!isSearchConfigured) {
-    console.error("Azure search environment variables are not configured.")
+    logger.error("Azure search environment variables are not configured.")
     return false
   }
 
@@ -55,14 +56,14 @@ const ensureSearchIsConfigured = (): boolean => {
     isNotNullOrEmpty(process.env.APIM_BASE) && isNotNullOrEmpty(process.env.APIM_KEY)
 
   if (!isDocumentIntelligenceConfigured) {
-    console.error("Azure document intelligence environment variables are not configured.")
+    logger.error("Azure document intelligence environment variables are not configured.")
     return false
   }
 
   const isEmbeddingsConfigured = isNotNullOrEmpty(process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME)
 
   if (!isEmbeddingsConfigured) {
-    console.error("Azure OpenAI Embedding variables are not configured.")
+    logger.error("Azure OpenAI Embedding variables are not configured.")
     return false
   }
   return true

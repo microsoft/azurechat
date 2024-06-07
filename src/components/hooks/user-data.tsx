@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
 
+import logger from "@/features/insights/app-insights"
 import { UserRecord } from "@/features/user-management/models"
 import { GetUserByUpn } from "@/features/user-management/user-service"
 
@@ -41,10 +42,9 @@ export function useUserData(): UseUserDataReturnType {
     }
 
     if (status === "authenticated") {
-      fetchData().catch(err => {
-        //TODO handle error
-        console.error("Error fetching data:", err)
-      })
+      fetchData().catch(err =>
+        logger.error("Failed to fetch user data", { error: err instanceof Error ? err.message : "Unknown error" })
+      )
     }
   }, [session, status])
 

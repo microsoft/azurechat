@@ -12,6 +12,7 @@ import {
 
 import { hashValue } from "@/features/auth/helpers"
 import { migrateChatMessagesForCurrentUser } from "@/features/chat/chat-services/chat-message-service"
+import logger from "@/features/insights/app-insights"
 import { type TenantRecord } from "@/features/tenant-management/models"
 import { CreateTenant, GetTenantById } from "@/features/tenant-management/tenant-service"
 import { UserRecord } from "@/features/user-management/models"
@@ -122,8 +123,7 @@ export class UserSignInHandler {
 
       return { success: false, errorCode: SignInErrorType.NotAuthorised }
     } catch (error) {
-      // TODO handle error
-      console.error("Error handling sign-in:", error)
+      logger.error("Error signing in user", { error })
       return { success: false, errorCode: SignInErrorType.SignInFailed }
     }
   }
@@ -178,8 +178,7 @@ const getsertUser = async (userGroups: string[], user: User | AdapterUser): Prom
     if (existingUserResponse.status !== STATUS_OK) throw existingUserResponse
     return existingUserResponse.response
   } catch (error) {
-    // TODO handle error
-    console.error("Error upserting user:", error)
+    logger.error("Error getserting user", { error })
     throw error
   }
 }

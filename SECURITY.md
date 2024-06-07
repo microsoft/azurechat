@@ -1,3 +1,3 @@
 # Security
 
-The Queensland Governement AI Platform Team take security reports seriously. Please reach out via Teams to report any security issues.
+The Queensland Government AI Platform Team takes security reports seriously. Please [reach out via support](https://qchat.ai.qld.gov.au/support) to report any security issues.

@@ -17,6 +17,7 @@ import {
 import { xMonthsAgo } from "@/features/common/date-helper"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { HistoryContainer } from "@/features/common/services/cosmos"
+import logger from "@/features/insights/app-insights"
 import { uniqueId } from "@/lib/utils"
 
 import { FindAllChatDocumentsForCurrentUser } from "./chat-document-service"
@@ -101,6 +102,7 @@ export const UpdateChatThreadTitle = async (
   newTitle: string
 ): ServerActionResponseAsync<ChatThreadModel> => {
   try {
+    logger.event("UpdateChatThreadTitle", { chatThreadId, newTitle })
     const response = await FindChatThreadForCurrentUser(chatThreadId)
     if (response.status !== "OK") return response
     const chatThread = response.response
@@ -121,6 +123,7 @@ export const UpdateChatThreadToFileDetails = async (
   chatOverFileName: string
 ): ServerActionResponseAsync<ChatThreadModel> => {
   try {
+    logger.event("UpdateChatThreadToFileDetails", { chatThreadId, newType, chatOverFileName })
     const response = await FindChatThreadForCurrentUser(chatThreadId)
     if (response.status !== "OK") return response
     const chatThread = response.response
@@ -139,6 +142,8 @@ export const SoftDeleteChatThreadForCurrentUser = async (
   chatThreadId: string
 ): ServerActionResponseAsync<ChatThreadModel> => {
   try {
+    logger.event("SoftDeleteChatThreadForCurrentUser", { chatThreadId })
+
     const chatThreadResponse = await FindChatThreadForCurrentUser(chatThreadId)
     if (chatThreadResponse.status !== "OK") return chatThreadResponse
 
@@ -178,6 +183,7 @@ export const SoftDeleteChatThreadForCurrentUser = async (
 
 export const UpsertChatThread = async (chatThread: ChatThreadModel): ServerActionResponseAsync<ChatThreadModel> => {
   try {
+    logger.event("UpsertChatThread", { chatThreadId: chatThread.id })
     if (chatThread.id) {
       const response = await EnsureChatThreadOperation(chatThread.id)
       if (response.status !== "OK") return response
@@ -227,6 +233,8 @@ export const CreateChatThread = async (): ServerActionResponseAsync<ChatThreadMo
         errors: [{ message: "No active user session" }],
       }
 
+    logger.event("CreateChatThread", { userId, tenantId })
+
     const id = uniqueId()
     const modelToSave: ChatThreadModel = {
       name: "New Chat",
@@ -251,11 +259,12 @@ export const CreateChatThread = async (): ServerActionResponseAsync<ChatThreadMo
 
     const container = await HistoryContainer()
     const { resource } = await container.items.upsert<ChatThreadModel>(modelToSave)
-    if (!resource)
+    if (!resource) {
       return {
         status: "ERROR",
         errors: [{ message: "Chat thread not created" }],
       }
+    }
 
     return {
       status: "OK",
@@ -275,6 +284,14 @@ export type InitChatSessionResponse = {
 
 export const InitThreadSession = async (props: PromptProps): ServerActionResponseAsync<InitChatSessionResponse> => {
   const { id: chatThreadId, chatType, conversationStyle, conversationSensitivity, chatOverFileName } = props
+
+  logger.event("InitThreadSession", {
+    chatThreadId,
+    chatType,
+    conversationStyle,
+    conversationSensitivity,
+    chatOverFileName,
+  })
 
   const currentChatThreadResponse = await EnsureChatThreadOperation(chatThreadId)
   if (currentChatThreadResponse.status !== "OK") return currentChatThreadResponse
@@ -393,6 +410,7 @@ export const AssociateOffenderWithChatThread = async (
   chatThreadId: string,
   offenderId: string | undefined
 ): ServerActionResponseAsync<ChatThreadModel> => {
+  logger.event("AssociateOffenderWithChatThread", { chatThreadId, offenderId })
   const threadResponse = await FindChatThreadForCurrentUser(chatThreadId)
   if (threadResponse.status !== "OK") return threadResponse
 

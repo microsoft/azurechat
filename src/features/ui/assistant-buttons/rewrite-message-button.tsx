@@ -4,7 +4,7 @@ import { Sparkles, Sparkle } from "lucide-react"
 import { useState } from "react"
 
 import { PromptMessage } from "@/features/chat/models"
-import { useAppInsightsContext } from "@/features/insights/app-insights-context"
+import logger from "@/features/insights/app-insights"
 import { Button } from "@/features/ui/button"
 
 import { useButtonStyles } from "./use-button-styles"
@@ -20,7 +20,6 @@ export const RewriteMessageButton: React.FC<RewriteMessageButtonProps> = ({
   onAssistantButtonClick,
 }) => {
   const { iconSize, buttonClass } = useButtonStyles()
-  const { logError } = useAppInsightsContext()
 
   const [rewriteClicked, setRewriteClicked] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -47,7 +46,7 @@ export const RewriteMessageButton: React.FC<RewriteMessageButtonProps> = ({
 
       if (!response.ok) throw new Error("Failed to save smart-gen output")
     } catch (error) {
-      logError(error instanceof Error ? error : new Error(JSON.stringify(error)))
+      logger.error(error instanceof Error ? error.message : JSON.stringify(error))
     } finally {
       setIsLoading(false)
       onAssistantButtonClick(rewrittenMessage)

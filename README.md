@@ -2,9 +2,9 @@
 
 ## QChat - Queensland Government AI Chat Accelerator
 
-Welcome to the QChat README. This repository hosts the code for QChat, an AI-driven chat application tailored for Queensland Government agencies, adapted from the open-source Microsoft project, AzureChat. QChat is specifically designed to enhance the Queensland Government's use of Large Language Models.
+Welcome to the QChat README. This repository hosts the code for QChat, an AI-driven chat application tailored for Queensland Government agencies. Adapted from the open-source Microsoft project, AzureChat, QChat is specifically designed to enhance the Queensland Government's use of Large Language Models.
 
-QChat builds upon the foundational features of the original AzureChat project but is customised to align with the particular operational requirements and standards of the Queensland Government. The application is an integral part of the government's initiative to offer more effective public services through intelligent and responsive digital communication channels.
+QChat builds upon the foundational features of the original AzureChat project but is customised to align with the specific operational requirements and standards of the Queensland Government. The application is an integral part of the government's initiative to offer more effective public services through intelligent and responsive digital communication channels.
 
 ### Key Adaptations
 
@@ -36,7 +36,7 @@ We are keen on cultivating a collaborative and creative environment that welcome
 
 Queensland Government AI Unit
 
-- Project Issues: [GitHub Project Issues](https://github.com/kpqdap/azurechat/issues)
+- Project Issues: [GitHub Project Issues](https://github.com/QDAP-DATAAI/qchat/issues)
 
 ### Getting Started
 
@@ -44,18 +44,8 @@ For those interested in using or contributing to QChat, please review the `CONTR
 
 ### Licence
 
-QChat is licenced under the terms of the [MIT Licence](LICENSE).
+QChat is licensed under the terms of the [MIT Licence](LICENSE).
 
 ### Acknowledgements
 
 QChat is adapted from Microsoft's AzureChat, which is generously made available as an open-source project under the MIT Licence.
-
----
-
-Please note that QChat, while based on a Microsoft project, is an independent open-source application and is not officially associated with Microsoft.
-
----
-
-This README will be updated to reflect new advancements in QChat, changes in procedural guidelines, and to incorporate feedback from ongoing integration experiences.
-
-**It's important to always adhere to the official Queensland Government documentation and your agency's policies when engaging with or contributing to QChat.**

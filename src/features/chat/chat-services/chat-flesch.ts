@@ -1,5 +1,7 @@
 import { syllable } from "syllable"
 
+import logger from "@/features/insights/app-insights"
+
 function countWords(text: string): number {
   return text.match(/\w+/g)?.length || 0
 }
@@ -30,8 +32,7 @@ export function calculateFleschKincaidScore(text: string): number {
 
     return Math.round(fleschKincaidScore)
   } catch (error) {
-    // TODO handle error
-    console.error("Error calculating Flesch-Kincaid score:", error)
+    logger.error("Error calculating Flesch-Kincaid score", { error })
     return -1
   }
 }

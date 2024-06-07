@@ -1,12 +1,9 @@
 import { ToastAction } from "@radix-ui/react-toast"
 
+import logger from "@/features/insights/app-insights"
 import { type Toast, toast } from "@/features/ui/use-toast"
 
-export const showError = (
-  error: string,
-  logError?: (error: Error, properties?: Record<string, unknown>) => void,
-  reload?: () => void
-): void => {
+export const showError = (error: string, reload?: () => void): void => {
   if (typeof window !== "undefined")
     toast({
       variant: "destructive",
@@ -18,13 +15,10 @@ export const showError = (
       ) : undefined,
     })
 
-  logError?.(new Error(error))
+  logger.error(error)
 }
 
-export const showSuccess = (
-  message: Toast,
-  logEvent?: (name: string, properties?: Record<string, unknown>) => void
-): void => {
+export const showSuccess = (message: Toast): void => {
   if (typeof window !== "undefined") toast(message)
-  logEvent?.(message.title || "Show Success", { description: message.description })
+  logger.event(message.title || "Show Success", { description: message.description })
 }

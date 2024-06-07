@@ -13,6 +13,7 @@ import {
 } from "@/features/chat/models"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { HistoryContainer } from "@/features/common/services/cosmos"
+import logger from "@/features/insights/app-insights"
 
 export const FindAllChatMessagesForCurrentUser = async (
   chatThreadId: string
@@ -200,8 +201,7 @@ export const migrateChatMessagesForCurrentUser = async (
       response: resources,
     }
   } catch (error) {
-    // TODO handle error
-    console.error("Error occurred during chat message migration: ", error)
+    logger.error("Error occurred during chat message migration", { error })
     return {
       status: "ERROR",
       errors: [{ message: '"Updating your chat messages failed, please contact support"' }],

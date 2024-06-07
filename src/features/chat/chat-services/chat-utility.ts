@@ -1,6 +1,7 @@
 "use server"
 import "server-only"
 import { CATEGORIES, ChatThreadModel } from "@/features/chat/models"
+import logger from "@/features/insights/app-insights"
 
 import { UpsertChatThread } from "./chat-thread-service"
 import { GenericChatAPI } from "./generic-chat-api"
@@ -25,8 +26,7 @@ async function generateChatName(chatMessage: string): Promise<string> {
     }
     return name || "New Chat by Error"
   } catch (e) {
-    // TODO handle error
-    console.error("Error generating chat name:", e)
+    logger.error("Error generating chat name:", { error: e instanceof Error ? e.message : e })
     return "New Chat by Error"
   }
 }
@@ -50,8 +50,8 @@ async function generateChatCategory(
     if (CATEGORIES.map(String).includes(category)) return category as ChatThreadModel["chatCategory"]
 
     if (previousAttempt === null) return await generateChatCategory(chatMessage, rawCategory)
-  } catch (_e) {
-    console.log(`Error generating chat category: ${_e}`)
+  } catch (e) {
+    logger.error("Error generating chat category:", { error: e instanceof Error ? e.message : e })
   }
   return "Uncategorised"
 }
@@ -74,13 +74,11 @@ export async function UpdateChatThreadIfUncategorised(
         throw new Error(response.errors.join(", "))
       }
     } else {
-      //TOD handle console log
-      console.log("Chat thread already has a category, skipping category generation.")
+      logger.info("Chat thread already has a category, skipping category generation.")
     }
     return chatThread
   } catch (e) {
-    // TODO handle error
-    console.error("Failed to update chat thread due to an error:", e) // Log caught error
+    logger.error("Failed to update chat thread due to an error:", { error: e instanceof Error ? e.message : e })
     throw e
   }
 }
@@ -88,7 +86,7 @@ export async function UpdateChatThreadIfUncategorised(
 function StoreOriginalChatName(currentChatName: string): string {
   let previousChatName: string = ""
   if (currentChatName !== previousChatName) {
-    console.log(`Storing previous chat name: ${currentChatName}`)
+    logger.info(`Storing previous chat name: ${currentChatName}`)
     previousChatName = currentChatName
   }
   return previousChatName

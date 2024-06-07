@@ -1,7 +1,7 @@
-import { userHashedId } from "@/features/auth/helpers"
+import { userHashedId, userSession } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { TenantContainer } from "@/features/common/services/cosmos"
-import { TenantPreferences, TenantRecord } from "@/features/tenant-management/models"
+import { TenantDetails, TenantPreferences, TenantRecord } from "@/features/tenant-management/models"
 import { arraysAreEqual } from "@/lib/utils"
 
 export const GetTenantById = async (tenantId: string): ServerActionResponseAsync<TenantRecord> => {
@@ -150,4 +150,23 @@ export const UpdateTenant = async (tenant: TenantRecord): ServerActionResponseAs
       errors: [{ message: `${e}` }],
     }
   }
+}
+
+export const GetTenantDetails = async (): ServerActionResponseAsync<TenantDetails> => {
+  const user = await userSession()
+  if (!user) return { status: "ERROR", errors: [{ message: "User not found" }] }
+
+  const existingTenantResult = await GetTenantById(user.tenantId)
+  if (existingTenantResult.status !== "OK") return existingTenantResult
+
+  const tenantDetails: TenantDetails = {
+    primaryDomain: existingTenantResult.response.primaryDomain || "",
+    supportEmail: existingTenantResult.response.supportEmail,
+    departmentName: existingTenantResult.response.departmentName || "",
+    administrators: existingTenantResult.response.administrators,
+    groups: existingTenantResult.response.groups || [],
+    preferences: existingTenantResult.response.preferences || { contextPrompt: "" },
+    requiresGroupLogin: existingTenantResult.response.requiresGroupLogin,
+  }
+  return { status: "OK", response: tenantDetails }
 }

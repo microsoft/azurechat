@@ -1,5 +1,7 @@
 "use server"
 import "server-only"
+import logger from "@/features/insights/app-insights"
+
 import { GenericChatAPI } from "./generic-chat-api"
 
 export const getPromptSuggestions = async (input: string): Promise<string[]> => {
@@ -33,8 +35,7 @@ export const getPromptSuggestions = async (input: string): Promise<string[]> => 
 
     return [cleanedPrompt]
   } catch (e) {
-    // TODO handle error
-    console.error(e)
+    logger.error("Error generating prompt suggestions:", { error: e instanceof Error ? e.message : e })
     return [""]
   }
 }
