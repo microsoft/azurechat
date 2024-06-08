@@ -16,7 +16,7 @@ import { ReportingHero } from "./reporting-hero";
 import { FindAllChatThreadsForAdmin } from "./reporting-services/reporting-service";
 import ChatThreadRow from "./table-row";
 
-const SEARCH_PAGE_SIZE = 100;
+const SEARCH_PAGE_SIZE = 25;
 
 interface ChatReportingProps {
   page: number;
@@ -25,7 +25,7 @@ interface ChatReportingProps {
 export const ChatReportingPage: FC<ChatReportingProps> = async (props) => {
   return (
     <ScrollArea className="flex-1">
-      <main className="flex flex-1 flex-col dark:bg-opacity-25 dark:bg-[#262626] bg-[#FFFFFF] bg-opacity-25 m-4 rounded-md border-0 min-h-screen">
+      <main className="flex flex-1 flex-col gap-5  dark:bg-opacity-25 dark:bg-[#262626] bg-[#FFFFFF] bg-opacity-25 m-4 rounded-lg border-0 min-h-screen p-28">
         <ReportingHero />
         <Suspense fallback={<PageLoader />} key={props.page}>
           <ReportingContent {...props} />
@@ -52,7 +52,7 @@ async function ReportingContent(props: ChatReportingProps) {
   const chatThreads = chatHistoryResponse.response;
   const hasMoreResults = chatThreads.length === SEARCH_PAGE_SIZE;
   return (
-    <div className="container max-w-4xl py-3">
+    <div className="container max-w-full py-3">
       <Table>
         <TableHeader>
           <TableRow>
