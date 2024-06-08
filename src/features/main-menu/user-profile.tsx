@@ -38,7 +38,9 @@ export const UserProfile = () => {
               {session?.user?.name}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {session?.user?.email}
+              {(session?.user?.email?.length ?? 0) > 25
+                ? (session?.user?.email?.substring(0, 25) ?? "") + "..."
+                : session?.user?.email ?? ""}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
               {session?.user?.isAdmin ? "Admin" : ""}

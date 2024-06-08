@@ -11,10 +11,18 @@ import {
   CardTitle,
 } from "../ui/card";
 import { useTheme } from "next-themes";
+import { cn } from "../ui/lib";
+import { Raleway } from "next/font/google";
 
 interface LoginProps {
   isDevMode: boolean;
 }
+
+const ralewaySans = Raleway({
+  subsets: ["latin"],
+  weight: "600",
+  display: "swap",
+});
 
 export const LogIn: FC<LoginProps> = (props) => {
   const { theme, setTheme } = useTheme();
@@ -41,7 +49,9 @@ export const LogIn: FC<LoginProps> = (props) => {
             }
             width={40}
           />
-          <p className="text-3xl font-semibold">{AI_NAME}</p>
+          <p className={cn(ralewaySans.className, "text-3xl font-semibold")}>
+            {AI_NAME}
+          </p>
         </div>
         <div className="flex flex-col items-center mt-8 gap-4">
           <p>Login in with your Microsoft 365 account</p>
@@ -72,14 +82,14 @@ export const LogIn: FC<LoginProps> = (props) => {
         />
         <Card className="bg-[#E32FAB] bg-opacity-25 border-solid border-white border-opacity-20 backdrop-blur-[8px] m-8 min-h-[458px] pt-8 pl-8 h-full">
           <CardTitle className="text-3xl text-white">
-            Welcome to Q Bot!
+            Welcome to QBot!
           </CardTitle>
           <CardDescription className="text-white pt-3 pr-4 font-thin text-base">
-            Q Bot is here to assist with your tasks quickly and efficiently.
+            QBot is here to assist with your tasks quickly and efficiently.
           </CardDescription>
           <img
             src={"login_ilustration3.svg"}
-            className="absolute right-4 -bottom-2 h-[310px]"
+            className="absolute right-4 -bottom-2 h-3/4 xl:h-3/5"
           />
         </Card>
       </Card>

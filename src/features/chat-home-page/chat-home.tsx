@@ -1,5 +1,4 @@
 import { AddExtension } from "@/features/extensions-page/add-extension/add-new-extension";
-import { ExtensionCard } from "@/features/extensions-page/extension-card/extension-card";
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
 import { PersonaCard } from "@/features/persona-page/persona-card/persona-card";
 import { PersonaModel } from "@/features/persona-page/persona-services/models";
@@ -19,7 +18,7 @@ interface ChatPersonaProps {
 export const ChatHome: FC<ChatPersonaProps> = (props) => {
   return (
     <ScrollArea className="flex-1">
-      <main className="flex flex-1 flex-col gap-6 pb-6 dark:bg-opacity-25 dark:bg-[#262626] bg-[#FFFFFF] bg-opacity-25 m-4 rounded-md border-0 h-screen">
+      <main className="flex flex-1 flex-col gap-6 pb-6 dark:bg-opacity-25 dark:bg-[#262626] bg-[#FFFFFF] bg-opacity-25 m-4 rounded-lg border-0 h-screen">
         <Hero
           title={
             <>
@@ -36,7 +35,7 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
           description={AI_DESCRIPTION}
         ></Hero>
         <div className="container max-w-4xl flex gap-20 flex-col">
-          <div>
+          {/* <div>
             <h2 className="text-2xl font-bold mb-3">Extensions</h2>
 
             {props.extensions && props.extensions.length > 0 ? (
@@ -56,7 +55,7 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                 No extentions created
               </p>
             )}
-          </div>
+          </div> */}
           <div>
             <h2 className="text-2xl font-bold mb-3">Personas</h2>
 
