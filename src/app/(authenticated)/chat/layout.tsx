@@ -29,7 +29,7 @@ export default async function RootLayout({
   return (
     <div className={cn("flex flex-1 items-stretch")}>
       <div className="flex-1 flex ">
-        <MenuTray className="dark:bg-opacity-25 dark:bg-[#262626] bg-[#FFFFFF] bg-opacity-25 m-4 rounded-md border-0">
+        <MenuTray className="dark:bg-opacity-25 dark:bg-[#262626] bg-[#FFFFFF] bg-opacity-25 m-4 rounded-lg border-0">
           <ChatMenuHeader />
           <ScrollArea>
             <ChatMenu menuItems={chatHistoryResponse.response} />
