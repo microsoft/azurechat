@@ -14,7 +14,8 @@ import ChatInputMenu from "./chat-input-menu"
 interface Props {}
 
 const ChatInput: FC<Props> = () => {
-  const { setInput, handleSubmit, isLoading, input, chatBody, isModalOpen, messages, fileState, stop } = useChatContext()
+  const { setInput, handleSubmit, isLoading, input, chatBody, isModalOpen, messages, fileState, stop } =
+    useChatContext()
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isDataChat = useMemo(() => chatBody.chatType === "data" || chatBody.chatType === "audio", [chatBody.chatType])
   const fileChatVisible = (chatBody.chatType === "data" || chatBody.chatType === "audio") && chatBody.chatOverFileName
@@ -100,13 +101,13 @@ const ChatInput: FC<Props> = () => {
                 variant="ghost"
                 ref={buttonRef}
                 disabled={isLoading && fileState.isUploadingFile}
-                ariaLabel="Submit your message"
+                ariaLabel={isLoading ? "Cancel the reply" : "Submit your message"}
                 aria-busy={isLoading && fileState.isUploadingFile ? "true" : "false"}
               >
                 {isLoading && fileState.isUploadingFile ? (
                   <Loader className="animate-spin" aria-hidden="true" size={16} />
                 ) : isLoading ? (
-                  <StopCircle aria-hidden="true" size={16} />
+                  <StopCircle aria-hidden="true" className="text-error" size={16} />
                 ) : (
                   <Send aria-hidden="true" size={16} />
                 )}
