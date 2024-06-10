@@ -61,7 +61,7 @@ module.exports = {
         checkMethodDeclarations: true,
       },
     ],
-    "no-console": "warn",
+    "no-console": "error",
     "no-relative-import-paths/no-relative-import-paths": ["warn", { allowSameFolder: true, prefix: "@" }],
     "import/order": [
       "warn",
