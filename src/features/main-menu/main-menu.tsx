@@ -6,14 +6,7 @@ import {
   MenuItemContainer,
   menuIconProps,
 } from "@/ui/menu";
-import {
-  BookText,
-  Home,
-  MessageCircle,
-  Blocks,
-  Sheet,
-  VenetianMask,
-} from "lucide-react";
+import { BookText, Home, Blocks, Sheet, VenetianMask } from "lucide-react";
 import { getCurrentUser } from "../auth-page/helpers";
 import { MenuLink } from "./menu-link";
 import { UserProfile } from "./user-profile";
@@ -25,17 +18,17 @@ export const MainMenu = async () => {
     <Menu>
       <MenuBar className="bg-gradient-to-t from-[#2b3d64]/30 to-[#24538D]/30 border-0">
         <MenuItemContainer>
-          <MenuItem tooltip="Home" asChild>
+          {/* <MenuItem tooltip="Home" asChild>
             <MenuLink href="/chat" ariaLabel="Go to the Home page">
               <Home {...menuIconProps} className="dark:text-white" />
             </MenuLink>
-          </MenuItem>
+          </MenuItem> */}
           <MenuTrayToggle />
         </MenuItemContainer>
         <MenuItemContainer>
           <MenuItem tooltip="Chat">
             <MenuLink href="/chat" ariaLabel="Go to the Chat page">
-              <MessageCircle {...menuIconProps} />
+              <Home {...menuIconProps} />
             </MenuLink>
           </MenuItem>
           <MenuItem tooltip="Persona">
