@@ -15,11 +15,14 @@ import { HistoryContainer } from "@/features/common/services/cosmos";
 import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { PERSONA_ATTRIBUTE, PersonaModel, PersonaModelSchema } from "./models";
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 interface PersonaInput {
   name: string;
   description: string;
   personaMessage: string;
+  department: string;
   isPublished: boolean;
 }
 
@@ -83,6 +86,7 @@ export const CreatePersona = async (
       name: props.name,
       description: props.description,
       personaMessage: props.personaMessage,
+      department: props.department,
       isPublished: user.isAdmin ? props.isPublished : false,
       userId: await userHashedId(),
       createdAt: new Date(),
@@ -193,6 +197,7 @@ export const UpsertPersona = async (
         ...persona,
         name: personaInput.name,
         description: personaInput.description,
+        department: personaInput.department,
         personaMessage: personaInput.personaMessage,
         isPublished: user.isAdmin
           ? personaInput.isPublished
@@ -238,29 +243,72 @@ export const UpsertPersona = async (
     };
   }
 };
-
-export const FindAllPersonaForCurrentUser = async (): Promise<
-  ServerActionResponse<Array<PersonaModel>>
-> => {
+export const FindAllPersonaForCurrentUser = async (
+  department: string
+): Promise<ServerActionResponse<Array<PersonaModel>>> => {
   try {
-    const querySpec: SqlQuerySpec = {
-      query:
-        "SELECT * FROM root r WHERE r.type=@type AND (r.isPublished=@isPublished OR r.userId=@userId) ORDER BY r.createdAt DESC",
-      parameters: [
-        {
-          name: "@type",
-          value: PERSONA_ATTRIBUTE,
-        },
-        {
-          name: "@isPublished",
-          value: true,
-        },
-        {
-          name: "@userId",
-          value: await userHashedId(),
-        },
-      ],
-    };
+    let querySpec: SqlQuerySpec;
+
+    const user = await getCurrentUser();
+
+    if (user.isAdmin) {
+      // If user is admin, select all personas
+      querySpec = {
+        query: `
+        SELECT * FROM root r 
+        WHERE r.type=@type 
+        AND (r.isPublished=@isPublished OR r.userId=@userId)
+        ORDER BY r.createdAt DESC
+      `,
+        parameters: [
+          {
+            name: "@type",
+            value: PERSONA_ATTRIBUTE,
+          },
+          {
+            name: "@isPublished",
+            value: true,
+          },
+          {
+            name: "@userId",
+            value: await userHashedId(),
+          },
+        ],
+      };
+    } else {
+      // If user is not admin, select only their own personas and published ones
+      querySpec = {
+        query: `
+        SELECT * FROM root r 
+        WHERE r.type=@type 
+        AND (r.isPublished=@isPublished OR r.userId=@userId OR r.department=@allDepartment)
+        AND (r.department=@department OR r.department=@allDepartment)
+        ORDER BY r.createdAt DESC
+      `,
+        parameters: [
+          {
+            name: "@type",
+            value: PERSONA_ATTRIBUTE,
+          },
+          {
+            name: "@isPublished",
+            value: true,
+          },
+          {
+            name: "@userId",
+            value: await userHashedId(),
+          },
+          {
+            name: "@department",
+            value: department,
+          },
+          {
+            name: "@allDepartment",
+            value: "All Department",
+          },
+        ],
+      };
+    }
 
     const { resources } = await HistoryContainer()
       .items.query<PersonaModel>(querySpec)
@@ -281,7 +329,6 @@ export const FindAllPersonaForCurrentUser = async (): Promise<
     };
   }
 };
-
 export const CreatePersonaChat = async (
   personaId: string
 ): Promise<ServerActionResponse<ChatThreadModel>> => {
@@ -326,3 +373,19 @@ const ValidateSchema = (model: PersonaModel): ServerActionResponse => {
     response: model,
   };
 };
+export async function getAllDepartments(req: any) {
+  const token = await getToken({ req });
+
+  // Modify the fetch request to match your needs
+  const res = await fetch(
+    "https://graph.microsoft.com/v1.0/users?$select=department",
+    {
+      // Add the  access token to your request
+      headers: { Authorization: `Bearer ${token?.accessToken}` },
+    }
+  );
+
+  const data = await res.json();
+
+  return NextResponse.json({ data });
+}
