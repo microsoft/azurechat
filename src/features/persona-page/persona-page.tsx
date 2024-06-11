@@ -14,12 +14,12 @@ interface ChatPersonaProps {
 export const ChatPersonaPage: FC<ChatPersonaProps> = async (props) => {
   // filter departments by avoiding null values and duplicates
 
-  console.log(props?.departments?.value);
-
   const filteredDepartments = [
     { department: "All Department" },
     ...props?.departments?.value
-      .filter((data: any) => data.department !== null)
+      .filter(
+        (data: any) => data.department !== null && data.department !== "Ex-Emp"
+      )
       .filter((data: any, index: number, self: any[]) => {
         return (
           index === self.findIndex((d: any) => d.department === data.department)

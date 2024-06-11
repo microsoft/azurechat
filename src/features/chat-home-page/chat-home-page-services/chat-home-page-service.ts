@@ -15,5 +15,7 @@ export async function MSGraph(req: any) {
 
   const data = await res.json();
 
+  console.log("current userdata", data);
+
   return NextResponse.json({ data });
 }

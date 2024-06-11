@@ -60,6 +60,9 @@ export const AddNewPersona: FC<Props> = (props) => {
     }
   };
 
+  console.log("Hi");
+  console.log("user departments", props.departments);
+
   return (
     <Sheet
       open={isOpened}
@@ -116,7 +119,7 @@ export const AddNewPersona: FC<Props> = (props) => {
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    {props.departments.map((department: any) => (
+                    {props?.departments.map((department: any) => (
                       <SelectItem
                         key={department.department}
                         value={department.department}
