@@ -38,6 +38,8 @@ export default async function Home() {
   const msGraphData = await fetchCurrentUserDetails(cookieHeader);
   const allDepartments = await fetchAllDepartments(cookieHeader);
 
+  console.log(allDepartments);
+
   const [personasResponse] = await Promise.all([
     FindAllPersonaForCurrentUser(msGraphData.data.department),
   ]);
