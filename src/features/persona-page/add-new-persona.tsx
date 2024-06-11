@@ -23,8 +23,17 @@ import {
   personaStore,
   usePersonaState,
 } from "./persona-store";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/features/ui/select";
 
-interface Props {}
+interface Props {
+  departments: any;
+}
 
 export const AddNewPersona: FC<Props> = (props) => {
   const initialState: ServerActionResponse | undefined = undefined;
@@ -90,6 +99,35 @@ export const AddNewPersona: FC<Props> = (props) => {
                 />
               </div>
               <div className="grid gap-2">
+                <Label>
+                  Suitable Department{" "}
+                  {persona.department !== "" && (
+                    <span>(Selected Department: {persona.department})</span>
+                  )}
+                </Label>
+                <Select name="department" required>
+                  <SelectTrigger
+                    className="w-full"
+                    aria-label="Select department"
+                  >
+                    <SelectValue
+                      placeholder="Select suitable department for this persona"
+                      defaultValue={persona.department}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {props.departments.map((department: any) => (
+                      <SelectItem
+                        key={department.department}
+                        value={department.department}
+                      >
+                        {department.department}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
                 <Label htmlFor="description">Short description</Label>
                 <Input
                   type="text"
@@ -123,7 +161,7 @@ export const AddNewPersona: FC<Props> = (props) => {
 function Submit() {
   const status = useFormStatus();
   return (
-    <Button disabled={status.pending} className="gap-2">
+    <Button disabled={status.pending} className="gap-2 text-white">
       <LoadingIndicator isLoading={status.pending} />
       Save
     </Button>

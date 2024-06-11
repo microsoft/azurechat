@@ -11,6 +11,7 @@ class PersonaState {
     id: "",
     name: "",
     description: "",
+    department: "",
     personaMessage: "",
     createdAt: new Date(),
     isPublished: false,
@@ -90,6 +91,7 @@ export const FormDataToPersonaModel = (formData: FormData): PersonaModel => {
     id: formData.get("id") as string,
     name: formData.get("name") as string,
     description: formData.get("description") as string,
+    department: formData.get("department") as string,
     personaMessage: formData.get("personaMessage") as string,
     isPublished: formData.get("isPublished") === "on" ? true : false,
     userId: "", // the user id is set on the server once the user is authenticated
