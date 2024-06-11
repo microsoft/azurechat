@@ -58,9 +58,9 @@ export const simpleSearch = async (
 ): Promise<Array<AzureCogDocumentIndex & DocumentSearchModel>> => {
   const url = `${baseIndexUrl()}/docs/search?api-version=${process.env.AZURE_SEARCH_API_VERSION}`
 
-  const userFilter = `userId eq '${userId}'`
-  const threadFilter = `chatThreadId eq '${chatThreadId}'`
-  const tenantFilter = `tenantId eq '${tenantId}'`
+  const userFilter = `search.in(userId, '${userId}')`
+  const threadFilter = `search.in(chatThreadId, '${chatThreadId}')`
+  const tenantFilter = `search.in(tenantId, '${tenantId}')`
   const combinedFilter = [filter?.filter, userFilter, threadFilter, tenantFilter].filter(Boolean).join(" and ")
 
   const searchBody: AzureCogRequestObject = {
@@ -95,9 +95,9 @@ export const similaritySearchVectorWithScore = async (
 
   const url = `${baseIndexUrl()}/docs/search?api-version=${process.env.AZURE_SEARCH_API_VERSION}`
 
-  const userFilter = `userId eq '${userId}'`
-  const threadFilter = `chatThreadId eq '${chatThreadId}'`
-  const tenantFilter = `tenantId eq '${tenantId}'`
+  const userFilter = `search.in(userId, '${userId}')`
+  const threadFilter = `search.in(chatThreadId, '${chatThreadId}')`
+  const tenantFilter = `search.in(tenantId, '${tenantId}')`
   const combinedFilter = [filter?.filter, userFilter, threadFilter, tenantFilter].filter(Boolean).join(" and ")
 
   const searchBody: AzureCogRequestObject = {

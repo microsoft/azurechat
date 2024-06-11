@@ -11,6 +11,9 @@ import { Input } from "@/features/ui/input"
 import { ChatFilesDisplay } from "./chat-file-list"
 import { useFileSelection } from "./use-file-selection"
 
+//this is a temporary check to see if the whisper feature is enabled while this is experimental, this will be removed in the future
+export const shouldUseWhisper = (): boolean => window.location.search.includes("whisper")
+
 export const ChatFileUI: FC = () => {
   const { id, fileState, chatBody, offenderId } = useChatContext()
   const { isFileNull, setIsFileNull, uploadButtonLabel, isUploadingFile } = fileState
@@ -24,7 +27,8 @@ export const ChatFileUI: FC = () => {
       case "data":
         return ".pdf"
       case "audio":
-        return ".wav"
+        // whisper supports any audio/video as input but ACS only supports .wav, because there's side by side now, when using whisper, it will also call acs so just use .wav for now.
+        return ".wav" // shouldUseWhisper() ? "audio/*, video/*" : ".wav"
       default:
         return ""
     }

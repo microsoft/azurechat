@@ -15,7 +15,7 @@ import {
   PromptProps,
 } from "@/features/chat/models"
 import { mapOpenAIChatMessages } from "@/features/common/mapping-helper"
-import { OpenAIInstance } from "@/features/common/services/open-ai"
+import { OpenAIInstance, OpenAINoContentSafetyInstance } from "@/features/common/services/open-ai"
 import logger from "@/features/insights/app-insights"
 
 import { buildDataChatMessages, buildSimpleChatMessages, getContextPrompts } from "./chat-api-helper"
@@ -54,7 +54,6 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
       userMessage = res.userMessage
       metaPrompt = res.systemMessage
 
-      // TODO: https://dis-qgcdg.atlassian.net/browse/QGGPT-437
       translate = async (_input: string): Promise<string> => await Promise.resolve("")
     }
 
@@ -217,7 +216,7 @@ async function getChatResponse(
   let contentFilterTriggerCount = chatThread.contentFilterTriggerCount ?? 0
 
   try {
-    const openAI = OpenAIInstance()
+    const openAI = chatThread.chatType === "audio" ? OpenAINoContentSafetyInstance() : OpenAIInstance()
     return {
       response: await openAI.chat.completions.create({
         messages: [systemPrompt, ...mapOpenAIChatMessages(history), userMessage],

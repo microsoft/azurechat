@@ -19,8 +19,14 @@ export const GroupList: React.FC<{ tenantGroups: string[] }> = ({ tenantGroups }
 
   const handleNewGroups = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
-    const newGroupGuids = (new FormData(e.currentTarget).get("newGroups") as string).split(",").map(guid => guid.trim())
-    await submit([...groups, ...newGroupGuids]).then(() => (e.target as HTMLFormElement)?.reset())
+    const form = new FormData(e.currentTarget)
+    const newGroupGuids = (form.get("newGroups") as string).split(",").map(guid => guid.trim())
+    try {
+      await submit([...groups, ...newGroupGuids])
+      ;(e.target as HTMLFormElement)?.reset()
+    } catch (error) {
+      logger.error("Error submitting new groups", { error })
+    }
   }
   const handleDeleteGroup = async (groupId: string): Promise<void> => {
     const newGroupGuids = groups.filter(group => group !== groupId)
@@ -157,7 +163,14 @@ const DeleteGroupDialog: React.FC<{
           <Button
             variant="destructive"
             className="ml-2"
-            onClick={async () => await onConfirm(group).then(onClose)}
+            onClick={async () => {
+              try {
+                await onConfirm(group)
+                onClose()
+              } catch (error) {
+                logger.error("Error confirming group", { error })
+              }
+            }}
             disabled={loading}
             aria-label="Confirm delete group"
           >

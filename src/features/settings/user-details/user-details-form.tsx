@@ -20,8 +20,14 @@ export const UserDetailsForm: React.FC<{ preferences: UserPreferences }> = ({ pr
 
   const handleSubmitContextPrompt = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
-    const newContextPrompt = new FormData(e.currentTarget).get("contextPrompt") as string
-    await submit(newContextPrompt).then(() => (e.target as HTMLFormElement)?.reset())
+    const form = new FormData(e.currentTarget)
+    const newContextPrompt = form.get("contextPrompt") as string
+    try {
+      await submit(newContextPrompt)
+      ;(e.target as HTMLFormElement)?.reset()
+    } catch (error) {
+      logger.error("Error submitting context prompt", { error })
+    }
   }
 
   async function submit(newContextPrompt: string): Promise<void> {

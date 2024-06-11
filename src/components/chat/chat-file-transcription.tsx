@@ -1,4 +1,4 @@
-import { DownloadIcon } from "lucide-react"
+import { DownloadIcon, CaptionsIcon } from "lucide-react"
 import { FC } from "react"
 
 import { Markdown } from "@/components/markdown/markdown"
@@ -12,6 +12,7 @@ import { useWindowSize } from "@/features/ui/windowsize"
 interface ChatFileTranscriptionProps {
   name: string
   contents: string
+  vtt: string
 }
 
 export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
@@ -21,6 +22,17 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
     const fileName = `${props.name}-transcription.docx`
     const chatThreadName = chatBody.chatThreadName || `${AI_NAME} ${fileName}`
     await convertTranscriptionToWordDocument([props.contents], props.name, fileName, AI_NAME, chatThreadName)
+  }
+
+  const onDownloadVttFile = (): void => {
+    const element = document.createElement("a")
+    element.setAttribute("href", `data:text/plain;base64,${toBinaryBase64(props.vtt ?? "")}`)
+    element.setAttribute("download", `${props.name}-transcription.vtt`)
+
+    document.body.appendChild(element)
+    element.click()
+
+    document.body.removeChild(element)
   }
 
   const { width } = useWindowSize()
@@ -36,7 +48,7 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
   }
 
   return (
-    <article className="container mx-auto flex flex-col py-1 pb-4">
+    <article className="mx-auto flex flex-col py-1 pb-4">
       <section className="flex-col gap-4 overflow-hidden rounded-md bg-background p-4">
         <header className="flex w-full items-center justify-between">
           <Typography variant="h3">{props.name}</Typography>
@@ -56,9 +68,31 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
             >
               <DownloadIcon size={iconSize} />
             </Button>
+
+            {props.vtt.length > 0 && (
+              <Button
+                ariaLabel="Download WebVTT subtitles file"
+                variant={"ghost"}
+                size={"default"}
+                className={buttonClass}
+                title="Download WebVTT subtitles file"
+                onClick={onDownloadVttFile}
+              >
+                <CaptionsIcon size={iconSize} />
+              </Button>
+            )}
           </div>
         </footer>
       </section>
     </article>
   )
+}
+
+const toBinaryBase64 = (text: string): string => {
+  const codeUnits = new Uint16Array(text.length)
+  for (let i = 0; i < codeUnits.length; i++) {
+    codeUnits[i] = text.charCodeAt(i)
+  }
+
+  return btoa(String.fromCharCode(...new Uint8Array(codeUnits.buffer)))
 }

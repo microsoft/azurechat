@@ -35,7 +35,7 @@ export const OffenderTranscriptForm = ({ chatThreadId }: OffenderTranscriptFormP
   return (
     <div className="bg-background p-5">
       {isIdSaved ? (
-        <Typography variant="p" className=" text-muted-foreground">
+        <Typography variant="p" className="text-muted-foreground">
           Offender ID {offenderId} saved.
         </Typography>
       ) : (

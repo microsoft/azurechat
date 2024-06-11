@@ -3,6 +3,8 @@ import { UpdateChatThreadToFileDetails } from "@/features/chat/chat-services/cha
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 
+import { shouldUseWhisper } from "./chat-file-ui"
+
 interface Props {
   id: string
 }
@@ -28,17 +30,28 @@ export const useFileSelection = (
 
       formData.append("chatType", chatBody.chatType)
       formData.append("id", props.id)
+
+      const runList = formData.get("chatType") === "audio" && shouldUseWhisper() ? ["acs", "whisper"] : [""]
+
       const file: File | null = formData.get(chatBody.chatType) as unknown as File
-      const uploadResponse = await UploadDocument(formData)
-      if (uploadResponse.status !== "OK") throw showError(uploadResponse.errors[0].message)
 
-      const indexErrors = []
-      const [splitDocuments, contents] = uploadResponse.response
+      runList.forEach(async element => {
+        if (element !== "acs") formData.append(element, "1")
 
-      for (let i = 0; i < splitDocuments.length; i++) {
+        const fileName =
+          runList.length === 1
+            ? file.name
+            : `${file.name.split(".")[0]} (transcribed with ${element}).${file.name.split(".")[1]}`
+
+        const uploadResponse = await UploadDocument(formData)
+        if (uploadResponse.status !== "OK") throw showError(uploadResponse.errors[0].message)
+
+        const indexErrors = []
+        const [splitDocuments, contents, vtt] = uploadResponse.response
+
         try {
-          setUploadButtonLabel(`Indexing file [${i + 1}]/[${splitDocuments.length}]`)
-          const indexResponse = await IndexDocuments(file.name, [splitDocuments[i]], props.id, i + 1, contents)
+          setUploadButtonLabel(`Indexing file ${fileName}...`)
+          const indexResponse = await IndexDocuments(fileName, splitDocuments, props.id, contents, vtt)
 
           if (indexResponse.status !== "OK") {
             showError(`${file.name} failed to be indexed. ${indexResponse.errors[0].message}`)
@@ -47,20 +60,20 @@ export const useFileSelection = (
         } catch (e) {
           alert(e)
         }
-      }
+
+        if (indexErrors.length)
+          throw new Error("Looks like not all documents were indexed. Please try again.", {
+            cause: indexErrors,
+          })
+
+        fileState.setIsFileNull(true)
+        showSuccess({
+          title: "File upload",
+          description: `${file.name} uploaded successfully.`,
+        })
+      })
 
       await UpdateChatThreadToFileDetails(props.id, chatBody.chatType, file.name)
-
-      if (indexErrors.length)
-        throw new Error("Looks like not all documents were indexed. Please try again.", {
-          cause: indexErrors,
-        })
-
-      fileState.setIsFileNull(true)
-      showSuccess({
-        title: "File upload",
-        description: `${file.name} uploaded successfully.`,
-      })
 
       const chatOverFileName = chatBody.chatOverFileName ? `${file.name}, ${chatBody.chatOverFileName}` : file.name
       setChatBody({ ...chatBody, chatOverFileName })

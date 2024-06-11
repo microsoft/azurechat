@@ -1,6 +1,6 @@
 {
   "name": "src",
-  "version": "1.4.8",
+  "version": "1.5.0",
   "private": true,
   "scripts": {
     "report": "npx ts-node --project tsconfig.script.json generate-model-report.ts",
@@ -20,6 +20,7 @@
     "prepare": "cd .. && husky src/.husky"
   },
   "dependencies": {
+    "@azure-rest/ai-content-safety": "^1.0.0",
     "@azure-rest/ai-translation-text": "^1.0.0-beta.1",
     "@azure/ai-form-recognizer": "^5.0.0",
     "@azure/cosmos": "^4.0.0",
@@ -29,6 +30,7 @@
     "@azure/openai": "^1.0.0-beta.12",
     "@azure/search-documents": "^12.0.0",
     "@codemirror/lang-javascript": "^6.2.2",
+    "@grpc/grpc-js": "^1.8.22",
     "@markdoc/markdoc": "^0.4.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.2.1",
     "@microsoft/applicationinsights-web": "^3.2.1",

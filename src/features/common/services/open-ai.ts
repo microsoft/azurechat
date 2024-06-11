@@ -10,6 +10,16 @@ export const OpenAIInstance = (): OpenAI => {
   return openai
 }
 
+export const OpenAINoContentSafetyInstance = (): OpenAI => {
+  const openai = new OpenAI({
+    apiKey: process.env.APIM_KEY,
+    baseURL: `${process.env.APIM_BASE}/openai/deployments/${process.env.AZURE_OPENAI_API_NOCONTENTSAFETY_DEPLOYMENT_NAME}`,
+    defaultQuery: { "api-version": process.env.AZURE_OPENAI_API_VERSION || "2024-03-01-preview" },
+    defaultHeaders: { "api-key": process.env.APIM_KEY },
+  })
+  return openai
+}
+
 export const OpenAIEmbeddingInstance = (): OpenAI => {
   if (
     !process.env.APIM_KEY ||

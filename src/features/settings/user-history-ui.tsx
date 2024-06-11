@@ -21,7 +21,7 @@ export const ChatReportingUI: FC<Props> = async props => {
     <Card className="relative h-full">
       <div className="h-full overflow-y-auto rounded-md">
         <div className="flex justify-center p-4"></div>
-        <div className=" pb-[80px] ">
+        <div className="pb-[80px]">
           {chatThread.status !== "OK" || chats.status !== "OK" ? (
             <div>Chat thread or messages could not be loaded...</div>
           ) : (
