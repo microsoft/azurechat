@@ -11,6 +11,8 @@ import { hashValue } from "./helpers";
  */
 
 async function refreshAccessToken(token: any) {
+  console.log("second executed");
+
   try {
     const url = `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}/oauth2/v2.0/token`;
     const response = await fetch(url, {
@@ -127,30 +129,25 @@ export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [...configureIdentityProvider()],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, profile }) {
+      console.log("first executed");
       if (user?.isAdmin) {
         token.isAdmin = user.isAdmin;
       }
-      // Initial sign in
-      if (account && user) {
-        return {
-          accessToken: account.access_token,
-          accessTokenExpires: Date.now() + (account.expires_in as any) * 1000,
-          refreshToken: account.refresh_token,
-          user,
-        };
+      if (account && profile) {
+        token.accessToken = account.access_token;
+        token.accessTokenExpires = (account.expires_at as number) * 1000;
+        token.refreshToken = account.refresh_token;
       }
-      // Return previous token if the access token has not expired yet
-      if (Date.now() < (token.accessTokenExpires as any)) {
+
+      if (Date.now() < (token.accessTokenExpires as number)) {
         return token;
       }
 
-      // Access token has expired, try to update it
       return refreshAccessToken(token);
     },
     async session({ session, token, user }) {
       session.user.isAdmin = token.isAdmin as boolean;
-
       return session;
     },
   },
