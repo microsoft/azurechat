@@ -82,8 +82,11 @@ export const AddFunction = () => {
                   defaultValue={func.endpointType}
                   name="endpoint-type[]"
                   required
+                >
+                  <SelectTrigger
+                    className="w-[80px]"
+                    aria-label="Select HTTP method for API endpoint"
                   >
-                  <SelectTrigger className="w-[80px]" aria-label="Select HTTP method for API endpoint">
                     <SelectValue placeholder="GET" defaultValue={"GET"} />
                   </SelectTrigger>
                   <SelectContent>
@@ -105,7 +108,7 @@ export const AddFunction = () => {
 
             <Label>GPT Function call definition (JSON)</Label>
             <div className="w-[580px] max-w-[580px]">
-              <input type="hidden" name="code[]" value={func.code}/>
+              <input type="hidden" name="code[]" value={func.code} />
               <CodeMirror
                 value={func.code}
                 lang="json"

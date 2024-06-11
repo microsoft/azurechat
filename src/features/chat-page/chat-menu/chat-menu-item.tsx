@@ -36,10 +36,10 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
       <Link
         href={props.href}
         className={cn(
-          "flex-1 flex items-center dark:text-white text-black  gap-2 p-3 overflow-hidden",
+          "flex-1 flex items-center dark:text-white text-black  gap-2 p-3 pt-2 pb-2 overflow-hidden text-sm",
           path.startsWith(props.href) && props.href !== "/"
-            ? "dark:text-white  font-semibold"
-            : "font-extralight"
+            ? "dark:text-white  font-semibold text-sm"
+            : "font-extralight text-sm"
         )}
       >
         {props.children}
