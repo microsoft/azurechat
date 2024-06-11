@@ -7,7 +7,7 @@ const requireAuth: string[] = [
   "/reporting",
   "/unauthorized",
   "/persona",
-  "/prompt"
+  "/prompt",
 ];
 const requireAdmin: string[] = ["/reporting"];
 
@@ -45,6 +45,8 @@ export const config = {
     "/reporting/:path*",
     "/api/chat:path*",
     "/api/images:path*",
+    "/api/msgraph:path*",
+    "/api/users:path*",
     "/chat/:path*",
   ],
 };
