@@ -9,10 +9,12 @@ import Image from "next/image";
 import { FC } from "react";
 import { cn } from "@/ui/lib";
 import { ralewaySans } from "../../app/fonts";
+import { ViewAllPersonas } from "./view-all-persona/view-all-persona";
 
 interface ChatPersonaProps {
   personas: PersonaModel[];
   extensions: ExtensionModel[];
+  redirectToPersona: any;
 }
 
 export const ChatHome: FC<ChatPersonaProps> = (props) => {
@@ -34,42 +36,26 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
           }
           description={AI_DESCRIPTION}
         ></Hero>
-        <div className="container max-w-4xl flex gap-20 flex-col">
-          {/* <div>
-            <h2 className="text-2xl font-bold mb-3">Extensions</h2>
-
-            {props.extensions && props.extensions.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3">
-                {props.extensions.map((extension) => {
-                  return (
-                    <ExtensionCard
-                      extension={extension}
-                      key={extension.id}
-                      showContextMenu={false}
-                    />
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-muted-foreground max-w-xl">
-                No extentions created
-              </p>
-            )}
-          </div> */}
+        <div className="container max-w-4xl flex gap-10 flex-col">
           <div>
-            <h2 className="text-2xl font-bold mb-3">Personas</h2>
-
             {props.personas && props.personas.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3">
-                {props.personas.map((persona) => {
-                  return (
-                    <PersonaCard
-                      persona={persona}
-                      key={persona.id}
-                      showContextMenu={false}
-                    />
-                  );
-                })}
+              <div>
+                {props.personas.length > 3 && (
+                  <div className="text-right mt-3">
+                    <ViewAllPersonas />
+                  </div>
+                )}
+                <div className="grid grid-cols-3 gap-3">
+                  {props.personas.slice(0, 3).map((persona) => {
+                    return (
+                      <PersonaCard
+                        persona={persona}
+                        key={persona.id}
+                        showContextMenu={false}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             ) : (
               <p className="text-muted-foreground max-w-xl">

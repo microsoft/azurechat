@@ -19,7 +19,7 @@ export const StartNewPersonaChat: FC<Props> = (props) => {
 
   return (
     <Button
-      className="flex-1 gap-3"
+      className="flex-1 gap-3 bg-primary text-white"
       onClick={async () => {
         setIsLoading(true);
         const response = await CreatePersonaChat(persona.id);

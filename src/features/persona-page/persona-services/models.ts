@@ -19,6 +19,7 @@ export const PersonaModelSchema = z.object({
     })
     .min(1)
     .refine(refineFromEmpty, "Description cannot be empty"),
+  department: z.string().refine(refineFromEmpty, "Department cannot be empty"),
   personaMessage: z
     .string({
       invalid_type_error: "Invalid persona Message",

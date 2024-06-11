@@ -20,7 +20,7 @@ export const ChatHeader: FC<Props> = (props) => {
       ? CHAT_DEFAULT_PERSONA
       : props.chatThread.personaMessageTitle;
   return (
-    <div className="bg-background border-b flex items-center py-2">
+    <div className="bg-background border-b bg-opacity-80 rounded-bl-lg  flex items-center py-2">
       <div className="container max-w-3xl flex justify-between items-center">
         <div className="flex flex-col">
           <span>{props.chatThread.name}</span>

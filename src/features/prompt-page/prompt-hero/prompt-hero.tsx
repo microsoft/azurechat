@@ -3,7 +3,11 @@ import { Hero, HeroButton } from "@/features/ui/hero";
 import { PlusCircleIcon, BookText, Atom, Frame } from "lucide-react";
 import { promptStore } from "../prompt-store";
 
-export const PromptHero = () => {
+interface PromptHeroProps {
+  user: any;
+}
+
+export const PromptHero = (props: PromptHeroProps) => {
   return (
     <div>
       <Hero
@@ -16,12 +20,14 @@ export const PromptHero = () => {
           "Prompt templates are statements or questions meant to help users get creative without having to come up with ideas from scratch."
         }
       >
-        <HeroButton
-          title="Add New Prompt"
-          description="Build your own prompt template"
-          icon={<PlusCircleIcon />}
-          onClick={() => promptStore.newPrompt()}
-        />
+        {props.user.isAdmin && (
+          <HeroButton
+            title="Add New Prompt"
+            description="Build your own prompt template"
+            icon={<PlusCircleIcon />}
+            onClick={() => promptStore.newPrompt()}
+          />
+        )}
         <HeroButton
           title="Whimsical City"
           description="Image of miniature colourful city "

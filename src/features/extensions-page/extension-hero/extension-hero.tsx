@@ -7,7 +7,11 @@ import { AISearch } from "./ai-search-issues";
 import { BingSearch } from "./bing-search";
 import { NewExtension } from "./new-extension";
 
-export const ExtensionHero = () => {
+interface ExtensionHeroProps {
+  user: any;
+}
+
+export const ExtensionHero = (props: ExtensionHeroProps) => {
   return (
     <Hero
       title={
@@ -18,7 +22,7 @@ export const ExtensionHero = () => {
       description={`Seamlessly connect ${AI_NAME} with internal APIs or external
         resources`}
     >
-      <NewExtension />
+      {props.user.isAdmin && <NewExtension />}
       <BingSearch />
       <AISearch />
     </Hero>

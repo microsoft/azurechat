@@ -3,7 +3,12 @@ import { Hero, HeroButton } from "@/features/ui/hero";
 import { Atom, Languages, VenetianMask } from "lucide-react";
 import { personaStore } from "../persona-store";
 
-export const PersonaHero = () => {
+interface PersonaHeroProps {
+  user: any;
+}
+
+export const PersonaHero = (props: PersonaHeroProps) => {
+  console.log(props.user);
   return (
     <Hero
       title={
@@ -14,14 +19,15 @@ export const PersonaHero = () => {
       description={`  Persona is a representation of a personality that you can use to
     have a conversation with.`}
     >
-      <HeroButton
-        title="New Persona"
-        description="Create a new personality that you can use to have a conversation with."
-        icon={<VenetianMask />}
-        onClick={() =>
-          personaStore.newPersonaAndOpen({
-            name: "",
-            personaMessage: `Personality:
+      {props.user?.isAdmin && (
+        <HeroButton
+          title="New Persona"
+          description="Create a new personality that you can use to have a conversation with."
+          icon={<VenetianMask />}
+          onClick={() =>
+            personaStore.newPersonaAndOpen({
+              name: "",
+              personaMessage: `Personality:
 [Describe the personality e.g. the tone of voice, the way they speak, the way they act, etc.]
 
 Expertise:
@@ -29,11 +35,12 @@ Expertise:
 
 Example:
 [Describe an example of the personality e.g. a Marketing copywriter who can write catchy headlines.]`,
-            description: "",
-          })
-        }
-      />
-      <HeroButton
+              description: "",
+            })
+          }
+        />
+      )}
+      {/* <HeroButton
         title="Translator"
         description="English to French translator."
         icon={<Languages />}
@@ -81,7 +88,7 @@ export { Input };
             description: "Customer service persona.",
           })
         }
-      />
+      /> */}
     </Hero>
   );
 };
