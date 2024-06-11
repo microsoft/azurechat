@@ -1,9 +1,51 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import AzureADProvider from "next-auth/providers/azure-ad";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GitHubProvider from "next-auth/providers/github";
 import { Provider } from "next-auth/providers/index";
 import { hashValue } from "./helpers";
+
+/**
+ * Takes a token, and returns a new token with updated
+ * `accessToken` and `accessTokenExpires`. If an error occurs,
+ * returns the old token and an error property
+ */
+
+async function refreshAccessToken(token: any) {
+  try {
+    const url = `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}/oauth2/v2.0/token`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body:
+        `grant_type=refresh_token` +
+        `&client_secret=${process.env.AZURE_AD_CLIENT_SECRET}` +
+        `&refresh_token=${token.refreshToken}` +
+        `&client_id=${process.env.AZURE_AD_CLIENT_ID}`,
+    });
+
+    const refreshedTokens = await response.json();
+
+    if (!response.ok) {
+      throw refreshedTokens;
+    }
+
+    return {
+      ...token,
+      accessToken: refreshedTokens.access_token,
+      accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
+  }
+}
 
 const configureIdentityProvider = () => {
   const providers: Array<Provider> = [];
@@ -22,6 +64,12 @@ const configureIdentityProvider = () => {
         clientId: process.env.AZURE_AD_CLIENT_ID,
         clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
         tenantId: process.env.AZURE_AD_TENANT_ID,
+        authorization: {
+          params: {
+            scope:
+              "openid profile email offline_access User.Read User.Read.All",
+          },
+        },
         async profile(profile) {
           const newProfile = {
             ...profile,
@@ -79,14 +127,30 @@ export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [...configureIdentityProvider()],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user?.isAdmin) {
         token.isAdmin = user.isAdmin;
       }
-      return token;
+      // Initial sign in
+      if (account && user) {
+        return {
+          accessToken: account.access_token,
+          accessTokenExpires: Date.now() + (account.expires_in as any) * 1000,
+          refreshToken: account.refresh_token,
+          user,
+        };
+      }
+      // Return previous token if the access token has not expired yet
+      if (Date.now() < (token.accessTokenExpires as any)) {
+        return token;
+      }
+
+      // Access token has expired, try to update it
+      return refreshAccessToken(token);
     },
     async session({ session, token, user }) {
       session.user.isAdmin = token.isAdmin as boolean;
+
       return session;
     },
   },
