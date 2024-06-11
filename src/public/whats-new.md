@@ -6,6 +6,10 @@ Below are the updates for the Queensland Government QChat Virtual Assistant.
 
 - If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the Queensland Government AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
 
+## 🛡️ Version 1.5.2 Updates - 12 June 2024
+
+- **Security:** Just a small update to patch a security vulnerability.
+
 ## 🤫 Version 1.5.1 Updates - 11 June 2024
 
 - **Whisper is here:** For our trial agencies using the Transcribe function we've added a comparison transcription that will occur in parallel. This means you will see two versions of the transcript. Please let us know directly which you are finding better. Also note there is a second download option for VTT (or subtitle) files also now available.
