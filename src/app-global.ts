@@ -1,4 +1,4 @@
-export const APP_VERSION = "1.5.0"
+export const APP_VERSION = "1.5.1"
 export const signInProvider = "azure-ad"
 export const SUPPORT_EMAIL = "help@ai.qld.gov.au"
 export const STATUS_ERROR = "ERROR"

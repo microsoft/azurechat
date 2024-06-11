@@ -3,8 +3,6 @@ import { UpdateChatThreadToFileDetails } from "@/features/chat/chat-services/cha
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 
-import { shouldUseWhisper } from "./chat-file-ui"
-
 interface Props {
   id: string
 }
@@ -31,7 +29,7 @@ export const useFileSelection = (
       formData.append("chatType", chatBody.chatType)
       formData.append("id", props.id)
 
-      const runList = formData.get("chatType") === "audio" && shouldUseWhisper() ? ["acs", "whisper"] : [""]
+      const runList = formData.get("chatType") === "audio" ? ["acs", "whisper"] : [""]
 
       const file: File | null = formData.get(chatBody.chatType) as unknown as File
 
