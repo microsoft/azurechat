@@ -8,10 +8,13 @@ import { Hero } from "@/features/ui/hero";
 import { ScrollArea } from "@/features/ui/scroll-area";
 import Image from "next/image";
 import { FC } from "react";
+import { NewsArticleModel } from "@/features/common/services/news-service/news-model";
+import { NewsArticle } from "./news-article";
 
 interface ChatPersonaProps {
   personas: PersonaModel[];
   extensions: ExtensionModel[];
+  news: NewsArticleModel[];
 }
 
 export const ChatHome: FC<ChatPersonaProps> = (props) => {
@@ -35,24 +38,22 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
         ></Hero>
         <div className="container max-w-4xl flex gap-20 flex-col">
           <div>
-            <h2 className="text-2xl font-bold mb-3">Extensions</h2>
-
-            {props.extensions && props.extensions.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3">
-                {props.extensions.map((extension) => {
-                  return (
-                    <ExtensionCard
-                      extension={extension}
-                      key={extension.id}
-                      showContextMenu={false}
-                    />
-                  );
-                })}
+            <div>
+              <h2 className="text-2xl font-bold mb-3">Articles</h2>
+              <div className="space-y-4">
+                {props.news && props.news.length > 0 ? (
+                  
+                  props.news.map((newsArticle) => {
+                    return (NewsArticle({newsArticle}))
+                  }
+                  )
+                ) : (
+                  <p className="text-muted-foreground max-w-xl">
+                    No current news
+                  </p>
+                )}
               </div>
-            ) :
-              <p className="text-muted-foreground max-w-xl">No extentions created</p>
-            }
-
+            </div>
           </div>
           <div>
             <h2 className="text-2xl font-bold mb-3">Personas</h2>
