@@ -14,7 +14,6 @@ export const CreateUser = async (user: UserRecord): ServerActionResponseAsync<Us
     const historyLog = `${creationDate}: User created by ${user.upn}`
     const { resource } = await container.items.create<UserRecord>({
       ...user,
-      id: user.upn,
       history: [historyLog],
     })
     if (!resource)
