@@ -46,7 +46,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAfterClose,
 
   return (
     <div
-      className={`bg-opacity/50 fixed inset-0 z-80 flex items-center justify-center bg-black ${isOpen ? "block" : "hidden"}`}
+      className={`bg-opacity/50 fixed inset-0 z-80 flex items-center justify-center bg-black bg-opacity-80 ${isOpen ? "block" : "hidden"}`}
     >
       <div className="mx-auto w-full max-w-lg overflow-hidden rounded-lg bg-background p-4">
         <div className="mb-4">

@@ -64,7 +64,6 @@
     "ip": "^2.0.1",
     "lucide-react": "^0.394.0",
     "marked": "^12.0.2",
-    "microsoft-cognitiveservices-speech-sdk": "^1.38.0",
     "nanoid": "^5.0.7",
     "next": "^14.2.3",
     "next-auth": "^4.24.7",

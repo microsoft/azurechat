@@ -24,51 +24,44 @@ export const useFileSelection = (
   const onFileChange = async (formData: FormData): Promise<void> => {
     try {
       setIsUploadingFile(true)
-      setUploadButtonLabel("Uploading file...")
+      if (chatBody.chatType === "audio") {
+        setUploadButtonLabel("Uploading and transcribing file...")
+      } else {
+        setUploadButtonLabel("Uploading file...")
+      }
 
       formData.append("chatType", chatBody.chatType)
       formData.append("id", props.id)
 
-      const runList = formData.get("chatType") === "audio" ? ["acs", "whisper"] : [""]
+      const file: File | null = formData.get(chatBody.chatType) as File
 
-      const file: File | null = formData.get(chatBody.chatType) as unknown as File
+      const uploadResponse = await UploadDocument(formData)
+      if (uploadResponse.status !== "OK") throw showError(uploadResponse.errors[0].message)
 
-      runList.forEach(async element => {
-        if (element !== "acs") formData.append(element, "1")
+      const indexErrors = []
+      const [splitDocuments, contents, vtt] = uploadResponse.response
 
-        const fileName =
-          runList.length === 1
-            ? file.name
-            : `${file.name.split(".")[0]} (transcribed with ${element}).${file.name.split(".")[1]}`
+      try {
+        setUploadButtonLabel(`Indexing file ${file.name}...`)
+        const indexResponse = await IndexDocuments(file.name, splitDocuments, props.id, contents, vtt)
 
-        const uploadResponse = await UploadDocument(formData)
-        if (uploadResponse.status !== "OK") throw showError(uploadResponse.errors[0].message)
-
-        const indexErrors = []
-        const [splitDocuments, contents, vtt] = uploadResponse.response
-
-        try {
-          setUploadButtonLabel(`Indexing file ${fileName}...`)
-          const indexResponse = await IndexDocuments(fileName, splitDocuments, props.id, contents, vtt)
-
-          if (indexResponse.status !== "OK") {
-            showError(`${file.name} failed to be indexed. ${indexResponse.errors[0].message}`)
-            indexErrors.push(indexResponse.errors[0].message)
-          }
-        } catch (e) {
-          alert(e)
+        if (indexResponse.status !== "OK") {
+          showError(`${file.name} failed to be indexed. ${indexResponse.errors[0].message}`)
+          indexErrors.push(indexResponse.errors[0].message)
         }
+      } catch (e) {
+        indexErrors.push(e)
+      }
 
-        if (indexErrors.length)
-          throw new Error("Looks like not all documents were indexed. Please try again.", {
-            cause: indexErrors,
-          })
-
-        fileState.setIsFileNull(true)
-        showSuccess({
-          title: "File upload",
-          description: `${file.name} uploaded successfully.`,
+      if (indexErrors.length)
+        throw new Error("Looks like not all documents were indexed. Please try again.", {
+          cause: indexErrors,
         })
+
+      fileState.setIsFileNull(true)
+      showSuccess({
+        title: "File upload",
+        description: `${file.name} uploaded successfully.`,
       })
 
       await UpdateChatThreadToFileDetails(props.id, chatBody.chatType, file.name)

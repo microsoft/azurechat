@@ -1,11 +1,12 @@
 import { DownloadIcon, CaptionsIcon } from "lucide-react"
-import { FC } from "react"
+import { FC, useState } from "react"
 
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { convertTranscriptionToWordDocument } from "@/features/common/file-export"
 import { AI_NAME } from "@/features/theme/theme-config"
+import { CopyButton } from "@/features/ui/assistant-buttons"
 import { Button } from "@/features/ui/button"
 import { useWindowSize } from "@/features/ui/windowsize"
 
@@ -17,6 +18,7 @@ interface ChatFileTranscriptionProps {
 
 export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
   const { chatBody } = useChatContext()
+  const [feedbackMessage, setFeedbackMessage] = useState("")
 
   const onDownloadTranscription = async (): Promise<void> => {
     const fileName = `${props.name}-transcription.docx`
@@ -48,7 +50,7 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
   }
 
   return (
-    <article className="mx-auto flex flex-col py-1 pb-4">
+    <article className="container mx-auto flex flex-col py-1 pb-4">
       <section className="flex-col gap-4 overflow-hidden rounded-md bg-background p-4">
         <header className="flex w-full items-center justify-between">
           <Typography variant="h3">{props.name}</Typography>
@@ -81,8 +83,13 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
                 <CaptionsIcon size={iconSize} />
               </Button>
             )}
+
+            <CopyButton message={props.contents} onFeedbackChange={setFeedbackMessage} />
           </div>
         </footer>
+        <div className="sr-only" aria-live="assertive">
+          {feedbackMessage}
+        </div>
       </section>
     </article>
   )

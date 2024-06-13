@@ -22,7 +22,9 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   const router = useRouter()
   const scrollRef = useRef<HTMLDivElement>(null)
   const { messages, documents, isLoading, chatThreadLocked } = useChatContext()
-  const [selectedTab, setSelectedTab] = useState<SectionTabsProps["selectedTab"]>("chat")
+  const [selectedTab, setSelectedTab] = useState<SectionTabsProps["selectedTab"]>(
+    messages.length ? "chat" : "transcription"
+  )
 
   const [previousScrollTop, setPreviousScrollTop] = useState(0)
   const [supressScrolling, setSupressScrolling] = useState(false)
@@ -38,6 +40,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   useEffect(() => {
     if (isLoading) {
       setSupressScrolling(false)
+      setSelectedTab("chat")
     }
   }, [isLoading])
 
@@ -63,22 +66,20 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
       ) : undefined}
 
       <div className="flex flex-1 flex-col justify-end pb-[140px]">
-        {selectedTab === "chat" ? (
-          messages.map((message, index) => (
-            <ChatRow
-              key={message.id}
-              chatMessageId={message.id}
-              name={message.role === ChatRole.User ? session?.user?.name || "" : AI_NAME}
-              message={message}
-              type={message.role as ChatRole}
-              chatThreadId={chatThreadId}
-              showAssistantButtons={index === messages.length - 1 ? !isLoading : true}
-              threadLocked={index === messages.length - 1 && chatThreadLocked}
-            />
-          ))
-        ) : (
-          <div className="grid grid-cols-2 gap-4">
-            {documentsWithTranscriptions.map(document => (
+        {selectedTab === "chat"
+          ? messages.map((message, index) => (
+              <ChatRow
+                key={message.id}
+                chatMessageId={message.id}
+                name={message.role === ChatRole.User ? session?.user?.name || "" : AI_NAME}
+                message={message}
+                type={message.role as ChatRole}
+                chatThreadId={chatThreadId}
+                showAssistantButtons={index === messages.length - 1 ? !isLoading : true}
+                threadLocked={index === messages.length - 1 && chatThreadLocked}
+              />
+            ))
+          : documentsWithTranscriptions.map(document => (
               <ChatFileTranscription
                 key={document.id}
                 name={document.name}
@@ -86,8 +87,6 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
                 vtt={document.extraContents || ""}
               />
             ))}
-          </div>
-        )}
         {isLoading && <ChatLoading />}
       </div>
     </div>
@@ -100,11 +99,7 @@ interface SectionTabsProps {
 }
 
 const SectionTabs: React.FC<SectionTabsProps> = ({ selectedTab, onSelectedTabChange }) => (
-  <Tabs
-    defaultValue={selectedTab}
-    onValueChange={onSelectedTabChange as (x: string) => void}
-    className="container pb-2"
-  >
+  <Tabs value={selectedTab} onValueChange={onSelectedTabChange as (x: string) => void} className="container pb-2">
     <TabsList aria-label="Conversation Type" className="grid size-full grid-cols-2 items-stretch">
       <TabsTrigger value="chat" className="flex gap-2" role="tab" aria-selected={true}>
         Chat

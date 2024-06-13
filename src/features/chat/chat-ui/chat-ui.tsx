@@ -10,11 +10,15 @@ import { ChatMessageContainer } from "./chat-message-container"
 interface Prop {}
 
 export const ChatUI: FC<Prop> = () => {
-  const { id, messages, chatThreadLocked } = useChatContext()
+  const { id, messages, documents, chatThreadLocked } = useChatContext()
 
   return (
     <div className="relative col-span-9 h-full flex-1 bg-pattern-bg shadow-md sm:text-base lg:text-lg">
-      {messages.length !== 0 ? <ChatMessageContainer chatThreadId={id} /> : <ChatMessageEmptyState />}
+      {messages.length !== 0 || documents.length !== 0 ? (
+        <ChatMessageContainer chatThreadId={id} />
+      ) : (
+        <ChatMessageEmptyState />
+      )}
       {!chatThreadLocked && <ChatInput />}
     </div>
   )

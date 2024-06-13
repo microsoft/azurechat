@@ -73,8 +73,6 @@ export async function UpdateChatThreadIfUncategorised(
       if (response.status !== "OK") {
         throw new Error(response.errors.join(", "))
       }
-    } else {
-      logger.info("Chat thread already has a category, skipping category generation.")
     }
     return chatThread
   } catch (e) {

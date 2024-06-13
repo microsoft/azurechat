@@ -127,6 +127,7 @@ export const UpdateChatThreadToFileDetails = async (
     const response = await FindChatThreadForCurrentUser(chatThreadId)
     if (response.status !== "OK") return response
     const chatThread = response.response
+    chatThread.name = `Chat with ${chatOverFileName}`
     chatThread.chatType = newType
     chatThread.chatOverFileName = chatOverFileName
     return await UpsertChatThread(chatThread)
@@ -352,7 +353,11 @@ export const FindChatThreadByTitleAndEmpty = async (
     for (const chatThread of result.resources) {
       const messageResponse = await FindAllChatMessagesForCurrentUser(chatThread.chatThreadId)
       if (messageResponse.status !== "OK") return messageResponse
-      if (messageResponse.response.length === 0)
+
+      const docs = await FindAllChatDocumentsForCurrentUser(chatThread.chatThreadId)
+      if (docs.status !== "OK") return docs
+
+      if (messageResponse.response.length === 0 && docs.response.length === 0)
         return {
           status: "OK",
           response: chatThread,
