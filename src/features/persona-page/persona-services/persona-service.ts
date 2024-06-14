@@ -378,7 +378,7 @@ export async function getAllDepartments(req: any) {
 
   // Modify the fetch request to match your needs
   const res = await fetch(
-    "https://graph.microsoft.com/v1.0/users?$select=department",
+    "https://graph.microsoft.com/v1.0/users?$top=999&$select=department",
     {
       // Add the  access token to your request
       headers: { Authorization: `Bearer ${token?.accessToken}` },
