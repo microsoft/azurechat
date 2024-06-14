@@ -91,8 +91,8 @@ export const AddNewPersona: FC<Props> = (props) => {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="description">Short description</Label>
-                <Input
-                  type="text"
+                <Textarea
+                  className="min-h-[200px]"
                   required
                   defaultValue={persona.description}
                   name="description"
