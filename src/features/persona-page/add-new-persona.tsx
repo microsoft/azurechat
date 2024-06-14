@@ -102,21 +102,17 @@ export const AddNewPersona: FC<Props> = (props) => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label>
-                  Suitable Department{" "}
-                  {persona.department !== "" && (
-                    <span>(Selected Department: {persona.department})</span>
-                  )}
-                </Label>
-                <Select name="department" required>
+                <Label>Suitable Department</Label>
+                <Select
+                  name="department"
+                  required
+                  defaultValue={persona.department}
+                >
                   <SelectTrigger
                     className="w-full"
                     aria-label="Select department"
                   >
-                    <SelectValue
-                      placeholder="Select suitable department for this persona"
-                      defaultValue={persona.department}
-                    />
+                    <SelectValue placeholder="Select suitable department for this persona" />
                   </SelectTrigger>
                   <SelectContent>
                     {props?.departments.map((department: any) => (
