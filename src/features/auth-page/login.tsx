@@ -41,14 +41,7 @@ export const LogIn: FC<LoginProps> = (props) => {
     <>
       <div className="flex gap-2 flex-col min-w-[300px] items-center w-[70%]">
         <div className="flex items-center gap-2">
-          <img
-            src={
-              theme === "dark"
-                ? "QuaBot_Light_Icon.svg"
-                : "QuaBot_Dark_Icon.svg"
-            }
-            width={40}
-          />
+          <img src={"QuaBot_Light_Icon.svg"} width={50} />
           <p className={cn(ralewaySans.className, "text-3xl font-semibold")}>
             {AI_NAME}
           </p>
