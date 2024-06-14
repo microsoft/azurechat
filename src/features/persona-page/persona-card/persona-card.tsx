@@ -57,7 +57,9 @@ export const PersonaCard: FC<Props> = (props) => {
         )}
       </CardHeader>
       <CardContent className="text-muted-foreground flex-1 text-sm">
-        {persona.description}
+        {persona.description.length > 100
+          ? persona.description.slice(0, 100).concat("...")
+          : persona.description}
       </CardContent>
       <CardFooter className="content-stretch w-full gap-8">
         {props.showContextMenu && <ViewPersona persona={persona} />}
