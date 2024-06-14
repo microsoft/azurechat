@@ -18,7 +18,12 @@ export const ChatPersonaPage: FC<ChatPersonaProps> = async (props) => {
     { department: "All Department" },
     ...props?.departments?.value
       .filter(
-        (data: any) => data.department !== null && data.department !== "Ex-Emp"
+        (data: any) =>
+          data.department !== null &&
+          data.department !== "Ex-Emp" &&
+          data.department !== "ExEmp" &&
+          data.department !== "Probeseven" &&
+          data.department !== "Ex - Employee"
       )
       .filter((data: any, index: number, self: any[]) => {
         return (
