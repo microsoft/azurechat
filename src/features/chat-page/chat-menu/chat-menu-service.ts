@@ -1,10 +1,10 @@
 "use server";
 
 import {
-  RedirectToPage,
   RevalidateCache,
 } from "@/features/common/navigation-helpers";
 import { ServerActionResponse } from "@/features/common/server-action-response";
+import { redirect } from "next/navigation";
 import {
   FindAllChatThreadForCurrentUser,
   SoftDeleteChatThreadForCurrentUser,
@@ -14,7 +14,7 @@ import { ChatThreadModel } from "../chat-services/models";
 
 export const DeleteChatThreadByID = async (chatThreadID: string) => {
   await SoftDeleteChatThreadForCurrentUser(chatThreadID);
-  RedirectToPage("chat");
+  redirect("/chat");
 };
 
 export const DeleteAllChatThreads = async (): Promise<
