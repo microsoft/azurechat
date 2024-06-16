@@ -78,7 +78,7 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
       });
       break;
     case "multimodal":
-      runner = ChatApiMultimodal({
+      runner = await ChatApiMultimodal({
         chatThread: currentChatThread,
         userMessage: props.message,
         file: props.multimodalImage,
@@ -103,7 +103,7 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
     chatThread: currentChatThread,
   });
 
-  runner.on("finalContent", async (finalContent) => {
+  runner.on("finalContent", async (finalContent: string) => {
       const chatTokenService = new ChatTokenService();
       const tokens = chatTokenService.getTokenCount(finalContent);
       reportCompletionTokens(tokens, "gpt-4", {personaMessageTitle: currentChatThread.personaMessageTitle});
