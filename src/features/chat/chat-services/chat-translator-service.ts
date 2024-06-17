@@ -64,12 +64,20 @@ async function translateFunction(
 export function revertCase(originalText: string, translatedText: string): string {
   const originalWords = originalText.split(/\b/)
   const translatedWords = translatedText.split(/\b/)
+
+  // If the number of words are different, skip translating for now
+  if (originalWords.length !== translatedWords.length) {
+    logger.info("Skip Translating:  number of words in original and translated texts are different.")
+    return originalText
+  }
+
   let result = ""
   let wordIndex = 0
 
   while (wordIndex < translatedWords.length) {
     const originalWord = originalWords[wordIndex] || ""
     const translatedWord = translatedWords[wordIndex]
+
     wordIndex++
 
     const isUpperWord = /^[A-Z]*$/.test(originalWord)

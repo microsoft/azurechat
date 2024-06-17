@@ -117,4 +117,43 @@ describe("translator", () => {
     // Assert
     expect(actual).toBe(expected)
   })
+
+  it("should keep original words if translation splitted the words", () => {
+    // Arrange
+    const originalText = "on guardrail design and performance Standards:\n\n1."
+    const translatedText = "on guard rail design and performance standards:\n\n1."
+    const expected = "on guardrail design and performance Standards:\n\n1."
+
+    // Act
+    const actual = revertCase(originalText, translatedText)
+
+    // Assert
+    expect(actual).toBe(expected)
+  })
+
+  xit("should handle original words splited after translation properly", () => {
+    // Arrange
+    const originalText = "on guardrail DESIGN and performance standards:\n\n1."
+    const translatedText = "on guard rail design and performance standards:\n\n1."
+    const expected = "on guard rail DESIGN and performance standards:\n\n1."
+
+    // Act
+    const actual = revertCase(originalText, translatedText)
+
+    // Assert
+    expect(actual).toBe(expected)
+  })
+
+  xit("should handle original words are merged after translation", () => {
+    // Arrange
+    const originalText = "on guard rail DESIGN and performance standards:\n\n1."
+    const translatedText = "on guardrail design and performance standards:\n\n1."
+    const expected = "on guardrail DESIGN and performance standards:\n\n1."
+
+    // Act
+    const actual = revertCase(originalText, translatedText)
+
+    // Assert
+    expect(actual).toBe(expected)
+  })
 })
