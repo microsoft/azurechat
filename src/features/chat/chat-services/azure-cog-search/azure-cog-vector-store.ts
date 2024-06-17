@@ -70,6 +70,7 @@ export const simpleSearch = async (
     top: filter?.top || 10,
     vectorQueries: [],
   }
+
   const resultDocuments = (await fetcher(url, {
     method: "POST",
     body: JSON.stringify(searchBody),
@@ -132,7 +133,7 @@ export const indexDocuments = async (documents: Array<AzureCogDocumentIndex>): P
 
 export const deleteDocuments = async (chatThreadId: string, userId: string, tenantId: string): Promise<void> => {
   const filter: AzureCogFilter = {
-    filter: `chatThreadId eq '${chatThreadId}' and userId eq '${userId}' and tenantId eq '${tenantId}'`,
+    filter: `search.in(chatThreadId, '${chatThreadId}') and search.in(userId, '${userId}') and search.in(tenantId, '${tenantId}')`,
   }
   const documentsInChat = await simpleSearch(userId, chatThreadId, tenantId, filter)
   const documentsToDelete: DocumentDeleteModel[] = []
