@@ -6,6 +6,10 @@ Below are the updates for the Queensland Government QChat Virtual Assistant.
 
 - If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the Queensland Government AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
 
+## 🛡️ Version 1.5.3 Updates - 17 June 2024
+
+- **Security:** Just some small package updates to keep things in order.
+
 ## 🛡️ Version 1.5.2 Updates - 12 June 2024
 
 - **Security:** Just a small update to patch a security vulnerability.

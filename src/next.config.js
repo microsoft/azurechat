@@ -74,6 +74,7 @@ const nextConfig = {
   },
   experimental: {
     instrumentationHook: true,
+    optimizePackageImports: ["tailwind-merge", "applicationinsights", "react", "react-dom", "azure/cosmos"],
     serverActions: {
       allowedOrigins: ["*.ai.qld.gov.au", "qggptprodopenai.azurewebsites.net", "qggptdevopenai.azurewebsites.net"],
     },
