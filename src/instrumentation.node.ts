@@ -6,6 +6,10 @@ import { metrics } from "@opentelemetry/api";
 useAzureMonitor({
     azureMonitorExporterOptions: {
       connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
+    },
+    enableStandardMetrics: true, 
+    instrumentationOptions: {
+      azureSdk: { enabled: false },
     }
   });
 

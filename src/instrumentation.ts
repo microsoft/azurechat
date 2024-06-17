@@ -1,23 +1,44 @@
+import { RequestOptions } from "https";
+
 export function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    const { metrics } = require("@opentelemetry/api");
-    const { MeterProvider, PeriodicExportingMetricReader } = require("@opentelemetry/sdk-metrics");
-    const { AzureMonitorMetricExporter } = require("@azure/monitor-opentelemetry-exporter");
+    const { useAzureMonitor } = require("@azure/monitor-opentelemetry");
+    const { metrics } = require('@opentelemetry/api');
 
-    // Add the exporter into the MetricReader and register it with the MeterProvider
-    const exporter = new AzureMonitorMetricExporter({
-      connectionString:
-        process.env["APPLICATIONINSIGHTS_CONNECTION_STRING"] || "",
-    });
-    const metricReaderOptions = {
-      exporter: exporter,
+    const cosmosdb = new URL(process.env.AZURE_COSMOSDB_URI);
+    const cosmosdbHost = cosmosdb.hostname;
+
+    // Filter using HTTP instrumentation configuration
+    const httpInstrumentationConfig = {
+      enabled: true,
+      ignoreIncomingRequestHook: (request: any) => {
+          // Ignore OPTIONS incoming requests
+          if (request.method === 'OPTIONS') {
+              return true;
+          }
+          return false;
+      },
+      ignoreOutgoingRequestHook: (options: RequestOptions) => {
+          // Ignore outgoing requests for cosmosdb
+          if (options.hostname === cosmosdbHost) {
+              return true;
+          }
+
+          return false;
+      }
     };
-    const metricReader = new PeriodicExportingMetricReader(metricReaderOptions);
-    const meterProvider = new MeterProvider();
-    meterProvider.addMetricReader(metricReader);
 
-    // Register Meter Provider as global
-    metrics.setGlobalMeterProvider(meterProvider);
+    useAzureMonitor({
+      azureMonitorExporterOptions: {
+        connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
+
+      },
+      enableStandardMetrics: true, 
+      instrumentationOptions: {
+        azureSdk: { enabled: true },
+        http: httpInstrumentationConfig
+      },
+    });
 
     console.log(metrics.getMeterProvider());
 
