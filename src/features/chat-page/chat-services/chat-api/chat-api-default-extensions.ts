@@ -109,7 +109,7 @@ async function executeCreateImage(
 
     const updated_response = {
       revised_prompt: response.data[0].revised_prompt,
-      url: GetImageUrl(threadId, imageName),
+      url: await GetImageUrl(threadId, imageName),
     };
 
     return updated_response;

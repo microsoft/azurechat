@@ -6,7 +6,7 @@ import {
 export const ImageAPIEntry = async (request: Request): Promise<Response> => {
   const urlPath = request.url;
 
-  const response = GetThreadAndImageFromUrl(urlPath);
+  const response = await GetThreadAndImageFromUrl(urlPath);
 
   if (response.status !== "OK") {
     return new Response(response.errors[0].message, { status: 404 });

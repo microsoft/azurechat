@@ -27,7 +27,7 @@ export const GetImageFromStore = async (
   threadId: string,
   fileName: string
 ): Promise<ServerActionResponse<ReadableStream>> => {
-  const blobPath = GetBlobPath(threadId, fileName);
+  const blobPath = await GetBlobPath(threadId, fileName);
   return await GetBlob(IMAGE_CONTAINER_NAME, blobPath);
 };
 
