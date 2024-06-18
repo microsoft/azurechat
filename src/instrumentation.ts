@@ -23,8 +23,9 @@ export function register() {
           if (options.hostname === cosmosdbHost) {
               return true;
           }
-
-          return false;
+          
+          // ignore all for now
+          return true;
       }
     };
 
