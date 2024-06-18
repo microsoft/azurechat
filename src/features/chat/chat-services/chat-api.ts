@@ -38,6 +38,7 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
 
     let userMessage: ChatCompletionMessageParam
     let metaPrompt: ChatCompletionMessageParam
+    let context: string = ""
     let translate: (input: string) => Promise<string>
 
     if (props.chatType === "simple" || !dataChatTypes.includes(props.chatType)) {
@@ -53,7 +54,7 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
       const res = await buildDataChatMessages(updatedLastHumanMessage, chatThread.chatThreadId)
       userMessage = res.userMessage
       metaPrompt = res.systemMessage
-
+      context = res.context
       translate = async (_input: string): Promise<string> => await Promise.resolve("")
     }
 
@@ -86,7 +87,7 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
       chatThreadId: chatThread.id,
       userId: chatThread.userId,
       tenantId: chatThread.tenantId,
-      context: "",
+      context: context,
       systemPrompt: contextPrompts.metaPrompt,
       tenantPrompt: contextPrompts.tenantPrompt,
       userPrompt: contextPrompts.userPrompt,

@@ -81,6 +81,7 @@ export const buildDataChatMessages = async (
 ): Promise<{
   systemMessage: ChatCompletionMessageParam
   userMessage: ChatCompletionMessageParam
+  context: string
 }> => {
   const relevantDocuments = await findRelevantDocuments(lastChatMessage.content, chatThreadId)
   const context = relevantDocuments
@@ -100,5 +101,6 @@ export const buildDataChatMessages = async (
       role: ChatRole.User,
       content: buildDataChatContextPrompt(context, lastChatMessage.content),
     },
+    context,
   }
 }
