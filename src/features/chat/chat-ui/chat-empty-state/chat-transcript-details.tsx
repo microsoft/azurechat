@@ -2,18 +2,29 @@ import * as Label from "@radix-ui/react-label"
 import React, { useState } from "react"
 
 import Typography from "@/components/typography"
-import { AssociateOffenderWithChatThread } from "@/features/chat/chat-services/chat-thread-service"
+import { AssociateReferenceWithChatThread } from "@/features/chat/chat-services/chat-thread-service"
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
+import logger from "@/features/insights/app-insights"
 import { Button } from "@/features/ui/button"
 
-interface OffenderTranscriptFormProps {
-  chatThreadId: string
+const defaultPreferences = {
+  contextPrompt: "",
+  customReferenceFields: [
+    {
+      name: "internalReference",
+      pattern: /^[a-zA-Z0-9]*$/,
+      label: "Internal Reference ID",
+    },
+  ],
 }
 
-export const OffenderTranscriptForm = ({ chatThreadId }: OffenderTranscriptFormProps): JSX.Element => {
-  const [offenderId, setOffenderId] = useState("")
+export const TranscriptForm = (): JSX.Element => {
+  const { id, chatBody, setChatBody, tenantPreferences } = useChatContext()
   const [submitting, setSubmitting] = useState(false)
   const [isIdSaved, setIsIdSaved] = useState(false)
   const [message, setMessage] = useState("")
+  const [referenceId, setReferenceId] = useState<string>(chatBody.internalReference || "")
+  const preferences = tenantPreferences || defaultPreferences
 
   const handleSubmit = async (event: { preventDefault: () => void }): Promise<void> => {
     event.preventDefault()
@@ -21,41 +32,47 @@ export const OffenderTranscriptForm = ({ chatThreadId }: OffenderTranscriptFormP
     setMessage("")
 
     try {
-      await AssociateOffenderWithChatThread(chatThreadId, offenderId)
-      setMessage(`Offender ID ${offenderId} saved.`)
+      setChatBody({ ...chatBody, internalReference: referenceId })
+      await AssociateReferenceWithChatThread(id, referenceId)
+      setMessage(`Reference ID ${referenceId} saved.`)
       setIsIdSaved(true)
     } catch (_error) {
-      setMessage("Failed to save offender ID.")
+      setMessage("Failed to save reference ID.")
+      logger.warning("Failed to save reference ID." + id + referenceId)
       setIsIdSaved(false)
     } finally {
       setSubmitting(false)
     }
   }
 
+  const customRef =
+    preferences.customReferenceFields?.find(c => c.name === "internalReference") ||
+    defaultPreferences.customReferenceFields?.[0]
+
   return (
     <div className="bg-background p-5">
       {isIdSaved ? (
         <Typography variant="p" className="text-muted-foreground">
-          Offender ID {offenderId} saved.
+          Internal Reference ID {referenceId} saved.
         </Typography>
       ) : (
         <form onSubmit={handleSubmit}>
           <div className="flex grid-cols-3 flex-wrap items-center gap-[15px]">
-            <Label.Root htmlFor="offenderID" className="leading-[35px] text-muted-foreground">
-              Offender&apos;s Identification Number:
+            <Label.Root htmlFor="internalReference" className="leading-[35px] text-muted-foreground">
+              {customRef.label} :
             </Label.Root>
             <input
               className="bg-inputBackground shadow-blackA6 inline-flex h-[35px] w-[200px] appearance-none items-center justify-center rounded-[4px] px-[10px] leading-none text-muted-foreground shadow-[0_0_0_1px] outline-none selection:bg-accent selection:text-foreground focus:ring-2 focus:ring-primary focus:ring-offset-2"
               type="text"
-              id="offenderID"
-              name="offenderID"
-              placeholder="Offender ID #A123456"
-              pattern="^[A-Za-z][0-9]{6}$"
-              title="ID must start with a letter followed by six digits (e.g., A123456)"
+              id="internalReference"
+              name="internalReference"
+              placeholder="Please enter a valid id"
+              pattern={customRef.pattern.source}
+              title={customRef.label}
               required
               autoComplete="off"
-              value={offenderId}
-              onChange={e => setOffenderId(e.target.value)}
+              value={referenceId}
+              onChange={e => setReferenceId(e.target.value)}
             />
             <Button variant="default" type="submit" disabled={submitting}>
               {submitting ? "Submitting..." : "Submit"}

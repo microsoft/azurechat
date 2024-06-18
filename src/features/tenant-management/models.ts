@@ -22,6 +22,7 @@ export type TenantRecord = {
 
 export type TenantPreferences = {
   contextPrompt: string
+  customReferenceFields?: { name: CustomReferenceFieldNames; pattern: RegExp; label: string }[]
   history?: {
     updatedBy: string
     updatedOn: string
@@ -39,3 +40,5 @@ export type TenantDetails = {
   groups: string[]
   preferences: TenantPreferences
 }
+
+export type CustomReferenceFieldNames = "internalReference"

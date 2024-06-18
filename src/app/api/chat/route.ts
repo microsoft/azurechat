@@ -28,7 +28,7 @@ const schema = yup
     chatOverFileName: yup.string().defined().strict(true),
     tenantId: yup.string().required(),
     userId: yup.string().required(),
-    offenderId: yup.string(),
+    internalReference: yup.string(),
     chatThreadName: yup.string(),
     messages: yup.array().of(
       yup.object({

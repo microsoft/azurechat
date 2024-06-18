@@ -134,7 +134,7 @@ export const UpdateTenant = async (tenant: TenantRecord): ServerActionResponseAs
           updatedBy: currentUser,
           updatedOn: updateTimestamp,
           setting: key,
-          value: tenant.preferences[key],
+          value: JSON.stringify(tenant.preferences[key]),
         },
       ]
     }
@@ -169,4 +169,15 @@ export const GetTenantDetails = async (): ServerActionResponseAsync<TenantDetail
     requiresGroupLogin: existingTenantResult.response.requiresGroupLogin,
   }
   return { status: "OK", response: tenantDetails }
+}
+
+export const GetTenantPreferences = async (): ServerActionResponseAsync<TenantPreferences> => {
+  const user = await userSession()
+  if (!user) return { status: "ERROR", errors: [{ message: "User not found" }] }
+
+  const existingTenantResult = await GetTenantById(user.tenantId)
+  if (existingTenantResult.status !== "OK") return existingTenantResult
+
+  const preferences: TenantPreferences = existingTenantResult.response.preferences || { contextPrompt: "" }
+  return { status: "OK", response: preferences }
 }

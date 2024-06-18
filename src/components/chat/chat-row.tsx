@@ -59,7 +59,7 @@ export const ChatRow: FC<ChatRowProps> = props => {
             className="prose prose-slate max-w-full break-words text-base text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base"
             tabIndex={0}
           >
-            <div className="flex size-full items-center justify-between">
+            <div className="size-full items-center justify-between">
               <Markdown content={content} />
               {!!props.message.contentFilterResult && (
                 <RewriteMessageButton
