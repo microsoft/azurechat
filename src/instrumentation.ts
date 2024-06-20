@@ -36,7 +36,7 @@ export function register() {
       },
       enableStandardMetrics: true, 
       instrumentationOptions: {
-        azureSdk: { enabled: true },
+        azureSdk: { enabled: false },
         http: httpInstrumentationConfig
       },
     });
