@@ -4,6 +4,7 @@ export function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     const { useAzureMonitor } = require("@azure/monitor-opentelemetry");
     const { metrics } = require('@opentelemetry/api');
+    const { SpanEnrichingProcessor } = require('./span-enriching-processor');
 
     const cosmosdb = new URL(process.env.AZURE_COSMOSDB_URI);
     const cosmosdbHost = cosmosdb.hostname;
@@ -30,6 +31,7 @@ export function register() {
     };
 
     useAzureMonitor({
+      spanProcessors: [new SpanEnrichingProcessor()] ,
       azureMonitorExporterOptions: {
         connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
 
