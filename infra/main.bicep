@@ -52,7 +52,7 @@ param gptvisionApiVersion string = '2023-12-01-preview'
 param gptvisionModelVersion string = 'vision-preview'
 
 param formRecognizerSkuName string = 'S0'
-param searchServiceIndexName string = 'azure-chat'
+param searchServiceIndexName string = 'azure-chat1020'
 param searchServiceSkuName string = 'standard'
 
 // TODO: define good default Sku and settings for storage account
