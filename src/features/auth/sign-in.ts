@@ -76,6 +76,7 @@ export class UserSignInHandler {
           serviceTier: null,
           history: [`${historyMessage}`],
           preferences: { contextPrompt: CONTEXT_PROMPT_DEFAULT },
+          smartTools: [],
         }
         const tenant = await CreateTenant(tenantRecord, user.upn)
         if (tenant.status !== STATUS_OK) throw tenant

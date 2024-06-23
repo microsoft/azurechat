@@ -15,7 +15,7 @@ import {
   PromptProps,
 } from "@/features/chat/models"
 import { mapOpenAIChatMessages } from "@/features/common/mapping-helper"
-import { OpenAIInstance, OpenAINoContentSafetyInstance } from "@/features/common/services/open-ai"
+import { OpenAIInstance } from "@/features/common/services/open-ai"
 import logger from "@/features/insights/app-insights"
 
 import { buildDataChatMessages, buildSimpleChatMessages, getContextPrompts } from "./chat-api-helper"
@@ -217,7 +217,7 @@ async function getChatResponse(
   let contentFilterTriggerCount = chatThread.contentFilterTriggerCount ?? 0
 
   try {
-    const openAI = chatThread.chatType === "audio" ? OpenAINoContentSafetyInstance() : OpenAIInstance()
+    const openAI = OpenAIInstance({ contentSafetyOn: ["audio"].includes(chatThread.chatType) })
     return {
       response: await openAI.chat.completions.create({
         messages: [systemPrompt, ...mapOpenAIChatMessages(history), userMessage],

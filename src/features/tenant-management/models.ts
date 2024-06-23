@@ -18,6 +18,7 @@ export type TenantRecord = {
   history?: string[]
   requiresGroupLogin: boolean
   preferences?: TenantPreferences
+  smartTools?: { name: string; enabled: boolean; template: string }[]
 }
 
 export type TenantPreferences = {
@@ -42,3 +43,15 @@ export type TenantDetails = {
 }
 
 export type CustomReferenceFieldNames = "internalReference"
+
+export type TenantConfig = {
+  systemPrompt: string
+  contextPrompt: string
+  groups: string[]
+  administrators: string[]
+  departmentName: string
+  requiresGroupLogin: boolean
+  supportEmail: string
+  email: string
+  tools: { name: string; enabled: boolean; template: string }[]
+}

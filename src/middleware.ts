@@ -15,7 +15,7 @@ const requireAuthPaths = [
   "/whats-new",
 ]
 
-const requireAdminPaths = ["/reporting", "/settings/tenant", "/settings/details", "/api/tenant", "/api/user"]
+const requireAdminPaths = ["/reporting", "/settings/tenant", "/api/tenant"]
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const pathname = request.nextUrl.pathname

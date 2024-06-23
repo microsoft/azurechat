@@ -1,10 +1,10 @@
 import { GoogleAnalytics } from "@next/third-parties/google"
 import type { Metadata } from "next"
 import { Noto_Sans } from "next/font/google"
+import { getServerSession } from "next-auth/next"
 
-import "./globals.css"
-
-import { GlobalConfigProvider } from "@/features/globals/global-client-config-context"
+import ErrorBoundary from "@/components/error-boundary"
+import { LogIn } from "@/components/login/login"
 import { Providers } from "@/features/globals/providers"
 import { applicationInsights } from "@/features/insights/app-insights"
 import { AI_AUTHOR, AI_NAME, AI_TAGLINE, APP_URL } from "@/features/theme/theme-config"
@@ -15,6 +15,8 @@ import { cn } from "@/lib/utils"
 
 import { Footer } from "./footer"
 import { Header } from "./header"
+
+import "./globals.css"
 
 const notoSans = Noto_Sans({ subsets: ["latin"] })
 
@@ -42,7 +44,9 @@ export const dynamic = "force-dynamic"
 if (process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING)
   applicationInsights.initialize(process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING)
 
-export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default async function RootLayout({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
+  const session = await getServerSession()
+
   const isProd = process.env.NODE_ENV === "production"
   const googleAnalyticsId = process.env.NEXT_PUBLIC_GTAG
   return (
@@ -51,17 +55,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
         <link rel="stylesheet" href="https://use.typekit.net/fse2tsb.css" />
       </head>
       <body className={cn(notoSans.className, "flex size-full min-w-[400px] flex-col bg-background")}>
-        <GlobalConfigProvider>
-          <Providers>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ErrorBoundary>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <Providers>
               <Header />
               <NavBar />
-              <main className="grid size-full grid-cols-12 overflow-auto bg-pattern-bg bg-repeat">{children}</main>
+              <main className="grid size-full grid-cols-12 overflow-auto bg-pattern-bg bg-repeat">
+                {!session ? (
+                  <div className="col-span-12 size-full">
+                    <LogIn />
+                  </div>
+                ) : (
+                  children
+                )}
+              </main>
               <Footer />
               <Toaster />
-            </ThemeProvider>
-          </Providers>
-        </GlobalConfigProvider>
+            </Providers>
+          </ThemeProvider>
+        </ErrorBoundary>
       </body>
       {isProd && googleAnalyticsId && <GoogleAnalytics gaId={googleAnalyticsId} />}
     </html>

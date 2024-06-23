@@ -3,8 +3,11 @@
 import { Sparkles, Sparkle } from "lucide-react"
 import { useState } from "react"
 
+import useSmartGen from "@/components/hooks/use-smart-gen"
 import { PromptMessage } from "@/features/chat/models"
 import logger from "@/features/insights/app-insights"
+import { useSettingsContext } from "@/features/settings/settings-provider"
+import { SmartGenToolName } from "@/features/smart-gen/models"
 import { Button } from "@/features/ui/button"
 
 import { useButtonStyles } from "./use-button-styles"
@@ -14,12 +17,47 @@ export type RewriteMessageButtonProps = {
   message: PromptMessage
   onAssistantButtonClick: (result: string) => void
 }
+
 export const RewriteMessageButton: React.FC<RewriteMessageButtonProps> = ({
   fleschScore,
   message,
   onAssistantButtonClick,
-}) => {
+}) => (
+  <RewriteMessageButtonInternal
+    toolName={getRewriterAction(fleschScore, !!message.contentFilterResult)}
+    context={message}
+    input={message.content}
+    onAssistantButtonClick={onAssistantButtonClick}
+  />
+)
+
+export type CheckTranscriptionButtonProps = {
+  transcription: string
+  onAssistantButtonClick: (result: string) => void
+}
+
+export const CheckTranscriptionButton: React.FC<CheckTranscriptionButtonProps> = ({
+  transcription,
+  onAssistantButtonClick,
+}) => (
+  <RewriteMessageButtonInternal
+    toolName={"checkTranscription"}
+    context={transcription}
+    input={transcription}
+    onAssistantButtonClick={onAssistantButtonClick}
+  />
+)
+
+const RewriteMessageButtonInternal: React.FC<{
+  toolName: SmartGenToolName
+  context: unknown
+  input: string
+  onAssistantButtonClick: (result: string) => void
+}> = ({ toolName, context, input, onAssistantButtonClick }) => {
   const { iconSize, buttonClass } = useButtonStyles()
+  const { config } = useSettingsContext()
+
+  const { smartGen } = useSmartGen(config.tools || [])
 
   const [rewriteClicked, setRewriteClicked] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -27,29 +65,19 @@ export const RewriteMessageButton: React.FC<RewriteMessageButtonProps> = ({
   const handleRewriteWithSuggestions = async (): Promise<void> => {
     setRewriteClicked(true)
     setIsLoading(true)
-    const action = getRewriterAction(fleschScore, !!message.contentFilterResult)
-    const rewrittenMessage = rewriteTexts(action, message.content)
-    try {
-      const response = await fetch("/api/user/smart-gen", {
-        method: "POST",
-        cache: "no-store",
-        body: JSON.stringify({
-          id: message.id,
-          action,
-          context: {
-            message,
-            uiComponent: "RewriteMessageButton",
-          },
-          output: rewrittenMessage,
-        }),
-      })
 
-      if (!response.ok) throw new Error("Failed to save smart-gen output")
+    try {
+      const response = await smartGen({
+        toolName: toolName,
+        context: { context, uiComponent: "RewriteMessageButton" },
+        input: input,
+      })
+      if (!response) throw new Error("Failed to save smart-gen output")
+      onAssistantButtonClick(response)
     } catch (error) {
       logger.error(error instanceof Error ? error.message : JSON.stringify(error))
     } finally {
       setIsLoading(false)
-      onAssistantButtonClick(rewrittenMessage)
       setTimeout(() => setRewriteClicked(false), 2000)
     }
   }
@@ -72,39 +100,9 @@ export const RewriteMessageButton: React.FC<RewriteMessageButtonProps> = ({
   )
 }
 
-const getRewriterAction = (score: number, contentFilter: boolean): "Simplify" | "Improve" | "Explain" => {
-  if (contentFilter) return "Explain"
-  if (score > 8) return "Simplify"
-  if (score <= 8) return "Improve"
-  return "Improve"
-}
-const rewriteTexts = (action: "Simplify" | "Improve" | "Explain", message: string): string => {
-  switch (action) {
-    case "Simplify":
-      return `Simplify the text below, consider length, readability and tone of voice:
-
-===Text to simplify===
-
-  ${message}
-
-===End of text to simplify===`
-    case "Improve":
-      return `Improve the text below, consider inclusive language, length, readability and tone of voice:
-
-===Text to improve===
-
-  ${message}
-
-===End of text to improve===`
-    case "Explain":
-      return `Explain why the text below is not in line with our safety or ethical checks:
-
-===Text to reword===
-
-  ${message}
-
-===End of text to reword===`
-    default:
-      return "Unknown action"
-  }
+const getRewriterAction = (score: number, contentFilter: boolean): SmartGenToolName => {
+  if (contentFilter) return "formatToExplain"
+  if (score > 8) return "formatToSimplify"
+  if (score <= 8) return "formatToImprove"
+  return "formatToImprove"
 }

@@ -10,11 +10,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-button text-buttonText hover:bg-buttonHover hover:underline",
-        accent: "bg-accent text-buttonText hover:bg-accent hover:underline",
+        accent: "bg-accent text-buttonText hover:bg-altButtonHover hover:underline",
         destructive: "bg-destructive text-destructive-foreground hover:bg-error",
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-button hover:text-buttonText",
+        newGhost: "hover:bg-button hover:text-buttonText bg-alert animate-pulse",
         negative: "hover:bg-destructive hover:text-buttonText",
         positive: "hover:bg-success hover:text-buttonText",
         link: "text-primary underline-offset-4 hover:underline",

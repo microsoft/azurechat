@@ -7,6 +7,7 @@ import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { convertTranscriptionToWordDocument } from "@/features/common/file-export"
 import { AI_NAME } from "@/features/theme/theme-config"
 import { CopyButton } from "@/features/ui/assistant-buttons"
+import { CheckTranscriptionButton } from "@/features/ui/assistant-buttons/rewrite-message-button"
 import { Button } from "@/features/ui/button"
 import { useWindowSize } from "@/features/ui/windowsize"
 
@@ -17,7 +18,7 @@ interface ChatFileTranscriptionProps {
 }
 
 export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
-  const { chatBody } = useChatContext()
+  const { chatBody, setInput } = useChatContext()
   const [feedbackMessage, setFeedbackMessage] = useState("")
 
   const onDownloadTranscription = async (): Promise<void> => {
@@ -84,6 +85,7 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
               </Button>
             )}
 
+            <CheckTranscriptionButton transcription={props.contents} onAssistantButtonClick={setInput} />
             <CopyButton message={props.contents} onFeedbackChange={setFeedbackMessage} />
           </div>
         </footer>

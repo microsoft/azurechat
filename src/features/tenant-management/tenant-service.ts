@@ -1,7 +1,7 @@
-import { userHashedId, userSession } from "@/features/auth/helpers"
+import { getTenantId, userHashedId, userSession } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { TenantContainer } from "@/features/common/services/cosmos"
-import { TenantDetails, TenantPreferences, TenantRecord } from "@/features/tenant-management/models"
+import { TenantConfig, TenantDetails, TenantPreferences, TenantRecord } from "@/features/tenant-management/models"
 import { arraysAreEqual } from "@/lib/utils"
 
 export const GetTenantById = async (tenantId: string): ServerActionResponseAsync<TenantRecord> => {
@@ -169,6 +169,40 @@ export const GetTenantDetails = async (): ServerActionResponseAsync<TenantDetail
     requiresGroupLogin: existingTenantResult.response.requiresGroupLogin,
   }
   return { status: "OK", response: tenantDetails }
+}
+
+export const GetTenantToolConfig = async (): ServerActionResponseAsync<TenantRecord["smartTools"]> => {
+  const tenantId = await getTenantId()
+  const tenantResponse = await GetTenantById(tenantId)
+  if (tenantResponse.status !== "OK") return tenantResponse
+  return {
+    status: "OK",
+    response: tenantResponse.response.smartTools || [],
+  }
+}
+
+export const GetTenantConfig = async (): ServerActionResponseAsync<TenantConfig> => {
+  const tenantId = await getTenantId()
+  const tenant = await GetTenantById(tenantId)
+  if (tenant.status !== "OK")
+    return {
+      status: "ERROR",
+      errors: [{ message: "Tenant not found" }],
+    }
+  return {
+    status: "OK",
+    response: {
+      systemPrompt: process.env.NEXT_PUBLIC_SYSTEM_PROMPT || "",
+      contextPrompt: tenant.response.preferences?.contextPrompt || "",
+      groups: tenant.response.groups || [],
+      administrators: tenant.response.administrators || [],
+      requiresGroupLogin: tenant.response.requiresGroupLogin,
+      supportEmail: tenant.response.supportEmail,
+      departmentName: tenant.response.departmentName || "",
+      email: tenant.response.email || "",
+      tools: tenant.response.smartTools || [],
+    },
+  }
 }
 
 export const GetTenantPreferences = async (): ServerActionResponseAsync<TenantPreferences> => {

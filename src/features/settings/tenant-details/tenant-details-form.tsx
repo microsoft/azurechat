@@ -3,18 +3,24 @@
 import * as Form from "@radix-ui/react-form"
 import React, { useState, FormEvent } from "react"
 
+import useSmartGen from "@/components/hooks/use-smart-gen"
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
+import { useSettingsContext } from "@/features/settings/settings-provider"
 import { TenantDetails } from "@/features/tenant-management/models"
 import SystemPrompt from "@/features/theme/readable-systemprompt"
 import { Button } from "@/features/ui/button"
+import { SmartGen } from "@/features/ui/smart-gen"
 
 export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(false)
   const [contextPrompt, setContextPrompt] = useState(tenant.preferences.contextPrompt)
+  const [input, setInput] = useState<string>("")
+  const { config } = useSettingsContext()
+  const { smartGen } = useSmartGen(config.tools || [])
 
   const handleSubmitContextPrompt = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
@@ -58,6 +64,36 @@ export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant 
     }
   }
 
+  const buildInput = ({ systemPrompt, tenantPrompt }: { systemPrompt: string; tenantPrompt: string }): string => `
+===System Prompt===
+${systemPrompt}
+===End of System Prompt===
+
+===Tenant Prompt===
+${tenantPrompt}
+===End of Tenant Prompt===
+`
+
+  const sanitisePrompt = async (): Promise<void> => {
+    if (!input || input.length < 1) {
+      setInput("")
+      return
+    }
+    try {
+      const formatInput = buildInput({ systemPrompt: config.systemPrompt, tenantPrompt: input })
+      const res = await smartGen({
+        toolName: "contextPromptSanitiser",
+        context: { uiComponent: "UserDetailsForm" },
+        input: formatInput,
+      })
+      if (res === null) throw new Error("Error sanitising context prompt. Please try again.")
+      const newContextPrompt = res
+      setInput(newContextPrompt)
+    } catch (error) {
+      showError(error instanceof Error ? error.message : JSON.stringify(error))
+    }
+  }
+
   return (
     <>
       <Typography variant="h4" className="font-bold underline underline-offset-2">
@@ -75,8 +111,9 @@ export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant 
       </div>
       <Form.Root onSubmit={handleSubmitContextPrompt} className="mt-4 flex flex-col gap-2">
         <Form.Field name="contextPrompt" serverInvalid={error}>
-          <Form.Label htmlFor="contextPrompt" className="block">
+          <Form.Label htmlFor="contextPrompt" className="flex items-center gap-2">
             New Context Prompt:
+            <SmartGen onClick={sanitisePrompt} />
           </Form.Label>
           <Form.Control asChild>
             <textarea
@@ -88,6 +125,8 @@ export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant 
               maxLength={500}
               required
               aria-label="New context prompt"
+              value={input}
+              onChange={e => setInput(e.target.value)}
             />
           </Form.Control>
           {error && (

@@ -38,10 +38,9 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   }, [isLoading, router])
 
   useEffect(() => {
-    if (isLoading) {
-      setSupressScrolling(false)
-      setSelectedTab("chat")
-    }
+    if (!isLoading) return
+    setSupressScrolling(false)
+    setSelectedTab("chat")
   }, [isLoading])
 
   const onScroll = (e: React.UIEvent<HTMLDivElement>): void => {

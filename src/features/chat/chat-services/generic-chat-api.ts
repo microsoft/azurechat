@@ -16,6 +16,9 @@ export interface Message {
 
 interface GenericChatAPIProps {
   messages: Message[]
+  options?: {
+    contentSafetyOn?: boolean
+  }
 }
 
 async function logAPIUsage<T>(apiName: string, apiParams: unknown, apiResult: T): Promise<void> {
@@ -48,7 +51,7 @@ async function logAPIUsage<T>(apiName: string, apiParams: unknown, apiResult: T)
 }
 
 export const GenericChatAPI = async (apiName: string, props: GenericChatAPIProps): Promise<string | null> => {
-  const openAI = OpenAIInstance()
+  const openAI = OpenAIInstance({ contentSafetyOn: !!props.options?.contentSafetyOn })
   try {
     const messageResponse = await openAI.chat.completions.create({
       messages: props.messages,

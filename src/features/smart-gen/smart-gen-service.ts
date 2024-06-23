@@ -1,18 +1,29 @@
 "use server"
 
-import { getTenantId, userHashedId } from "@/features/auth/helpers"
+import { getTenantAndUser } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { SmartGenContainer } from "@/features/common/services/cosmos"
+import logger from "@/features/insights/app-insights"
+import { uniqueId } from "@/lib/utils"
 
-import { SmartGenEntity, SmartGenModel } from "./models"
+import { SmartGenToolName, SmartGenEntity, SmartGenModel } from "./models"
 
-export const UpsertSmartGen = async (smartGen: SmartGenModel): ServerActionResponseAsync<void> => {
+export const UpsertSmartGen = async (smartGen: SmartGenModel<SmartGenToolName>): ServerActionResponseAsync<void> => {
   try {
-    const [userId, tenantId] = await Promise.all([userHashedId(), getTenantId()])
+    logger.event("UpsertSmartGen", { smartGen })
+    const [tenant, user] = await getTenantAndUser()
+
     const container = await SmartGenContainer()
-    await container.items.upsert<SmartGenEntity>({ ...smartGen, userId, tenantId })
+    await container.items.upsert<SmartGenEntity>({
+      ...smartGen,
+      id: uniqueId(),
+      userId: user.id,
+      tenantId: tenant.id,
+      createdAt: new Date().toISOString(),
+    })
     return { status: "OK", response: undefined }
   } catch (error) {
+    logger.error("Error upserting smart-gen", { error })
     return {
       status: "ERROR",
       errors: [{ message: `${error}` }],
