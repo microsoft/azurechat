@@ -19,15 +19,17 @@ export const Administrators: React.FC<{ administrators: string[] }> = ({ adminis
             <b>{admin}</b>
           </div>
         ))}
-      <div
-        className={
-          "mt-2 flex w-full transform cursor-pointer justify-center gap-2 rounded-md border-2 border-altBorder duration-300 animate-in"
-        }
-        onClick={() => setShowMore(!showMore)}
-      >
-        {showMore ? "Show Less" : "Show More"}
-        <ChevronUpIcon className={`h-6 w-6 transform duration-300 animate-in ${showMore ? "" : "rotate-180"}`} />
-      </div>
+      {administrators.length > DEFAULT_ITEMS_TO_SHOW && (
+        <div
+          className={
+            "mt-2 flex w-full transform cursor-pointer justify-center gap-2 rounded-md border-2 border-altBorder duration-300 animate-in"
+          }
+          onClick={() => setShowMore(!showMore)}
+        >
+          {showMore ? "Show Less" : "Show More"}
+          <ChevronUpIcon className={`h-6 w-6 transform duration-300 animate-in ${showMore ? "" : "rotate-180"}`} />
+        </div>
+      )}
     </Typography>
   )
 }
