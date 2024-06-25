@@ -6,14 +6,15 @@ const inputRegex = /{{\s*input\s*}}/g
 export function contextPromptSanitiser(template: string): (input: string) => Promise<string> {
   return async (input: string) => {
     try {
-      const isValid = template.match(inputRegex)
-      if (!isValid) throw new Error("Invalid template")
-
       const result = await GenericChatAPI("contextPromptSanitiser", {
         messages: [
           {
             role: "system",
-            content: template.replace(inputRegex, input),
+            content: template,
+          },
+          {
+            role: "user",
+            content: input,
           },
         ],
       })

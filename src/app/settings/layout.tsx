@@ -5,7 +5,6 @@ import { SettingsMenu } from "@/features/settings/settings-menu"
 import SettingsProvider from "@/features/settings/settings-provider"
 import { GetTenantConfig } from "@/features/tenant-management/tenant-service"
 import { AI_NAME } from "@/features/theme/theme-config"
-import { Card } from "@/features/ui/card"
 
 export const dynamic = "force-dynamic"
 
@@ -22,15 +21,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <SettingsProvider config={config.response}>
-      <div className="col-span-3 size-full overflow-auto">
+      <div className="col-span-2 size-full overflow-auto">
         <SettingsMenu />
       </div>
-      <div className="col-span-9 size-full overflow-auto">
-        <Card className="size-full overflow-auto bg-altBackground">
-          <div className="size-full bg-altBackground text-foreground">
-            <section className="mx-auto size-full justify-center bg-altBackground">{children}</section>
-          </div>
-        </Card>
+      <div className="col-span-10 size-full overflow-auto bg-altBackground">
+        <section className="mx-auto size-full justify-center bg-altBackground">{children}</section>
       </div>
     </SettingsProvider>
   )

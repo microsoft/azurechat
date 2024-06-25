@@ -12,11 +12,13 @@ import { useSettingsContext } from "@/features/settings/settings-provider"
 import { Button } from "@/features/ui/button"
 import { CardSkeleton } from "@/features/ui/card-skeleton"
 import { SmartGen } from "@/features/ui/smart-gen"
+import { Textarea } from "@/features/ui/textarea"
 import { UserPreferences } from "@/features/user-management/models"
 
 type UserDetailsFormProps = { preferences: UserPreferences; name: string; email: string }
 export const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ preferences, name, email }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isClearing, setIsClearing] = useState(false)
   const [error, setError] = useState(false)
   const [contextPrompt, setContextPrompt] = useState(preferences.contextPrompt)
   const [input, setInput] = useState<string>("")
@@ -31,17 +33,16 @@ export const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ preferences, n
     try {
       await submit(newContextPrompt)
       ;(e.target as HTMLFormElement)?.reset()
+      setInput("")
     } catch (error) {
       logger.error("Error submitting context prompt", { error })
     }
   }
 
   async function submit(newContextPrompt: string): Promise<void> {
-    setIsSubmitting(true)
-    if (contextPrompt === newContextPrompt) {
-      setIsSubmitting(false)
-      return
-    }
+    if (contextPrompt === newContextPrompt) return
+
+    newContextPrompt ? setIsSubmitting(true) : setIsClearing(true)
     const temp = contextPrompt
     setContextPrompt(newContextPrompt)
     const defaultErrorMessage = contextPrompt
@@ -62,8 +63,7 @@ export const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ preferences, n
       showError(defaultErrorMessage)
       logger.error("Error updating context prompt", { error })
     } finally {
-      setIsSubmitting(false)
-      setInput("")
+      newContextPrompt ? setIsSubmitting(false) : setIsClearing(false)
     }
   }
 
@@ -90,10 +90,8 @@ ${userPrompt}
 `
 
   const sanitisePrompt = async (): Promise<void> => {
-    if (!input || input.length < 1) {
-      setInput("")
-      return
-    }
+    if (input?.length < 1) return
+
     try {
       const formatInput = buildInput({
         systemPrompt: config.systemPrompt,
@@ -113,8 +111,8 @@ ${userPrompt}
     }
   }
 
-  const handleTemplateClick = async (): Promise<void> => {
-    await setInput(`Brief Role Description:
+  const handleTemplateClick = (): void => {
+    setInput(`Brief Role Description:
 Preferred Communication Style:
 Other Preferences: `)
   }
@@ -122,7 +120,7 @@ Other Preferences: `)
   return (
     <>
       <Typography variant="h4" className="font-bold underline underline-offset-2">
-        Your Details
+        Account Details
       </Typography>
       <Typography variant="h5" className="mt-4">
         Name:
@@ -135,8 +133,20 @@ Other Preferences: `)
       <Typography variant="h5" className="mt-4">
         Current Prompt:
       </Typography>
-      <div className="mt-4 rounded-md bg-altBackgroundShade p-4">
+      <div className="mt-4 flex items-start justify-between gap-2 rounded-md bg-altBackgroundShade p-4">
         <Markdown content={contextPrompt || "Not set"} />
+        {contextPrompt && (
+          <Button
+            type="button"
+            className="min-w-[10rem]"
+            variant="destructive"
+            onClick={async () => await submit("")}
+            disabled={isSubmitting || isClearing}
+            ariaLabel="Clear prompt"
+          >
+            {isClearing ? "Clearing..." : "Clear prompt"}
+          </Button>
+        )}
       </div>
       <Form.Root onSubmit={handleSubmitContextPrompt} className="mt-4 flex flex-col gap-2">
         <Form.Field name="contextPrompt" serverInvalid={error}>
@@ -145,7 +155,7 @@ Other Preferences: `)
             <SmartGen onClick={sanitisePrompt} />
           </Form.Label>
           <Form.Control asChild>
-            <textarea
+            <Textarea
               id="contextPrompt"
               name="contextPrompt"
               className="mt-4 w-full rounded-md border-2 p-2"
@@ -164,11 +174,11 @@ Other Preferences: `)
             </Form.Message>
           )}
         </Form.Field>
-        <div className="mb-4 flex gap-4">
+        <div className="mb-4 flex justify-end gap-4">
           <Button
             type="button"
             className="w-[14rem]"
-            variant="accent"
+            variant="outline"
             disabled={isSubmitting}
             onClick={handleTemplateClick}
             ariaLabel="Try Template"
@@ -178,27 +188,14 @@ Other Preferences: `)
           <Form.Submit asChild>
             <Button
               type="submit"
-              className="w-[14rem]"
+              className="w-[10rem]"
               variant="default"
               disabled={isSubmitting}
-              ariaLabel="Save context prompt"
+              ariaLabel="Save prompt"
             >
-              {isSubmitting ? "Processing..." : "Save Context Prompt"}
+              {isSubmitting ? "Processing..." : "Save prompt"}
             </Button>
           </Form.Submit>
-          <Button
-            type="button"
-            className="w-[14rem]"
-            variant="destructive"
-            onClick={async () => {
-              await submit("")
-              setInput("")
-            }}
-            disabled={isSubmitting}
-            ariaLabel="Clear context prompt"
-          >
-            {isSubmitting ? "Processing..." : "Clear Context Prompt"}
-          </Button>
         </div>
       </Form.Root>
     </>

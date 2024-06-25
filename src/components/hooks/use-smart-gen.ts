@@ -1,11 +1,11 @@
 import logger from "@/features/insights/app-insights"
 import { SmartGenRequest } from "@/features/smart-gen/models"
-import SmartGenToolAgent, { SmartGenToolAgentConfig } from "@/features/smart-gen/smart-gen-agent"
+import SmartGenToolAgent, { SmartToolConfig } from "@/features/smart-gen/smart-gen-agent"
 
 type UseSmartGenHook = {
   smartGen: (smartGen: SmartGenRequest) => Promise<string | null>
 }
-export default function useSmartGen(config?: SmartGenToolAgentConfig): UseSmartGenHook {
+export default function useSmartGen(config?: SmartToolConfig[]): UseSmartGenHook {
   const smartGen: UseSmartGenHook["smartGen"] = async request => {
     try {
       if (!config) throw new Error("Smart-gen config not loaded")

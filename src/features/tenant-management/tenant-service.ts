@@ -1,7 +1,13 @@
 import { getTenantId, userHashedId, userSession } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { TenantContainer } from "@/features/common/services/cosmos"
-import { TenantConfig, TenantDetails, TenantPreferences, TenantRecord } from "@/features/tenant-management/models"
+import {
+  SmartToolConfig,
+  TenantConfig,
+  TenantDetails,
+  TenantPreferences,
+  TenantRecord,
+} from "@/features/tenant-management/models"
 import { arraysAreEqual } from "@/lib/utils"
 
 export const GetTenantById = async (tenantId: string): ServerActionResponseAsync<TenantRecord> => {
@@ -160,6 +166,7 @@ export const GetTenantDetails = async (): ServerActionResponseAsync<TenantDetail
   if (existingTenantResult.status !== "OK") return existingTenantResult
 
   const tenantDetails: TenantDetails = {
+    id: existingTenantResult.response.id,
     primaryDomain: existingTenantResult.response.primaryDomain || "",
     supportEmail: existingTenantResult.response.supportEmail,
     departmentName: existingTenantResult.response.departmentName || "",
@@ -171,13 +178,46 @@ export const GetTenantDetails = async (): ServerActionResponseAsync<TenantDetail
   return { status: "OK", response: tenantDetails }
 }
 
-export const GetTenantToolConfig = async (): ServerActionResponseAsync<TenantRecord["smartTools"]> => {
-  const tenantId = await getTenantId()
+export const GetTenantPreferences = async (): ServerActionResponseAsync<TenantPreferences> => {
+  const user = await userSession()
+  if (!user) return { status: "ERROR", errors: [{ message: "User not found" }] }
+
+  const existingTenantResult = await GetTenantById(user.tenantId)
+  if (existingTenantResult.status !== "OK") return existingTenantResult
+
+  const preferences: TenantPreferences = existingTenantResult.response.preferences || { contextPrompt: "" }
+  return { status: "OK", response: preferences }
+}
+
+export const GetTenantToolConfig = async (tenantId: string): ServerActionResponseAsync<SmartToolConfig[]> => {
   const tenantResponse = await GetTenantById(tenantId)
   if (tenantResponse.status !== "OK") return tenantResponse
   return {
     status: "OK",
     response: tenantResponse.response.smartTools || [],
+  }
+}
+
+export const UpdateTenantToolConfig = async (
+  tenantId: string,
+  tool: SmartToolConfig
+): ServerActionResponseAsync<void> => {
+  try {
+    const tenantResponse = await GetTenantById(tenantId)
+    if (tenantResponse.status !== "OK") return tenantResponse
+    const existingTools = tenantResponse.response.smartTools || []
+    const updatedTools = existingTools.map(t => (t.name === tool.name ? tool : t))
+    const container = await TenantContainer()
+    await container.items.upsert({ ...tenantResponse.response, smartTools: updatedTools })
+    return {
+      status: "OK",
+      response: undefined,
+    }
+  } catch (e) {
+    return {
+      status: "ERROR",
+      errors: [{ message: `${e}` }],
+    }
   }
 }
 
@@ -205,13 +245,23 @@ export const GetTenantConfig = async (): ServerActionResponseAsync<TenantConfig>
   }
 }
 
-export const GetTenantPreferences = async (): ServerActionResponseAsync<TenantPreferences> => {
+export const GetTenants = async (): ServerActionResponseAsync<TenantRecord[]> => {
   const user = await userSession()
   if (!user) return { status: "ERROR", errors: [{ message: "User not found" }] }
+  if (!user.admin) return { status: "ERROR", errors: [{ message: "Permission Denied - User is not an admin" }] }
 
-  const existingTenantResult = await GetTenantById(user.tenantId)
-  if (existingTenantResult.status !== "OK") return existingTenantResult
-
-  const preferences: TenantPreferences = existingTenantResult.response.preferences || { contextPrompt: "" }
-  return { status: "OK", response: preferences }
+  try {
+    const query = { query: "SELECT * FROM c WHERE c.dateOffBoarded = null ORDER BY c.departmentName ASC" }
+    const container = await TenantContainer()
+    const { resources } = await container.items.query<TenantRecord>(query).fetchAll()
+    return {
+      status: "OK",
+      response: resources,
+    }
+  } catch (e) {
+    return {
+      status: "ERROR",
+      errors: [{ message: `${e}` }],
+    }
+  }
 }

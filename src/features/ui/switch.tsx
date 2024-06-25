@@ -53,24 +53,22 @@ const SwitchComponent = React.forwardRef<HTMLButtonElement, SwitchProps>(
       variant === "destructive" ? (isChecked ? "destructiveOn" : "destructiveOff") : isChecked ? "on" : "off"
 
     return (
-      <form>
-        <div className="flex items-center">
-          <Typography variant="p" className={cn("pr-[10px]", labelClassName)} id={`${props.id}-label`}>
-            {label}
-          </Typography>
-          <Switch.Root
-            ref={ref}
-            className={cn(switchVariants({ state }), className)}
-            {...props}
-            role="switch"
-            aria-checked={isChecked}
-            aria-labelledby={`${props.id}-label`}
-            style={{ WebkitTapHighlightColor: "rgba(0, 0, 0, 0)" }}
-          >
-            <Switch.Thumb className={cn(thumbVariants({ state }), thumbClassName)} />
-          </Switch.Root>
-        </div>
-      </form>
+      <div className="flex items-center">
+        <Typography variant="p" className={cn("pr-[10px]", labelClassName)} id={`${props.id}-label`}>
+          {label}
+        </Typography>
+        <Switch.Root
+          ref={ref}
+          className={cn(switchVariants({ state }), className)}
+          {...props}
+          role="switch"
+          aria-checked={isChecked}
+          aria-labelledby={`${props.id}-label`}
+          style={{ WebkitTapHighlightColor: "rgba(0, 0, 0, 0)" }}
+        >
+          <Switch.Thumb className={cn(thumbVariants({ state }), thumbClassName)} />
+        </Switch.Root>
+      </div>
     )
   }
 )

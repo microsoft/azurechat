@@ -8,6 +8,7 @@ import { UserRecord } from "@/features/user-management/models"
 import { GetUserByUpn } from "@/features/user-management/user-service"
 
 import { options } from "./auth-api"
+import { UserModel } from "./models"
 
 export const userSession = async (): Promise<UserModel | null> => {
   const session = await getServerSession(options)
@@ -51,19 +52,22 @@ export const getTenantAndUser = async (): Promise<[TenantRecord, UserRecord]> =>
   return [tenant.response, user.response]
 }
 
-export type UserModel = {
-  name: string
-  image: string
-  email: string
-  upn: string
-  tenantId: string
-  admin: boolean
-  tenantAdmin: boolean
-  userId: string
-}
-
 export const hashValue = (value: string): string => {
   const hash = createHash("sha256")
   hash.update(value)
   return hash.digest("hex")
+}
+
+export const isAdmin = async (): Promise<boolean> => {
+  const userModel = await userSession()
+  return !!userModel?.admin
+}
+
+export const isAdminOrTenantAdmin = async (): Promise<boolean> => {
+  const userModel = await userSession()
+  if (!userModel) return false
+  if (userModel.admin) return true
+  const tenant = await GetTenantById(userModel.tenantId)
+  if (tenant.status !== "OK") return false
+  return tenant.response.administrators.includes(userModel.upn || userModel.email)
 }

@@ -79,20 +79,21 @@ const ChatInput: FC<Props> = () => {
 
   return (
     <form onSubmit={submit} className="absolute bottom-0 z-70 flex w-full items-center">
-      <div className="container relative mx-auto flex items-center gap-2 py-2">
+      <div className="container relative mx-auto flex items-end gap-2 py-2">
+        <div className="absolute -z-10 h-[calc(100%-1rem)] w-[calc(100%-4rem)] rounded-md border-2 bg-background opacity-80" />
         <Textarea
           id="chatMessage"
           name="chatMessage"
           value={input}
           placeholder="Send a message, or use the right hand menu to export your chat to document, add another document or more."
           aria-label="Send a message"
-          className="bg-background py-4 pr-[40px]"
+          className="max-h-[50rem] min-h-[10rem] py-4 pr-[40px]"
           onChange={onChange}
           onKeyDown={onKeyDown}
           rows={4}
           disabled={isLoading || fileState.isUploadingFile}
         />
-        <div className="absolute bottom-0 right-5 mb-4 mr-5 grid h-auto items-end">
+        <div className="fixed right-14 flex flex-col pb-4">
           {!isDataChat || (isDataChat && fileChatVisible) ? (
             <>
               <Button

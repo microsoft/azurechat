@@ -7,7 +7,10 @@ import logger from "@/features/insights/app-insights"
 import { AI_NAME } from "@/features/theme/theme-config"
 import { SwitchComponent } from "@/ui/switch"
 
-export const LoginManagement: React.FC<{ requiresGroupLogin: boolean }> = ({ requiresGroupLogin }) => {
+export const LoginManagement: React.FC<{ requiresGroupLogin: boolean; tenantId: string }> = ({
+  requiresGroupLogin,
+  tenantId,
+}) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isRequiresGroupLogin, setIsRequiresGroupLogin] = useState(requiresGroupLogin)
 
@@ -17,7 +20,7 @@ export const LoginManagement: React.FC<{ requiresGroupLogin: boolean }> = ({ req
     const defaultErrorMessage = "Could not update group login requirement. Please try again later."
 
     try {
-      const response = await fetch("/api/tenant/details", {
+      const response = await fetch(`/api/tenant/${tenantId}/details`, {
         method: "POST",
         cache: "no-store",
         headers: { "Content-Type": "application/json" },
@@ -40,12 +43,12 @@ export const LoginManagement: React.FC<{ requiresGroupLogin: boolean }> = ({ req
         Login Management:
       </Typography>
       <div className="my-4 flex flex-col gap-4 rounded-md bg-altBackgroundShade">
-        <div className="flex items-center gap-4 p-2">
-          <Typography variant="h5">Requires Group Login:</Typography>
+        <div className="flex items-center justify-between gap-4 p-2">
+          <Typography variant="h5">Group Login:</Typography>
           <SwitchComponent
             id="requires-group-login"
             variant="default"
-            label=""
+            label={isRequiresGroupLogin ? "Enabled" : "Disabled"}
             isChecked={isRequiresGroupLogin}
             disabled={isSubmitting}
             onCheckedChange={handleToggle}

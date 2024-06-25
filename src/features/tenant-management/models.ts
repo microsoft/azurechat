@@ -1,3 +1,5 @@
+export type SmartToolConfig = { name: string; enabled: boolean; template: string }
+
 export type TenantRecord = {
   readonly id: string
   readonly tenantId: string
@@ -18,7 +20,7 @@ export type TenantRecord = {
   history?: string[]
   requiresGroupLogin: boolean
   preferences?: TenantPreferences
-  smartTools?: { name: string; enabled: boolean; template: string }[]
+  smartTools?: SmartToolConfig[]
 }
 
 export type TenantPreferences = {
@@ -33,6 +35,7 @@ export type TenantPreferences = {
 }
 
 export type TenantDetails = {
+  readonly id: string
   readonly primaryDomain: string
   supportEmail: string
   departmentName: string
@@ -40,6 +43,7 @@ export type TenantDetails = {
   requiresGroupLogin: boolean
   groups: string[]
   preferences: TenantPreferences
+  smartTools?: SmartToolConfig[]
 }
 
 export type CustomReferenceFieldNames = "internalReference"
@@ -53,5 +57,17 @@ export type TenantConfig = {
   requiresGroupLogin: boolean
   supportEmail: string
   email: string
-  tools: { name: string; enabled: boolean; template: string }[]
+  tools: SmartToolConfig[]
 }
+
+export const toTenantDetails = (tenant: TenantRecord): TenantDetails => ({
+  id: tenant.id,
+  primaryDomain: tenant.primaryDomain || "",
+  supportEmail: tenant.supportEmail,
+  departmentName: tenant.departmentName || "",
+  administrators: tenant.administrators,
+  groups: tenant.groups || [],
+  preferences: tenant.preferences || { contextPrompt: "" },
+  requiresGroupLogin: tenant.requiresGroupLogin,
+  smartTools: tenant.smartTools || [],
+})

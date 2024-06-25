@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 import * as yup from "yup"
 
-import { userSession } from "@/features/auth/helpers"
+import { isAdmin, isAdminOrTenantAdmin } from "@/features/auth/helpers"
 import { TenantDetails } from "@/features/tenant-management/models"
 import { GetTenantById, UpdateTenant } from "@/features/tenant-management/tenant-service"
 
@@ -17,15 +17,12 @@ const tenantUpdateSchema = yup
   })
   .noUnknown(true, "Attempted to update invalid fields")
 
-export async function POST(request: NextRequest, _response: NextResponse): Promise<Response> {
+export async function POST(request: NextRequest, { params }: { params: { tenantId: string } }): Promise<Response> {
   try {
-    const [requestBody, user] = await Promise.all([request.json(), userSession()])
+    const requestBody = await request.json()
     const validatedData = await tenantUpdateSchema.validate(
-      { ...requestBody, tenantId: user?.tenantId },
-      {
-        abortEarly: false,
-        stripUnknown: true,
-      }
+      { ...requestBody, tenantId: params.tenantId },
+      { abortEarly: false, stripUnknown: true }
     )
     const { tenantId, contextPrompt, groups, requiresGroupLogin } = validatedData
 
@@ -33,9 +30,7 @@ export async function POST(request: NextRequest, _response: NextResponse): Promi
     if (existingTenantResult.status !== "OK") {
       return new Response(JSON.stringify({ error: "Tenant not found" }), { status: 404 })
     }
-    if (!user || !existingTenantResult.response.administrators.includes(user.email)) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 })
-    }
+    if (!isAdmin()) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 })
 
     const updatedData = { ...existingTenantResult.response }
     let hasUpdates = false
@@ -59,11 +54,8 @@ export async function POST(request: NextRequest, _response: NextResponse): Promi
 
     if (requiresGroupLogin !== false && groups !== undefined) {
       const validGroups = groups.filter((group): group is string => group !== undefined && group.length === 36)
-      const newGroups = validGroups.filter(group => !existingTenantResult.response.groups.includes(group))
-      if (newGroups.length > 0) {
-        updatedData.groups = [...existingTenantResult.response.groups, ...newGroups]
-        hasUpdates = true
-      }
+      updatedData.groups = validGroups
+      hasUpdates = true
     }
 
     if (!hasUpdates) {
@@ -75,7 +67,7 @@ export async function POST(request: NextRequest, _response: NextResponse): Promi
     if (updatedTenantResult.status === "OK") {
       return new Response(JSON.stringify(updatedTenantResult.response), { status: 200 })
     }
-    return new Response(JSON.stringify({ error: "Failed to update tenant" }), { status: 400 })
+    return new Response(JSON.stringify({ error: "Failed to update tenant" }), { status: 500 })
   } catch (error) {
     const errorMessage = error instanceof yup.ValidationError ? { errors: error.errors } : "Internal Server Error"
     return new Response(JSON.stringify({ error: errorMessage }), {
@@ -84,18 +76,14 @@ export async function POST(request: NextRequest, _response: NextResponse): Promi
   }
 }
 
-export async function GET(): Promise<Response> {
-  const user = await userSession()
-  if (!user) {
-    return new Response(JSON.stringify({ status: 400, error: "No user session" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    })
-  }
-  const existingTenantResult = await GetTenantById(user.tenantId)
-  if (existingTenantResult.status !== "OK") {
+export async function GET(_request: NextRequest, { params }: { params: { tenantId: string } }): Promise<Response> {
+  const { tenantId } = params
+  const isAuthorized = await isAdminOrTenantAdmin()
+  if (!isAuthorized) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 })
+
+  const existingTenantResult = await GetTenantById(tenantId)
+  if (existingTenantResult.status !== "OK")
     return new Response(JSON.stringify({ error: "Tenant not found" }), { status: 404 })
-  }
 
   const tenantDetails: TenantDetails = {
     primaryDomain: existingTenantResult.response.primaryDomain || "",
@@ -105,6 +93,8 @@ export async function GET(): Promise<Response> {
     groups: existingTenantResult.response.groups || ["No groups found"],
     preferences: existingTenantResult.response.preferences || { contextPrompt: "" },
     requiresGroupLogin: existingTenantResult.response.requiresGroupLogin,
+    id: existingTenantResult.response.id,
+    smartTools: existingTenantResult.response.smartTools,
   }
 
   return new Response(JSON.stringify({ status: "OK", data: tenantDetails }), {

@@ -10,8 +10,9 @@ import Typography from "@/components/typography"
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
 import { Button } from "@/features/ui/button"
+import { Input } from "@/features/ui/input"
 
-export const GroupList: React.FC<{ tenantGroups: string[] }> = ({ tenantGroups }) => {
+export const GroupList: React.FC<{ tenantGroups: string[]; tenantId: string }> = ({ tenantGroups, tenantId }) => {
   const [groups, setGroups] = useState<string[]>(tenantGroups)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(false)
@@ -40,7 +41,7 @@ export const GroupList: React.FC<{ tenantGroups: string[] }> = ({ tenantGroups }
     setGroups(next)
     const errorMsg = "An error occurred while updating groups. Please try again later."
     try {
-      const response = await fetch("/api/tenant/details", {
+      const response = await fetch(`/api/tenant/${tenantId}/details`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ groups: next }),
@@ -67,58 +68,56 @@ export const GroupList: React.FC<{ tenantGroups: string[] }> = ({ tenantGroups }
           onClose={() => setShowDeleteModal("")}
         />
       )}
-      <Form.Root className="mt-4" onSubmit={handleNewGroups}>
-        <Form.Field name="newGroups" serverInvalid={error}>
-          <Form.Label htmlFor="newGroups" className="block">
-            Add New Group GUIDs, groups are not currently validated for you (comma-separated):
-          </Form.Label>
-          <Form.Control asChild>
-            <input
-              type="text"
-              autoComplete="off"
-              id="newGroups"
-              name="newGroups"
-              className="my-4 w-full rounded-md border-2 p-2"
-              placeholder="Enter new group GUIDs..."
-              aria-label="New group GUIDs"
-              disabled={isSubmitting}
-              required
-            />
-          </Form.Control>
-          {error && (
-            <Form.Message role="alert" className="text-QLD-alert my-4">
-              Error updating groups. Please try again later.
-            </Form.Message>
-          )}
-        </Form.Field>
-        <Form.Submit asChild>
-          <Button
-            type="submit"
-            variant="default"
-            className="mb-4 justify-end"
-            disabled={isSubmitting}
-            ariaLabel="Update groups"
-          >
-            {isSubmitting ? "Updating..." : "Update Groups"}
-          </Button>
-        </Form.Submit>
-      </Form.Root>
-      <Typography variant="h5" className="mb-4">
-        Current Groups:
-        {groups?.map(group => (
-          <div className="mt-2 flex justify-between rounded-md bg-altBackgroundShade p-2" key={group}>
-            <b>{group}</b>
-            <Button
-              size="sm"
-              variant="destructive"
-              ariaLabel={`Delete ${group}`}
-              onClick={() => setShowDeleteModal(group)}
-            >
-              <TrashIcon size={16} />
-            </Button>
+      <div className="mb-4 border-y-2 py-2">
+        <Form.Root className="mt-4" onSubmit={handleNewGroups}>
+          <Form.Field name="newGroups" serverInvalid={error}>
+            <Form.Label htmlFor="newGroups" className="block">
+              Add New Group GUIDs, groups are not currently validated for you (comma-separated):
+            </Form.Label>
+            <Form.Control asChild>
+              <Input
+                type="text"
+                autoComplete="off"
+                id="newGroups"
+                name="newGroups"
+                className="my-4 w-full"
+                placeholder="Enter new group GUIDs..."
+                aria-label="New group GUIDs"
+                disabled={isSubmitting}
+                required
+              />
+            </Form.Control>
+            {error && (
+              <Form.Message role="alert" className="text-QLD-alert my-4">
+                Error updating groups. Please try again later.
+              </Form.Message>
+            )}
+          </Form.Field>
+          <div className="flex justify-end">
+            <Form.Submit asChild>
+              <Button type="submit" variant="default" className="mb-4" disabled={isSubmitting} ariaLabel="Add groups">
+                {isSubmitting ? "Adding..." : "Add groups"}
+              </Button>
+            </Form.Submit>
           </div>
-        ))}
-      </Typography>
+        </Form.Root>
+        <Typography variant="h5" className="mb-4">
+          Current Groups:
+          {groups?.map(group => (
+            <div className="mt-2 flex justify-between rounded-md bg-altBackgroundShade p-2" key={group}>
+              <b>{group}</b>
+              <Button
+                size="sm"
+                variant="destructive"
+                ariaLabel={`Delete ${group}`}
+                onClick={() => setShowDeleteModal(group)}
+              >
+                <TrashIcon size={16} />
+              </Button>
+            </div>
+          ))}
+        </Typography>
+      </div>
     </>
   )
 }
@@ -157,11 +156,11 @@ const DeleteGroupDialog: React.FC<{
           </Typography>
         </div>
         <div className="flex justify-end">
-          <Button variant="outline" onClick={onClose} disabled={loading} aria-label="Cancel">
+          <Button variant="destructive" onClick={onClose} disabled={loading} aria-label="Cancel">
             Cancel
           </Button>
           <Button
-            variant="destructive"
+            variant="default"
             className="ml-2"
             onClick={async () => {
               try {

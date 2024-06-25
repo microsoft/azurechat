@@ -52,7 +52,7 @@ const configureIdentityProvider = (): Provider[] => {
           const upnLower = profile.upn.toLowerCase()
           const email = profile.email?.toLowerCase() ?? upnLower
           const admin = adminEmails.includes(email || upnLower)
-          const globalAdmin = profile.roles?.includes("GlobalAdmin") ? true : false
+          const globalAdmin = !!profile.roles?.includes("GlobalAdmin")
           profile.tenantId = profile.employee_idp || profile.tid
           profile.groups = profile.groups || profile.employee_groups
 

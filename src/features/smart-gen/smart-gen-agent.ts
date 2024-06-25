@@ -1,17 +1,16 @@
 import { SmartGenRequest, SmartGenTools, SmartGenToolNames, SmartGenToolName } from "./models"
 import { contextPromptSanitiser, formatToImprove, formatToSimplify, formatToExplain, checkTranscription } from "./tools"
 
-export type SmartGenToolAgentConfig = {
+export type SmartToolConfig = {
   name: string
   enabled: boolean
   template: string
-}[]
+}
 
 type SmartGenToolAgent = {
   execute: (request: SmartGenRequest) => Promise<string>
 }
-
-export default function SmartGenToolAgent(config: SmartGenToolAgentConfig): SmartGenToolAgent {
+export default function SmartGenToolAgent(config: SmartToolConfig[]): SmartGenToolAgent {
   const availableSmartGenTools: SmartGenTools = config
     .filter(tool => tool.enabled && SmartGenToolNames.includes(tool.name as SmartGenToolName))
     .map(tool => {

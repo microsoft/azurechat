@@ -153,3 +153,55 @@ export const GetUserPreferences = async (): ServerActionResponseAsync<UserPrefer
   const preferences: UserPreferences = existingUserResult.response.preferences || { contextPrompt: "" }
   return { status: "OK", response: preferences }
 }
+
+export const GetUsersByTenantId = async (tenantId: string): ServerActionResponseAsync<UserRecord[]> => {
+  const user = await userSession()
+  if (!user) return { status: "ERROR", errors: [{ message: "User not found" }] }
+  if (!user.admin) return { status: "ERROR", errors: [{ message: "Permission Denied - User is not an admin" }] }
+
+  try {
+    const query = {
+      query: "SELECT * FROM c WHERE c.tenantId = @tenantId AND c.last_login != null ORDER BY c.name ASC",
+      parameters: [{ name: "@tenantId", value: tenantId }],
+    }
+    const container = await UserContainer()
+    const { resources } = await container.items.query<UserRecord>(query).fetchAll()
+    return {
+      status: "OK",
+      response: resources,
+    }
+  } catch (e) {
+    return {
+      status: "ERROR",
+      errors: [{ message: `${e}` }],
+    }
+  }
+}
+
+export const GetUserById = async (tenantId: string, userId: string): ServerActionResponseAsync<UserRecord> => {
+  const query = {
+    query: "SELECT * FROM c WHERE c.tenantId = @tenantId AND c.id = @userId",
+    parameters: [
+      { name: "@tenantId", value: tenantId },
+      { name: "@userId", value: userId },
+    ],
+  }
+  try {
+    const container = await UserContainer()
+    const { resources } = await container.items.query<UserRecord>(query).fetchAll()
+    if (!resources?.[0])
+      return {
+        status: "NOT_FOUND",
+        errors: [{ message: `User with upn ${userId} not found` }],
+      }
+    return {
+      status: "OK",
+      response: resources[0],
+    }
+  } catch (error) {
+    return {
+      status: "ERROR",
+      errors: [{ message: `${error}` }],
+    }
+  }
+}

@@ -159,6 +159,12 @@ const config: Config = {
           from: { opacity: "0", transform: "translate(-50%, -48%) scale(0.96)" },
           to: { opacity: "1", transform: "translate(-50%, -50%) scale(1)" },
         },
+        scale: {
+          "100%": { transform: "scale(1)" },
+        },
+        blurOut: {
+          "100%": { filter: "blur(0)", opacity: "1" },
+        },
       },
       transitionTimingFunction: {
         "custom-ease": "cubic-bezier(0.87, 0, 0.13, 1)",

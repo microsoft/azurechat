@@ -12,6 +12,7 @@ import {
 import { ChatThreadModel } from "@/features/chat/models"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
 import { Button } from "@/features/ui/button"
+import { Input } from "@/features/ui/input"
 
 interface Prop {
   menuItems: Array<ChatThreadModel>
@@ -59,7 +60,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAfterClose,
             <label htmlFor="newChatName" className="block text-sm font-medium text-foreground">
               New Chat Name
             </label>
-            <input
+            <Input
               id="newChatName"
               type="text"
               value={inputValue}

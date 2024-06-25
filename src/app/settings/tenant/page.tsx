@@ -21,7 +21,7 @@ export default async function Home(): Promise<JSX.Element> {
   const tenant = await getTenantDetails()
 
   return (
-    <div className="mb-8 grid size-full w-full grid-cols-1 gap-8 p-4 pt-5 sm:grid-cols-2 sm:gap-2">
+    <>
       <div>
         <TenantDetailsForm tenant={tenant} />
       </div>
@@ -29,10 +29,10 @@ export default async function Home(): Promise<JSX.Element> {
         <DomainDetails domain={tenant.primaryDomain} />
         <SupportEmail email={tenant.supportEmail} />
         <DepartmentName name={tenant.departmentName} />
-        <Administrators administrators={tenant.administrators} />
-        <LoginManagement requiresGroupLogin={!!tenant?.requiresGroupLogin} />
-        <GroupList tenantGroups={tenant.groups} />
+        <Administrators administrators={tenant.administrators} tenantId={tenant.id} />
+        <LoginManagement requiresGroupLogin={!!tenant?.requiresGroupLogin} tenantId={tenant.id} />
+        <GroupList tenantGroups={tenant.groups} tenantId={tenant.id} />
       </div>
-    </div>
+    </>
   )
 }

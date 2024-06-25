@@ -18,13 +18,13 @@ export default async function Home(): Promise<JSX.Element> {
   if (!session) return redirect("/")
 
   return (
-    <div className="mb-8 grid size-full w-full grid-cols-1 gap-8 p-4 pt-5 sm:grid-cols-2 sm:gap-2">
+    <>
       <div>
         <UserDetailsForm preferences={preferences} name={session.user?.name || ""} email={session.user?.email || ""} />
       </div>
       <div>
         <ContextGuide />
       </div>
-    </div>
+    </>
   )
 }

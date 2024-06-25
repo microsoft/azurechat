@@ -13,9 +13,11 @@ import { TenantDetails } from "@/features/tenant-management/models"
 import SystemPrompt from "@/features/theme/readable-systemprompt"
 import { Button } from "@/features/ui/button"
 import { SmartGen } from "@/features/ui/smart-gen"
+import { Textarea } from "@/features/ui/textarea"
 
 export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isClearing, setIsClearing] = useState(false)
   const [error, setError] = useState(false)
   const [contextPrompt, setContextPrompt] = useState(tenant.preferences.contextPrompt)
   const [input, setInput] = useState<string>("")
@@ -29,24 +31,23 @@ export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant 
     try {
       await submit(newContextPrompt)
       ;(e.target as HTMLFormElement)?.reset()
+      setInput("")
     } catch (error) {
       logger.error("Error submitting context prompt", { error })
     }
   }
 
   async function submit(newContextPrompt: string): Promise<void> {
-    setIsSubmitting(true)
-    if (contextPrompt === newContextPrompt) {
-      setIsSubmitting(false)
-      return
-    }
+    if (contextPrompt === newContextPrompt) return
+
+    newContextPrompt ? setIsSubmitting(true) : setIsClearing(true)
     const temp = contextPrompt
     setContextPrompt(newContextPrompt)
     const defaultErrorMessage = contextPrompt
       ? "Context prompt could not be updated. Please try again later."
       : "Context prompt could not be cleared. Please try again later."
     try {
-      const response = await fetch("/api/tenant/details", {
+      const response = await fetch(`/api/tenant/${tenant.id}/details`, {
         method: "POST",
         cache: "no-store",
         headers: { "Content-Type": "application/json" },
@@ -60,7 +61,7 @@ export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant 
       showError(defaultErrorMessage)
       logger.error("Error updating context prompt", { error })
     } finally {
-      setIsSubmitting(false)
+      newContextPrompt ? setIsSubmitting(false) : setIsClearing(false)
     }
   }
 
@@ -75,15 +76,13 @@ ${tenantPrompt}
 `
 
   const sanitisePrompt = async (): Promise<void> => {
-    if (!input || input.length < 1) {
-      setInput("")
-      return
-    }
+    if (input?.length < 1) return
+
     try {
       const formatInput = buildInput({ systemPrompt: config.systemPrompt, tenantPrompt: input })
       const res = await smartGen({
         toolName: "contextPromptSanitiser",
-        context: { uiComponent: "UserDetailsForm" },
+        context: { uiComponent: "TenantDetailsForm" },
         input: formatInput,
       })
       if (res === null) throw new Error("Error sanitising context prompt. Please try again.")
@@ -106,17 +105,29 @@ ${tenantPrompt}
       <Typography variant="h5" className="mt-4">
         Current Prompt:
       </Typography>
-      <div className="mt-4 rounded-md bg-altBackgroundShade p-4">
+      <div className="mt-4 flex items-start justify-between gap-2 rounded-md bg-altBackgroundShade p-4">
         <Markdown content={contextPrompt || "Not set"} />
+        {contextPrompt && (
+          <Button
+            type="button"
+            className="min-w-[10rem]"
+            variant="destructive"
+            onClick={async () => await submit("")}
+            disabled={isSubmitting || isClearing}
+            ariaLabel="Clear prompt"
+          >
+            {isClearing ? "Clearing..." : "Clear prompt"}
+          </Button>
+        )}
       </div>
       <Form.Root onSubmit={handleSubmitContextPrompt} className="mt-4 flex flex-col gap-2">
         <Form.Field name="contextPrompt" serverInvalid={error}>
           <Form.Label htmlFor="contextPrompt" className="flex items-center gap-2">
             New Context Prompt:
-            <SmartGen onClick={sanitisePrompt} />
+            <SmartGen onClick={sanitisePrompt} disabled={!input} />
           </Form.Label>
           <Form.Control asChild>
-            <textarea
+            <Textarea
               id="contextPrompt"
               name="contextPrompt"
               className="mt-4 w-full rounded-md border-2 p-2"
@@ -135,28 +146,18 @@ ${tenantPrompt}
             </Form.Message>
           )}
         </Form.Field>
-        <div className="mb-4 flex gap-4">
+        <div className="mb-4 flex justify-end">
           <Form.Submit asChild>
             <Button
               type="submit"
-              className="w-[14rem]"
+              className="w-[10rem]"
               variant="default"
-              disabled={isSubmitting}
-              ariaLabel="Update context prompt"
+              disabled={isSubmitting || isClearing}
+              ariaLabel="Save prompt"
             >
-              {isSubmitting ? "Updating..." : "Update Context Prompt"}
+              {isSubmitting ? "Saving..." : "Save prompt"}
             </Button>
           </Form.Submit>
-          <Button
-            type="button"
-            className="w-[14rem]"
-            variant="destructive"
-            onClick={async () => await submit("")}
-            disabled={isSubmitting}
-            ariaLabel="Clear context prompt"
-          >
-            {isSubmitting ? "Clearing..." : "Clear Context Prompt"}
-          </Button>
         </div>
       </Form.Root>
       <Typography variant="h5" className="my-2">
