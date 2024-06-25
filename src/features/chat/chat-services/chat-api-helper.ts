@@ -7,6 +7,7 @@ import { AI_NAME } from "@/features/theme/theme-config"
 
 import { DocumentSearchModel } from "./azure-cog-search/azure-cog-vector-store"
 import { AzureCogDocumentIndex, similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-vector-store"
+import { FindAllChatDocumentsForCurrentUser } from "./chat-document-service"
 
 const DEFAULT_SYSTEM_PROMPT = `
 - You are ${AI_NAME} who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks. \n
@@ -104,3 +105,43 @@ export const buildDataChatMessages = async (
     context,
   }
 }
+
+export const buildAudioChatMessages = async (
+  lastChatMessage: PromptMessage,
+  chatThreadId: string
+): Promise<{
+  systemMessage: ChatCompletionMessageParam
+  userMessage: ChatCompletionMessageParam
+  context: string
+}> => {
+  const documents = await FindAllChatDocumentsForCurrentUser(chatThreadId)
+  if (documents.status !== "OK") throw documents.errors
+
+  const context = documents.response
+    .map((result, index) => {
+      const context = `[${index}]. file name: ${result.name} \n file id: ${result.id} \n ${result.contents}`
+      return context
+    })
+    .join("\n------\n")
+
+  return {
+    systemMessage: {
+      role: ChatRole.System,
+      content: buildDataChatSystemPrompt(),
+    },
+    userMessage: {
+      role: ChatRole.User,
+      content: buildAudioChatContextPrompt(context, lastChatMessage.content),
+    },
+    context,
+  }
+}
+
+const buildAudioChatContextPrompt = (context: string, userQuestion: string): string => `
+- Given the following extracted parts of an audio transcription, create a final answer. \n
+- If you don't know the answer, just say that you don't know. Don't try to make up an answer.\n
+----------------\n
+context:\n
+${context}
+----------------\n
+question: ${userQuestion}`
