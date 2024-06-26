@@ -1,55 +1,19 @@
-import { createHash } from "crypto";
-import { getServerSession } from "next-auth";
-import { RedirectToPage } from "../common/navigation-helpers";
-import { options } from "./auth-api";
+// Import NextAuth, but do not use it
+import NextAuth from "next-auth";
+import Providers from "next-auth/providers";
 
-export const userSession = async (): Promise<UserModel | null> => {
-  const session = await getServerSession(options);
-  if (session && session.user) {
-    return {
-      name: session.user.name!,
-      image: session.user.image!,
-      email: session.user.email!,
-      isAdmin: session.user.isAdmin!,
-    };
-  }
-
-  return null;
+// Define a minimal configuration for NextAuth
+const options = {
+  providers: [
+    // No providers are configured, so NextAuth will not handle any authentication
+  ],
+  callbacks: {
+    // All callbacks are removed
+  },
+  session: {
+    // Session strategy is removed
+  },
 };
 
-export const getCurrentUser = async (): Promise<UserModel> => {
-  const user = await userSession();
-  if (user) {
-    return user;
-  }
-  throw new Error("User not found");
-};
-
-export const userHashedId = async (): Promise<string> => {
-  const user = await userSession();
-  if (user) {
-    return hashValue(user.email);
-  }
-
-  throw new Error("User not found");
-};
-
-export const hashValue = (value: string): string => {
-  const hash = createHash("sha256");
-  hash.update(value);
-  return hash.digest("hex");
-};
-
-export const redirectIfAuthenticated = async () => {
-  const user = await userSession();
-  if (user) {
-    RedirectToPage("chat");
-  }
-};
-
-export type UserModel = {
-  name: string;
-  image: string;
-  email: string;
-  isAdmin: boolean;
-};
+// Export a minimal handler that does nothing
+export const handlers = NextAuth(options);
