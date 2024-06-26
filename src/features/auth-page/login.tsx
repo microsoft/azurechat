@@ -1,7 +1,6 @@
 "use client";
 import { AI_NAME } from "@/features/theme/theme-config";
-import { signIn } from "next-auth/react";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -11,12 +10,22 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+// import { useRouter } from "next/router"; // Uncomment if using routing
 
 interface LoginProps {
   isDevMode: boolean;
 }
 
 export const LogIn: FC<LoginProps> = (props) => {
+  // Uncomment the following lines if you want to automatically redirect to the chat page
+  /*
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push("/chat"); // Adjust the path according to your chat page
+  }, []);
+  */
+
   return (
     <Card className="flex gap-2 flex-col min-w-[300px]">
       <CardHeader className="gap-2">
@@ -27,17 +36,12 @@ export const LogIn: FC<LoginProps> = (props) => {
           <span className="text-primary">{AI_NAME}</span>
         </CardTitle>
         <CardDescription>
-          Login in with your GitHub or Microsoft 365 account
+          Access the chat without logging in
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        <Button onClick={() => signIn("github")}>GitHub</Button>
-        <Button onClick={() => signIn("azure-ad")}> Microsoft 365</Button>
-        {props.isDevMode ? (
-          <Button onClick={() => signIn("localdev")}>
-            Basic Auth (DEV ONLY)
-          </Button>
-        ) : null}
+        <p>Welcome to the chat application! Click below to start chatting.</p>
+        <Button onClick={() => window.location.href = "/chat"}>Go to Chat</Button>
       </CardContent>
     </Card>
   );
