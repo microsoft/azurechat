@@ -25,7 +25,7 @@ const ErrorPage: React.FC = () => {
         break
       case SignInErrorType.SignInFailed:
       default:
-        message = `Currently, access to ${AI_NAME} is only available to onboarded agencies, if you are seeing this warning it usually means your agency has not completed their setup. If you believe your agency has been setup and continue to receive these errors, please contact your agency IT support team.`
+        message = `It appears we ran into an error while logging you in to ${AI_NAME} if you believe your agency has been setup and continue to receive these errors, please contact our support team.`
         setDisplaySupportButton(true)
         break
     }

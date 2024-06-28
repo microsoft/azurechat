@@ -5,6 +5,7 @@ import { FC, useEffect, useRef } from "react"
 import Typography from "@/components/typography"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { TranscriptForm } from "@/features/chat/chat-ui/chat-empty-state/chat-transcript-details"
+import { AI_NAME } from "@/features/theme/theme-config"
 import { Button } from "@/features/ui/button"
 import { Input } from "@/features/ui/input"
 
@@ -53,6 +54,9 @@ export const ChatFileUI: FC = () => {
           </Typography>
         </div>
       )}
+      <Typography variant="span" id="file-upload-description" className="text-muted-foreground">
+        {`From June 28 the way you chat with files in ${AI_NAME} is changing, please note that content from uploaded files will only be available for a gauranteed seven days while we transition.`}
+      </Typography>
       <form onSubmit={onSubmit} className="flex items-center gap-2">
         <label htmlFor="file-upload" className="sr-only">
           Upload File

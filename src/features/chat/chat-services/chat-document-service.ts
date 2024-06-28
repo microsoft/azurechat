@@ -9,6 +9,7 @@ import { xMonthsAgo } from "@/features/common/date-helper"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { HistoryContainer } from "@/features/common/services/cosmos"
 import logger from "@/features/insights/app-insights"
+import { APP_URL } from "@/features/theme/theme-config"
 import { uniqueId } from "@/lib/utils"
 
 import { AzureCogDocumentIndex, indexDocuments } from "./azure-cog-search/azure-cog-vector-store"
@@ -82,8 +83,9 @@ export const UploadDocument = async (formData: FormData): ServerActionResponseAs
       fileContent = [splitDocuments, transcription.text, transcription.vtt]
     } else {
       const docs = await LoadFile(formData, chatType)
-      const splitDocuments = chunkDocumentWithOverlap(docs.join("\n"))
-      fileContent = [splitDocuments, undefined]
+      const joined = docs.join("\n")
+      const splitDocuments = chunkDocumentWithOverlap(joined)
+      fileContent = [splitDocuments, joined]
     }
     return {
       status: "OK",
@@ -106,6 +108,7 @@ export const IndexDocuments = async (
 ): ServerActionResponseAsync<AzureCogDocumentIndex[]> => {
   try {
     const [userId, tenantId] = await Promise.all([userHashedId(), getTenantId()])
+    const path = `${APP_URL}/chat/${chatThreadId}`
     const documentsToIndex: AzureCogDocumentIndex[] = docs.map((docContent, index) => ({
       id: uniqueId(),
       chatThreadId,
@@ -116,6 +119,9 @@ export const IndexDocuments = async (
       tenantId,
       createdDate: new Date().toISOString(),
       fileName,
+      filepath: path,
+      url: path,
+      title: fileName,
       embedding: [],
     }))
     await indexDocuments(documentsToIndex)
@@ -131,6 +137,9 @@ export const IndexDocuments = async (
       name: fileName,
       contents: contentsToSave,
       extraContents: extraContents,
+      filepath: path,
+      title: fileName,
+      url: path,
     }
     const container = await HistoryContainer()
     const { resource } = await container.items.upsert<ChatDocumentModel>(modelToSave)

@@ -6,6 +6,20 @@ Below are the updates for the Queensland Government QChat Virtual Assistant.
 
 - If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the Queensland Government AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
 
+## 📚 Version 1.5.5 Updates - 28 June 2024
+
+Here's the updated version of the release notes with Australian English spelling and additional styling:
+
+## 🌟 Version 1.5.5 Updates - 28 June 2024
+
+### 🚀 Exciting changes to File Upload are coming soon
+
+We are preparing to **update the way you upload files** and **revolutionise how you chat with your data in QChat**. To achieve this, we may need to **remove files from older chats**.
+
+We've updated our guidance and implemented additional measures to minimise disruption during this transition.
+
+**Please note:** Both documents more than 30 days old and more recent might be unavailable after the transition. However, we aim to cut over with minimal to no impact on you!
+
 ## 📚 Version 1.5.4 Updates - 23 June 2024
 
 - **Set your own context prompt:** We've launched our User Context Prompt Feature! Head over to Settings and Your Details to give it a try. This will allow you to provide every conversation with reference information from the get go! Please give the feature a go and reach out to support if you have any concerns or issues.
