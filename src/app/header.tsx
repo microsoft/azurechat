@@ -1,8 +1,10 @@
 import React from "react"
 
+import { APP_NAME } from "@/app-global"
+
 import Typography from "@/components/typography"
 import { MiniMenu } from "@/features/main-menu/mini-menu"
-import { AI_NAME, AI_TAGLINE, APP_VANITY_URL } from "@/features/theme/theme-config"
+import { AI_TAGLINE, APP_VANITY_URL } from "@/features/theme/theme-config"
 import { QgovSvg } from "@/features/ui/qldgovlogo"
 import { QgovMiniSvg } from "@/features/ui/qldgovminilogo"
 import { UserComponent } from "@/features/ui/user-login-logout"
@@ -17,7 +19,7 @@ const Sidebar: React.FC = () => {
           </div>
           <div className="col-span-5 px-4 font-meta">
             <Typography variant="h1" className="font-bold tracking-wider text-siteTitle">
-              {AI_NAME}
+              {APP_NAME}
             </Typography>
             <Typography variant="h2" className="hidden whitespace-nowrap text-textMuted md:block">
               {AI_TAGLINE}

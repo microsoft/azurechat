@@ -2,12 +2,13 @@ import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useEffect, useRef, useState } from "react"
 
+import { APP_NAME } from "@/app-global"
+
 import { ChatFileTranscription } from "@/components/chat/chat-file-transcription"
 import ChatLoading from "@/components/chat/chat-loading"
 import ChatRow from "@/components/chat/chat-row"
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor"
 import { ChatRole } from "@/features/chat/models"
-import { AI_NAME } from "@/features/theme/theme-config"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 
 import { useChatContext } from "./chat-context"
@@ -67,7 +68,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
               <ChatRow
                 key={message.id}
                 chatMessageId={message.id}
-                name={message.role === ChatRole.User ? session?.user?.name || "" : AI_NAME}
+                name={message.role === ChatRole.User ? session?.user?.name || "" : APP_NAME}
                 message={message}
                 type={message.role as ChatRole}
                 chatThreadId={chatThreadId}

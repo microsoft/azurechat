@@ -1,11 +1,12 @@
 import { DownloadIcon, CaptionsIcon } from "lucide-react"
 import { FC, useState } from "react"
 
+import { APP_NAME } from "@/app-global"
+
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { convertTranscriptionToWordDocument } from "@/features/common/file-export"
-import { AI_NAME } from "@/features/theme/theme-config"
 import { CopyButton } from "@/features/ui/assistant-buttons"
 import { CheckTranscriptionButton } from "@/features/ui/assistant-buttons/rewrite-message-button"
 import { Button } from "@/features/ui/button"
@@ -23,8 +24,8 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
 
   const onDownloadTranscription = async (): Promise<void> => {
     const fileName = `${props.name}-transcription.docx`
-    const chatThreadName = chatBody.chatThreadName || `${AI_NAME} ${fileName}`
-    await convertTranscriptionToWordDocument([props.contents], props.name, fileName, AI_NAME, chatThreadName)
+    const chatThreadName = chatBody.chatThreadName || `${APP_NAME} ${fileName}`
+    await convertTranscriptionToWordDocument([props.contents], props.name, fileName, APP_NAME, chatThreadName)
   }
 
   const onDownloadVttFile = (): void => {

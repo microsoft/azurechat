@@ -1,10 +1,11 @@
 "use client"
 import React, { useState } from "react"
 
+import { APP_NAME } from "@/app-global"
+
 import Typography from "@/components/typography"
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
-import { AI_NAME } from "@/features/theme/theme-config"
 import { SwitchComponent } from "@/ui/switch"
 
 export const LoginManagement: React.FC<{ requiresGroupLogin: boolean; tenantId: string }> = ({
@@ -59,12 +60,12 @@ export const LoginManagement: React.FC<{ requiresGroupLogin: boolean; tenantId: 
             Please note that{" "}
             {requiresGroupLogin ? (
               <>
-                disabling group login will allow all Internal users in your Tenant to have access to {AI_NAME}. This
+                disabling group login will allow all Internal users in your Tenant to have access to {APP_NAME}. This
                 does not include Guest Users. This change or adding groups will take effect immediately.
               </>
             ) : (
               <>
-                enabling group login will restrict access to {AI_NAME} to only users who belong to specified groups or
+                enabling group login will restrict access to {APP_NAME} to only users who belong to specified groups or
                 Global Administrators. This does not include Guest Users. This change will take effect immediately.
               </>
             )}

@@ -1,16 +1,17 @@
 import { redirect } from "next/navigation"
 import { getServerSession } from "next-auth"
 
+import { APP_NAME } from "@/app-global"
+
 import { SettingsMenu } from "@/features/settings/settings-menu"
 import SettingsProvider from "@/features/settings/settings-provider"
 import { GetTenantConfig } from "@/features/tenant-management/tenant-service"
-import { AI_NAME } from "@/features/theme/theme-config"
 
 export const dynamic = "force-dynamic"
 
 export const metadata = {
-  title: AI_NAME + " Settings",
-  description: AI_NAME + " - Settings",
+  title: `${APP_NAME} Settings`,
+  description: `${APP_NAME} - Settings`,
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }): Promise<JSX.Element> {

@@ -2,10 +2,11 @@ import * as Tooltip from "@radix-ui/react-tooltip"
 import { AudioLines, FileText, MessageCircle } from "lucide-react"
 import React, { useEffect, useState, FC } from "react"
 
+import { APP_NAME } from "@/app-global"
+
 import Typography from "@/components/typography"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatType } from "@/features/chat/models"
-import { AI_NAME } from "@/features/theme/theme-config"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 import { TooltipProvider } from "@/features/ui/tooltip-provider"
 
@@ -74,9 +75,9 @@ export const ChatTypeSelector: FC<Prop> = ({ disable }) => {
         </Tooltip.Trigger>
         <Tooltip.Content side="top" className="rounded-md bg-primary-foreground p-4 text-foreground shadow-lg">
           <Typography variant="p">
-            <strong>General</strong> - chats are turn by turn conversations with the {AI_NAME} Assistant.
+            <strong>General</strong> - chats are turn by turn conversations with the {APP_NAME} Assistant.
             <br />
-            <strong>File</strong> - Upload PDF files to {AI_NAME} for questions or task completion based on it.
+            <strong>File</strong> - Upload PDF files to {APP_NAME} for questions or task completion based on it.
             <br />
             {isAllowedTenant ? (
               <>

@@ -2,10 +2,11 @@ import { Loader, Send, StopCircle } from "lucide-react"
 import { getSession } from "next-auth/react"
 import { FC, FormEvent, useRef, useMemo } from "react"
 
+import { APP_NAME } from "@/app-global"
+
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatFileSlider } from "@/features/chat/chat-ui/chat-file/chat-file-slider"
 import { convertMarkdownToWordDocument } from "@/features/common/file-export"
-import { AI_NAME } from "@/features/theme/theme-config"
 import { Button } from "@/features/ui/button"
 import { Textarea } from "@/features/ui/textarea"
 
@@ -43,10 +44,10 @@ const ChatInput: FC<Props> = () => {
   }
 
   const exportDocument = async (): Promise<void> => {
-    const fileName = AI_NAME + ` Export_${getFormattedDateTime()}.docx`
+    const fileName = APP_NAME + ` Export_${getFormattedDateTime()}.docx`
     const userName = await getNameInline()
-    const chatThreadName = chatBody.chatThreadName || AI_NAME + ` Export_${getFormattedDateTime()}.docx`
-    await convertMarkdownToWordDocument(messages, fileName, AI_NAME, userName, chatThreadName)
+    const chatThreadName = chatBody.chatThreadName || APP_NAME + ` Export_${getFormattedDateTime()}.docx`
+    await convertMarkdownToWordDocument(messages, fileName, APP_NAME, userName, chatThreadName)
   }
 
   const submit = (e: FormEvent<HTMLFormElement>): void => {

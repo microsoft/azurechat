@@ -1,10 +1,10 @@
-import { AI_NAME } from "@/features/theme/theme-config"
+import { APP_NAME } from "@/app-global"
 
 export const dynamic = "force-dynamic"
 
 export const metadata = {
-  title: AI_NAME + " Terms",
-  description: AI_NAME + " - Terms",
+  title: `${APP_NAME} Terms`,
+  description: `${APP_NAME} - Terms`,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {

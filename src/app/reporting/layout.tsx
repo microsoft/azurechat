@@ -1,8 +1,8 @@
-import { AI_NAME } from "@/features/theme/theme-config"
+import { APP_NAME } from "@/app-global"
 
 export const metadata = {
-  title: AI_NAME,
-  description: AI_NAME,
+  title: APP_NAME,
+  description: APP_NAME,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {

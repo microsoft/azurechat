@@ -38,6 +38,7 @@ next-env.d.ts
 infra/aad_setup.sh
 
 **./test-results/
+**/playwright-report
 **./playwright-report
 **./blob-report/
 **./playwright/.cache/

@@ -26,7 +26,7 @@ interface ModalProps {
   type: "edit" | "delete"
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAfterClose, type }): JSX.Element => {
+const ChatMenuModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAfterClose, type }): JSX.Element => {
   const [inputValue, setInputValue] = useState("")
   const inputRef = useRef<HTMLInputElement | null>(null)
 
@@ -189,7 +189,7 @@ export const MenuItems: FC<Prop> = ({ menuItems }) => {
               <Trash size={16} />
             </Button>
             {selectedThreadId === thread.chatThreadId && modalType && (
-              <Modal
+              <ChatMenuModal
                 isOpen={true}
                 onClose={handleCloseModal}
                 onSave={handleSaveModal}

@@ -4,14 +4,7 @@ import { DefaultSession } from "next-auth"
 
 declare module "next-auth" {
   interface Session {
-    user: {
-      admin: boolean
-      tenantAdmin: boolean
-      globalAdmin: boolean
-      tenantId: string
-      upn: string
-      userId: string
-    } & DefaultSession["user"]
+    user: Omit<User, "groups"> & DefaultSession["user"]
   }
   interface Token {
     admin: boolean
@@ -24,5 +17,7 @@ declare module "next-auth" {
     upn: string
     userId: string
     groups: string[]
+    acceptedTermsDate: string
+    lastVersionSeen: string
   }
 }

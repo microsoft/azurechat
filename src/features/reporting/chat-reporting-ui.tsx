@@ -1,8 +1,9 @@
 import { FC } from "react"
 
+import { APP_NAME } from "@/app-global"
+
 import ChatRow from "@/components/chat/chat-row"
 import { ChatRole } from "@/features/chat/models"
-import { AI_NAME } from "@/features/theme/theme-config"
 import { Card } from "@/features/ui/card"
 
 import { FindAllChatsInThread, FindChatThreadById } from "./reporting-service"
@@ -30,7 +31,7 @@ export const ChatReportingUI: FC<Props> = async props => {
             return (
               <ChatRow
                 chatMessageId={message.id}
-                name={message.role === ChatRole.User ? chatThread.useName : AI_NAME}
+                name={message.role === ChatRole.User ? chatThread.useName : APP_NAME}
                 message={message}
                 type={message.role as ChatRole}
                 key={index}

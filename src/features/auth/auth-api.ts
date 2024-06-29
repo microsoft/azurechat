@@ -1,21 +1,16 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
+import NextAuth, { NextAuthOptions, User } from "next-auth"
 import { JWT } from "next-auth/jwt"
 import { Provider } from "next-auth/providers"
 import AzureADProvider from "next-auth/providers/azure-ad"
 
-import { UserSignInHandler, SignInErrorType, isTenantAdmin } from "./sign-in"
+import { UserSignInHandler, SignInErrorType, isTenantAdmin, getUser } from "./sign-in"
 
-export interface AuthToken extends JWT {
-  admin: boolean
-  globalAdmin: boolean
-  tenantAdmin: boolean
-  exp: number
-  iat: number
-  refreshExpiresIn: number
-  tenantId: string
-  userId: string
-  upn: string
-}
+export type AuthToken = JWT &
+  Omit<User, "groups"> & {
+    exp: number
+    iat: number
+    refreshExpiresIn: number
+  }
 
 const configureIdentityProvider = (): Provider[] => {
   const providers: Provider[] = []
@@ -34,7 +29,7 @@ const configureIdentityProvider = (): Provider[] => {
           url: process.env.AZURE_AD_AUTHORIZATION_ENDPOINT,
           params: {
             client_id: process.env.AZURE_AD_CLIENT_ID,
-            redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/azure-ad",
+            redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/azure-ad`,
             response_type: "code",
           },
         },
@@ -44,7 +39,7 @@ const configureIdentityProvider = (): Provider[] => {
             client_id: process.env.AZURE_AD_CLIENT_ID,
             client_secret: process.env.AZURE_AD_CLIENT_SECRET,
             grant_type: "authorization_code",
-            redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/azure-ad",
+            redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/azure-ad`,
           },
         },
         userinfo: process.env.AZURE_AD_USERINFO_ENDPOINT,
@@ -57,6 +52,8 @@ const configureIdentityProvider = (): Provider[] => {
           profile.groups = profile.groups || profile.employee_groups
 
           const tenantAdmin = await isTenantAdmin(profile)
+          const user = await getUser(profile.tenantId, profile.upn)
+
           return {
             ...profile,
             id: profile.sub,
@@ -67,6 +64,8 @@ const configureIdentityProvider = (): Provider[] => {
             globalAdmin: globalAdmin,
             tenantAdmin: tenantAdmin,
             userId: profile.upn,
+            acceptedTermsDate: (user.accepted_terms && user.accepted_terms_date) || null,
+            lastVersionSeen: user.last_version_seen || null,
           }
         },
       })
@@ -102,7 +101,7 @@ export const options: NextAuthOptions = {
         return false
       }
     },
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
       const authToken = token as AuthToken
       if (user) {
         authToken.admin = user.admin
@@ -111,7 +110,12 @@ export const options: NextAuthOptions = {
         authToken.tenantId = user.tenantId
         authToken.upn = user.upn
         authToken.userId = user.userId
+        authToken.acceptedTermsDate = user.acceptedTermsDate
+        authToken.lastVersionSeen = user.lastVersionSeen
       }
+      if (trigger === "update" && session?.acceptedTerms) authToken.acceptedTermsDate = new Date().toISOString()
+      if (trigger === "update" && session?.lastVersionSeen) authToken.lastVersionSeen = session.lastVersionSeen
+
       return authToken
     },
     session({ session, token }) {
@@ -122,6 +126,8 @@ export const options: NextAuthOptions = {
       session.user.tenantId = authToken.tenantId
       session.user.upn = authToken.upn
       session.user.userId = authToken.userId
+      session.user.acceptedTermsDate = authToken.acceptedTermsDate
+      session.user.lastVersionSeen = authToken.lastVersionSeen
       return session
     },
   },

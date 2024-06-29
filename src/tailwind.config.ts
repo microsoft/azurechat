@@ -21,8 +21,8 @@ const config: Config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        overlayShow: "overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)",
-        contentShow: "contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)",
+        overlayShow: "overlayShow 500ms forwards cubic-bezier(0.16, 1, 0.3, 1)",
+        contentShow: "contentShow 500ms forwards cubic-bezier(0.16, 1, 0.3, 1)",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -153,11 +153,11 @@ const config: Config = {
         },
         overlayShow: {
           from: { opacity: "0" },
-          to: { opacity: "1" },
+          to: { opacity: ".8" },
         },
         contentShow: {
-          from: { opacity: "0", transform: "translate(-50%, -48%) scale(0.96)" },
-          to: { opacity: "1", transform: "translate(-50%, -50%) scale(1)" },
+          from: { opacity: "0", transform: "translate(0%, -100%) scale(0.75)" },
+          to: { opacity: "1", transform: "translate(0%, 0%) scale(1)" },
         },
         scale: {
           "100%": { transform: "scale(1)" },

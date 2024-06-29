@@ -1,8 +1,8 @@
-import { AI_NAME } from "@/features/theme/theme-config"
+import { APP_NAME } from "@/app-global"
 
 export const metadata = {
-  title: AI_NAME + " Unauthorised",
-  description: AI_NAME + " - Unauthorised",
+  title: `${APP_NAME} Unauthorised`,
+  description: `${APP_NAME} - Unauthorised`,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {

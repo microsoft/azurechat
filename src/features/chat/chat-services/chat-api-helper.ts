@@ -1,16 +1,17 @@
 import { ChatCompletionMessageParam } from "openai/resources"
 
+import { APP_NAME } from "@/app-global"
+
 import { getTenantAndUser } from "@/features/auth/helpers"
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
 import { ChatRole, PromptMessage } from "@/features/chat/models"
-import { AI_NAME } from "@/features/theme/theme-config"
 
 import { DocumentSearchModel } from "./azure-cog-search/azure-cog-vector-store"
 import { AzureCogDocumentIndex, similaritySearchVectorWithScore } from "./azure-cog-search/azure-cog-vector-store"
 import { FindAllChatDocumentsForCurrentUser } from "./chat-document-service"
 
 const DEFAULT_SYSTEM_PROMPT = `
-- You are ${AI_NAME} who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks. \n
+- You are ${APP_NAME} who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks. \n
 - You will provide clear and concise queries, and you will respond with polite and professional answers. \n
 - You will answer questions truthfully and accurately. \n
 - You will respond to questions in accordance with rules of Queensland government. \n`.replace(/\s+/g, "^")
@@ -37,7 +38,7 @@ export const getContextPrompts = async (): Promise<{
   }
 }
 
-const buildDataChatSystemPrompt = (): string => `You are ${AI_NAME} who is a helpful AI Assistant.`
+const buildDataChatSystemPrompt = (): string => `You are ${APP_NAME} who is a helpful AI Assistant.`
 const buildDataChatContextPrompt = (context: string, userQuestion: string): string => `
 - Given the following extracted parts of a document, create a final answer. \n
 - If you don't know the answer, just say that you don't know. Don't try to make up an answer.\n

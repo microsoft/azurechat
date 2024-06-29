@@ -27,3 +27,5 @@ export const arraysAreEqual = (array1: string[], array2: string[]): boolean => {
   const sortedArray2 = [...array2].sort()
   return sortedArray1.every((value, index) => value === sortedArray2[index])
 }
+
+export type ActionBase<Type, Payload = void> = Payload extends void ? { type: Type } : { type: Type } & Payload

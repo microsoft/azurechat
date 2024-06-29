@@ -19,6 +19,7 @@ export type UserActivity = {
   groups?: string[] | null | undefined
   failed_login_attempts: number
   last_failed_login: Date | null
+  last_version_seen?: string | null
 }
 
 export type UserPreferences = {

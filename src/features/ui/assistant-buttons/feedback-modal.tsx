@@ -2,12 +2,11 @@ import React, { FC } from "react"
 
 import Typography from "@/components/typography"
 import { FeedbackType } from "@/features/chat/models"
+import { Button } from "@/features/ui/button"
+import FeedbackButtons from "@/features/ui/feedback-reasons"
+import { FeedbackTextarea } from "@/features/ui/feedback-textarea"
 
-import { Button } from "./button"
-import FeedbackButtons from "./feedback-reasons"
-import { FeedbackTextarea } from "./feedback-textarea"
-
-interface ModalProps {
+interface FeedbackModalProps {
   chatThreadId: string
   chatMessageId: string
   feedbackType?: FeedbackType
@@ -19,7 +18,7 @@ interface ModalProps {
   onSubmit: () => void
 }
 
-export default function Modal(props: ModalProps): ReturnType<FC> {
+export default function FeedbackModal(props: FeedbackModalProps): ReturnType<FC> {
   return (
     <div
       role="dialog"
