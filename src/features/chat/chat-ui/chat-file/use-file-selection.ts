@@ -12,7 +12,6 @@ export const useFileSelection = (
 ): { onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void> } => {
   const { setChatBody, chatBody, fileState } = useChatContext()
   const { setIsUploadingFile, setUploadButtonLabel } = fileState
-
   const { showError, showSuccess } = useGlobalMessageContext()
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -24,39 +23,38 @@ export const useFileSelection = (
   const onFileChange = async (formData: FormData): Promise<void> => {
     try {
       setIsUploadingFile(true)
-      if (chatBody.chatType === "audio") {
-        setUploadButtonLabel("Uploading and transcribing file...")
-      } else {
-        setUploadButtonLabel("Uploading file...")
-      }
+      setUploadButtonLabel(chatBody.chatType === "audio" ? "Uploading and transcribing file..." : "Uploading file...")
 
       formData.append("chatType", chatBody.chatType)
       formData.append("id", props.id)
 
-      const file: File | null = formData.get(chatBody.chatType) as File
+      const file = formData.get(chatBody.chatType) as File | null
+
+      if (!file) {
+        throw new Error("No file selected.")
+      }
 
       const uploadResponse = await UploadDocument(formData)
-      if (uploadResponse.status !== "OK") throw showError(uploadResponse.errors[0].message)
+      if (uploadResponse.status !== "OK") {
+        throw new Error(uploadResponse.errors[0].message)
+      }
 
-      const indexErrors = []
+      const indexErrors: string[] = []
       const [splitDocuments, contents, vtt] = uploadResponse.response
 
       try {
         setUploadButtonLabel(`Indexing file ${file.name}...`)
         const indexResponse = await IndexDocuments(file.name, splitDocuments, props.id, contents, vtt)
-
         if (indexResponse.status !== "OK") {
-          showError(`${file.name} failed to be indexed. ${indexResponse.errors[0].message}`)
           indexErrors.push(indexResponse.errors[0].message)
         }
       } catch (e) {
-        indexErrors.push(e)
+        indexErrors.push(e instanceof Error ? e.message : "An unknown error occurred during indexing.")
       }
 
-      if (indexErrors.length)
-        throw new Error("Looks like not all documents were indexed. Please try again.", {
-          cause: indexErrors,
-        })
+      if (indexErrors.length) {
+        throw new Error(`Not all documents were indexed. Errors: ${indexErrors.join(", ")}`)
+      }
 
       fileState.setIsFileNull(true)
       showSuccess({
@@ -67,10 +65,10 @@ export const useFileSelection = (
       await UpdateChatThreadToFileDetails(props.id, chatBody.chatType, file.name)
 
       const chatOverFileName = chatBody.chatOverFileName ? `${file.name}, ${chatBody.chatOverFileName}` : file.name
+
       setChatBody({ ...chatBody, chatOverFileName })
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred"
-      showError(errorMessage)
+      showError(error instanceof Error ? error.message : "An unexpected error occurred")
     } finally {
       setIsUploadingFile(false)
       setUploadButtonLabel("")

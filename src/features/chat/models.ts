@@ -134,7 +134,7 @@ export interface ChatDocumentModel {
   contents?: string
   extraContents?: string
   type: ChatRecordType.Document
-  filepath: string
+  filePath: string
   title: string
   url: string
 }

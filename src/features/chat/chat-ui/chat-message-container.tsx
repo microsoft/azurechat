@@ -22,14 +22,12 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   const router = useRouter()
   const scrollRef = useRef<HTMLDivElement>(null)
   const { messages, documents, isLoading, chatThreadLocked } = useChatContext()
-  const [selectedTab, setSelectedTab] = useState<SectionTabsProps["selectedTab"]>(
-    messages.length ? "chat" : "transcription"
-  )
+  const [selectedTab, setSelectedTab] = useState<SectionTabsProps["selectedTab"]>("chat")
 
   const [previousScrollTop, setPreviousScrollTop] = useState(0)
-  const [supressScrolling, setSupressScrolling] = useState(false)
+  const [suppressScrolling, setSuppressScrolling] = useState(false)
 
-  useChatScrollAnchor(messages, scrollRef, !supressScrolling)
+  useChatScrollAnchor(messages, scrollRef, !suppressScrolling)
 
   useEffect(() => {
     if (!isLoading) {
@@ -38,21 +36,22 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   }, [isLoading, router])
 
   useEffect(() => {
-    if (!isLoading) return
-    setSupressScrolling(false)
-    setSelectedTab("chat")
+    if (!isLoading) {
+      setSuppressScrolling(false)
+      setSelectedTab("chat")
+    }
   }, [isLoading])
 
   const onScroll = (e: React.UIEvent<HTMLDivElement>): void => {
     if (isLoading) {
       if (e.currentTarget.scrollTop < previousScrollTop) {
-        setSupressScrolling(true)
+        setSuppressScrolling(true)
       }
       setPreviousScrollTop(e.currentTarget.scrollTop)
     }
   }
 
-  const documentsWithTranscriptions = documents.filter(document => document.contents)
+  const chatFiles = documents.filter(document => document.contents)
 
   return (
     <div className="h-full overflow-y-auto" ref={scrollRef} onScroll={onScroll}>
@@ -60,9 +59,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
         <ChatHeader />
       </div>
 
-      {documentsWithTranscriptions.length ? (
-        <SectionTabs selectedTab={selectedTab} onSelectedTabChange={setSelectedTab} />
-      ) : undefined}
+      {chatFiles.length ? <SectionTabs selectedTab={selectedTab} onSelectedTabChange={setSelectedTab} /> : undefined}
 
       <div className="flex flex-1 flex-col justify-end pb-[140px]">
         {selectedTab === "chat"
@@ -78,7 +75,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
                 threadLocked={index === messages.length - 1 && chatThreadLocked}
               />
             ))
-          : documentsWithTranscriptions.map(document => (
+          : chatFiles.map(document => (
               <ChatFileTranscription
                 key={document.id}
                 name={document.name}
@@ -93,19 +90,35 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
 }
 
 interface SectionTabsProps {
-  selectedTab: "chat" | "transcription"
+  selectedTab: "chat" | "transcription" | "document"
   onSelectedTabChange: (value: SectionTabsProps["selectedTab"]) => void
 }
 
-const SectionTabs: React.FC<SectionTabsProps> = ({ selectedTab, onSelectedTabChange }) => (
-  <Tabs value={selectedTab} onValueChange={onSelectedTabChange as (x: string) => void} className="container pb-2">
-    <TabsList aria-label="Conversation Type" className="grid size-full grid-cols-2 items-stretch">
-      <TabsTrigger value="chat" className="flex gap-2" role="tab" aria-selected={true}>
-        Chat
-      </TabsTrigger>
-      <TabsTrigger value="transcription" className="flex gap-2" role="tab" aria-selected={true}>
-        Transcription
-      </TabsTrigger>
-    </TabsList>
-  </Tabs>
-)
+const SectionTabs: React.FC<SectionTabsProps> = ({ selectedTab, onSelectedTabChange }) => {
+  const { chatBody } = useChatContext()
+
+  return (
+    <Tabs value={selectedTab} onValueChange={onSelectedTabChange as (x: string) => void} className="container pb-2">
+      <TabsList aria-label="Conversation Type" className="grid size-full grid-cols-2 items-stretch">
+        <TabsTrigger value="chat" className="flex gap-2" role="tab" aria-selected={selectedTab === "chat"}>
+          Chat
+        </TabsTrigger>
+        {chatBody.chatType === "audio" && (
+          <TabsTrigger
+            value="transcription"
+            className="flex gap-2"
+            role="tab"
+            aria-selected={selectedTab === "transcription"}
+          >
+            Transcription
+          </TabsTrigger>
+        )}
+        {chatBody.chatType === "data" && (
+          <TabsTrigger value="document" className="flex gap-2" role="tab" aria-selected={selectedTab === "document"}>
+            Document
+          </TabsTrigger>
+        )}
+      </TabsList>
+    </Tabs>
+  )
+}

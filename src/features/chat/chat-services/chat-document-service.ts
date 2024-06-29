@@ -119,7 +119,7 @@ export const IndexDocuments = async (
       tenantId,
       createdDate: new Date().toISOString(),
       fileName,
-      filepath: path,
+      filePath: path,
       url: path,
       title: fileName,
       embedding: [],
@@ -137,7 +137,7 @@ export const IndexDocuments = async (
       name: fileName,
       contents: contentsToSave,
       extraContents: extraContents,
-      filepath: path,
+      filePath: path,
       title: fileName,
       url: path,
     }
