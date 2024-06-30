@@ -1,8 +1,11 @@
+import { User } from "next-auth"
+import { AdapterUser } from "next-auth/adapters"
+
 import { APP_DESCRIPTION, APP_NAME, APP_VERSION } from "@/app-global"
 
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { ApplicationContainer } from "@/features/common/services/cosmos"
-import { ApplicationSettings } from "@/features/globals/model"
+import { AdministratorTenantGroups, ApplicationSettings } from "@/features/globals/model"
 
 export const GetApplicationSettings = async (): ServerActionResponseAsync<ApplicationSettings> => {
   try {
@@ -20,6 +23,7 @@ export const GetApplicationSettings = async (): ServerActionResponseAsync<Applic
         description: APP_DESCRIPTION,
         version: APP_VERSION,
         termsAndConditionsDate: new Date().toISOString(),
+        administratorAccess: [],
       })
       if (!resource)
         return {
@@ -40,5 +44,26 @@ export const GetApplicationSettings = async (): ServerActionResponseAsync<Applic
       status: "ERROR",
       errors: [{ message: `${e}` }],
     }
+  }
+}
+
+export async function isAdmin(user: User | AdapterUser): Promise<boolean> {
+  try {
+    const appSettingsResponse = await GetApplicationSettings()
+    if (appSettingsResponse.status !== "OK") return false
+    const appSettings = appSettingsResponse.response
+    const administratorAccess: AdministratorTenantGroups[] = appSettings.administratorAccess || []
+
+    const tenantAccess = administratorAccess.find(access => access.tenant === user.tenantId)
+
+    if (!tenantAccess) {
+      return false
+    }
+
+    const isAdmin = tenantAccess.group.some(group => user.groups.includes(group))
+
+    return isAdmin
+  } catch (_error) {
+    return false
   }
 }

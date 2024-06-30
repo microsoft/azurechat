@@ -3,6 +3,8 @@ import { JWT } from "next-auth/jwt"
 import { Provider } from "next-auth/providers"
 import AzureADProvider from "next-auth/providers/azure-ad"
 
+import { isAdmin } from "@/features/application/application-service"
+
 import { UserSignInHandler, SignInErrorType, isTenantAdmin, getUser } from "./sign-in"
 
 export type AuthToken = JWT &
@@ -14,7 +16,6 @@ export type AuthToken = JWT &
 
 const configureIdentityProvider = (): Provider[] => {
   const providers: Provider[] = []
-  const adminEmails = process.env.ADMIN_EMAIL_ADDRESS?.split(",").map(email => email.toLowerCase().trim()) || []
 
   if (process.env.AZURE_AD_CLIENT_ID && process.env.AZURE_AD_CLIENT_SECRET && process.env.AZURE_AD_TENANT_ID) {
     providers.push(
@@ -46,12 +47,12 @@ const configureIdentityProvider = (): Provider[] => {
         profile: async profile => {
           const upnLower = profile.upn.toLowerCase()
           const email = profile.email?.toLowerCase() ?? upnLower
-          const admin = adminEmails.includes(email || upnLower)
           const globalAdmin = !!profile.roles?.includes("GlobalAdmin")
           profile.tenantId = profile.employee_idp || profile.tid
           profile.groups = profile.groups || profile.employee_groups
 
-          const tenantAdmin = await isTenantAdmin(profile)
+          const admin = await isAdmin(profile)
+          const tenantAdmin = admin ? true : await isTenantAdmin(profile)
           const user = await getUser(profile.tenantId, profile.upn)
 
           return {

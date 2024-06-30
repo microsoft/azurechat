@@ -12,6 +12,7 @@ export async function GET(_request: NextRequest): Promise<Response> {
       description: configResult.response.description,
       version: configResult.response.version,
       termsAndConditionsDate: configResult.response.termsAndConditionsDate,
+      administratorAccess: configResult.response.administratorAccess,
     }
     return new Response(JSON.stringify({ status: "OK", data: response }), {
       status: 200,

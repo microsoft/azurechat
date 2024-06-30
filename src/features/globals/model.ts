@@ -4,4 +4,10 @@ export type ApplicationSettings = {
   description: string
   version: string
   termsAndConditionsDate: string
+  administratorAccess: AdministratorTenantGroups[]
+}
+
+export type AdministratorTenantGroups = {
+  tenant: string
+  group: string[]
 }

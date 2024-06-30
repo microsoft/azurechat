@@ -16,6 +16,7 @@ const DEFAULT_APPLICATION_SETTINGS: ApplicationSettings = {
   description: APP_DESCRIPTION,
   version: APP_VERSION,
   termsAndConditionsDate: new Date().toISOString(),
+  administratorAccess: [],
 }
 
 const useApplicationHook = (settings?: ApplicationSettings): State => {
