@@ -1,27 +1,47 @@
 "use client";
+import React, { useEffect, useRef, useState } from 'react';
 import { Hero, HeroButton } from "@/features/ui/hero";
 import { Atom, Languages, VenetianMask } from "lucide-react";
 import { personaStore } from "../persona-store";
 
 export const PersonaHero = () => {
-  return (
-    <Hero
-      title={
-        <>
-          <VenetianMask size={36} strokeWidth={1.5} /> Persona
-        </>
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (formRef.current && !formRef.current.contains(event.target)) {
+        // Prevent form from closing when clicking outside
+        setIsFormOpen(false);
       }
-      description={`  Persona is a representation of a personality that you can use to
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [formRef]);
+
+  return (
+    <div>
+      <Hero
+        title={
+          <>
+            <VenetianMask size={36} strokeWidth={1.5} /> Persona
+          </>
+        }
+        description={`  Persona is a representation of a personality that you can use to
     have a conversation with.`}
-    >
-      <HeroButton
-        title="New Persona"
-        description="Create a new personality that you can use to have a conversation with."
-        icon={<VenetianMask />}
-        onClick={() =>
-          personaStore.newPersonaAndOpen({
-            name: "",
-            personaMessage: `Personality:
+      >
+        <HeroButton
+          title="New Persona"
+          description="Create a new personality that you can use to have a conversation with."
+          icon={<VenetianMask />}
+          onClick={() => {
+            setIsFormOpen(true);
+            personaStore.newPersonaAndOpen({
+              name: "",
+              personaMessage: `Personality:
 [Describe the personality e.g. the tone of voice, the way they speak, the way they act, etc.]
 
 Expertise:
@@ -29,31 +49,33 @@ Expertise:
 
 Example:
 [Describe an example of the personality e.g. a Marketing copywriter who can write catchy headlines.]`,
-            description: "",
-          })
-        }
-      />
-      <HeroButton
-        title="Translator"
-        description="English to French translator."
-        icon={<Languages />}
-        onClick={() =>
-          personaStore.newPersonaAndOpen({
-            name: "English to French translator",
-            personaMessage:
-              "You are an expert in translating English to French. You will be provided with a sentence in English, and your task is to translate it into French.",
-            description: "English to French translator.",
-          })
-        }
-      />
-      <HeroButton
-        title="ReactJS Expert"
-        description="ReactJs expert who can write clean functional components."
-        icon={<Atom />}
-        onClick={() =>
-          personaStore.newPersonaAndOpen({
-            name: "ReactJS Expert",
-            personaMessage: `You are a ReactJS expert who can write clean functional components. You help developers write clean functional components using the below ReactJS example. 
+              description: "",
+            });
+          }}
+        />
+        <HeroButton
+          title="Translator"
+          description="English to French translator."
+          icon={<Languages />}
+          onClick={() => {
+            setIsFormOpen(true);
+            personaStore.newPersonaAndOpen({
+              name: "English to French translator",
+              personaMessage:
+                "You are an expert in translating English to French. You will be provided with a sentence in English, and your task is to translate it into French.",
+              description: "English to French translator.",
+            });
+          }}
+        />
+        <HeroButton
+          title="ReactJS Expert"
+          description="ReactJs expert who can write clean functional components."
+          icon={<Atom />}
+          onClick={() => {
+            setIsFormOpen(true);
+            personaStore.newPersonaAndOpen({
+              name: "ReactJS Expert",
+              personaMessage: `You are a ReactJS expert who can write clean functional components. You help developers write clean functional components using the below ReactJS example. 
               \nExample:
 import * as React from "react";
 
@@ -78,10 +100,20 @@ Input.displayName = "Input";
 export { Input };
 
               `,
-            description: "Customer service persona.",
-          })
-        }
-      />
-    </Hero>
+              description: "Customer service persona.",
+            });
+          }}
+        />
+      </Hero>
+      {isFormOpen && (
+        <div className="form-modal" ref={formRef}>
+          {/* Form component or modal goes here */}
+          <form>
+            {/* Form fields */}
+            <button type="button" onClick={() => setIsFormOpen(false)}>Close</button>
+          </form>
+        </div>
+      )}
+    </div>
   );
 };
