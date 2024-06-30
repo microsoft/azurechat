@@ -1,15 +1,20 @@
 import { createHash } from "crypto";
-// import { getServerSession } from "next-auth";
-// import { RedirectToPage } from "../common/navigation-helpers";
-// import { options } from "./auth-api";
+import { getServerSession } from "next-auth";
+import { RedirectToPage } from "../common/navigation-helpers";
+import { options } from "./auth-api";
 
 export const userSession = async (): Promise<UserModel | null> => {
-  return {
-    name: "Guest",
-    image: "",
-    email: "guest@domain.com",
-    isAdmin: false,
-  };
+  const session = await getServerSession(options);
+  if (session && session.user) {
+    return {
+      name: session.user.name!,
+      image: session.user.image!,
+      email: session.user.email!,
+      isAdmin: session.user.isAdmin!,
+    };
+  }
+
+  return null;
 };
 
 export const getCurrentUser = async (): Promise<UserModel> => {
@@ -25,6 +30,7 @@ export const userHashedId = async (): Promise<string> => {
   if (user) {
     return hashValue(user.email);
   }
+
   throw new Error("User not found");
 };
 
@@ -35,9 +41,10 @@ export const hashValue = (value: string): string => {
 };
 
 export const redirectIfAuthenticated = async () => {
-  // Remove authentication check and directly redirect to chat
-  // Uncomment the line below if you have a redirect function defined
-  // RedirectToPage("chat");
+  const user = await userSession();
+  if (user) {
+    RedirectToPage("chat");
+  }
 };
 
 export type UserModel = {
