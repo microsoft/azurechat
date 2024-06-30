@@ -20,7 +20,7 @@ class PersonaState {
 
   public isOpened: boolean = false;
   public errors: string[] = [];
-  public persona: PersonaModel = { ...this.defaultModel };
+  public persona: PersonaModel = {...this.defaultModel };
 
   public updateOpened(value: boolean) {
     this.isOpened = value;
@@ -28,16 +28,16 @@ class PersonaState {
 
   public updatePersona(persona: PersonaModel) {
     this.persona = {
-      ...persona,
+     ...persona,
     };
-    this.isOpened = true;
+    this.isOpened = true; // Keeps the form open
   }
 
   public newPersona() {
     this.persona = {
-      ...this.defaultModel,
+     ...this.defaultModel,
     };
-    this.isOpened = true;
+    this.isOpened = true; // Keeps the form open
   }
 
   public newPersonaAndOpen(persona: {
@@ -46,12 +46,12 @@ class PersonaState {
     personaMessage: string;
   }) {
     this.persona = {
-      ...this.defaultModel,
+     ...this.defaultModel,
       name: persona.name,
       description: persona.description,
       personaMessage: persona.personaMessage,
     };
-    this.isOpened = true;
+    this.isOpened = true; // Keeps the form open
   }
 
   public updateErrors(errors: string[]) {
@@ -70,12 +70,14 @@ export const addOrUpdatePersona = async (previous: any, formData: FormData) => {
 
   const model = FormDataToPersonaModel(formData);
   const response =
-    model.id && model.id !== ""
-      ? await UpsertPersona(model)
+    model.id && model.id!== ""
+     ? await UpsertPersona(model)
       : await CreatePersona(model);
 
+  // Removed the line that sets isOpened to false on success
+  // This keeps the form open until the user explicitly closes it
+
   if (response.status === "OK") {
-    personaStore.updateOpened(false);
     RevalidateCache({
       page: "persona",
     });
@@ -91,7 +93,7 @@ export const FormDataToPersonaModel = (formData: FormData): PersonaModel => {
     name: formData.get("name") as string,
     description: formData.get("description") as string,
     personaMessage: formData.get("personaMessage") as string,
-    isPublished: formData.get("isPublished") === "on" ? true : false,
+    isPublished: formData.get("isPublished") === "on"? true : false,
     userId: "", // the user id is set on the server once the user is authenticated
     createdAt: new Date(),
     type: PERSONA_ATTRIBUTE,
