@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { APP_NAME } from "@/app-global"
 
 import { ChatFileTranscription } from "@/components/chat/chat-file-transcription"
+import { ChatFileView } from "@/components/chat/chat-file-view"
 import ChatLoading from "@/components/chat/chat-loading"
 import ChatRow from "@/components/chat/chat-row"
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor"
@@ -76,14 +77,20 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
                 threadLocked={index === messages.length - 1 && chatThreadLocked}
               />
             ))
-          : chatFiles.map(document => (
-              <ChatFileTranscription
-                key={document.id}
-                name={document.name}
-                contents={document.contents || ""}
-                vtt={document.extraContents || ""}
-              />
-            ))}
+          : selectedTab === "transcription"
+            ? chatFiles.map(document => (
+                <ChatFileTranscription
+                  key={document.id}
+                  name={document.name}
+                  contents={document.contents || ""}
+                  vtt={document.extraContents || ""}
+                />
+              ))
+            : selectedTab === "document"
+              ? chatFiles.map(document => (
+                  <ChatFileView key={document.id} name={document.name} contents={document.contents || ""} />
+                ))
+              : null}
         {isLoading && <ChatLoading />}
       </div>
     </div>

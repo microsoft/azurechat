@@ -1,4 +1,4 @@
-import { DownloadIcon, CaptionsIcon } from "lucide-react"
+import { DownloadIcon, CaptionsIcon, FileTextIcon } from "lucide-react"
 import { FC, useState } from "react"
 
 import { APP_NAME } from "@/app-global"
@@ -6,7 +6,10 @@ import { APP_NAME } from "@/app-global"
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
-import { convertTranscriptionToWordDocument } from "@/features/common/file-export"
+import {
+  convertTranscriptionToWordDocument,
+  convertTranscriptionReportToWordDocument,
+} from "@/features/common/file-export"
 import { CopyButton } from "@/features/ui/assistant-buttons"
 import { CheckTranscriptionButton } from "@/features/ui/assistant-buttons/rewrite-message-button"
 import { Button } from "@/features/ui/button"
@@ -21,17 +24,23 @@ interface ChatFileTranscriptionProps {
 export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
   const { chatBody, setInput } = useChatContext()
   const [feedbackMessage, setFeedbackMessage] = useState("")
+  const fileTitle = props.name.replace(/[^a-zA-Z0-9]/g, " ").trim()
 
   const onDownloadTranscription = async (): Promise<void> => {
-    const fileName = `${props.name}-transcription.docx`
+    const fileName = `${fileTitle}-transcription.docx`
+    await convertTranscriptionToWordDocument([props.contents], fileName)
+  }
+
+  const onDownloadReport = async (): Promise<void> => {
+    const fileName = `${fileTitle}-report.docx`
     const chatThreadName = chatBody.chatThreadName || `${APP_NAME} ${fileName}`
-    await convertTranscriptionToWordDocument([props.contents], props.name, fileName, APP_NAME, chatThreadName)
+    await convertTranscriptionReportToWordDocument([props.contents], props.name, fileName, APP_NAME, chatThreadName)
   }
 
   const onDownloadVttFile = (): void => {
     const element = document.createElement("a")
     element.setAttribute("href", `data:text/plain;base64,${toBinaryBase64(props.vtt ?? "")}`)
-    element.setAttribute("download", `${props.name}-transcription.vtt`)
+    element.setAttribute("download", `${fileTitle}-transcription.vtt`)
 
     document.body.appendChild(element)
     element.click()
@@ -55,12 +64,7 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
     <article className="container mx-auto flex flex-col py-1 pb-4">
       <section className="flex-col gap-4 overflow-hidden rounded-md bg-background p-4">
         <header className="flex w-full items-center justify-between">
-          <Typography variant="h3">{props.name}</Typography>
-        </header>
-        <div className="prose prose-slate max-w-none break-words text-base italic text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base">
-          <Markdown content={props.contents.replaceAll("\n", "\n\n") || ""} />
-        </div>
-        <footer>
+          <Typography variant="h3">{fileTitle}</Typography>
           <div className="container flex w-full gap-4 p-2">
             <Button
               ariaLabel="Download Transcription"
@@ -71,6 +75,16 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
               onClick={onDownloadTranscription}
             >
               <DownloadIcon size={iconSize} />
+            </Button>
+            <Button
+              ariaLabel="Download Report"
+              variant={"ghost"}
+              size={"default"}
+              className={buttonClass}
+              title="Download Report"
+              onClick={onDownloadReport}
+            >
+              <FileTextIcon size={iconSize} />
             </Button>
 
             {props.vtt.length > 0 && (
@@ -89,7 +103,10 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
             <CheckTranscriptionButton transcription={props.contents} onAssistantButtonClick={setInput} />
             <CopyButton message={props.contents} onFeedbackChange={setFeedbackMessage} />
           </div>
-        </footer>
+        </header>
+        <div className="prose prose-slate max-w-none break-words text-base italic text-text dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 md:text-base">
+          <Markdown content={props.contents.replaceAll("\n", "\n\n") || ""} />
+        </div>
         <div className="sr-only" aria-live="assertive">
           {feedbackMessage}
         </div>

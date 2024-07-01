@@ -1,4 +1,16 @@
-import { Document, Paragraph, Packer, TextRun, HeadingLevel, IStylesOptions, INumberingOptions } from "docx"
+import {
+  Document,
+  Paragraph,
+  Packer,
+  TextRun,
+  HeadingLevel,
+  IStylesOptions,
+  INumberingOptions,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+} from "docx"
 import { IPropertiesOptions } from "docx/build/file/core-properties/properties"
 import { saveAs } from "file-saver"
 import { marked } from "marked"
@@ -8,6 +20,10 @@ import { showError, showSuccess } from "@/features/globals/global-message-store"
 interface MessageType {
   role: string
   content: string
+}
+
+interface TranscriptType {
+  details: string
 }
 
 const numbering: INumberingOptions = {
@@ -256,6 +272,107 @@ const createParagraphFromHtml = (html: string): Paragraph[] => {
   return paragraphs
 }
 
+const createTranscriptTable = (transcripts: TranscriptType[]): Table => {
+  const rows = transcripts
+    .map(transcript => {
+      const detailsParagraphs = transcript.details
+        .split("\n\n")
+        .flatMap(paragraph => {
+          return paragraph.split("\n").map(line => [
+            new Paragraph({
+              children: [
+                new TextRun({ text: "Offender Contact ", bold: true }),
+                new TextRun({ text: line.replace("Offender Contact ", "") }),
+                new TextRun({ text: "\n" }),
+              ],
+            }),
+          ])
+        })
+        .flat()
+
+      return [
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [new TextRun({ text: "Date: ", bold: true }), new TextRun("PLACEHOLDER")],
+                  style: "MyCustomParagraph",
+                }),
+              ],
+            }),
+          ],
+        }),
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [new TextRun({ text: "Time: ", bold: true }), new TextRun("PLACEHOLDER")],
+                  style: "MyCustomParagraph",
+                }),
+              ],
+            }),
+          ],
+        }),
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [new TextRun({ text: "PH #: ", bold: true }), new TextRun("PLACEHOLDER")],
+                  style: "MyCustomParagraph",
+                }),
+              ],
+            }),
+          ],
+        }),
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [new TextRun({ text: "ADL Listed Holder: ", bold: true }), new TextRun("PLACEHOLDER")],
+                  style: "MyCustomParagraph",
+                }),
+              ],
+            }),
+          ],
+        }),
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [new TextRun({ text: "Identified Holder: ", bold: true }), new TextRun("PLACEHOLDER")],
+                  style: "MyCustomParagraph",
+                }),
+              ],
+            }),
+          ],
+        }),
+        new TableRow({
+          children: [
+            new TableCell({
+              children: [
+                new Paragraph({
+                  children: [new TextRun({ text: "Details: ", bold: true }), ...detailsParagraphs.flatMap(p => p)],
+                  style: "MyCustomParagraph",
+                }),
+              ],
+            }),
+          ],
+        }),
+      ]
+    })
+    .flat()
+
+  return new Table({
+    rows: rows,
+    width: { size: 100, type: WidthType.PERCENTAGE },
+  })
+}
+
 export const convertMarkdownToWordDocument = async (
   messages: MessageType[],
   fileName: string,
@@ -281,27 +398,74 @@ export const convertMarkdownToWordDocument = async (
   await convertParagraphsToWordDocument(messageParagraphPromises, fileName, aiName, chatThreadName)
 }
 
-export const convertTranscriptionToWordDocument = async (
+export const convertTranscriptionReportToWordDocument = async (
   transcriptions: string[],
   audioFileName: string,
   saveFileName: string,
   aiName: string,
   chatThreadName: string
 ): Promise<void> => {
-  const messageParagraphPromises = transcriptions.map(async transcription => {
+  const messageParagraphPromises = transcriptions.map(transcription => {
+    const speaker = "Offender Contact"
     const authorParagraph = new Paragraph({
       text: `${audioFileName}:`,
       heading: HeadingLevel.HEADING_2,
       style: "MyCustomHeading1",
     })
 
-    const content = await marked.parse(transcription)
-    const contentParagraphs = createParagraphFromHtml(content)
+    const paragraphs = transcription
+      .split("\n\n")
+      .flatMap(paragraph => paragraph.split("\n").map(line => `${speaker}: ${line}`))
+
+    const contentParagraphs = paragraphs.map(line => {
+      const textRun = new TextRun({
+        text: line.replace("Offender Contact ", ""),
+      })
+
+      return new Paragraph({
+        children: [textRun],
+        style: "MyCustomParagraph",
+      })
+    })
 
     return [authorParagraph, ...contentParagraphs, new Paragraph({ style: "MyCustomParagraph" })]
   })
 
-  await convertParagraphsToWordDocument(messageParagraphPromises, saveFileName, aiName, chatThreadName)
+  const messageParagraphs = await Promise.all(messageParagraphPromises)
+
+  await convertParagraphsToWordDocument(
+    [Promise.resolve(messageParagraphs.flat())],
+    saveFileName,
+    aiName,
+    chatThreadName
+  )
+}
+
+export const convertTranscriptionToWordDocument = async (
+  transcriptions: string[],
+  saveFileName: string
+): Promise<void> => {
+  const transcriptObjects = transcriptions.map(details => ({ details }))
+
+  const doc = new Document({
+    sections: [
+      {
+        children: [createTranscriptTable(transcriptObjects)],
+      },
+    ],
+  })
+
+  Packer.toBlob(doc)
+    .then(blob => {
+      saveAs(blob, saveFileName)
+      showSuccess({
+        title: "Success",
+        description: "Transcriptions exported to Word document",
+      })
+    })
+    .catch(error => {
+      showError("Failed to export transcriptions to Word document" + error)
+    })
 }
 
 const convertParagraphsToWordDocument = async (
