@@ -11,7 +11,6 @@ import {
 } from "@/app-global"
 
 import { hashValue } from "@/features/auth/helpers"
-import { migrateChatMessagesForCurrentUser } from "@/features/chat/chat-services/chat-message-service"
 import logger from "@/features/insights/app-insights"
 import { type TenantRecord } from "@/features/tenant-management/models"
 import { CreateTenant, GetTenantById } from "@/features/tenant-management/tenant-service"
@@ -89,7 +88,6 @@ export class UserSignInHandler {
         }
         const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
         if (updatedUser.status !== STATUS_OK) throw updatedUser
-        await migrateChatMessagesForCurrentUser(updatedUser.response.id, user.tenantId)
 
         return user.globalAdmin ? { success: true } : { success: false, errorCode: SignInErrorType.NotAuthorised }
       }
@@ -111,7 +109,6 @@ export class UserSignInHandler {
         const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
         if (updatedUser.status !== STATUS_OK) throw updatedUser
 
-        await migrateChatMessagesForCurrentUser(updatedUser.response.id, user.tenantId)
         return { success: true }
       }
 
