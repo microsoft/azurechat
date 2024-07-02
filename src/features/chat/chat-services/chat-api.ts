@@ -3,6 +3,8 @@ import { BadRequestError } from "openai"
 import { ChatCompletionChunk, ChatCompletionMessageParam, Completion } from "openai/resources"
 import { Stream } from "openai/streaming"
 
+import { APP_NAME } from "@/app-global"
+
 import {
   AssistantChatMessageModel,
   ChatMessageModel,
@@ -98,6 +100,7 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
       userPrompt: contextPrompts.userPrompt,
       contentFilterResult,
       fleschKincaidScore: calculateFleschKincaidScore(updatedLastHumanMessage.content),
+      // name: chatThread.useName,
     })
     if (chatMessageResponse.status !== "OK") throw chatMessageResponse
 
@@ -121,6 +124,7 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
       sentiment: ChatSentiment.Neutral,
       reason: "",
       fleschKincaidScore: fleschKincaidScore,
+      // name: APP_NAME || "Assistant",
       isPartial: isPartial,
     })
 
@@ -170,6 +174,7 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
           id: addedMessage.response.id,
           role: addedMessage.response.role,
           content: addedMessage.response.content,
+          // name: addedMessage.response.name,
         })
 
         addedMessage.response.content &&
@@ -248,6 +253,7 @@ async function getChatResponse(
       id: addMessage.id,
       content: addMessage.content,
       role: addMessage.role,
+      name: APP_NAME || "Assistant",
       contentFilterResult,
       contentFilterTriggerCount,
     })

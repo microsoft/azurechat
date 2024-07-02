@@ -445,27 +445,26 @@ export const convertTranscriptionToWordDocument = async (
   transcriptions: string[],
   saveFileName: string
 ): Promise<void> => {
-  const transcriptObjects = transcriptions.map(details => ({ details }))
+  try {
+    const transcriptObjects = transcriptions.map(details => ({ details }))
 
-  const doc = new Document({
-    sections: [
-      {
-        children: [createTranscriptTable(transcriptObjects)],
-      },
-    ],
-  })
+    const doc = new Document({
+      sections: [
+        {
+          children: [createTranscriptTable(transcriptObjects)],
+        },
+      ],
+    })
 
-  Packer.toBlob(doc)
-    .then(blob => {
-      saveAs(blob, saveFileName)
-      showSuccess({
-        title: "Success",
-        description: "Transcriptions exported to Word document",
-      })
+    const blob = await Packer.toBlob(doc)
+    saveAs(blob, saveFileName)
+    showSuccess({
+      title: "Success",
+      description: "Transcriptions exported to Word document",
     })
-    .catch(error => {
-      showError("Failed to export transcriptions to Word document" + error)
-    })
+  } catch (error) {
+    showError("Failed to export transcriptions to Word document: " + error)
+  }
 }
 
 const convertParagraphsToWordDocument = async (

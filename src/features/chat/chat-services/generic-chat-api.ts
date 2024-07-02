@@ -1,6 +1,7 @@
 "use server"
 import "server-only"
 import { ItemDefinition } from "@azure/cosmos"
+import { ChatCompletionMessageParam } from "openai/resources"
 
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
 import { ChatRecordType } from "@/features/chat/models"
@@ -9,13 +10,8 @@ import { OpenAIInstance } from "@/features/common/services/open-ai"
 
 import { translator } from "./chat-translator-service"
 
-export interface Message {
-  role: "function" | "system" | "user" | "assistant"
-  content: string
-}
-
 interface GenericChatAPIProps {
-  messages: Message[]
+  messages: ChatCompletionMessageParam[]
   options?: {
     contentSafetyOn?: boolean
   }

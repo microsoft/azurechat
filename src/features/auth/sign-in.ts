@@ -197,13 +197,8 @@ export async function isTenantAdmin(user: User | AdapterUser): Promise<boolean> 
   }
 }
 
-export async function getUser(tenantId: string, userUpn: string): Promise<UserRecord> {
-  try {
-    const userResponse = await GetUserByUpn(tenantId, userUpn)
-    if (userResponse.status !== "OK") throw userResponse.errors
-    return userResponse.response
-  } catch (error) {
-    logger.error(`Error getting user - TenantId: ${tenantId} UPN: ${userUpn} `, { error })
-    throw error
-  }
+export async function getUser(tenantId: string, userUpn: string): Promise<UserRecord | null> {
+  const userResponse = await GetUserByUpn(tenantId, userUpn)
+  if (userResponse.status !== "OK") return null
+  return userResponse.response
 }

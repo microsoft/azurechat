@@ -58,6 +58,7 @@ export interface ChatMessageModel {
   type: ChatRecordType.Message
   role: ChatRole
   fleschKincaidScore?: number
+  // name: string
 }
 export interface UserChatMessageModel extends ChatMessageModel {
   role: ChatRole.User

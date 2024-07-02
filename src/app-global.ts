@@ -1,4 +1,4 @@
-export const APP_VERSION = "1.5.5"
+export const APP_VERSION = "1.6.0"
 export const APP_NAME = "QChat"
 export const APP_DESCRIPTION = "QChat is a chatbot for Queensland Government"
 export const signInProvider = "azure-ad"

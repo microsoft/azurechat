@@ -2,7 +2,7 @@
 
 import { ChatRequestOptions, JSONValue } from "ai"
 import { UseChatHelpers, useChat } from "ai/react"
-import React, { FC, FormEvent, createContext, useContext, useRef, useState } from "react"
+import React, { FC, createContext, useContext, useRef, useState } from "react"
 
 import { MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED } from "@/features/chat/chat-services/chat-api"
 import {
@@ -105,8 +105,13 @@ export const ChatProvider: FC<Prop> = props => {
   const onConversationSensitivityChange = (value: ConversationSensitivity): void =>
     setChatBody(prev => ({ ...prev, conversationSensitivity: value }))
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>, options: ChatRequestOptions = {}): Promise<void> => {
-    e.preventDefault()
+  const handleSubmit = async (
+    event?: { preventDefault?: () => void },
+    options: ChatRequestOptions = {}
+  ): Promise<void> => {
+    if (event && event.preventDefault) {
+      event.preventDefault()
+    }
     if (!response.input) return
 
     const nextCompletionId = uniqueId()

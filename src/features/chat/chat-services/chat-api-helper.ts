@@ -69,10 +69,12 @@ export const buildSimpleChatMessages = async (
     systemMessage: {
       role: ChatRole.System,
       content: await buildSimpleChatSystemPrompt(),
+      // name: APP_NAME || "System",
     },
     userMessage: {
       role: ChatRole.User,
       content: lastChatMessage.content,
+      // name: lastChatMessage.name || "User",
     },
   }
 }
@@ -98,10 +100,12 @@ export const buildDataChatMessages = async (
     systemMessage: {
       role: ChatRole.System,
       content: buildDataChatSystemPrompt(),
+      // name: APP_NAME || "System",
     },
     userMessage: {
       role: ChatRole.User,
       content: buildDataChatContextPrompt(context, lastChatMessage.content),
+      // name: lastChatMessage.name || "User",
     },
     context,
   }
@@ -129,10 +133,12 @@ export const buildAudioChatMessages = async (
     systemMessage: {
       role: ChatRole.System,
       content: buildDataChatSystemPrompt(),
+      // name: APP_NAME || "System",
     },
     userMessage: {
       role: ChatRole.User,
       content: buildAudioChatContextPrompt(context, lastChatMessage.content),
+      // name: lastChatMessage.name || "User",
     },
     context,
   }
