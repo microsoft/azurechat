@@ -16,6 +16,7 @@ interface GlobalMessageProps {
 }
 
 const GlobalMessageContext = createContext<GlobalMessageProps | null>(null)
+const DELAY_ANNOUNCEMENTS = 3000
 
 interface MessageProp {
   title: string
@@ -31,32 +32,36 @@ export const GlobalMessageProvider = ({ children }: { children: React.ReactNode 
     if (!session?.user || !application?.appSettings) return
     let unsubscribe = false
 
-    // check for terms and conditions
-    const tAndCs = application.appSettings.termsAndConditionsDate
-    if (
-      (application.appSettings.termsAndConditionsDate && !session.user.acceptedTermsDate) || // first time user
-      new Date(tAndCs).getTime() > new Date(session.user.acceptedTermsDate).getTime() // new terms
-    ) {
-      announcement.newsflash(<AgreeTermsAndConditions onClose={() => !unsubscribe && announcement.dismiss()} />)
-      return
-    }
+    const timeoutId = setTimeout(() => {
+      // check for terms and conditions
+      const tAndCs = application.appSettings.termsAndConditionsDate
+      if (
+        (application.appSettings.termsAndConditionsDate && !session.user.acceptedTermsDate) ||
+        new Date(tAndCs).getTime() > new Date(session.user.acceptedTermsDate).getTime()
+      ) {
+        announcement.newsflash(<AgreeTermsAndConditions onClose={() => !unsubscribe && announcement.dismiss()} />)
+        return
+      }
 
-    // check for new what's new
-    if (
-      !pathname.endsWith("/whats-new") && // don't show on the what's new page
-      application.appSettings.version !== session.user.lastVersionSeen // new version
-    ) {
-      announcement.newsflash(
-        <WhatsNewModal
-          targetVersion={application.appSettings.version}
-          onClose={() => !unsubscribe && announcement.dismiss()}
-        />
-      )
-      return
-    }
+      // check for new what's new
+      if (
+        !sessionStorage.getItem("whats-new-dismissed") &&
+        !pathname.endsWith("/whats-new") &&
+        application.appSettings.version !== session.user.lastVersionSeen
+      ) {
+        announcement.newsflash(
+          <WhatsNewModal
+            targetVersion={application.appSettings.version}
+            onClose={() => !unsubscribe && announcement.dismiss()}
+          />
+        )
+        return
+      }
+    }, DELAY_ANNOUNCEMENTS)
 
     return () => {
       unsubscribe = true
+      clearTimeout(timeoutId)
     }
   }, [session?.user, application?.appSettings, pathname])
 

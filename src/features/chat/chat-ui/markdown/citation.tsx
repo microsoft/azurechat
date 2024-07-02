@@ -1,4 +1,3 @@
-"use client"
 import { FC } from "react"
 
 import Typography from "@/components/typography"
@@ -16,16 +15,6 @@ interface Citation {
 
 interface Props {
   items: Citation[]
-}
-
-export const citation = {
-  render: "Citation",
-  selfClosing: true,
-  attributes: {
-    items: {
-      type: Array,
-    },
-  },
 }
 
 export const Citation: FC<Props> = (props: Props) => {

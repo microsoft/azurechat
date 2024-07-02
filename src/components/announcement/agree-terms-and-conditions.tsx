@@ -48,12 +48,15 @@ export default function AgreeTermsAndConditions({ onClose }: AgreeTermsAndCondit
   }
 
   useEffect(() => {
-    fetch(`${window.location.origin}/terms.md`)
+    fetch("/api/application/terms")
       .then(async response => await response.text())
       .then(data => setContent(data))
-      .catch(() => setContent("Failed to load terms and conditions, please try again later."))
+      .catch(() => {
+        logger.error("Failed to load terms and conditions, please try again later.")
+        onClose()
+      })
       .finally(() => setIsLoading(false))
-  }, [])
+  }, [onClose])
 
   useEffect(() => {
     if (isEndOfScroll) setCanSubmit(true)

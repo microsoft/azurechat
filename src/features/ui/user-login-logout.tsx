@@ -2,7 +2,6 @@
 
 import { LogIn, LogOut } from "lucide-react"
 import { useSession, signIn, signOut } from "next-auth/react"
-import React, { useEffect, useState } from "react"
 
 import { signInProvider } from "@/app-global"
 
@@ -11,23 +10,9 @@ import { Button } from "@/features/ui/button"
 
 export const UserComponent: React.FC = () => {
   const { data: session, status } = useSession({ required: false })
-  const [isLoading, setIsLoading] = useState(status === "loading")
 
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout
-    if (status === "loading") {
-      timeoutId = setTimeout(() => {
-        setIsLoading(false)
-      }, 10000) // 10 seconds timeout
-    } else {
-      setIsLoading(false)
-    }
-    return () => clearTimeout(timeoutId)
-  }, [status])
-
-  if (isLoading) {
+  if (status === "loading")
     return <div className="flex h-[32px] w-full items-center justify-center opacity-50">Loading...</div>
-  }
 
   return (
     <div>

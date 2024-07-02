@@ -15,7 +15,7 @@ const requireAuthPaths = [
   "/whats-new",
 ]
 
-const requireAdminPaths = ["/reporting", "/settings/tenant", "/api/tenant", "/settings/admin"]
+const requireAdminPaths = ["/api/tenant", "/reporting", "/settings/tenant", "/settings/admin"]
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const pathname = request.nextUrl.pathname
@@ -23,24 +23,23 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const requiresAuth = requireAuthPaths.some(path => pathname.startsWith(path))
   const requiresAdmin = requireAdminPaths.some(path => pathname.startsWith(path))
 
-  if (requiresAuth) {
-    const token = await getToken({ req: request })
+  if (!requiresAuth) return NextResponse.next()
 
-    const now = Math.floor(Date.now() / 1000)
-    if (!token || (token.exp && typeof token.exp === "number" && token.exp < now)) {
-      return NextResponse.redirect(new URL(LOGIN_PAGE, request.url))
-    }
+  const token = await getToken({ req: request })
 
-    if (requiresAdmin && !(token.admin || token.tenantAdmin || token.globalAdmin)) {
-      return NextResponse.rewrite(new URL(UNAUTHORISED_PAGE, request.url))
-    }
-  }
+  const now = Math.floor(Date.now() / 1000)
+  if (!token || (token.exp && typeof token.exp === "number" && token.exp < now))
+    return NextResponse.redirect(new URL(LOGIN_PAGE, request.url))
+
+  if (requiresAdmin && !(token.admin || token.tenantAdmin || token.globalAdmin))
+    return NextResponse.rewrite(new URL(UNAUTHORISED_PAGE, request.url))
 
   return NextResponse.next()
 }
 
 export const config = {
   matcher: [
+    "/api/application/:path*",
     "/api/chat/:path*",
     "/api/tenant/:path*",
     "/api/user/:path*",

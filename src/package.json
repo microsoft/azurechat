@@ -14,7 +14,6 @@
     "lint:css": "stylelint \"**/*.css\" --allow-empty-input --cache --cache-strategy=content --cache-location=.stylelintcache",
     "prettier": "prettier \"**/*.{js,mjs,ts,tsx,md,mdx,json,yml,css}\" --check --cache --cache-strategy=content --cache-location=.prettiercache",
     "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix && npm run prettier -- --write",
-    "model": "npx ts-node --project tsconfig.script.json generate-model-report.ts",
     "test": "playwright test",
     "jest": "jest",
     "prepare": "cd .. && husky src/.husky"

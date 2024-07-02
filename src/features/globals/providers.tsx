@@ -12,8 +12,8 @@ import { GlobalMessageProvider } from "./global-message-context"
 export const Providers = ({ children }: { children: React.ReactNode }): JSX.Element => {
   return (
     <SessionProvider refetchInterval={15 * 60} basePath="/api/auth">
-      <Announcements />
       <GlobalMessageProvider>
+        <Announcements />
         <MenuProvider>
           <MiniMenuProvider>
             <TooltipProvider>{children}</TooltipProvider>

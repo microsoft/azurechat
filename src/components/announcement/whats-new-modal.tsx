@@ -42,16 +42,24 @@ export default function WhatsNewModal({ targetVersion, onClose }: WhatsNewModalP
     }
   }, [onClose, targetVersion, update])
 
+  const handleClickOutside = (): void => {
+    sessionStorage.setItem("whats-new-dismissed", new Date().toISOString())
+    onClose()
+  }
+
   useEffect(() => {
-    fetch(`${window.location.origin}/whats-new.md`)
+    fetch("/api/application/whats-new")
       .then(async response => await response.text())
       .then(data => setContent(data))
-      .catch(() => setContent("Failed to load terms and conditions, please try again later."))
+      .catch(() => {
+        logger.error("Failed to load the latest news, please try again later.")
+        onClose()
+      })
       .finally(() => setIsLoading(false))
-  }, [])
+  }, [onClose])
 
   return (
-    <Dialog onClose={onClose}>
+    <Dialog onClose={handleClickOutside}>
       <DialogHeader>What&apos;s new</DialogHeader>
       <DialogContent>
         <div className="prose prose-slate max-w-4xl break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
