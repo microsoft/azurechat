@@ -234,7 +234,7 @@ async function getChatResponse(
   let contentFilterTriggerCount = chatThread.contentFilterTriggerCount ?? 0
 
   try {
-    const openAI = OpenAIInstance({ contentSafetyOn: ["audio"].includes(chatThread.chatType) })
+    const openAI = OpenAIInstance({ contentSafetyOn: !["audio"].includes(chatThread.chatType) })
     return {
       response: await openAI.chat.completions.create({
         messages: [systemPrompt, ...mapOpenAIChatMessages(history), userMessage],
