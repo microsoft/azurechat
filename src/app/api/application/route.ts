@@ -13,6 +13,7 @@ export async function GET(_request: NextRequest): Promise<Response> {
       version: configResult.response.version,
       termsAndConditionsDate: configResult.response.termsAndConditionsDate,
       administratorAccess: configResult.response.administratorAccess,
+      transcriptionAccess: configResult.response.transcriptionAccess,
     }
     return new Response(JSON.stringify({ status: "OK", data: response }), {
       status: 200,
