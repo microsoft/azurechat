@@ -94,33 +94,31 @@ const ChatInput: FC<Props> = () => {
           rows={4}
           disabled={isLoading || fileState.isUploadingFile}
         />
-        <div className="fixed right-14 flex flex-col pb-4">
-          {!isDataChat || (isDataChat && fileChatVisible) ? (
-            <>
-              <Button
-                size="icon"
-                type="submit"
-                variant="ghost"
-                ref={buttonRef}
-                disabled={isLoading && fileState.isUploadingFile}
-                ariaLabel={isLoading ? "Cancel the reply" : "Submit your message"}
-                aria-busy={isLoading && fileState.isUploadingFile ? "true" : "false"}
-              >
-                {isLoading && fileState.isUploadingFile ? (
-                  <Loader className="animate-spin" aria-hidden="true" size={16} />
-                ) : isLoading ? (
-                  <StopCircle aria-hidden="true" className="text-error" size={16} />
-                ) : (
-                  <Send aria-hidden="true" size={16} />
-                )}
-              </Button>
-              {fileChatVisible && <ChatFileSlider />}
-              {!isLoading && !fileState.isUploadingFile && (
-                <ChatInputMenu onDocExport={exportDocument} messageCopy={messages} />
+        {!!(!isDataChat || (isDataChat && fileChatVisible)) && (
+          <div className="absolute right-14 flex flex-col pb-4">
+            <Button
+              size="icon"
+              type="submit"
+              variant="ghost"
+              ref={buttonRef}
+              disabled={isLoading && fileState.isUploadingFile}
+              ariaLabel={isLoading ? "Cancel the reply" : "Submit your message"}
+              aria-busy={isLoading && fileState.isUploadingFile ? "true" : "false"}
+            >
+              {isLoading && fileState.isUploadingFile ? (
+                <Loader className="animate-spin" aria-hidden="true" size={16} />
+              ) : isLoading ? (
+                <StopCircle aria-hidden="true" className="text-error" size={16} />
+              ) : (
+                <Send aria-hidden="true" size={16} />
               )}
-            </>
-          ) : null}
-        </div>
+            </Button>
+            {fileChatVisible && <ChatFileSlider />}
+            {!isLoading && !fileState.isUploadingFile && (
+              <ChatInputMenu onDocExport={exportDocument} messageCopy={messages} />
+            )}
+          </div>
+        )}
       </div>
     </form>
   )

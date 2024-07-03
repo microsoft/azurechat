@@ -129,7 +129,7 @@ const nextConfig = {
         ],
       },
       {
-        source: "/pattern.png",
+        source: "/pattern.webp",
         headers: [
           {
             key: "Cache-Control",

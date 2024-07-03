@@ -143,7 +143,7 @@ export const options: NextAuthOptions = {
   theme: {
     colorScheme: "dark",
     brandColor: "#09549f",
-    logo: "/ai-icon.png",
+    logo: "/ai-icon.webp",
     buttonText: "Single sign-on in with your Queensland Government Account",
   },
   useSecureCookies: true,
