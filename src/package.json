@@ -1,6 +1,6 @@
 {
   "name": "src",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "scripts": {
     "report": "npx ts-node --project tsconfig.script.json generate-model-report.ts",
@@ -59,6 +59,7 @@
     "eventsource-parser": "^1.1.2",
     "file-saver": "^2.0.5",
     "flesch": "^2.0.1",
+    "highlight.js": "^11.9.0",
     "ip": "^2.0.1",
     "lucide-react": "^0.395.0",
     "marked": "^12.0.2",
