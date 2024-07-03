@@ -13,7 +13,7 @@ import {
 } from "docx"
 import { IPropertiesOptions } from "docx/build/file/core-properties/properties"
 import { saveAs } from "file-saver"
-import { marked } from "marked"
+import { marked, Renderer } from "marked"
 
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 
@@ -123,68 +123,30 @@ const customStyles: IStylesOptions = {
   ],
 }
 
-class CustomRenderer extends marked.Renderer {
-  paragraph(text: string): string {
-    return `<p>${text}</p>`
-  }
+const createRenderer = (): Renderer => {
+  const renderer = new Renderer()
 
-  strong(text: string): string {
-    return `<strong>${text}</strong>`
+  renderer.paragraph = token => `<p>${token.text}</p>`
+  renderer.strong = token => `<strong>${token.text}</strong>`
+  renderer.em = token => `<em>${token.text}</em>`
+  renderer.heading = token => {
+    const level = token.depth
+    return `<h${level}>${token.text}</h${level}>`
   }
+  renderer.link = token => `<a href="${token.href}" title="${token.title || ""}">${token.text}</a>`
+  renderer.image = token => `<img src="${token.href}" alt="${token.text}" title="${token.title || ""}" />`
+  renderer.list = token => {
+    const tag = token.ordered ? "ol" : "ul"
+    return `<${tag}>${token.items.map(item => renderer.listitem(item)).join("")}</${tag}>`
+  }
+  renderer.listitem = token => `<li>${token.text}</li>`
+  renderer.blockquote = token => `<blockquote>${token.text}</blockquote>`
+  renderer.code = token => `<pre><code>${token.text}</code></pre>`
+  renderer.codespan = token => `<code>${token.text}</code>`
+  renderer.br = () => "<br />"
+  renderer.del = token => `<del>${token.text}</del>`
 
-  em(text: string): string {
-    return `<em>${text}</em>`
-  }
-
-  heading(text: string, level: number): string {
-    return `<h${level}>${text}</h${level}>`
-  }
-
-  link(href: string, title: string | null | undefined, text: string): string {
-    return `<a href="${href}" title="${title || ""}">${text}</a>`
-  }
-
-  image(href: string, title: string | null, text: string): string {
-    return `<img src="${href}" alt="${text}" title="${title || ""}" />`
-  }
-
-  list(body: string, ordered: boolean): string {
-    const tag = ordered ? "ol" : "ul"
-    return `<${tag}>${body}</${tag}>`
-  }
-
-  listitem(text: string): string {
-    return `<li>${text}</li>`
-  }
-
-  blockquote(quote: string): string {
-    return `<blockquote>${quote}</blockquote>`
-  }
-
-  code(code: string, _infostring: string | undefined, escaped: boolean): string {
-    return `<pre><code>${escaped ? code : this.escape(code)}</code></pre>`
-  }
-
-  codespan(text: string): string {
-    return `<code>${text}</code>`
-  }
-
-  br(): string {
-    return "<br />"
-  }
-
-  private escape(code: string): string {
-    return code
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;")
-  }
-
-  del(text: string): string {
-    return `<del>${text}</del>`
-  }
+  return renderer
 }
 
 const createParagraphFromHtml = (html: string): Paragraph[] => {
@@ -389,7 +351,7 @@ export const convertMarkdownToWordDocument = async (
     })
 
     const processedContent = processCitationsInText(message.content)
-    const content = await marked.parse(processedContent)
+    const content = await marked(processedContent)
     const contentParagraphs = createParagraphFromHtml(content)
 
     return [authorParagraph, ...contentParagraphs, new Paragraph({ style: "MyCustomParagraph" })]
@@ -473,8 +435,8 @@ const convertParagraphsToWordDocument = async (
   aiName: string,
   chatThreadName: string
 ): Promise<void> => {
-  const renderer = new CustomRenderer()
-  marked.use({ renderer })
+  const renderer = createRenderer()
+  marked.use({ renderer, useNewRenderer: true })
 
   const coreProperties: IPropertiesOptions = {
     title: chatThreadName,

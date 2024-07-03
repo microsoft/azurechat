@@ -50,8 +50,13 @@ export const GetApplicationSettings = async (): ServerActionResponseAsync<Applic
 export async function isAdmin(user: User | AdapterUser): Promise<boolean> {
   try {
     const appSettingsResponse = await GetApplicationSettings()
-    if (appSettingsResponse.status !== "OK") return false
-    const appSettings = appSettingsResponse.response
+
+    if (appSettingsResponse.status !== "OK") {
+      return false
+    }
+
+    const appSettings: ApplicationSettings = appSettingsResponse.response
+
     const administratorAccess: AdministratorTenantGroups[] = appSettings.administratorAccess || []
 
     const tenantAccess = administratorAccess.find(access => access.tenant === user.tenantId)
@@ -60,7 +65,7 @@ export async function isAdmin(user: User | AdapterUser): Promise<boolean> {
       return false
     }
 
-    const isAdmin = tenantAccess.group.some(group => user.groups.includes(group))
+    const isAdmin = tenantAccess.groups.some(group => user.groups?.includes(group))
 
     return isAdmin
   } catch (_error) {

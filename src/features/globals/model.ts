@@ -9,5 +9,5 @@ export type ApplicationSettings = {
 
 export type AdministratorTenantGroups = {
   tenant: string
-  group: string[]
+  groups: string[]
 }

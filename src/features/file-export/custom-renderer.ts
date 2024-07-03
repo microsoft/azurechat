@@ -1,57 +1,58 @@
-import { marked } from "marked"
+import { Renderer, Tokens } from "marked"
 
-export class CustomRenderer extends marked.Renderer {
-  paragraph(text: string): string {
-    return `<p>${text}</p>`
+export class CustomRenderer extends Renderer {
+  paragraph(token: Tokens.Paragraph): string {
+    return `<p>${token.text}</p>`
   }
 
-  strong(text: string): string {
-    return `<strong>${text}</strong>`
+  strong(token: Tokens.Strong): string {
+    return `<strong>${token.text}</strong>`
   }
 
-  em(text: string): string {
-    return `<em>${text}</em>`
+  em(token: Tokens.Em): string {
+    return `<em>${token.text}</em>`
   }
 
-  heading(text: string, level: number): string {
-    return `<h${level}>${text}</h${level}>`
+  heading(token: Tokens.Heading): string {
+    const level = token.depth
+    return `<h${level}>${token.text}</h${level}>`
   }
 
-  link(href: string, title: string | null | undefined, text: string): string {
-    return `<a href="${href}" title="${title || ""}">${text}</a>`
+  link(token: Tokens.Link): string {
+    return `<a href="${token.href}" title="${token.title || ""}">${token.text}</a>`
   }
 
-  image(href: string, title: string | null, text: string): string {
-    return `<img src="${href}" alt="${text}" title="${title || ""}" />`
+  image(token: Tokens.Image): string {
+    return `<img src="${token.href}" alt="${token.text}" title="${token.title || ""}" />`
   }
 
-  list(body: string, ordered: boolean): string {
-    const tag = ordered ? "ol" : "ul"
-    return `<${tag}>${body}</${tag}>`
+  list(token: Tokens.List): string {
+    const tag = token.ordered ? "ol" : "ul"
+    return `<${tag}>${token.items.map(item => this.listitem(item)).join("")}</${tag}>`
   }
 
-  listitem(text: string): string {
-    return `<li>${text}</li>`
+  listitem(token: Tokens.ListItem): string {
+    return `<li>${token.text}</li>`
   }
 
-  blockquote(quote: string): string {
-    return `<blockquote>${quote}</blockquote>`
+  blockquote(token: Tokens.Blockquote): string {
+    return `<blockquote>${token.text}</blockquote>`
   }
 
-  code(code: string, _infostring: string | undefined, escaped: boolean): string {
-    return `<pre><code>${escaped ? code : this.escape(code)}</code></pre>`
+  code(token: Tokens.Code): string {
+    return `<pre><code>${this.escape(token.text)}</code></pre>`
   }
 
-  codespan(text: string): string {
-    return `<code>${text}</code>`
+  codespan(token: Tokens.Codespan): string {
+    return `<code>${token.text}</code>`
   }
 
   br(): string {
     return "<br />"
   }
 
-  del(text: string): string {
-    return `<del>${text}</del>`
+  del(token: Tokens.Del): string {
+    return `<del>${token.text}</del>`
   }
 
   private escape(code: string): string {
