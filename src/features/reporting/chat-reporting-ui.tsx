@@ -1,9 +1,6 @@
 import { FC } from "react"
 
-import { APP_NAME } from "@/app-global"
-
-import ChatRow from "@/components/chat/chat-row"
-import { ChatRole } from "@/features/chat/models"
+import { ReportingMessageContainer } from "@/features/reporting/reporting-message-container"
 import { Card } from "@/features/ui/card"
 
 import { FindAllChatsInThread, FindChatThreadById } from "./reporting-service"
@@ -12,36 +9,18 @@ interface Props {
   chatThreadId: string
 }
 
-export const ChatReportingUI: FC<Props> = async props => {
-  const [chatThreads, chats] = await Promise.all([
-    FindChatThreadById(props.chatThreadId),
-    FindAllChatsInThread(props.chatThreadId),
-  ])
-  if (chatThreads.status !== "OK") return <div>Error</div>
+export const ChatReportingUI: FC<Props> = async ({ chatThreadId }) => {
+  const [chatThread, chats] = await Promise.all([FindChatThreadById(chatThreadId), FindAllChatsInThread(chatThreadId)])
+  if (chatThread.status !== "OK") return <div>Error</div>
   if (chats.status !== "OK") return <div>Error</div>
-
-  const chatThread = chatThreads.response
 
   return (
     <Card className="relative h-full">
-      <div className="h-full overflow-y-auto rounded-md">
-        <div className="flex justify-center p-4"></div>
-        <div className="pb-[80px]">
-          {chats.response?.map((message, index) => {
-            return (
-              <ChatRow
-                chatMessageId={message.id}
-                name={message.role === ChatRole.User ? chatThread.useName : APP_NAME}
-                message={message}
-                type={message.role as ChatRole}
-                key={index}
-                chatThreadId={props.chatThreadId}
-                showAssistantButtons={true}
-              />
-            )
-          })}
-        </div>
-      </div>
+      {chats.response.length !== 0 ? (
+        <ReportingMessageContainer chatThreadId={chatThreadId} />
+      ) : (
+        <div>No messages or documents to display.</div>
+      )}
     </Card>
   )
 }

@@ -6,7 +6,13 @@ import { Button } from "@/features/ui/button"
 import { Card } from "@/features/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table"
 
-import { FindAllChatThreadsForReporting } from "./reporting-service"
+import { FindAllChatThreadsForUserReporting } from "./reporting-service"
+
+import {
+  formatSensitivityValue,
+  formatStyleValue,
+  formatTypeValue,
+} from "@/features/chat/chat-ui/chat-header-display/icon-helpers"
 
 export type ReportingProp = {
   searchParams: {
@@ -22,20 +28,22 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
   const nextPage = Number(pageNumber) + 1
   const previousPage = Number(pageNumber) - 1
 
-  const chatThreads = await FindAllChatThreadsForReporting(pageSize, pageNumber)
-  if (chatThreads.status !== "OK") return <div>Error</div>
+  const chatThreadsData = await FindAllChatThreadsForUserReporting(pageSize, pageNumber)
+  if (chatThreadsData.status !== "OK") return <div>Error</div>
 
-  const hasMoreResults = chatThreads && chatThreads.response.length === pageSize
+  const { threads, totalCount } = chatThreadsData.response
+  const hasMoreResults = threads && threads.length === pageSize
+  const totalPages = Math.ceil(totalCount / pageSize)
 
   return (
-    <Card className="flex size-full overflow-y-auto pt-8">
+    <div className="flex size-full overflow-y-auto bg-altBackground pt-8">
       <div className="container mx-auto size-full space-y-8">
         <div>
           <Typography variant="h2" className="text-2xl font-bold tracking-tight">
             Chat Reporting
           </Typography>
           <Typography variant="p" className="text-muted-foreground">
-            History for this week - all users in your tenant
+            See all your chats below from the past three months.
           </Typography>
         </div>
         <div className="flex items-center space-x-2">
@@ -43,68 +51,74 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Chat Title</TableHead>
-                  <TableHead>User Name</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Style</TableHead>
-                  <TableHead>Sensitivity</TableHead>
-                  <TableHead>Created Date</TableHead>
+                  <TableHead scope="col">Chat Title</TableHead>
+                  <TableHead scope="col">Category</TableHead>
+                  <TableHead scope="col">Type</TableHead>
+                  <TableHead scope="col">Style</TableHead>
+                  <TableHead scope="col">Sensitivity</TableHead>
+                  <TableHead scope="col">Created Date</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {chatThreads &&
-                  chatThreads.response.map(chatThread => (
+                {threads &&
+                  threads.map(chatThread => (
                     <TableRow key={chatThread.id}>
                       <TableCell className="font-medium">
-                        <Link href={"/reporting/" + chatThread.id}>{chatThread.name}</Link>
+                        <Link
+                          href={"/settings/history/" + chatThread.id}
+                          aria-label={`View chat details for ${chatThread.name}`}
+                        >
+                          {chatThread.name}
+                        </Link>
                       </TableCell>
-                      <TableCell>{chatThread.useName}</TableCell>
-                      <TableCell>{chatThread.chatType}</TableCell>
-                      <TableCell>{chatThread.conversationStyle}</TableCell>
-                      <TableCell>{chatThread.conversationSensitivity}</TableCell>
+                      <TableCell>{chatThread.chatCategory === "None" ? "-" : chatThread.chatCategory}</TableCell>
+                      <TableCell>{formatTypeValue(chatThread.chatType)}</TableCell>
+                      <TableCell>{formatStyleValue(chatThread.conversationStyle)}</TableCell>
+                      <TableCell>{formatSensitivityValue(chatThread.conversationSensitivity)}</TableCell>
                       <TableCell>
-                        {new Date(chatThread.createdAt).toLocaleString("en-AU", {
-                          minute: "2-digit",
-                          hour: "2-digit",
-                          hour12: false,
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
+                        {new Date(chatThread.createdAt).toLocaleDateString("en-AU", {
+                          day: "numeric",
+                          month: "short",
                         })}
                       </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
             </Table>
-            <div className="flex justify-end gap-2 p-2">
-              {previousPage >= 0 && (
-                <Button asChild size={"icon"} variant={"outline"}>
-                  <Link
-                    href={{
-                      pathname: "/reporting",
-                      search: `?pageNumber=${previousPage}`,
-                    }}
-                  >
-                    <ChevronLeft />
-                  </Link>
-                </Button>
-              )}
-              {hasMoreResults && (
-                <Button asChild size={"icon"} variant={"outline"}>
-                  <Link
-                    href={{
-                      pathname: "/reporting",
-                      search: `?pageNumber=${nextPage}`,
-                    }}
-                  >
-                    <ChevronRight />
-                  </Link>
-                </Button>
-              )}
+            <div className="flex items-center justify-between p-2">
+              <div>
+                Page {pageNumber + 1} of {totalPages} (Total Records: {totalCount})
+              </div>
+              <div className="flex gap-2">
+                {previousPage >= 0 && (
+                  <Button asChild size={"icon"} variant={"outline"} aria-label="Previous page">
+                    <Link
+                      href={{
+                        pathname: "/settings/history",
+                        search: `?pageNumber=${previousPage}`,
+                      }}
+                    >
+                      <ChevronLeft />
+                    </Link>
+                  </Button>
+                )}
+                {hasMoreResults && (
+                  <Button asChild size={"icon"} variant={"outline"} aria-label="Next page">
+                    <Link
+                      href={{
+                        pathname: "/settings/history",
+                        search: `?pageNumber=${nextPage}`,
+                      }}
+                    >
+                      <ChevronRight />
+                    </Link>
+                  </Button>
+                )}
+              </div>
             </div>
           </Card>
         </div>
       </div>
-    </Card>
+    </div>
   )
 }

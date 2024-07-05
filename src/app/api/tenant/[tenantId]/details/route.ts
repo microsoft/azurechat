@@ -95,6 +95,7 @@ export async function GET(_request: NextRequest, { params }: { params: { tenantI
     requiresGroupLogin: existingTenantResult.response.requiresGroupLogin,
     id: existingTenantResult.response.id,
     smartTools: existingTenantResult.response.smartTools,
+    dateOnBoarded: existingTenantResult.response.dateOnBoarded || "",
   }
 
   return new Response(JSON.stringify({ status: "OK", data: tenantDetails }), {

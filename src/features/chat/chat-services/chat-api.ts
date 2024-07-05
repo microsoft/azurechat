@@ -32,7 +32,7 @@ import { InitThreadSession, UpsertChatThread } from "./chat-thread-service"
 import { translator } from "./chat-translator-service"
 import { UpdateChatThreadIfUncategorised } from "./chat-utility"
 
-const dataChatTypes = ["data", "mssql", "audio"]
+const dataChatTypes = ["data", "audio"]
 export const MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED = 3
 
 export const ChatApi = async (props: PromptProps): Promise<Response> => {

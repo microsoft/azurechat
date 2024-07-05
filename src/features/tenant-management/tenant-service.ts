@@ -251,7 +251,7 @@ export const GetTenants = async (): ServerActionResponseAsync<TenantRecord[]> =>
   if (!user.admin) return { status: "ERROR", errors: [{ message: "Permission Denied - User is not an admin" }] }
 
   try {
-    const query = { query: "SELECT * FROM c WHERE c.dateOffBoarded = null ORDER BY c.departmentName ASC" }
+    const query = { query: "SELECT * FROM c WHERE IS_NULL(c.dateOffBoarded) ORDER BY c.departmentName ASC" }
     const container = await TenantContainer()
     const { resources } = await container.items.query<TenantRecord>(query).fetchAll()
     return {

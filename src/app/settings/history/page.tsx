@@ -1,16 +1,5 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@/features/ui/card"
+import { Reporting, ReportingProp } from "@/features/reporting/reporting"
 
-export const dynamic = "force-dynamic"
-
-export default function Home(): JSX.Element {
-  return (
-    <Card>
-      <div className="flex h-full flex-col justify-between rounded-lg bg-altBackground text-center text-foreground">
-        <CardHeader>
-          <CardTitle className="my-2 font-bold">Coming Soon</CardTitle>
-        </CardHeader>
-        <CardDescription className="px-4">Chat history</CardDescription>
-      </div>
-    </Card>
-  )
+export default function Home(props: ReportingProp): JSX.Element {
+  return <Reporting {...props} />
 }

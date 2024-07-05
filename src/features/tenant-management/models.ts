@@ -39,6 +39,7 @@ export type TenantDetails = {
   readonly primaryDomain: string
   supportEmail: string
   departmentName: string
+  dateOnBoarded?: string
   administrators: string[]
   requiresGroupLogin: boolean
   groups: string[]

@@ -21,7 +21,6 @@ const links: LinkItem[] = [
   { name: "Prompt Guide", href: "/prompt-guide", icon: BookMarked, condition: "authenticated" },
   { name: "What's new", href: "/whats-new", icon: CloudUpload, condition: "authenticated" },
   { name: "Factual Errors", href: "/hallucinations", icon: SpellCheck2, condition: "authenticated" },
-  // Further links can be added with or without conditions
 ]
 
 const validateCondition = (link: LinkItem) => (session: Session | null) => {

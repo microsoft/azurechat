@@ -1,4 +1,4 @@
-import { UserRoundCog, FileClock, CircleHelp, Building2, ShieldCheck } from "lucide-react"
+import { UserRoundCog, FileClock, CircleHelp, Building2, ShieldCheck, Factory } from "lucide-react"
 
 import { isTenantAdmin, isAdmin } from "@/features/auth/helpers"
 import { SettingsMenuItem } from "@/features/settings/settings-menu-item"
@@ -8,6 +8,7 @@ const menuItems = [
   { url: "/settings/history", icon: <FileClock size={16} />, text: "Chat history" },
   { url: "/settings/help", icon: <CircleHelp size={16} />, text: "Help & Support" },
   { url: "/settings/tenant", icon: <Building2 size={16} />, text: "Department details", tenantAdminRequired: true },
+  { url: "/settings/tenants", icon: <Factory size={16} />, text: "Tenants", adminRequired: true },
   { url: "/settings/admin", icon: <ShieldCheck size={16} />, text: "Admin", adminRequired: true },
 ]
 
