@@ -49,7 +49,7 @@ export const MiniMenu: React.FC = () => {
 
   const menuItems = [
     { name: "Home", href: "/chat", icon: Home, ariaLabel: "Navigate to home page" },
-    { name: "Settings", href: "/settings/details", icon: UserCog, ariaLabel: "Navigate to settings" },
+    { name: "Settings", href: "/settings", icon: UserCog, ariaLabel: "Navigate to settings" },
     { name: "Prompt Guide", href: "/prompt-guide", icon: Bookmark, ariaLabel: "Navigate to prompt guide" },
     { name: "What's New", href: "/whats-new", icon: CloudUpload, ariaLabel: "Navigate to what's new page" },
     {

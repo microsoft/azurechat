@@ -17,7 +17,7 @@ interface LinkItem {
 
 const links: LinkItem[] = [
   { name: "Home", href: "/chat", icon: HomeIcon, condition: "unauthenticated" },
-  { name: "Settings", href: "/settings/details", icon: UserRoundCog, condition: "authenticated" },
+  { name: "Settings", href: "/settings", icon: UserRoundCog, condition: "authenticated" },
   { name: "Prompt Guide", href: "/prompt-guide", icon: BookMarked, condition: "authenticated" },
   { name: "What's new", href: "/whats-new", icon: CloudUpload, condition: "authenticated" },
   { name: "Factual Errors", href: "/hallucinations", icon: SpellCheck2, condition: "authenticated" },
