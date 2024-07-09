@@ -37,10 +37,10 @@ export const Selectors = (): JSX.Element => {
 
   return (
     <div className="m-4 flex items-center gap-4">
-      <div className="flex w-full flex-1 items-center">
+      <div className="flex flex-1 items-center">
         <Select
-          value={selectedTenant?.id || "placeholder"}
-          groups={[
+          value={selectedTenant?.id || ""}
+          options={[
             {
               label: "Tenants",
               options: tenants.map(t => ({
@@ -53,10 +53,10 @@ export const Selectors = (): JSX.Element => {
           onValueChange={handleSelectTenant}
         />
       </div>
-      <div className="flex w-full flex-1 items-center">
+      <div className="flex flex-1 items-center">
         <Select
-          value={selectedUser?.id || "placeholder"}
-          groups={[
+          value={selectedUser?.id || ""}
+          options={[
             {
               label: "Users",
               options: users.map(u => ({

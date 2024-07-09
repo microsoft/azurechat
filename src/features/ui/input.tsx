@@ -16,7 +16,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         accept={accept}
         multiple={multiple}
         className={cn(
-          "flex h-full w-full rounded-md border-2 px-3 py-2 text-base placeholder:text-muted-foreground focus:border-text focus:outline-none disabled:opacity-50",
+          "flex size-full rounded-md border-2 px-3 py-2 text-base placeholder:text-muted-foreground focus:border-text focus:outline-none disabled:opacity-50",
           className
         )}
         ref={ref}
