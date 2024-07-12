@@ -62,8 +62,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className={cn(notoSans.className, "flex size-full min-w-[400px] flex-col bg-background")}>
         <ErrorBoundary>
-          <ApplicationProvider settings={settings}>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <ApplicationProvider settings={settings}>
               <Providers>
                 <Header />
                 <NavBar />
@@ -79,8 +79,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Footer />
                 <Toaster />
               </Providers>
-            </ThemeProvider>
-          </ApplicationProvider>
+            </ApplicationProvider>
+          </ThemeProvider>
         </ErrorBoundary>
       </body>
       {isProd && googleAnalyticsId && <GoogleAnalytics gaId={googleAnalyticsId} />}

@@ -7,8 +7,8 @@ import { APP_NAME } from "@/app-global"
 
 import Typography from "@/components/typography"
 import { CreateUserFeedback } from "@/features/chat/chat-services/chat-message-service"
-import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatSentiment, FeedbackType, PromptMessage } from "@/features/chat/models"
+import { announcement } from "@/features/globals/announcements"
 import { showError } from "@/features/globals/global-message-store"
 import { Button } from "@/features/ui/button"
 import { TooltipProvider } from "@/features/ui/tooltip-provider"
@@ -90,110 +90,64 @@ const FeedbackButtons: React.FC<FeedbackButtonsProps> = ({
   chatThreadId,
 }) => {
   const { iconSize, buttonClass } = useButtonStyles()
-  const [thumbsUpClicked, setThumbsUpClicked] = useState(message.sentiment === ChatSentiment.Positive)
-  const [thumbsDownClicked, setThumbsDownClicked] = useState(message.sentiment === ChatSentiment.Negative)
-  const [feedbackType, setFeedbackType] = useState(message.feedback)
-  const [feedbackReason, setFeedbackReason] = useState(message.reason)
+  const [sentiment, setSentiment] = useState(message.sentiment || ChatSentiment.Neutral)
+  const [reason, setReason] = useState(message.reason)
 
-  const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false)
-  const { openModal, closeModal } = useChatContext()
-  const handleThumbsUpClick = async (): Promise<void> => {
-    const previous = { thumbsUpClicked, thumbsDownClicked }
-    const sentiment = thumbsUpClicked ? ChatSentiment.Neutral : ChatSentiment.Positive
-    setThumbsUpClicked(!previous.thumbsUpClicked)
-    setThumbsDownClicked(false)
+  const submitFeeback = async (
+    feedbackSentiment: ChatSentiment,
+    feedbackType: FeedbackType,
+    feedbackReason: string
+  ): Promise<void> => {
     try {
-      const res = await CreateUserFeedback(chatMessageId, FeedbackType.None, sentiment, "", chatThreadId)
+      const res = await CreateUserFeedback(chatMessageId, feedbackType, feedbackSentiment, feedbackReason, chatThreadId)
       if (res.status !== "OK") throw new Error("Failed to submit feedback.")
-      const message = "Positive feedback submitted."
+      setSentiment(feedbackSentiment)
+      setReason(feedbackReason)
+      const message = "Feedback submitted."
       onFeedbackChange(message)
-      setTimeout(() => onFeedbackChange(""), 2000)
     } catch (err) {
-      setThumbsUpClicked(previous.thumbsUpClicked)
-      setThumbsDownClicked(previous.thumbsDownClicked)
       const error = err instanceof Error ? err.message : typeof err === "string" ? err : "Failed to submit feedback."
       showError(error)
       onFeedbackChange(error)
+    } finally {
       setTimeout(() => onFeedbackChange(""), 2000)
     }
   }
 
-  const handleThumbsDownClick = (): void => {
-    setFeedbackModalOpen(true)
-    openModal?.()
-  }
-
-  const handleFeedbackModalSubmit = async (): Promise<void> => {
-    const previous = { thumbsUpClicked, thumbsDownClicked }
-    const sentiment = thumbsDownClicked ? ChatSentiment.Neutral : ChatSentiment.Negative
-    setThumbsUpClicked(false)
-    setThumbsDownClicked(!previous.thumbsDownClicked)
-    try {
-      const res = await CreateUserFeedback(
-        chatMessageId,
-        feedbackType || FeedbackType.None,
-        sentiment,
-        (feedbackReason || "").trim(),
-        chatThreadId
-      )
-      if (res.status !== "OK") throw new Error("Failed to submit feedback.")
-      const message = "Negative feedback submitted."
-      setFeedbackType(FeedbackType.None)
-      setFeedbackReason("")
-      onFeedbackChange(message)
-      setTimeout(() => onFeedbackChange(""), 2000)
-      setFeedbackModalOpen(false)
-      closeModal?.()
-    } catch (_err) {
-      setThumbsUpClicked(previous.thumbsUpClicked)
-      setThumbsDownClicked(previous.thumbsDownClicked)
-      const error = "Failed to submit feedback."
-      showError(error)
-      onFeedbackChange(error)
-      setTimeout(() => onFeedbackChange(""), 2000)
-    }
-  }
-
-  const handleFeedbackModalClose = (): void => {
-    setFeedbackType(FeedbackType.None)
-    setFeedbackReason("")
-    setFeedbackModalOpen(false)
-    closeModal?.()
-  }
   return (
     <>
       <Button
         variant={"positive"}
         size={"default"}
-        className={`${buttonClass} ${thumbsUpClicked ? "bg-success text-buttonText" : ""}`}
+        className={`${buttonClass} ${sentiment === ChatSentiment.Positive ? "bg-success text-buttonText" : ""}`}
         title="Thumbs up"
-        onClick={handleThumbsUpClick}
+        onClick={async () => await submitFeeback(ChatSentiment.Positive, FeedbackType.None, "")}
         ariaLabel="Provide positive feedback"
       >
-        {thumbsUpClicked ? <CheckIcon size={iconSize} /> : <ThumbsUp size={iconSize} />}
+        {sentiment === ChatSentiment.Positive ? <CheckIcon size={iconSize} /> : <ThumbsUp size={iconSize} />}
       </Button>
 
       <Button
         variant={"negative"}
         size={"default"}
-        className={`${buttonClass} ${thumbsDownClicked ? "bg-destructive" : ""}`}
+        className={`${buttonClass} ${sentiment === ChatSentiment.Negative ? "bg-destructive" : ""}`}
         title="Thumbs down"
-        onClick={handleThumbsDownClick}
+        onClick={() => {
+          announcement.newsflash(
+            <FeedbackModal
+              chatThreadId={chatThreadId}
+              chatMessageId={chatMessageId}
+              feedbackType={message?.feedback}
+              feedbackReason={reason}
+              onClose={() => announcement.dismiss()}
+              onSubmit={submitFeeback}
+            />
+          )
+        }}
         ariaLabel="Provide negative feedback"
       >
-        {thumbsDownClicked ? <CheckIcon size={iconSize} /> : <ThumbsDown size={iconSize} />}
+        {sentiment === ChatSentiment.Negative ? <CheckIcon size={iconSize} /> : <ThumbsDown size={iconSize} />}
       </Button>
-      <FeedbackModal
-        chatThreadId={chatThreadId}
-        chatMessageId={chatMessageId}
-        feedbackType={feedbackType}
-        onFeedbackTypeChange={setFeedbackType}
-        feedbackReason={feedbackReason}
-        onFeedbackReasonChange={setFeedbackReason}
-        open={isFeedbackModalOpen}
-        onClose={handleFeedbackModalClose}
-        onSubmit={handleFeedbackModalSubmit}
-      />
     </>
   )
 }

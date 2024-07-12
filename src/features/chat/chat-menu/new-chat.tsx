@@ -1,48 +1,17 @@
 "use client"
 
 import { MessageSquarePlus } from "lucide-react"
-import { useRouter } from "next/navigation"
 
-import {
-  CreateChatThread,
-  FindChatThreadByTitleAndEmpty,
-  UpdateChatThreadCreatedAt,
-} from "@/features/chat/chat-services/chat-thread-service"
-import { useGlobalMessageContext } from "@/features/globals/global-message-context"
+import { useChatThreads } from "@/features/chat/chat-ui/chat-threads-context"
 import { Button } from "@/features/ui/button"
 
 export const NewChat = (): JSX.Element => {
-  const router = useRouter()
-  const { showError } = useGlobalMessageContext()
+  const { createThread } = useChatThreads()
 
-  const startNewChat = async (): Promise<void> => {
-    const title = "New Chat"
-
-    try {
-      const existingThread = await FindChatThreadByTitleAndEmpty(title)
-      if (existingThread.status !== "OK") {
-        showError("Failed to start a new chat. Please try again later.")
-        return
-      }
-
-      if (!existingThread.response) {
-        const newChatThread = await CreateChatThread()
-        if (newChatThread.status !== "OK") throw newChatThread
-        router.push(`/chat/${newChatThread.response.chatThreadId}`)
-        return
-      }
-
-      await UpdateChatThreadCreatedAt(existingThread.response.chatThreadId)
-      router.push(`/chat/${existingThread.response.chatThreadId}`)
-    } catch (_error) {
-      showError("Failed to start a new chat. Please try again later.")
-    }
-  }
+  const startNewChat = async (): Promise<void> => await createThread("New Chat")
 
   const handleKeyDown = async (e: React.KeyboardEvent): Promise<void> => {
-    if (e.key === "Enter") {
-      await startNewChat()
-    }
+    if (e.key === "Enter") await startNewChat()
   }
 
   return (

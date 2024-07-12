@@ -225,7 +225,7 @@ const EnsureChatThreadOperation = async (chatThreadId: string): ServerActionResp
   return response
 }
 
-export const CreateChatThread = async (): ServerActionResponseAsync<ChatThreadModel> => {
+export const CreateChatThread = async (title?: string): ServerActionResponseAsync<ChatThreadModel> => {
   try {
     const [userId, tenantId, session] = await Promise.all([userHashedId(), getTenantId(), userSession()])
     if (!session)
@@ -238,7 +238,7 @@ export const CreateChatThread = async (): ServerActionResponseAsync<ChatThreadMo
 
     const id = uniqueId()
     const modelToSave: ChatThreadModel = {
-      name: "New Chat",
+      name: title || "New Chat",
       previousChatName: "",
       chatCategory: "None",
       useName: session.name,

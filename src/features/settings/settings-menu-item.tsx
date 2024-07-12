@@ -12,9 +12,8 @@ type Props = {
 }
 export const SettingsMenuItem = ({ url, icon, text }: Props): JSX.Element => {
   const pathname = usePathname()
-
   return (
-    <MenuItem href={url} key={url} isSelected={pathname.startsWith(url)}>
+    <MenuItem href={url} key={url} isSelected={pathname === url}>
       {icon}
       <Typography variant="span">{text}</Typography>
     </MenuItem>

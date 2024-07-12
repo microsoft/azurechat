@@ -2,7 +2,7 @@
 
 import { ChatRequestOptions, JSONValue } from "ai"
 import { UseChatHelpers, useChat } from "ai/react"
-import React, { FC, createContext, useContext, useRef, useState } from "react"
+import React, { PropsWithChildren, createContext, useContext, useEffect, useRef, useState } from "react"
 
 import { MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED } from "@/features/chat/chat-services/chat-api"
 import {
@@ -17,43 +17,20 @@ import {
   UserChatMessageModel,
   ChatDocumentModel,
 } from "@/features/chat/models"
-import { useGlobalMessageContext } from "@/features/globals/global-message-context"
+import { showError } from "@/features/globals/global-message-store"
 import { TenantPreferences } from "@/features/tenant-management/models"
 import { uniqueId } from "@/lib/utils"
 
 import { FileState, useFileState } from "./chat-file/use-file-state"
+import { useChatThreads } from "./chat-threads-context"
 
-interface ChatContextProps extends UseChatHelpers {
-  id: string
-  setChatBody: (body: PromptBody) => void
-  chatBody: PromptBody
-  fileState: FileState
-  onChatTypeChange: (value: ChatType) => void
-  onConversationStyleChange: (value: ConversationStyle) => void
-  onConversationSensitivityChange: (value: ConversationSensitivity) => void
-  isModalOpen?: boolean
-  openModal?: () => void
-  closeModal?: () => void
-  chatThreadLocked: boolean
-  messages: PromptMessage[]
-  documents: ChatDocumentModel[]
-  tenantPreferences?: TenantPreferences
-}
+type ChatContextDefinition = ReturnType<typeof useChatHook>
+const ChatContext = createContext<ChatContextDefinition | null>(null)
 
-const ChatContext = createContext<ChatContextProps | null>(null)
-interface Prop {
-  children: React.ReactNode
-  id: string
-  chats: Array<UserChatMessageModel | AssistantChatMessageModel>
-  chatThread: ChatThreadModel
-  documents: ChatDocumentModel[]
-  chatThreadName?: ChatThreadModel["name"]
-  tenantPreferences?: TenantPreferences
-}
-
-export const ChatProvider: FC<Prop> = props => {
-  const { showError } = useGlobalMessageContext()
+const useChatHook = (props: ChatProviderProps): ChatContextState => {
   const fileState = useFileState()
+  const { updateThreadTitle } = useChatThreads()
+  const updateThreadTitleRef = useRef(updateThreadTitle)
 
   const [chatBody, setChatBody] = useState<PromptBody>({
     id: props.chatThread.id,
@@ -66,6 +43,25 @@ export const ChatProvider: FC<Prop> = props => {
     internalReference: props.chatThread.internalReference,
     chatThreadName: props.chatThread.name,
   })
+
+  const chatThreadNameRef = useRef(chatBody.chatThreadName)
+
+  useEffect(() => {
+    if (!props?.chatThread?.name || !props?.chatThread?.id) return
+    if (props.chatThread.name === chatThreadNameRef.current) return
+    let unsubscribe = false
+    updateThreadTitleRef
+      .current(props.chatThread.id, props.chatThread.name)
+      .then(() => {
+        if (unsubscribe) return
+        setChatBody(prev => ({ ...prev, chatThreadName: props.chatThread.name }))
+      })
+      .catch(error => showError(error.message))
+
+    return () => {
+      unsubscribe = true
+    }
+  }, [props?.chatThread?.name, props?.chatThread?.id])
 
   const onError = (error: Error): void => showError(error.message)
 
@@ -90,10 +86,6 @@ export const ChatProvider: FC<Prop> = props => {
     sendExtraMessageFields: true,
   })
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const openModal = (): void => setIsModalOpen(true)
-  const closeModal = (): void => setIsModalOpen(false)
-
   const onChatTypeChange = (value: ChatType): void => {
     fileState.setIsFileNull(true)
     setChatBody(prev => ({ ...prev, chatType: value }))
@@ -109,9 +101,8 @@ export const ChatProvider: FC<Prop> = props => {
     event?: { preventDefault?: () => void },
     options: ChatRequestOptions = {}
   ): Promise<void> => {
-    if (event && event.preventDefault) {
-      event.preventDefault()
-    }
+    event?.preventDefault?.()
+
     if (!response.input) return
 
     const nextCompletionId = uniqueId()
@@ -129,45 +120,61 @@ export const ChatProvider: FC<Prop> = props => {
     response.setInput("")
   }
 
-  return (
-    <ChatContext.Provider
-      value={{
-        ...response,
-        messages: response.messages.map<PromptMessage>(message => {
-          const dataItem = (response.data as (JSONValue & PromptMessage)[])?.find(
-            data => data?.id === message.id
-          ) as PromptMessage
-          return {
-            ...message,
-            ...dataItem,
-          }
-        }),
-        documents: props.documents,
-        tenantPreferences: props.tenantPreferences,
-        chatThreadLocked:
-          (props.chatThread?.contentFilterTriggerCount || 0) >= MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED,
-        handleSubmit,
-        setChatBody,
-        chatBody,
-        onChatTypeChange,
-        onConversationStyleChange,
-        onConversationSensitivityChange,
-        fileState,
-        id: props.id,
-        isModalOpen,
-        openModal,
-        closeModal,
-      }}
-    >
-      {props.children}
-    </ChatContext.Provider>
-  )
+  return {
+    ...response,
+    messages: response.messages.map<PromptMessage>(message => {
+      const dataItem = (response.data as (JSONValue & PromptMessage)[])?.find(
+        data => data?.id === message.id
+      ) as PromptMessage
+      return {
+        ...message,
+        ...dataItem,
+      }
+    }),
+    documents: props.documents,
+    tenantPreferences: props.tenantPreferences,
+    chatThreadLocked: (props.chatThread?.contentFilterTriggerCount || 0) >= MAX_CONTENT_FILTER_TRIGGER_COUNT_ALLOWED,
+    handleSubmit,
+    setChatBody,
+    chatBody,
+    onChatTypeChange,
+    onConversationStyleChange,
+    onConversationSensitivityChange,
+    fileState,
+    id: props.id,
+  }
 }
 
-export const useChatContext = (): ChatContextProps => {
+export const useChatContext = (): ChatContextDefinition => {
   const context = useContext(ChatContext)
   if (!context) {
     throw new Error("ChatContext is null")
   }
   return context
+}
+
+type ChatProviderProps = {
+  id: string
+  chats: Array<UserChatMessageModel | AssistantChatMessageModel>
+  chatThread: ChatThreadModel
+  documents: ChatDocumentModel[]
+  tenantPreferences?: TenantPreferences
+}
+export default function ChatProvider({ children, ...rest }: PropsWithChildren<ChatProviderProps>): JSX.Element {
+  const value = useChatHook(rest)
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
+}
+
+type ChatContextState = UseChatHelpers & {
+  id: string
+  setChatBody: (body: PromptBody) => void
+  chatBody: PromptBody
+  fileState: FileState
+  onChatTypeChange: (value: ChatType) => void
+  onConversationStyleChange: (value: ConversationStyle) => void
+  onConversationSensitivityChange: (value: ConversationSensitivity) => void
+  chatThreadLocked: boolean
+  messages: PromptMessage[]
+  documents: ChatDocumentModel[]
+  tenantPreferences?: TenantPreferences
 }

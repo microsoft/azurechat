@@ -1,5 +1,3 @@
-"use client"
-
 import { FC } from "react"
 
 import { APP_NAME } from "@/app-global"

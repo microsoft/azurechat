@@ -6,14 +6,12 @@ import { CloudUpload, SpellCheck2, X, LogIn, LogOut, Moon, Sun, Home, Bookmark, 
 import Link from "next/link"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useTheme } from "next-themes"
-import React from "react"
+import React, { useState } from "react"
 
 import { signInProvider } from "@/app-global"
 
 import Typography from "@/components/typography"
 import { cn } from "@/lib/utils"
-
-import { useMiniMenuContext } from "./mini-menu-context"
 
 interface MiniMenuItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
   href: UrlObject | string
@@ -41,10 +39,11 @@ const MiniMenuItem: React.FC<MiniMenuItemProps> = ({ href, icon: Icon, name, ari
 }
 
 export const MiniMenu: React.FC = () => {
-  const { isMenuOpen, toggleMenu } = useMiniMenuContext()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { data: session } = useSession({ required: false })
   const { theme, setTheme } = useTheme()
 
+  const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen)
   const toggleTheme = (): void => setTheme(theme === "light" ? "dark" : "light")
 
   const menuItems = [

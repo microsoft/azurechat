@@ -5,18 +5,10 @@ import React, { FC, useState, useEffect, useRef } from "react"
 
 import { MenuItem } from "@/components/menu"
 import Typography from "@/components/typography"
-import {
-  UpdateChatThreadTitle,
-  SoftDeleteChatThreadForCurrentUser,
-} from "@/features/chat/chat-services/chat-thread-service"
-import { ChatThreadModel } from "@/features/chat/models"
-import { useGlobalMessageContext } from "@/features/globals/global-message-context"
+import { useChatThreads } from "@/features/chat/chat-ui/chat-threads-context"
+import { showError } from "@/features/globals/global-message-store"
 import { Button } from "@/features/ui/button"
 import { Input } from "@/features/ui/input"
-
-interface Prop {
-  menuItems: Array<ChatThreadModel>
-}
 
 interface ModalProps {
   isOpen: boolean
@@ -95,13 +87,12 @@ const ChatMenuModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAft
   )
 }
 
-export const MenuItems: FC<Prop> = ({ menuItems }) => {
+export const MenuItems: FC = () => {
   const { chatThreadId } = useParams()
   const router = useRouter()
-  const { showError } = useGlobalMessageContext()
+  const { threads, updateThreadTitle, removeThread } = useChatThreads()
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null)
   const [modalType, setModalType] = useState<"edit" | "delete" | null>(null)
-  const [items, setItems] = useState<ChatThreadModel[]>(menuItems)
 
   const handleOpenModal = (chatThreadId: string, type: "edit" | "delete"): void => {
     setSelectedThreadId(chatThreadId)
@@ -114,92 +105,76 @@ export const MenuItems: FC<Prop> = ({ menuItems }) => {
   }
 
   const handleSaveModal = async (inputValue?: string): Promise<void> => {
-    if (modalType === "edit" && (inputValue ?? "").trim() !== "" && selectedThreadId) {
-      try {
-        await UpdateChatThreadTitle(selectedThreadId, inputValue || "")
-        setItems(prevItems =>
-          prevItems.map(item =>
-            item.chatThreadId === selectedThreadId ? { ...item, name: inputValue || item.name } : item
-          )
-        )
-      } catch (e) {
-        showError("" + e)
-      } finally {
-        handleCloseModal()
+    if (!selectedThreadId) return
+    try {
+      if (modalType === "edit") {
+        await updateThreadTitle(selectedThreadId, (inputValue || "").trim())
+      } else if (modalType === "delete") {
+        await removeThread(selectedThreadId)
+        router.replace("/chat")
       }
-    } else if (modalType === "delete" && selectedThreadId) {
-      try {
-        await SoftDeleteChatThreadForCurrentUser(selectedThreadId)
-        setItems(prev => prev.filter(item => item.chatThreadId !== selectedThreadId))
-        router.replace("/chat") // This is where you navigate to the "/chat" route
-      } catch (e) {
-        showError("" + e)
-      } finally {
-        handleCloseModal()
-      }
+    } catch (e) {
+      showError("" + e)
+    } finally {
+      handleCloseModal()
     }
-    router.refresh()
   }
 
-  return (
-    <>
-      {items.map(thread => (
-        <MenuItem
-          href={`/chat/${thread.chatThreadId}`}
-          isSelected={chatThreadId === thread.chatThreadId}
-          key={thread.chatThreadId}
-          className="hover:item group relative justify-between"
+  return threads?.map(thread => (
+    <MenuItem
+      href={`/chat/${thread.chatThreadId}`}
+      isSelected={chatThreadId === thread.chatThreadId}
+      key={thread.chatThreadId}
+      className="hover:item group relative justify-between"
+    >
+      {thread.chatType === "data" ? (
+        <FileText
+          size={16}
+          className={chatThreadId === thread.chatThreadId ? "hidden text-brand sm:block" : "hidden sm:block"}
+        />
+      ) : thread.chatType === "audio" ? (
+        <AudioLines
+          size={16}
+          className={chatThreadId === thread.chatThreadId ? "hidden text-brand sm:block" : "hidden sm:block"}
+        />
+      ) : (
+        <MessageCircle
+          size={16}
+          className={chatThreadId === thread.chatThreadId ? "hidden text-brand sm:block" : "hidden sm:block"}
+        />
+      )}
+      <Typography variant="span" className="flex flex-1 items-center gap-1 overflow-hidden">
+        {thread.name}
+      </Typography>
+      <div className="hidden gap-1 sm:grid">
+        <Button
+          className="opacity-20 group-hover:opacity-100"
+          size="sm"
+          variant="accent"
+          ariaLabel={`Rename ${thread.name}`}
+          onClick={() => handleOpenModal(thread.chatThreadId, "edit")}
         >
-          {thread.chatType === "data" ? (
-            <FileText
-              size={16}
-              className={chatThreadId === thread.chatThreadId ? "hidden text-brand sm:block" : "hidden sm:block"}
-            />
-          ) : thread.chatType === "audio" ? (
-            <AudioLines
-              size={16}
-              className={chatThreadId === thread.chatThreadId ? "hidden text-brand sm:block" : "hidden sm:block"}
-            />
-          ) : (
-            <MessageCircle
-              size={16}
-              className={chatThreadId === thread.chatThreadId ? "hidden text-brand sm:block" : "hidden sm:block"}
-            />
-          )}
-          <Typography variant="span" className="flex flex-1 items-center gap-1 overflow-hidden">
-            {thread.name}
-          </Typography>
-          <div className="hidden gap-1 sm:grid">
-            <Button
-              className="opacity-20 group-hover:opacity-100"
-              size="sm"
-              variant="accent"
-              ariaLabel={`Rename ${thread.name}`}
-              onClick={() => handleOpenModal(thread.chatThreadId, "edit")}
-            >
-              <Pencil size={16} />
-            </Button>
-            <Button
-              className="opacity-20 group-hover:opacity-100"
-              size="sm"
-              variant="destructive"
-              ariaLabel={`Delete ${thread.name}`}
-              onClick={() => handleOpenModal(thread.chatThreadId, "delete")}
-            >
-              <Trash size={16} />
-            </Button>
-            {selectedThreadId === thread.chatThreadId && modalType && (
-              <ChatMenuModal
-                isOpen={true}
-                onClose={handleCloseModal}
-                onSave={handleSaveModal}
-                focusAfterClose={null}
-                type={modalType}
-              />
-            )}
-          </div>
-        </MenuItem>
-      ))}
-    </>
-  )
+          <Pencil size={16} />
+        </Button>
+        <Button
+          className="opacity-20 group-hover:opacity-100"
+          size="sm"
+          variant="destructive"
+          ariaLabel={`Delete ${thread.name}`}
+          onClick={() => handleOpenModal(thread.chatThreadId, "delete")}
+        >
+          <Trash size={16} />
+        </Button>
+        {selectedThreadId === thread.chatThreadId && modalType && (
+          <ChatMenuModal
+            isOpen={true}
+            onClose={handleCloseModal}
+            onSave={handleSaveModal}
+            focusAfterClose={null}
+            type={modalType}
+          />
+        )}
+      </div>
+    </MenuItem>
+  ))
 }

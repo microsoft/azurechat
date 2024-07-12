@@ -14,7 +14,6 @@ export default function useSmartGen(config?: SmartToolConfig[]): UseSmartGenHook
 
       fetch("/api/user/smart-gen", {
         method: "POST",
-        cache: "no-store",
         body: JSON.stringify({ action: request.toolName, context: request.context, output }),
       })
         .then(response => !response.ok && logger.error("Error recording smart-gen content", { error: response }))
