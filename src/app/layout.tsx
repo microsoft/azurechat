@@ -59,6 +59,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en-AU" suppressHydrationWarning className="size-full overflow-hidden text-sm">
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/fse2tsb.css" />
+        <link rel="preconnect" href="https://www.google-analytics.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={cn(notoSans.className, "flex size-full min-w-[400px] flex-col bg-background")}>
         <ErrorBoundary>
