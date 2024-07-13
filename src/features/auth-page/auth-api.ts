@@ -60,17 +60,17 @@ const configureIdentityProvider = () => {
   if (process.env.NODE_ENV === "development") {
     providers.push(
       CredentialsProvider({
-        name: "localdev",
+        name: "credentials",
         credentials: {
           username: { label: "Username", type: "text", placeholder: "dev" },
-          password: { label: "Password", type: "password" },
+          email: { label: "Email", type: "email" },
         },
         async authorize(credentials, req): Promise<any> {
           // You can put logic here to validate the credentials and return a user.
           // We're going to take any username and make a new user with it
           // Create the id as the hash of the email as per userHashedId (helpers.ts)
           const username = credentials?.username || "dev";
-          const email = username + "@localhost";
+          const email = credentials?.email || username + "@localhost";
           const user = {
             id: hashValue(email),
             name: username,
@@ -104,6 +104,16 @@ export const options: NextAuthOptions = {
     async session({ session, token, user }) {
       session.user.isAdmin = token.isAdmin as boolean;
       return session;
+    },
+    async signIn({ user, account, profile, email, credentials }) {
+      if (user) {
+        return true;
+      } else {
+        return '/auth/signin?error=CredentialsSignin'; // Redirect to custom login page with error query
+      }
+    },
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url + "/chat" : baseUrl + "/chat";
     },
   },
   session: {
