@@ -1,6 +1,6 @@
 import * as Tooltip from "@radix-ui/react-tooltip"
 import { AudioLines, FileText, MessageCircle } from "lucide-react"
-import React, { useEffect, useState, FC } from "react"
+import React, { useEffect, useState, FC, useCallback } from "react"
 
 import { APP_NAME } from "@/app-global"
 
@@ -9,17 +9,13 @@ import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatType } from "@/features/chat/models"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 import { TooltipProvider } from "@/features/ui/tooltip-provider"
-
 interface Prop {
   disable: boolean
 }
-
 const tenants = process.env.NEXT_PUBLIC_FEATURE_TRANSCRIBE_TENANTS?.split(",") || []
-
 export const ChatTypeSelector: FC<Prop> = ({ disable }) => {
   const { chatBody, onChatTypeChange } = useChatContext()
   const [isAllowedTenant, setIsAllowedTenant] = useState<boolean>(false)
-
   useEffect(() => {
     if (chatBody) {
       const tenantId = chatBody.tenantId
@@ -27,17 +23,19 @@ export const ChatTypeSelector: FC<Prop> = ({ disable }) => {
     }
   }, [chatBody])
 
+  const handleValueChange = useCallback(
+    (value: string) => {
+      onChatTypeChange(value as ChatType)
+    },
+    [onChatTypeChange]
+  )
+
   return (
     <TooltipProvider>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
           <div>
-            <Tabs
-              defaultValue={chatBody.chatType}
-              onValueChange={value => {
-                onChatTypeChange(value as ChatType)
-              }}
-            >
+            <Tabs defaultValue={chatBody.chatType} onValueChange={handleValueChange}>
               <TabsList aria-label="Conversation Type" className="grid size-full grid-cols-3 items-stretch">
                 <TabsTrigger
                   value="simple"

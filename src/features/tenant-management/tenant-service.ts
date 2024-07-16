@@ -7,6 +7,7 @@ import {
   TenantDetails,
   TenantPreferences,
   TenantRecord,
+  toTenantDetails,
 } from "@/features/tenant-management/models"
 import { arraysAreEqual } from "@/lib/utils"
 
@@ -165,16 +166,7 @@ export const GetTenantDetails = async (): ServerActionResponseAsync<TenantDetail
   const existingTenantResult = await GetTenantById(user.tenantId)
   if (existingTenantResult.status !== "OK") return existingTenantResult
 
-  const tenantDetails: TenantDetails = {
-    id: existingTenantResult.response.id,
-    primaryDomain: existingTenantResult.response.primaryDomain || "",
-    supportEmail: existingTenantResult.response.supportEmail,
-    departmentName: existingTenantResult.response.departmentName || "",
-    administrators: existingTenantResult.response.administrators,
-    groups: existingTenantResult.response.groups || [],
-    preferences: existingTenantResult.response.preferences || { contextPrompt: "" },
-    requiresGroupLogin: existingTenantResult.response.requiresGroupLogin,
-  }
+  const tenantDetails = toTenantDetails(existingTenantResult.response)
   return { status: "OK", response: tenantDetails }
 }
 

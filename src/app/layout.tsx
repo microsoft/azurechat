@@ -22,7 +22,7 @@ import { Header } from "./header"
 
 import "./globals.css"
 
-const notoSans = Noto_Sans({ subsets: ["latin"] })
+const notoSans = Noto_Sans({ subsets: ["latin"], display: "swap" })
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
@@ -64,12 +64,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={cn(notoSans.className, "flex size-full min-w-[400px] flex-col bg-background")}>
-        <ErrorBoundary>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ErrorBoundary>
             <ApplicationProvider settings={settings}>
               <Providers>
                 <Header />
-                <NavBar />
+                <NavBar session={session} />
                 <main className="grid size-full grid-cols-12 overflow-auto bg-pattern-bg bg-repeat">
                   {!session ? (
                     <div className="col-span-12 size-full">
@@ -83,8 +83,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Toaster />
               </Providers>
             </ApplicationProvider>
-          </ThemeProvider>
-        </ErrorBoundary>
+          </ErrorBoundary>
+        </ThemeProvider>
       </body>
       {isProd && googleAnalyticsId && <GoogleAnalytics gaId={googleAnalyticsId} />}
     </html>

@@ -1,6 +1,6 @@
 import { Loader } from "lucide-react"
 import { useSession } from "next-auth/react"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 
 import { APP_VERSION } from "@/app-global"
 
@@ -21,7 +21,7 @@ export default function WhatsNewModal({ targetVersion, onClose }: WhatsNewModalP
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
-  const handleSubmit = useCallback(async (): Promise<void> => {
+  const handleSubmit = async (): Promise<void> => {
     try {
       setIsSubmitting(true)
       const response = await fetch("/api/user/version", {
@@ -40,7 +40,7 @@ export default function WhatsNewModal({ targetVersion, onClose }: WhatsNewModalP
       setIsSubmitting(false)
       onClose()
     }
-  }, [onClose, targetVersion, update])
+  }
 
   const handleClickOutside = (): void => {
     sessionStorage.setItem("whats-new-dismissed", new Date().toISOString())

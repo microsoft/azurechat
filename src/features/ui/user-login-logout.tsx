@@ -1,41 +1,34 @@
 "use client"
 
-import { LogIn, LogOut } from "lucide-react"
-import { useSession, signIn, signOut } from "next-auth/react"
-import React from "react"
+import { LogOut, LogIn } from "lucide-react"
+import { Session } from "next-auth"
+import { signIn, signOut } from "next-auth/react"
 
 import { signInProvider } from "@/app-global"
 
 import Typography from "@/components/typography"
 import { Button } from "@/features/ui/button"
 
-export const UserComponent: React.FC = () => {
-  const { data: session, status } = useSession({ required: false })
-
-  const handleSignIn = React.useCallback(async (): Promise<void> => {
-    await signIn(signInProvider, { callbackUrl: "/" })
-  }, [])
-
-  const handleSignOut = React.useCallback(async (): Promise<void> => {
-    await signOut({ callbackUrl: "/" })
-  }, [])
-
-  if (status === "loading")
-    return <div className="flex h-[32px] w-full items-center justify-center opacity-50">Loading...</div>
-
-  return (
-    <div>
-      {session ? (
-        <Button onClick={handleSignOut} className="flex items-center text-white" ariaLabel="Log out" variant="link">
-          <LogOut className="mr-2 text-darkAltButton" size={20} aria-hidden="true" />
-          <Typography variant="span">Log out</Typography>
-        </Button>
-      ) : (
-        <Button onClick={handleSignIn} className="flex items-center text-white" ariaLabel="Log in" variant="link">
-          <LogIn className="mr-2 text-darkAltButton" size={20} aria-hidden="true" />
-          <Typography variant="span">Log in</Typography>
-        </Button>
-      )}
-    </div>
+export const UserLoginLogout = ({ session }: { session: Session | null }): JSX.Element => {
+  return session ? (
+    <Button
+      onClick={async () => await signOut({ callbackUrl: "/" })}
+      className="flex items-center text-white focus-visible:ring-text"
+      ariaLabel="Log out"
+      variant="link"
+    >
+      <LogOut className="mr-2 text-darkAltButton" size={20} aria-hidden="true" />
+      <Typography variant="span">Log out</Typography>
+    </Button>
+  ) : (
+    <Button
+      onClick={async () => await signIn(signInProvider, { callbackUrl: "/" })}
+      className="flex items-center text-white"
+      ariaLabel="Log in"
+      variant="link"
+    >
+      <LogIn className="mr-2 text-darkAltButton" size={20} aria-hidden="true" />
+      <Typography variant="span">Log in</Typography>
+    </Button>
   )
 }

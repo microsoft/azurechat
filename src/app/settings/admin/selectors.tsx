@@ -17,16 +17,10 @@ export const Selectors = (): JSX.Element => {
   }, [pathname, selectTenant, selectUser, tenants, users])
 
   const handleSelectTenant = (value: string): void => {
-    if (value === "placeholder") {
-      selectTenant(undefined)
-      selectUser(undefined)
-      router.push("/settings/admin")
-    } else {
-      const selectedTenant = tenants.find(t => t.id === value)
-      selectTenant(selectedTenant)
-      selectUser(undefined)
-      router.push(`/settings/admin/${value}`)
-    }
+    const selectedTenant = tenants.find(t => t.id === value)
+    selectTenant(selectedTenant)
+    selectUser(undefined)
+    router.push(`/settings/admin/${value}`)
   }
 
   const handleSelectUser = (value: string): void => {

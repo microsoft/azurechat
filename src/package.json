@@ -1,6 +1,6 @@
 {
   "name": "src",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "private": true,
   "scripts": {
     "tidy": "npm upgrade && npm i && npm run lint:fix && npm run build",

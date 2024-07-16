@@ -1,58 +1,60 @@
 import * as Tooltip from "@radix-ui/react-tooltip"
 import { Brush, CircleDot, Scale } from "lucide-react"
-import React from "react"
-import { FC } from "react"
+import React, { FC, useCallback } from "react"
 
 import Typography from "@/components/typography"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ConversationStyle } from "@/features/chat/models"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 import { TooltipProvider } from "@/features/ui/tooltip-provider"
-
 interface Prop {
   disable: boolean
 }
 
-export const ChatStyleSelector: FC<Prop> = props => {
+export const ChatStyleSelector: FC<Prop> = ({ disable }) => {
   const { onConversationStyleChange, chatBody } = useChatContext()
+
+  const handleStyleChange = useCallback(
+    (value: string) => {
+      onConversationStyleChange(value as ConversationStyle)
+    },
+    [onConversationStyleChange]
+  )
 
   return (
     <TooltipProvider>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
           <div>
-            <Tabs
-              defaultValue={chatBody.conversationStyle}
-              onValueChange={value => onConversationStyleChange(value as ConversationStyle)}
-            >
+            <Tabs defaultValue={chatBody.conversationStyle} onValueChange={handleStyleChange}>
               <TabsList aria-label="Conversation Style" className="grid size-full grid-cols-3 items-stretch">
                 <TabsTrigger
                   value="precise"
                   className="flex gap-2"
-                  disabled={props.disable}
+                  disabled={disable}
                   role="tab"
                   aria-selected={chatBody.conversationStyle === "precise"}
-                  aria-disabled={props.disable ? "true" : undefined}
+                  aria-disabled={disable ? "true" : undefined}
                 >
                   <CircleDot size={16} aria-hidden="true" /> Precise
                 </TabsTrigger>
                 <TabsTrigger
                   value="balanced"
                   className="flex gap-2"
-                  disabled={props.disable}
+                  disabled={disable}
                   role="tab"
                   aria-selected={chatBody.conversationStyle === "balanced"}
-                  aria-disabled={props.disable ? "true" : undefined}
+                  aria-disabled={disable ? "true" : undefined}
                 >
                   <Scale size={16} aria-hidden="true" /> Balanced
                 </TabsTrigger>
                 <TabsTrigger
                   value="creative"
                   className="flex gap-2"
-                  disabled={props.disable}
+                  disabled={disable}
                   role="tab"
                   aria-selected={chatBody.conversationStyle === "creative"}
-                  aria-disabled={props.disable ? "true" : undefined}
+                  aria-disabled={disable ? "true" : undefined}
                 >
                   <Brush size={16} aria-hidden="true" /> Creative
                 </TabsTrigger>

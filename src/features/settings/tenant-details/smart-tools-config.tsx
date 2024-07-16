@@ -90,7 +90,7 @@ export const SmartToolsConfig = (props: Props): JSX.Element => {
                     label={`${enabled ? "Enabled" : "Disabled"}`}
                     isChecked={!!enabled}
                     disabled={isSubmitting[name as SmartGenToolName]}
-                    onCheckedChange={_checked => {
+                    onCheckedChange={() => {
                       setTools(prev => prev.map(t => (t.name === name ? { ...t, enabled: !enabled } : t)))
                     }}
                   />

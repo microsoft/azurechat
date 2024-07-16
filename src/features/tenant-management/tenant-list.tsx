@@ -1,5 +1,3 @@
-"use client"
-
 import { ChevronLeft, ChevronRight, UserSearch } from "lucide-react"
 import Link from "next/link"
 
@@ -18,9 +16,8 @@ export type TenantListProps = {
 
 export const TenantList = (props: TenantListProps): JSX.Element => {
   const { tenants } = useAdminContext()
-  const _pageNumber = Number(props.searchParams.pageNumber ?? 0)
   const pageSize = Number(props.searchParams.pageSize ?? 20)
-  const pageNumber = _pageNumber < 0 ? 0 : _pageNumber
+  const pageNumber = Math.max(Number(props.searchParams.pageNumber ?? 0), 0)
   const nextPage = Number(pageNumber) + 1
   const previousPage = Number(pageNumber) - 1
 
@@ -99,30 +96,26 @@ export const TenantList = (props: TenantListProps): JSX.Element => {
               </TableBody>
             </Table>
             <div className="flex justify-end gap-2 p-2">
-              {previousPage >= 0 && (
-                <Button asChild size={"icon"} variant={"outline"} aria-label="Previous page">
-                  <Link
-                    href={{
-                      pathname: "/settings/tenants",
-                      search: `?pageNumber=${previousPage}`,
-                    }}
-                  >
-                    <ChevronLeft />
-                  </Link>
-                </Button>
-              )}
-              {hasMoreResults && (
-                <Button asChild size={"icon"} variant={"outline"} aria-label="Next page">
-                  <Link
-                    href={{
-                      pathname: "/settings/",
-                      search: `?pageNumber=${nextPage}`,
-                    }}
-                  >
-                    <ChevronRight />
-                  </Link>
-                </Button>
-              )}
+              <Button size={"icon"} variant={"outline"} aria-label="Previous page" disabled={pageNumber === 0}>
+                <Link
+                  href={{
+                    pathname: "/settings/tenants",
+                    search: `?pageNumber=${previousPage}`,
+                  }}
+                >
+                  <ChevronLeft />
+                </Link>
+              </Button>
+              <Button size={"icon"} variant={"outline"} aria-label="Next page" disabled={!hasMoreResults}>
+                <Link
+                  href={{
+                    pathname: "/settings/tenants",
+                    search: `?pageNumber=${nextPage}`,
+                  }}
+                >
+                  <ChevronRight />
+                </Link>
+              </Button>
             </div>
           </Card>
         </div>

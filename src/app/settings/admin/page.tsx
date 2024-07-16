@@ -44,7 +44,7 @@ function FancyQuote({
       <span
         key={index}
         className="animate-[blurOut_0.8s_forwards_cubic-bezier(0.11,0,0.5,0)] opacity-0 blur-sm"
-        style={{ animationDelay: `${((index + 1) / 10 + baseDelay).toFixed(1)}s` }}
+        style={getStyles(index, baseDelay)}
       >
         {word + " "}
       </span>
@@ -56,3 +56,7 @@ function FancyQuote({
     </div>
   )
 }
+
+const getStyles = (index: number, baseDelay: number): React.CSSProperties => ({
+  animationDelay: `${((index + 1) / 10 + baseDelay).toFixed(1)}s`,
+})

@@ -6,7 +6,7 @@ import { CloudUpload, SpellCheck2, X, LogIn, LogOut, Moon, Sun, Home, Bookmark, 
 import Link from "next/link"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useTheme } from "next-themes"
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
 
 import { signInProvider } from "@/app-global"
 
@@ -43,8 +43,19 @@ export const MiniMenu: React.FC = () => {
   const { data: session } = useSession({ required: false })
   const { theme, setTheme } = useTheme()
 
-  const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen)
-  const toggleTheme = (): void => setTheme(theme === "light" ? "dark" : "light")
+  const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), [])
+  const toggleThemeAndClose = useCallback(() => {
+    setIsMenuOpen(prev => !prev)
+    setTheme(prev => (prev === "light" ? "dark" : "light"))
+  }, [setTheme])
+  const signout = useCallback(async () => {
+    await signOut({ callbackUrl: "/" })
+    setIsMenuOpen(false)
+  }, [])
+  const signin = useCallback(async () => {
+    await signIn(signInProvider)
+    setIsMenuOpen(false)
+  }, [])
 
   const menuItems = [
     { name: "Home", href: "/chat", icon: Home, ariaLabel: "Navigate to home page" },
@@ -58,12 +69,6 @@ export const MiniMenu: React.FC = () => {
       ariaLabel: "Help with factual errors",
     },
   ]
-
-  const handleMenuClose = (): void => {
-    if (isMenuOpen) {
-      toggleMenu()
-    }
-  }
 
   return (
     <>
@@ -103,13 +108,10 @@ export const MiniMenu: React.FC = () => {
           </Typography>
           <div className="mt-16 p-2">
             {menuItems.map(item => (
-              <MiniMenuItem key={item.name} closeMenu={handleMenuClose} {...item} />
+              <MiniMenuItem key={item.name} closeMenu={toggleMenu} {...item} />
             ))}
             <div
-              onClick={() => {
-                toggleTheme()
-                handleMenuClose()
-              }}
+              onClick={toggleThemeAndClose}
               className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 text-link hover:bg-accent hover:text-accent-foreground"
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               role="button"
@@ -120,10 +122,7 @@ export const MiniMenu: React.FC = () => {
             </div>
             {session ? (
               <div
-                onClick={async () => {
-                  await signOut({ callbackUrl: "/" })
-                  handleMenuClose()
-                }}
+                onClick={signout}
                 className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 hover:bg-accent hover:text-accent-foreground"
                 aria-label="Logout"
                 role="button"
@@ -134,10 +133,7 @@ export const MiniMenu: React.FC = () => {
               </div>
             ) : (
               <div
-                onClick={async () => {
-                  await signIn(signInProvider)
-                  handleMenuClose()
-                }}
+                onClick={signin}
                 className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 hover:bg-accent hover:text-accent-foreground"
                 aria-label="Login"
                 role="button"

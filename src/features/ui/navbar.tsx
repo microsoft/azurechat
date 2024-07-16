@@ -1,8 +1,5 @@
-"use client"
-
 import { CloudUpload, HomeIcon, BookMarked, SpellCheck2, UserRoundCog } from "lucide-react"
 import { Session } from "next-auth"
-import { useSession } from "next-auth/react"
 import React from "react"
 
 import Typography from "@/components/typography"
@@ -28,41 +25,31 @@ const validateCondition = (link: LinkItem) => (session: Session | null) => {
   return true
 }
 
-const placeholders = links.filter(link => link.condition).map(link => ({ name: link.name }))
-
-export const NavBar: React.FC = () => {
-  const { data: session, status } = useSession()
-
+export const NavBar: React.FC<{ session: Session | null }> = ({ session }) => {
   const visibleLinks = links.filter(link => !link.condition || validateCondition(link)(session))
 
   return (
     <nav aria-label="Main navigation" className="m:h-[44px] border-b-4 border-accent bg-backgroundShade">
-      <div className="container mx-auto hidden md:block">
-        <div dir="ltr" className="justify-right grid grid-cols-12">
-          {status === "loading"
-            ? placeholders.map(link => (
-                <div key={link.name} className="relative col-span-2 flex items-center space-x-2">
-                  <div className="flex w-full animate-pulse items-center justify-center p-2">
-                    <div className="mr-2 h-8 w-5 rounded bg-gray-300"></div>
-                    <div className="h-8 w-24 rounded bg-gray-300"></div>
-                  </div>
-                </div>
-              ))
-            : visibleLinks.map(link => (
-                <div key={link.name} className="relative col-span-2 flex items-center space-x-2 hover:bg-altBackground">
-                  <a href={link.href} className="group flex w-full items-center justify-center p-2">
-                    {link.icon &&
-                      React.createElement(link.icon, {
-                        className: "h-8 w-5 mr-2",
-                        "aria-hidden": "true",
-                      })}
-                    <Typography variant="h3">{link.name}</Typography>
-                    <div className="absolute inset-x-0 bottom-0 border-b-4 border-darkAltButton opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                  </a>
-                </div>
-              ))}
-          {!session && status !== "loading" && <div className="col-span-8"></div>}
-          <div className="relative col-span-2 flex min-h-[40px] items-center justify-center">
+      <div className="container hidden md:block">
+        <div dir="ltr" className="grid grid-cols-6">
+          {visibleLinks.map(link => (
+            <div key={link.name} className="col-span-1 flex min-h-[40px] items-center justify-center">
+              <a
+                key={link.name}
+                href={link.href}
+                className="group flex w-full flex-1 items-center justify-center rounded-md p-2 font-medium ring-offset-background transition-colors focus-within:ring-transparent hover:bg-altBackground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {link.icon &&
+                  React.createElement(link.icon, {
+                    className: "h-6 w-5 mr-2",
+                    "aria-hidden": "true",
+                  })}
+                <Typography variant="h3">{link.name}</Typography>
+                <div className="absolute inset-x-0 bottom-0 border-b-4 border-darkAltButton opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              </a>
+            </div>
+          ))}
+          <div className="col-span-1 col-end-7 flex min-h-[40px] items-center justify-center">
             <ThemeSwitch />
           </div>
         </div>

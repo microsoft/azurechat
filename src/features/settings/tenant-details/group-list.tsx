@@ -2,7 +2,7 @@
 
 import * as Form from "@radix-ui/react-form"
 import { TrashIcon } from "lucide-react"
-import React, { useState, FormEvent } from "react"
+import React, { useState, useCallback, FormEvent } from "react"
 
 import { SUPPORT_EMAIL } from "@/app-global"
 
@@ -11,52 +11,61 @@ import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
 import { Button } from "@/features/ui/button"
 import { Input } from "@/features/ui/input"
-
 export const GroupList: React.FC<{ tenantGroups: string[]; tenantId: string }> = ({ tenantGroups, tenantId }) => {
   const [groups, setGroups] = useState<string[]>(tenantGroups)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState("")
 
-  const handleNewGroups = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault()
-    const form = new FormData(e.currentTarget)
-    const newGroupGuids = (form.get("newGroups") as string).split(",").map(guid => guid.trim())
-    try {
-      await submit([...groups, ...newGroupGuids])
-      ;(e.target as HTMLFormElement)?.reset()
-    } catch (error) {
-      logger.error("Error submitting new groups", { error })
-    }
-  }
-  const handleDeleteGroup = async (groupId: string): Promise<void> => {
-    const newGroupGuids = groups.filter(group => group !== groupId)
-    await submit(newGroupGuids)
-  }
+  const submit = useCallback(
+    async (newGroupGuids: string[]): Promise<void> => {
+      setIsSubmitting(true)
+      const previous = groups
+      const next = [...new Set(newGroupGuids)]
+      setGroups(next)
+      const errorMsg = "An error occurred while updating groups. Please try again later."
+      try {
+        const response = await fetch(`/api/tenant/${tenantId}/details`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ groups: next }),
+        })
+        if (!response.ok) throw new Error(errorMsg)
+        showSuccess({ title: "Success", description: "Tenant groups updated successfully!" })
+      } catch (error) {
+        setGroups(previous)
+        setError(true)
+        showError(errorMsg)
+        logger.error("Error updating groups", { error })
+      } finally {
+        setIsSubmitting(false)
+      }
+    },
+    [groups, tenantId]
+  )
 
-  async function submit(newGroupGuids: string[]): Promise<void> {
-    setIsSubmitting(true)
-    const previous = groups
-    const next = [...new Set(newGroupGuids)]
-    setGroups(next)
-    const errorMsg = "An error occurred while updating groups. Please try again later."
-    try {
-      const response = await fetch(`/api/tenant/${tenantId}/details`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ groups: next }),
-      })
-      if (!response.ok) throw new Error(errorMsg)
-      showSuccess({ title: "Success", description: "Tenant groups updated successfully!" })
-    } catch (error) {
-      setGroups(previous)
-      setError(true)
-      showError("An error occurred while updating groups. Please try again later.")
-      logger.error("Error updating groups", { error })
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+  const handleNewGroups = useCallback(
+    async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+      e.preventDefault()
+      const form = new FormData(e.currentTarget)
+      const newGroupGuids = (form.get("newGroups") as string).split(",").map(guid => guid.trim())
+      try {
+        await submit([...groups, ...newGroupGuids])
+        ;(e.target as HTMLFormElement)?.reset()
+      } catch (error) {
+        logger.error("Error submitting new groups", { error })
+      }
+    },
+    [groups, submit]
+  )
+
+  const handleDeleteGroup = useCallback(
+    async (groupId: string): Promise<void> => {
+      const newGroupGuids = groups.filter(group => group !== groupId)
+      await submit(newGroupGuids)
+    },
+    [groups, submit]
+  )
 
   return (
     <>
@@ -121,13 +130,21 @@ export const GroupList: React.FC<{ tenantGroups: string[]; tenantId: string }> =
     </>
   )
 }
-
 const DeleteGroupDialog: React.FC<{
   group: string
   loading: boolean
   onConfirm: (group: string) => Promise<void>
   onClose: () => void
 }> = ({ group, loading, onConfirm, onClose }) => {
+  const handleConfirm = async (): Promise<void> => {
+    try {
+      await onConfirm(group)
+      onClose()
+    } catch (error) {
+      logger.error("Error confirming group", { error })
+    }
+  }
+
   return (
     <div
       className="fixed inset-0 z-80 flex items-center justify-center bg-black bg-opacity-80"
@@ -162,14 +179,7 @@ const DeleteGroupDialog: React.FC<{
           <Button
             variant="default"
             className="ml-2"
-            onClick={async () => {
-              try {
-                await onConfirm(group)
-                onClose()
-              } catch (error) {
-                logger.error("Error confirming group", { error })
-              }
-            }}
+            onClick={handleConfirm}
             disabled={loading}
             aria-label="Confirm delete group"
           >

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 
 import { APP_NAME } from "@/app-global"
 
@@ -7,7 +7,6 @@ import Typography from "@/components/typography"
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
 import { SwitchComponent } from "@/ui/switch"
-
 export const LoginManagement: React.FC<{ requiresGroupLogin: boolean; tenantId: string }> = ({
   requiresGroupLogin,
   tenantId,
@@ -15,9 +14,9 @@ export const LoginManagement: React.FC<{ requiresGroupLogin: boolean; tenantId: 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isRequiresGroupLogin, setIsRequiresGroupLogin] = useState(requiresGroupLogin)
 
-  const handleToggle = async (): Promise<void> => {
+  const handleToggle = useCallback(async (): Promise<void> => {
     setIsSubmitting(true)
-    setIsRequiresGroupLogin(!isRequiresGroupLogin)
+    setIsRequiresGroupLogin(prev => !prev)
     const defaultErrorMessage = "Could not update group login requirement. Please try again later."
 
     try {
@@ -30,13 +29,13 @@ export const LoginManagement: React.FC<{ requiresGroupLogin: boolean; tenantId: 
       if (!response.ok) throw new Error(defaultErrorMessage)
       showSuccess({ title: "Success", description: "Group login updated successfully!" })
     } catch (error) {
-      setIsRequiresGroupLogin(isRequiresGroupLogin)
+      setIsRequiresGroupLogin(prev => !prev)
       showError(defaultErrorMessage)
       logger.error("Error updating group login", { error })
     } finally {
       setIsSubmitting(false)
     }
-  }
+  }, [tenantId, isRequiresGroupLogin])
 
   return (
     <>

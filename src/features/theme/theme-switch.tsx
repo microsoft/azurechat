@@ -2,75 +2,36 @@
 
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import React, { useEffect, useState, useCallback } from "react"
+import React, { useEffect, useState } from "react"
 
-import Typography from "@/components/typography"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/features/ui/tabs"
+import { Button } from "@/features/ui/button"
 
 export const ThemeSwitch: React.FC = () => {
   const { setTheme, resolvedTheme } = useTheme()
-  const [isThemeLoading, setIsThemeLoading] = useState(true)
-  const [clientResolvedTheme, setClientResolvedTheme] = useState<string | undefined>()
+  const [classes, setClasses] = useState<{ dark: string; light: string }>({ dark: "", light: "" })
 
   useEffect(() => {
-    setIsThemeLoading(!resolvedTheme)
-    setClientResolvedTheme(resolvedTheme)
+    if (!resolvedTheme) return
+    if (resolvedTheme === "dark") setClasses({ light: "", dark: "bg-altBackgroundShade text-altButton" })
+    if (resolvedTheme === "light") setClasses({ dark: "", light: "bg-altBackgroundShade text-altButton" })
   }, [resolvedTheme])
 
-  const handleSetDarkTheme = useCallback(() => {
-    setTheme("dark")
-  }, [setTheme])
-
-  const handleSetLightTheme = useCallback(() => {
-    setTheme("light")
-  }, [setTheme])
-
-  if (isThemeLoading) {
-    return (
-      <div className="flex size-full items-center justify-center">
-        <Typography
-          variant="span"
-          className="flex size-[35px] items-center justify-center rounded-md opacity-50"
-          aria-label="Loading themes..."
-        >
-          ...
-        </Typography>
-      </div>
-    )
-  }
-
   return (
-    <Tabs defaultValue={clientResolvedTheme} aria-label="Theme Switch">
-      <TabsList className="flex h-8 w-[70px] items-center justify-center gap-1">
-        <TabsTrigger
-          value="dark"
-          onClick={handleSetDarkTheme}
-          className={`size-[35px] rounded-md text-altButton hover:bg-altBackgroundShade hover:text-altButton focus:ring ${
-            clientResolvedTheme === "dark" ? "bg-gray-800 text-white" : "bg-altBackground"
-          }`}
-          aria-controls="dark-mode-content"
-          aria-selected={clientResolvedTheme === "dark" ? "true" : "false"}
-          role="tab"
-          aria-label="Switch to dark mode"
-        >
-          <Moon size={18} />
-        </TabsTrigger>
-        <TabsTrigger
-          value="light"
-          onClick={handleSetLightTheme}
-          className={`size-[35px] rounded-md text-altButton hover:bg-altBackgroundShade hover:text-altButton focus:ring ${
-            clientResolvedTheme === "light" ? "bg-yellow-500 text-white" : "bg-altBackground"
-          }`}
-          aria-controls="light-mode-content"
-          aria-selected={clientResolvedTheme === "light" ? "true" : "false"}
-          role="tab"
-          aria-label="Switch to light mode"
-        >
-          <Sun size={18} />
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent id="dark-mode-content" value="dark" />
-      <TabsContent id="light-mode-content" value="light" />
-    </Tabs>
+    <div className="flex h-8 w-[70px] items-center justify-center gap-2" aria-label="Theme Switch">
+      <Button
+        variant={"ghost"}
+        className={`rounded-md hover:bg-altBackgroundShade hover:text-altButton focus-visible:ring-text ${classes.dark}`}
+        onClick={() => setTheme("dark")}
+      >
+        <Moon size={18} />
+      </Button>
+      <Button
+        variant={"ghost"}
+        className={`rounded-md hover:bg-altBackgroundShade hover:text-altButton focus-visible:ring-text ${classes.light}`}
+        onClick={() => setTheme("light")}
+      >
+        <Sun size={18} />
+      </Button>
+    </div>
   )
 }

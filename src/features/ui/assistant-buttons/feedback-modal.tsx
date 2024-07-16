@@ -5,7 +5,6 @@ import { Button } from "@/features/ui/button"
 import { Dialog, DialogHeader, DialogContent, DialogFooter } from "@/features/ui/dialog"
 import FeedbackButtons from "@/features/ui/feedback-reasons"
 import { FeedbackTextarea } from "@/features/ui/feedback-textarea"
-
 interface FeedbackModalProps {
   chatThreadId: string
   chatMessageId: string

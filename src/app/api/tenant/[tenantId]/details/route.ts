@@ -2,7 +2,7 @@ import { NextRequest } from "next/server"
 import * as yup from "yup"
 
 import { isAdmin, isAdminOrTenantAdmin } from "@/features/auth/helpers"
-import { TenantDetails } from "@/features/tenant-management/models"
+import { TenantDetails, toTenantDetails } from "@/features/tenant-management/models"
 import { GetTenantById, UpdateTenant } from "@/features/tenant-management/tenant-service"
 
 const tenantUpdateSchema = yup
@@ -85,18 +85,7 @@ export async function GET(_request: NextRequest, { params }: { params: { tenantI
   if (existingTenantResult.status !== "OK")
     return new Response(JSON.stringify({ error: "Tenant not found" }), { status: 404 })
 
-  const tenantDetails: TenantDetails = {
-    primaryDomain: existingTenantResult.response.primaryDomain || "",
-    supportEmail: existingTenantResult.response.supportEmail,
-    departmentName: existingTenantResult.response.departmentName || "",
-    administrators: existingTenantResult.response.administrators,
-    groups: existingTenantResult.response.groups || ["No groups found"],
-    preferences: existingTenantResult.response.preferences || { contextPrompt: "" },
-    requiresGroupLogin: existingTenantResult.response.requiresGroupLogin,
-    id: existingTenantResult.response.id,
-    smartTools: existingTenantResult.response.smartTools,
-    dateOnBoarded: existingTenantResult.response.dateOnBoarded || "",
-  }
+  const tenantDetails: TenantDetails = toTenantDetails(existingTenantResult.response)
 
   return new Response(JSON.stringify({ status: "OK", data: tenantDetails }), {
     status: 200,

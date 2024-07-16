@@ -68,7 +68,6 @@ const useChatHook = (props: ChatProviderProps): ChatContextState => {
   const [nextId, setNextId] = useState<string | undefined>(undefined)
   const nextIdRef = useRef(nextId)
   nextIdRef.current = nextId
-
   const response = useChat({
     onError,
     id: props.id,
@@ -80,7 +79,6 @@ const useChatHook = (props: ChatProviderProps): ChatContextState => {
         setNextId(undefined)
         return returnValue
       }
-
       return uniqueId()
     },
     sendExtraMessageFields: true,

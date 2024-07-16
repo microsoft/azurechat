@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { SquareArrowOutUpRightIcon } from "lucide-react"
 import React, { useEffect, useState } from "react"
 
 import { APP_NAME } from "@/app-global"
@@ -11,7 +11,6 @@ import { Button } from "@/features/ui/button"
 import { Card, CardContent, CardHeader, CardDescription } from "@/features/ui/card"
 
 const ErrorPage: React.FC = () => {
-  const router = useRouter()
   const [errorMessage, setErrorMessage] = useState("")
   const [displaySupportButton, setDisplaySupportButton] = useState(false)
 
@@ -35,14 +34,6 @@ const ErrorPage: React.FC = () => {
     setErrorMessage(message)
   }, [])
 
-  const handleSupportRedirect = (): void => {
-    router.push("/support")
-  }
-
-  const handleIntranetRedirect = (): void => {
-    window.location.href = INTRANET_URL
-  }
-
   return (
     <div className="flex size-full items-center justify-center">
       <Card className="flex min-w-[300px] max-w-[700px] flex-col gap-2 rounded-md">
@@ -52,12 +43,18 @@ const ErrorPage: React.FC = () => {
         </CardHeader>
         <CardContent className="grid items-center justify-center gap-4">
           {displaySupportButton && (
-            <Button variant="link" className="max-w-[300px]" onClick={handleSupportRedirect}>
-              Contact {APP_NAME} Support
+            <Button asChild variant="link">
+              <a href="/support" target="_blank" className="inline-flex max-w-[300px] items-center gap-2 text-text">
+                Contact {APP_NAME} Support
+                <SquareArrowOutUpRightIcon size={18} />
+              </a>
             </Button>
           )}
-          <Button variant="link" className="max-w-[300px]" onClick={handleIntranetRedirect}>
-            Find out more about {APP_NAME} on {INTRANET_NAME}
+          <Button asChild variant="link">
+            <a href={INTRANET_URL} target="_blank" className="inline-flex max-w-[300px] items-center gap-2 text-text">
+              Find out more about {APP_NAME} on {INTRANET_NAME}
+              <SquareArrowOutUpRightIcon size={18} />
+            </a>
           </Button>
         </CardContent>
       </Card>

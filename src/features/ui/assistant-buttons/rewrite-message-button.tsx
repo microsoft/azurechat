@@ -1,7 +1,7 @@
 "use client"
 
 import { Sparkles, Sparkle } from "lucide-react"
-import { useState } from "react"
+import React, { useState, useCallback } from "react"
 
 import useSmartGen from "@/components/hooks/use-smart-gen"
 import { PromptMessage } from "@/features/chat/models"
@@ -62,7 +62,7 @@ const RewriteMessageButtonInternal: React.FC<{
   const [rewriteClicked, setRewriteClicked] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleRewriteWithSuggestions = async (): Promise<void> => {
+  const handleRewriteWithSuggestions = useCallback(async (): Promise<void> => {
     setRewriteClicked(true)
     setIsLoading(true)
 
@@ -80,7 +80,7 @@ const RewriteMessageButtonInternal: React.FC<{
       setIsLoading(false)
       setTimeout(() => setRewriteClicked(false), 2000)
     }
-  }
+  }, [toolName, context, input, onAssistantButtonClick, smartGen])
 
   return (
     <Button

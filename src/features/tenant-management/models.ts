@@ -44,7 +44,7 @@ export type TenantDetails = {
   requiresGroupLogin: boolean
   groups: string[]
   preferences: TenantPreferences
-  smartTools?: SmartToolConfig[]
+  smartTools: SmartToolConfig[]
 }
 
 export type CustomReferenceFieldNames = "internalReference"

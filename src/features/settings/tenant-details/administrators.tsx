@@ -157,6 +157,14 @@ const DeleteAdminDialog: React.FC<{
   onConfirm: (email: string) => Promise<void>
   onClose: () => void
 }> = ({ adminEmail: email, loading, onConfirm, onClose }) => {
+  const handleClick = async (): Promise<void> => {
+    try {
+      await onConfirm(email)
+      onClose()
+    } catch (error) {
+      logger.error("Error confirming administrator", { error })
+    }
+  }
   return (
     <div
       className="fixed inset-0 z-80 flex items-center justify-center bg-black bg-opacity-80"
@@ -182,14 +190,7 @@ const DeleteAdminDialog: React.FC<{
           <Button
             variant="default"
             className="ml-2"
-            onClick={async () => {
-              try {
-                await onConfirm(email)
-                onClose()
-              } catch (error) {
-                logger.error("Error confirming administrator", { error })
-              }
-            }}
+            onClick={handleClick}
             disabled={loading}
             aria-label="Confirm delete administrator"
           >

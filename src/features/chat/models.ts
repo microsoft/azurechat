@@ -110,7 +110,7 @@ export interface PromptBody {
 }
 
 export interface PromptMessage extends Message {
-  contentFilterResult?: unknown
+  contentFilterResult?: { category: string; severity: number }
   sentiment?: ChatSentiment
   feedback?: FeedbackType
   reason?: string

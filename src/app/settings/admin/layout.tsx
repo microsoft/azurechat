@@ -25,7 +25,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <AdminProvider tenants={await getTenants()} fetchUserRecords={getUsersByTenantId}>
       <div className="flex size-full flex-col gap-4 bg-altBackground text-foreground">
-        <Selectors />
+        <ErrorBoundary>
+          <Selectors />
+        </ErrorBoundary>
         <ErrorBoundary>{children}</ErrorBoundary>
       </div>
     </AdminProvider>

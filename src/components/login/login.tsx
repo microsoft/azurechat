@@ -1,7 +1,7 @@
 "use client"
 
-import { signIn } from "next-auth/react"
-import React, { useCallback } from "react"
+import { signIn, SignInResponse } from "next-auth/react"
+import React from "react"
 
 import { signInProvider } from "@/app-global"
 import { APP_NAME } from "@/app-global"
@@ -9,10 +9,9 @@ import { APP_NAME } from "@/app-global"
 import { Button } from "@/features/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/ui/card"
 
+const handleSignIn = async (): Promise<SignInResponse | undefined> => await signIn(signInProvider)
+
 export const LogIn: React.FC = () => {
-  const handleSignIn = useCallback(async () => {
-    await signIn(signInProvider)
-  }, [])
   return (
     <div className="flex h-full items-center justify-center">
       <Card className="flex min-w-[300px] flex-col rounded-md">

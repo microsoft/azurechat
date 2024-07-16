@@ -27,7 +27,7 @@ export default async function Home({ params: { tenantId } }: Props): Promise<JSX
     <>
       <div>
         <TenantDetailsForm tenant={tenant} />
-        <SmartToolsConfig tools={tenant.smartTools || []} tenantId={tenantId} />
+        <SmartToolsConfig tools={tenant.smartTools} tenantId={tenantId} />
       </div>
       <div>
         <DomainDetails domain={tenant.primaryDomain} />

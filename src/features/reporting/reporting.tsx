@@ -19,11 +19,9 @@ export type ReportingProp = {
     pageNumber?: number
   }
 }
-
 export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
-  const _pageNumber = Number(props.searchParams.pageNumber ?? 0)
-  const pageSize = Number(props.searchParams.pageSize ?? 10)
-  const pageNumber = _pageNumber < 0 ? 0 : _pageNumber
+  const pageSize = Number(props.searchParams.pageSize ?? 20)
+  const pageNumber = Math.max(Number(props.searchParams.pageNumber ?? 0), 0)
   const nextPage = Number(pageNumber) + 1
   const previousPage = Number(pageNumber) - 1
 
@@ -89,30 +87,26 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
                 Page {pageNumber + 1} of {totalPages} (Total Records: {totalCount})
               </div>
               <div className="flex gap-2">
-                {previousPage >= 0 && (
-                  <Button asChild size={"icon"} variant={"outline"} aria-label="Previous page">
-                    <Link
-                      href={{
-                        pathname: "/settings/history",
-                        search: `?pageNumber=${previousPage}`,
-                      }}
-                    >
-                      <ChevronLeft />
-                    </Link>
-                  </Button>
-                )}
-                {hasMoreResults && (
-                  <Button asChild size={"icon"} variant={"outline"} aria-label="Next page">
-                    <Link
-                      href={{
-                        pathname: "/settings/history",
-                        search: `?pageNumber=${nextPage}`,
-                      }}
-                    >
-                      <ChevronRight />
-                    </Link>
-                  </Button>
-                )}
+                <Button size={"icon"} variant={"outline"} aria-label="Previous page" disabled={pageNumber === 0}>
+                  <Link
+                    href={{
+                      pathname: "/settings/history",
+                      search: `?pageNumber=${previousPage}`,
+                    }}
+                  >
+                    <ChevronLeft />
+                  </Link>
+                </Button>
+                <Button size={"icon"} variant={"outline"} aria-label="Next page" disabled={!hasMoreResults}>
+                  <Link
+                    href={{
+                      pathname: "/settings/history",
+                      search: `?pageNumber=${nextPage}`,
+                    }}
+                  >
+                    <ChevronRight />
+                  </Link>
+                </Button>
               </div>
             </div>
           </Card>

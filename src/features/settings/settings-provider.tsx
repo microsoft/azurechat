@@ -7,7 +7,12 @@ import { TenantConfig } from "@/features/tenant-management/models"
 type SettingsContextDefinition = {
   config: TenantConfig
 }
+
 const SettingsContext = createContext<SettingsContextDefinition | undefined>(undefined)
+
+function useSettingsContextHook(config: TenantConfig): SettingsContextDefinition {
+  return { config }
+}
 
 export const useSettingsContext = (): SettingsContextDefinition => {
   const context = useContext(SettingsContext)
@@ -17,7 +22,9 @@ export const useSettingsContext = (): SettingsContextDefinition => {
 
 export default function SettingsProvider({
   children,
-  ...rest
+  config,
 }: PropsWithChildren<SettingsContextDefinition>): JSX.Element | null {
-  return <SettingsContext.Provider value={{ ...rest }}>{children}</SettingsContext.Provider>
+  const value = useSettingsContextHook(config)
+
+  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>
 }

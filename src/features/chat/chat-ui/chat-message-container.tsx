@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import { APP_NAME } from "@/app-global"
 
@@ -18,7 +18,6 @@ import { ChatHeader } from "./chat-header"
 interface Props {
   chatThreadId: string
 }
-
 export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   const { data: session } = useSession()
   const router = useRouter()
@@ -44,14 +43,14 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
     }
   }, [isLoading])
 
-  const onScroll = (e: React.UIEvent<HTMLDivElement>): void => {
-    if (isLoading) {
-      if (e.currentTarget.scrollTop < previousScrollTop) {
-        setSuppressScrolling(true)
-      }
+  const onScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>): void => {
+      if (!isLoading) return
+      if (e.currentTarget.scrollTop < previousScrollTop) setSuppressScrolling(true)
       setPreviousScrollTop(e.currentTarget.scrollTop)
-    }
-  }
+    },
+    [isLoading, previousScrollTop]
+  )
 
   const chatFiles = documents.filter(document => document.contents)
 

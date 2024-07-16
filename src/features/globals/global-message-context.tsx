@@ -23,7 +23,7 @@ interface MessageProp {
   description: string
 }
 
-export const GlobalMessageProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
+function useGlobalMessageContextHook(): GlobalMessageProps {
   const application = useApplication()
   const { data: session } = useSession()
   const pathname = usePathname()
@@ -70,12 +70,7 @@ export const GlobalMessageProvider = ({ children }: { children: React.ReactNode 
       variant: "destructive",
       description: error,
       action: reload ? (
-        <ToastAction
-          altText="Try again"
-          onClick={() => {
-            reload()
-          }}
-        >
+        <ToastAction altText="Try again" onClick={reload}>
           Try again
         </ToastAction>
       ) : undefined,
@@ -86,16 +81,16 @@ export const GlobalMessageProvider = ({ children }: { children: React.ReactNode 
     toast(message)
   }
 
-  return (
-    <GlobalMessageContext.Provider
-      value={{
-        showSuccess,
-        showError,
-      }}
-    >
-      {children}
-    </GlobalMessageContext.Provider>
-  )
+  return {
+    showError,
+    showSuccess,
+  }
+}
+
+export const GlobalMessageProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
+  const value = useGlobalMessageContextHook()
+
+  return <GlobalMessageContext.Provider value={value}>{children}</GlobalMessageContext.Provider>
 }
 
 export const useGlobalMessageContext = (): GlobalMessageProps => {

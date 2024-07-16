@@ -1,3 +1,4 @@
+import { getServerSession } from "next-auth"
 import React from "react"
 
 import { APP_NAME } from "@/app-global"
@@ -7,7 +8,7 @@ import { MiniMenu } from "@/features/main-menu/mini-menu"
 import { AI_TAGLINE, APP_VANITY_URL } from "@/features/theme/theme-config"
 import { QgovSvg } from "@/features/ui/qldgovlogo"
 import { QgovMiniSvg } from "@/features/ui/qldgovminilogo"
-import { UserComponent } from "@/features/ui/user-login-logout"
+import { UserLoginLogout } from "@/features/ui/user-login-logout"
 
 const Sidebar: React.FC = () => {
   return (
@@ -32,7 +33,9 @@ const Sidebar: React.FC = () => {
   )
 }
 
-export const Header: React.FC = () => {
+export const Header: React.FC = async () => {
+  const session = await getServerSession()
+
   return (
     <header className="flex w-full flex-col bg-darkbackground text-white">
       <div className="container flex h-14 items-center justify-between">
@@ -44,7 +47,7 @@ export const Header: React.FC = () => {
           </div>
           <div className="col-span-8 justify-self-center"></div>
           <div className="col-span-2 justify-self-end">
-            <UserComponent />
+            <UserLoginLogout session={session} />
           </div>
         </div>
         <div className="grid w-full grid-cols-12 md:hidden">

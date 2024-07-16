@@ -1,6 +1,6 @@
 "use client"
 
-import { FC } from "react"
+import { FC, useCallback } from "react"
 import { useFormState } from "react-dom"
 
 import { APP_NAME } from "@/app-global"
@@ -28,7 +28,7 @@ export const CitationSlider: FC<SliderProps> = props => {
   const chatThreadId = chatContext.id
   const [node, formAction] = useFormState(CitationAction, null)
 
-  const handleButtonClick = (): void => {
+  const handleButtonClick = useCallback((): void => {
     const formData = new FormData()
     formData.append("index", props.index.toString())
     formData.append("id", props.id)
@@ -37,7 +37,7 @@ export const CitationSlider: FC<SliderProps> = props => {
     formData.append("chatThreadId", chatThreadId)
     formData.append("order", props.order.toString())
     formAction(formData)
-  }
+  }, [props.index, props.id, userId, tenantId, chatThreadId, props.order, formAction])
 
   return (
     <form>

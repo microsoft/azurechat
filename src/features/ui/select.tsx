@@ -4,7 +4,7 @@ import React, { FC, forwardRef } from "react"
 
 import { cn } from "@/lib/utils"
 
-type SelectOption = { label: string; value: string }
+export type SelectOption = { label: string; value: string }
 
 export interface SelectProps {
   label?: string

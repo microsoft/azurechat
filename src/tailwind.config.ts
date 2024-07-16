@@ -23,6 +23,8 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         overlayShow: "overlayShow 500ms forwards cubic-bezier(0.16, 1, 0.3, 1)",
         contentShow: "contentShow 500ms forwards cubic-bezier(0.16, 1, 0.3, 1)",
+        blurOut: "blurOut 0.8s forwards cubic-bezier(0.11, 0, 0.5, 0)",
+        scale: "scale 3s forwards cubic-bezier(0.5, 1, 0.89, 1)",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -160,10 +162,12 @@ const config: Config = {
           to: { opacity: "1", transform: "translate(0%, 0%) scale(1)" },
         },
         scale: {
+          "0%": { transform: "scale(0.95)" },
           "100%": { transform: "scale(1)" },
         },
         blurOut: {
-          "100%": { filter: "blur(0)", opacity: "1" },
+          "0%": { opacity: "0", filter: "blur(0.25rem)" },
+          "100%": { opacity: "1", filter: "blur(0)" },
         },
       },
       transitionTimingFunction: {

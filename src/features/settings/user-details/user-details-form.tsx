@@ -1,7 +1,7 @@
 "use client"
 
 import * as Form from "@radix-ui/react-form"
-import React, { useState, FormEvent } from "react"
+import React, { useState, useCallback, FormEvent, ChangeEvent } from "react"
 
 import useSmartGen from "@/components/hooks/use-smart-gen"
 import { Markdown } from "@/components/markdown/markdown"
@@ -15,81 +15,88 @@ import { SmartGen } from "@/features/ui/smart-gen"
 import { Textarea } from "@/features/ui/textarea"
 import { UserPreferences } from "@/features/user-management/models"
 
-type UserDetailsFormProps = { preferences: UserPreferences; name: string; email: string }
+export type UserDetailsFormProps = { preferences: UserPreferences; name: string; email: string }
+
 export const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ preferences, name, email }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isClearing, setIsClearing] = useState(false)
   const [error, setError] = useState(false)
   const [contextPrompt, setContextPrompt] = useState(preferences.contextPrompt)
   const [input, setInput] = useState<string>("")
-
   const { config } = useSettingsContext()
   const { smartGen } = useSmartGen(config.tools || [])
 
-  const handleSubmitContextPrompt = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault()
-    const form = new FormData(e.currentTarget)
-    const newContextPrompt = form.get("contextPrompt") as string
-    try {
-      await submit(newContextPrompt)
-      ;(e.target as HTMLFormElement)?.reset()
-      setInput("")
-    } catch (error) {
-      logger.error("Error submitting context prompt", { error })
-    }
-  }
+  const submit = useCallback(
+    async (newContextPrompt: string): Promise<void> => {
+      if (contextPrompt === newContextPrompt) return
 
-  async function submit(newContextPrompt: string): Promise<void> {
-    if (contextPrompt === newContextPrompt) return
+      newContextPrompt ? setIsSubmitting(true) : setIsClearing(true)
+      const temp = contextPrompt
+      setContextPrompt(newContextPrompt)
+      const defaultErrorMessage = contextPrompt
+        ? "Your context prompt could not be updated. Please try again later."
+        : "Your context prompt could not be cleared. Please try again later."
+      try {
+        const response = await fetch("/api/user/details", {
+          method: "POST",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contextPrompt: newContextPrompt }),
+        })
+        if (!response.ok) throw new Error(defaultErrorMessage)
+        showSuccess({ title: "Success", description: "Context prompt updated successfully!" })
+      } catch (error) {
+        setContextPrompt(temp)
+        setError(true)
+        showError(defaultErrorMessage)
+        logger.error("Error updating context prompt", { error })
+      } finally {
+        newContextPrompt ? setIsSubmitting(false) : setIsClearing(false)
+      }
+    },
+    [contextPrompt]
+  )
 
-    newContextPrompt ? setIsSubmitting(true) : setIsClearing(true)
-    const temp = contextPrompt
-    setContextPrompt(newContextPrompt)
-    const defaultErrorMessage = contextPrompt
-      ? "Your context prompt could not be updated. Please try again later."
-      : "Your context prompt could not be cleared. Please try again later."
-    try {
-      const response = await fetch("/api/user/details", {
-        method: "POST",
-        cache: "no-store",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contextPrompt: newContextPrompt }),
-      })
-      if (!response.ok) throw new Error(defaultErrorMessage)
-      showSuccess({ title: "Success", description: "Context prompt updated successfully!" })
-    } catch (error) {
-      setContextPrompt(temp)
-      setError(true)
-      showError(defaultErrorMessage)
-      logger.error("Error updating context prompt", { error })
-    } finally {
-      newContextPrompt ? setIsSubmitting(false) : setIsClearing(false)
-    }
-  }
+  const handleSubmitContextPrompt = useCallback(
+    async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+      e.preventDefault()
+      const form = new FormData(e.currentTarget)
+      const newContextPrompt = form.get("contextPrompt") as string
+      try {
+        await submit(newContextPrompt)
+        ;(e.target as HTMLFormElement)?.reset()
+        setInput("")
+      } catch (error) {
+        logger.error("Error submitting context prompt", { error })
+      }
+    },
+    [submit]
+  )
 
-  const buildInput = ({
-    systemPrompt,
-    tenantPrompt,
-    userPrompt,
-  }: {
-    systemPrompt: string
-    tenantPrompt: string
-    userPrompt: string
-  }): string => `
-===System Prompt===
-${systemPrompt}
-===End of System Prompt===
-
+  const buildInput = useCallback(
+    ({
+      systemPrompt,
+      tenantPrompt,
+      userPrompt,
+    }: {
+      systemPrompt: string
+      tenantPrompt: string
+      userPrompt: string
+    }): string => `
+ ===System Prompt===
+ ${systemPrompt}
+ ===End of System Prompt===
 ===Tenant Prompt===
 ${tenantPrompt}
 ===End of Tenant Prompt===
+ ===User Prompt===
+ ${userPrompt}
+ ===End of User Prompt===
+ `,
+    []
+  )
 
-===User Prompt===
-${userPrompt}
-===End of User Prompt===
-`
-
-  const sanitisePrompt = async (): Promise<void> => {
+  const sanitisePrompt = useCallback(async (): Promise<void> => {
     if (input?.length < 1) return
 
     try {
@@ -109,13 +116,17 @@ ${userPrompt}
     } catch (error) {
       showError(error instanceof Error ? error.message : JSON.stringify(error))
     }
-  }
+  }, [input, config.systemPrompt, config.contextPrompt, smartGen, buildInput])
 
-  const handleTemplateClick = (): void => {
+  const handleTemplateClick = useCallback((): void => {
     setInput(`Brief Role Description:
-Preferred Communication Style:
-Other Preferences: `)
-  }
+ Preferred Communication Style:
+ Other Preferences: `)
+  }, [])
+
+  const handleClearPrompt = useCallback(async (): Promise<void> => {
+    await submit("")
+  }, [submit])
 
   return (
     <>
@@ -140,7 +151,7 @@ Other Preferences: `)
             type="button"
             className="min-w-[10rem]"
             variant="destructive"
-            onClick={async () => await submit("")}
+            onClick={handleClearPrompt}
             disabled={isSubmitting || isClearing}
             ariaLabel="Clear prompt"
           >
@@ -165,7 +176,7 @@ Other Preferences: `)
               required
               aria-label="New context prompt"
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={useCallback((e: ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value), [])}
             />
           </Form.Control>
           {error && (

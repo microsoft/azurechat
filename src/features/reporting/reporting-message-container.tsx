@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { FC, useEffect, useRef, useState } from "react"
 
@@ -16,77 +16,36 @@ import { ChatHeader } from "@/features/chat/chat-ui/chat-header"
 import { ChatRole } from "@/features/chat/models"
 import { Button } from "@/features/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
-
 interface Props {
   chatThreadId: string
 }
-
 export const ReportingMessageContainer: FC<Props> = ({ chatThreadId }) => {
   const { data: session } = useSession()
-  const router = useRouter()
   const scrollRef = useRef<HTMLDivElement>(null)
   const { messages, documents, isLoading, chatThreadLocked } = useChatContext()
   const [selectedTab, setSelectedTab] = useState<SectionTabsProps["selectedTab"]>("chat")
 
-  const [previousScrollTop, setPreviousScrollTop] = useState(0)
-  const [suppressScrolling, setSuppressScrolling] = useState(false)
-
-  useChatScrollAnchor(messages, scrollRef, !suppressScrolling)
+  useChatScrollAnchor(messages, scrollRef, true)
 
   useEffect(() => {
-    if (!isLoading) {
-      router.refresh()
-    }
-  }, [isLoading, router])
-
-  useEffect(() => {
-    if (!isLoading) {
-      setSuppressScrolling(false)
-      setSelectedTab("chat")
-    }
+    if (isLoading) return
+    setSelectedTab("chat")
   }, [isLoading])
-
-  const onScroll = (e: React.UIEvent<HTMLDivElement>): void => {
-    if (isLoading) {
-      if (e.currentTarget.scrollTop < previousScrollTop) {
-        setSuppressScrolling(true)
-      }
-      setPreviousScrollTop(e.currentTarget.scrollTop)
-    }
-  }
 
   const chatFiles = documents.filter(document => document.contents)
 
-  const handleBackToReporting = (): void => {
-    router.push("/settings/history")
-  }
-
-  const handleBackToChat = (): void => {
-    router.push(`/chat/${chatThreadId}`)
-  }
-
   return (
-    <div className="h-full overflow-y-auto" ref={scrollRef} onScroll={onScroll}>
-      <div className="my-4 flex flex-1 flex-col">
-        <div className="container mx-auto grid grid-cols-5 items-center">
-          <div className="col-span-1 justify-start">
-            <Button variant="outline" onClick={handleBackToReporting}>
-              Back to Reporting
-            </Button>
-          </div>
-          <div className="col-span-3 justify-center">
-            <ChatHeader />
-          </div>
-          <div className="col-span-1 justify-self-end">
-            <Button variant="outline" onClick={handleBackToChat}>
-              {chatThreadLocked ? "Continue this chat" : "View this chat"}
-            </Button>
-          </div>
-        </div>
+    <div className="h-full overflow-y-auto" ref={scrollRef}>
+      <div className="container my-4 flex items-center justify-between">
+        <Button asChild variant="outline">
+          <Link href={"/settings/history"}>Back to Reporting</Link>
+        </Button>
+        <ChatHeader />
+        <Button asChild variant="outline">
+          <Link href={`/chat/${chatThreadId}`}>{chatThreadLocked ? "Continue this chat" : "View this chat"}</Link>
+        </Button>
       </div>
-
       {chatFiles.length ? <SectionTabs selectedTab={selectedTab} onSelectedTabChange={setSelectedTab} /> : undefined}
-
       <div className="flex flex-1 flex-col justify-end pb-[140px]">
         {selectedTab === "chat"
           ? messages.map((message, index) => (
@@ -121,15 +80,12 @@ export const ReportingMessageContainer: FC<Props> = ({ chatThreadId }) => {
     </div>
   )
 }
-
 interface SectionTabsProps {
   selectedTab: "chat" | "transcription" | "document"
   onSelectedTabChange: (value: SectionTabsProps["selectedTab"]) => void
 }
-
 const SectionTabs: FC<SectionTabsProps> = ({ selectedTab, onSelectedTabChange }) => {
   const { chatBody } = useChatContext()
-
   return (
     <Tabs value={selectedTab} onValueChange={onSelectedTabChange as (x: string) => void} className="container pb-2">
       <TabsList aria-label="Conversation Type" className="grid size-full grid-cols-2 items-stretch">

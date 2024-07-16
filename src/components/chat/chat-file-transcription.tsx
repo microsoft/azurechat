@@ -1,5 +1,5 @@
 import { DownloadIcon, CaptionsIcon, FileTextIcon } from "lucide-react"
-import { FC, useState } from "react"
+import { FC, useCallback, useState } from "react"
 
 import { APP_NAME } from "@/app-global"
 
@@ -26,39 +26,29 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
   const [feedbackMessage, setFeedbackMessage] = useState("")
   const fileTitle = props.name.replace(/[^a-zA-Z0-9]/g, " ").trim()
 
-  const onDownloadTranscription = async (): Promise<void> => {
+  const onDownloadTranscription = useCallback(async (): Promise<void> => {
     const fileName = `${fileTitle}-transcription.docx`
     await convertTranscriptionToWordDocument([props.contents], fileName)
-  }
+  }, [props.contents, fileTitle])
 
-  const onDownloadReport = async (): Promise<void> => {
+  const onDownloadReport = useCallback(async (): Promise<void> => {
     const fileName = `${fileTitle}-report.docx`
     const chatThreadName = chatBody.chatThreadName || `${APP_NAME} ${fileName}`
     await convertTranscriptionReportToWordDocument([props.contents], props.name, fileName, APP_NAME, chatThreadName)
-  }
+  }, [fileTitle, chatBody.chatThreadName, props.contents, props.name])
 
-  const onDownloadVttFile = (): void => {
+  const onDownloadVttFile = useCallback((): void => {
     const element = document.createElement("a")
     element.setAttribute("href", `data:text/plain;base64,${toBinaryBase64(props.vtt ?? "")}`)
     element.setAttribute("download", `${fileTitle}-transcription.vtt`)
-
     document.body.appendChild(element)
     element.click()
 
     document.body.removeChild(element)
-  }
+  }, [fileTitle, props.vtt])
 
   const { width } = useWindowSize()
-  let iconSize = 10
-  let buttonClass = "h-9"
-
-  if (width < 768) {
-    buttonClass = "h-7"
-  } else if (width >= 768 && width < 1024) {
-    iconSize = 12
-  } else if (width >= 1024) {
-    iconSize = 16
-  }
+  const { iconSize, buttonClass } = getIconSize(width)
 
   return (
     <article className="container mx-auto flex flex-col py-1 pb-4">
@@ -122,4 +112,11 @@ const toBinaryBase64 = (text: string): string => {
   }
 
   return btoa(String.fromCharCode(...new Uint8Array(codeUnits.buffer)))
+}
+
+const getIconSize = (width: number): { iconSize: number; buttonClass: string } => {
+  if (width < 768) return { iconSize: 10, buttonClass: "h-7" }
+  if (width >= 768 && width < 1024) return { iconSize: 12, buttonClass: "h-9" }
+  if (width >= 1024) return { iconSize: 16, buttonClass: "h-9" }
+  return { iconSize: 10, buttonClass: "h-9" }
 }

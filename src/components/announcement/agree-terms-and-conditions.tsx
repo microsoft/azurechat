@@ -13,9 +13,7 @@ import { Button } from "@/features/ui/button"
 import { Dialog, DialogHeader, DialogContent, DialogFooter } from "@/features/ui/dialog"
 import { cn } from "@/lib/utils"
 
-type AgreeTermsAndConditionsProps = {
-  onClose: () => void
-}
+type AgreeTermsAndConditionsProps = { onClose: () => void }
 export default function AgreeTermsAndConditions({ onClose }: AgreeTermsAndConditionsProps): JSX.Element {
   const { update } = useSession()
   const [content, setContent] = useState<string>("Loading terms and conditions...")

@@ -1,7 +1,8 @@
 "use client"
-import { FileText, MessageCircle, Trash, Pencil, AudioLines } from "lucide-react"
+
+import { FileText, MessageCircle, AudioLines, PencilIcon, TrashIcon } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
-import React, { FC, useState, useEffect, useRef } from "react"
+import React, { FC, useState, useEffect, useRef, useCallback } from "react"
 
 import { MenuItem } from "@/components/menu"
 import Typography from "@/components/typography"
@@ -18,28 +19,30 @@ interface ModalProps {
   type: "edit" | "delete"
 }
 
-const ChatMenuModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAfterClose, type }): JSX.Element => {
+const ChatMenuModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAfterClose, type }) => {
   const [inputValue, setInputValue] = useState("")
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    if (isOpen) {
-      if (type === "edit") {
-        inputRef.current?.focus()
-      }
+    if (isOpen && type === "edit") {
+      inputRef.current?.focus()
     } else if (focusAfterClose) {
       focusAfterClose.focus()
     }
   }, [isOpen, focusAfterClose, type])
 
-  const handleSave = (): void => {
+  const handleSave = useCallback(() => {
     onSave(inputValue)
     onClose()
-  }
+  }, [inputValue, onClose, onSave])
+
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value)
+  }, [])
 
   return (
     <div
-      className={`bg-opacity/50 fixed inset-0 z-80 flex items-center justify-center bg-black bg-opacity-80 ${isOpen ? "block" : "hidden"}`}
+      className={`fixed inset-0 z-80 flex items-center justify-center bg-black bg-opacity-80 ${isOpen ? "block" : "hidden"}`}
     >
       <div className="mx-auto w-full max-w-lg overflow-hidden rounded-lg bg-background p-4">
         <div className="mb-4">
@@ -56,7 +59,7 @@ const ChatMenuModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAft
               id="newChatName"
               type="text"
               value={inputValue}
-              onChange={e => setInputValue(e.target.value)}
+              onChange={handleInputChange}
               maxLength={120}
               ref={inputRef}
               className="mt-1 w-full rounded-md border-altBackground bg-background p-2"
@@ -75,10 +78,10 @@ const ChatMenuModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAft
           </div>
         )}
         <div className="mt-4 flex justify-end gap-4">
-          <Button variant="default" onClick={handleSave} ariaLabel="Save">
+          <Button variant="default" onClick={handleSave} aria-label="Save">
             {type === "edit" ? "Save" : "Confirm"}
           </Button>
-          <Button variant="secondary" onClick={onClose} ariaLabel="Cancel">
+          <Button variant="secondary" onClick={onClose} aria-label="Cancel">
             Cancel
           </Button>
         </div>
@@ -94,15 +97,18 @@ export const MenuItems: FC = () => {
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null)
   const [modalType, setModalType] = useState<"edit" | "delete" | null>(null)
 
-  const handleOpenModal = (chatThreadId: string, type: "edit" | "delete"): void => {
-    setSelectedThreadId(chatThreadId)
-    setModalType(type)
-  }
+  const handleOpenModal = useCallback(
+    (chatThreadId: string, type: "edit" | "delete") => () => {
+      setSelectedThreadId(chatThreadId)
+      setModalType(type)
+    },
+    []
+  )
 
-  const handleCloseModal = (): void => {
+  const handleCloseModal = useCallback(() => {
     setSelectedThreadId(null)
     setModalType(null)
-  }
+  }, [])
 
   const handleSaveModal = async (inputValue?: string): Promise<void> => {
     if (!selectedThreadId) return
@@ -152,18 +158,18 @@ export const MenuItems: FC = () => {
           size="sm"
           variant="accent"
           ariaLabel={`Rename ${thread.name}`}
-          onClick={() => handleOpenModal(thread.chatThreadId, "edit")}
+          onClick={handleOpenModal(thread.chatThreadId, "edit")}
         >
-          <Pencil size={16} />
+          <PencilIcon size={16} />
         </Button>
         <Button
           className="opacity-20 group-hover:opacity-100"
           size="sm"
           variant="destructive"
           ariaLabel={`Delete ${thread.name}`}
-          onClick={() => handleOpenModal(thread.chatThreadId, "delete")}
+          onClick={handleOpenModal(thread.chatThreadId, "delete")}
         >
-          <Trash size={16} />
+          <TrashIcon size={16} />
         </Button>
         {selectedThreadId === thread.chatThreadId && modalType && (
           <ChatMenuModal

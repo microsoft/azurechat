@@ -56,6 +56,213 @@ To format your code with Prettier, run the following command:
 npx prettier --write .
 ```
 
+### Code Style Guide: React Patterns and Best Practices
+
+#### Skeleton of a Provider
+
+When creating a context provider in React, follow this basic structure to ensure consistency and readability:
+
+1. **Create Context**: Use `createContext` to initialize a new context.
+2. **Define Hook**: Create a custom hook (e.g., `useExampleHook`) that manages the state and logic. This hook should:
+   - Use `useReducer` or `useState` for state management.
+   - Fetch data with `useEffect` if necessary.
+   - Provide functions to manipulate the state (e.g., `setItem`, `clearError`).
+3. **Provider Component**: Define a provider component (e.g., `ExampleProvider`) that uses the custom hook to get the state and functions, and passes them to `ExampleContext.Provider`.
+4. **Consume Context**: Use the `useContext` hook to consume the context in child components.
+
+Skeleton of a Context:
+
+```tsx
+import logger from "@/features/insights/app-insights";
+import { ActionBase } from "@/lib/utils";
+import {
+  useReducer,
+  useEffect,
+  useContext,
+  createContext,
+  PropsWithChildren,
+} from "react";
+
+type ExampleProviderProps = {
+  someData: Item[];
+};
+
+type State = {
+  data: Item[];
+  item?: Item;
+  setItem: (item: Item) => void;
+  error: string | null;
+  clearError: () => void;
+};
+
+// internal hook to encapsulate the context's logic
+const useExampleContextHook = (props?: ExampleProviderProps): State => {
+  const initialState: State = {
+    data: props?.someData || [],
+    item: undefined,
+    setItem: () => {},
+    error: null,
+    clearError: () => {},
+  };
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Fetch initial data if necessary
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("/api/data", { method: "GET" });
+      if (!response.ok)
+        dispatch({ type: "SET_ERROR", payload: "Error fetching data" });
+      const result = await response.json();
+      dispatch({ type: "SET_DATA", payload: result });
+    };
+
+    fetchData().catch(logger.error);
+  }, []);
+
+  // Additional logic and effects
+  // ...
+
+  // Expose actions accessible by consumers
+  const setItem = async (item: Item): Promise<void> => {
+    try {
+      const response = await fetch("/api/data", {
+        method: "POST",
+        body: JSON.stringify(item),
+      });
+      if (!response.ok) throw new Error("Error setting item");
+      dispatch({ type: "SET_ITEM", payload: item });
+    } catch (err) {
+      dispatch({ type: "SET_ERROR", payload: JSON.stringify(err) });
+    }
+  };
+  const clearError = (): void => dispatch({ type: "SET_ERROR", payload: null });
+
+  return { ...state, setItem, clearError };
+};
+
+type ExampleContextDefinition = ReturnType<typeof useExampleContextHook>;
+const ExampleContext = createContext<ExampleContextDefinition | null>(null);
+
+// public hook to interact with the context
+export const useExampleContext = (): ExampleContextDefinition => {
+  const contextValue = useContext(ExampleContext);
+  if (contextValue === null)
+    throw Error("ExampleContext has not been Provided!");
+  return contextValue;
+};
+
+export default function ExampleProvider({
+  children,
+  someData,
+}: PropsWithChildren<ExampleProviderProps>): JSX.Element {
+  const value = useExampleContextHook({ someData });
+  return (
+    <ExampleContext.Provider value={value}>{children}</ExampleContext.Provider>
+  );
+}
+
+type ACTION =
+  | ActionBase<"SET_DATA", { payload: Item[] }>
+  | ActionBase<"SET_ITEM", { payload: Item }>
+  | ActionBase<"SET_ERROR", { payload: string | null }>;
+
+// internal reducer to manage the context's state
+function reducer(state: State, action: ACTION): State {
+  switch (action.type) {
+    case "SET_DATA":
+      return { ...state, data: action.payload };
+    case "SET_ITEM":
+      return { ...state, item: action.payload };
+    case "SET_ERROR":
+      return { ...state, error: action.payload };
+    default:
+      return state;
+  }
+}
+```
+
+Usage of Provider & Context
+
+```tsx
+// Provider usage:
+// layout.tsx:
+export async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}): Promise<JSX.Element> {
+  const someDataResult = await FetchSomeData();
+  const data = someDataResult.status === "OK" ? someDataResult.response : [];
+
+  return (
+    <ExampleProvider someData={data}>
+      <ErrorBoundary>{children}</ErrorBoundary>
+    </ExampleProvider>
+  );
+}
+```
+
+> **Note :** Since `Layout` is a RSC (React Server Component), a backend function `FetchSomeData` can be called directly.
+
+```tsx
+// Consumer usage:
+// SomeComponent.tsx:
+import { useExampleContext } from "~/example-context";
+
+export const SomeComponent = (): JSX.Element => {
+  const { data, item, setItem, error, clearError } = useExampleContext();
+
+  return (
+    <div>
+      {data.map((item) => (
+        <div key={item.id}>{item.name}</div>
+      ))}
+      {item && <div>{item.name}</div>}
+      {error && <div>{error}</div>}
+      <Button onClick={() => setItem({ id: "1", name: "Item 1" })}>
+        Set Item
+      </Button>
+      <Button onClick={clearError}>Clear Error</Button>
+    </div>
+  );
+};
+```
+
+#### Fetching Data with useEffect
+
+- Use `useEffect` for side effects such as data fetching.
+- Place the fetch call inside `useEffect` to ensure it runs at the correct time in the component's lifecycle.
+- Include a dependency array to control when the effect runs.
+
+Example:
+
+```jsx
+useEffect(() => {
+  fetch("api/data")
+    .then((result) => {
+      // Handle the result
+    })
+    .catch((error) => {
+      // Handle the error
+    });
+}, []); // Empty array means this effect runs once after the initial render
+```
+
+#### When to Use useCallback
+
+- Use `useCallback` to memoize callback functions. This is particularly useful when passing callbacks as props to child components that rely on reference equality to prevent unnecessary renders.
+- It's beneficial in performance-sensitive components or those that re-render often.
+
+Example:
+
+```jsx
+const memoizedCallback = useCallback(() => {
+  doSomething(a, b);
+}, [a, b]); // Dependencies array: `useCallback` will return the same function instance until `a` or `b` changes
+```
+
+> **Note :** Understanding and applying these patterns and practices can enhance code readability, maintainability, and performance.
+
 ### Enforcing the Style Guide
 
 To ensure that all code adheres to this style guide, Prettier is integrated with Husky to enforce formatting on pre-commit hooks. This ensures that only properly formatted code is committed to the repository.

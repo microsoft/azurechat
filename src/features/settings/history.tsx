@@ -16,9 +16,8 @@ export type ReportingProp = {
 }
 
 export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
-  const _pageNumber = Number(props.searchParams.pageNumber ?? 0)
-  const pageSize = Number(props.searchParams.pageSize ?? 10)
-  const pageNumber = _pageNumber < 0 ? 0 : _pageNumber
+  const pageSize = Number(props.searchParams.pageSize ?? 20)
+  const pageNumber = Math.max(Number(props.searchParams.pageNumber ?? 0), 0)
   const nextPage = Number(pageNumber) + 1
   const previousPage = Number(pageNumber) - 1
 
@@ -68,30 +67,26 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
               </TableBody>
             </Table>
             <div className="flex justify-end gap-2 p-2">
-              {previousPage >= 0 && (
-                <Button asChild size={"icon"} variant={"outline"}>
-                  <Link
-                    href={{
-                      pathname: "/reporting",
-                      search: `?pageNumber=${previousPage}`,
-                    }}
-                  >
-                    <ChevronLeft />
-                  </Link>
-                </Button>
-              )}
-              {hasMoreResults && (
-                <Button asChild size={"icon"} variant={"outline"}>
-                  <Link
-                    href={{
-                      pathname: "/reporting",
-                      search: `?pageNumber=${nextPage}`,
-                    }}
-                  >
-                    <ChevronRight />
-                  </Link>
-                </Button>
-              )}
+              <Button size={"icon"} variant={"outline"} disabled={pageNumber === 0}>
+                <Link
+                  href={{
+                    pathname: "/reporting",
+                    search: `?pageNumber=${previousPage}`,
+                  }}
+                >
+                  <ChevronLeft />
+                </Link>
+              </Button>
+              <Button size={"icon"} variant={"outline"} disabled={!hasMoreResults}>
+                <Link
+                  href={{
+                    pathname: "/reporting",
+                    search: `?pageNumber=${nextPage}`,
+                  }}
+                >
+                  <ChevronRight />
+                </Link>
+              </Button>
             </div>
           </Card>
         </div>

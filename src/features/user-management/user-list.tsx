@@ -11,7 +11,12 @@ import { Button } from "@/features/ui/button"
 import { Card } from "@/features/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table"
 
+import { UserRecord } from "./models"
+
 const HIGH_FAILED_LOGINS = 5
+
+const handleExport = (filteredUsers: UserRecord[]) => async (): Promise<void> =>
+  await convertUserListToWordDocument(filteredUsers, "UserList.docx")
 
 export type UserListProps = {
   searchParams: {
@@ -20,12 +25,10 @@ export type UserListProps = {
     pageNumber?: number
   }
 }
-
 export const UserList = (props: UserListProps): JSX.Element => {
   const { users, selectedTenant } = useAdminContext()
-  const _pageNumber = Number(props.searchParams.pageNumber ?? 0)
   const pageSize = Number(props.searchParams.pageSize ?? 20)
-  const pageNumber = _pageNumber < 0 ? 0 : _pageNumber
+  const pageNumber = Math.max(Number(props.searchParams.pageNumber ?? 0), 0)
   const nextPage = Number(pageNumber) + 1
   const previousPage = Number(pageNumber) - 1
 
@@ -37,10 +40,6 @@ export const UserList = (props: UserListProps): JSX.Element => {
     ? users.filter(user => user.failed_login_attempts >= HIGH_FAILED_LOGINS)
     : users
   const hasMoreResults = filteredUsers.length === pageSize
-
-  const handleExport = async (): Promise<void> => {
-    await convertUserListToWordDocument(filteredUsers, "UserList.docx")
-  }
 
   return (
     <div className="flex size-full overflow-y-auto pt-8">
@@ -62,7 +61,7 @@ export const UserList = (props: UserListProps): JSX.Element => {
             >
               {showFailedLogins ? "Show all Users" : "Show failed login attempts"}
             </Button>
-            <Button onClick={handleExport} variant="outline" aria-label="Export user list">
+            <Button onClick={handleExport(filteredUsers)} variant="outline" aria-label="Export user list">
               <FileDown size={14} />
             </Button>
           </div>

@@ -1,12 +1,11 @@
 import * as Label from "@radix-ui/react-label"
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 
 import Typography from "@/components/typography"
 import { AssociateReferenceWithChatThread } from "@/features/chat/chat-services/chat-thread-service"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import logger from "@/features/insights/app-insights"
 import { Button } from "@/features/ui/button"
-
 const defaultPreferences = {
   contextPrompt: "",
   customReferenceFields: [
@@ -17,7 +16,6 @@ const defaultPreferences = {
     },
   ],
 }
-
 export const TranscriptForm = (): JSX.Element => {
   const { id, chatBody, setChatBody, tenantPreferences } = useChatContext()
   const [submitting, setSubmitting] = useState(false)
@@ -26,29 +24,35 @@ export const TranscriptForm = (): JSX.Element => {
   const [referenceId, setReferenceId] = useState<string>(chatBody.internalReference || "")
   const preferences = tenantPreferences || defaultPreferences
 
-  const handleSubmit = async (event: { preventDefault: () => void }): Promise<void> => {
-    event.preventDefault()
-    setSubmitting(true)
-    setMessage("")
+  const handleSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+      event.preventDefault()
+      setSubmitting(true)
+      setMessage("")
 
-    try {
-      setChatBody({ ...chatBody, internalReference: referenceId })
-      await AssociateReferenceWithChatThread(id, referenceId)
-      setMessage(`Reference ID ${referenceId} saved.`)
-      setIsIdSaved(true)
-    } catch (_error) {
-      setMessage("Failed to save reference ID.")
-      logger.warning("Failed to save reference ID." + id + referenceId)
-      setIsIdSaved(false)
-    } finally {
-      setSubmitting(false)
-    }
-  }
+      try {
+        setChatBody({ ...chatBody, internalReference: referenceId })
+        await AssociateReferenceWithChatThread(id, referenceId)
+        setMessage(`Reference ID ${referenceId} saved.`)
+        setIsIdSaved(true)
+      } catch (_error) {
+        setMessage("Failed to save reference ID.")
+        logger.warning("Failed to save reference ID." + id + referenceId)
+        setIsIdSaved(false)
+      } finally {
+        setSubmitting(false)
+      }
+    },
+    [chatBody, id, referenceId, setChatBody]
+  )
+
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setReferenceId(event.target.value)
+  }, [])
 
   const customRef =
     preferences.customReferenceFields?.find(c => c.name === "internalReference") ||
     defaultPreferences.customReferenceFields?.[0]
-
   return (
     <div className="bg-background p-5">
       {isIdSaved ? (
@@ -72,7 +76,7 @@ export const TranscriptForm = (): JSX.Element => {
               required
               autoComplete="off"
               value={referenceId}
-              onChange={e => setReferenceId(e.target.value)}
+              onChange={handleChange}
             />
             <Button variant="default" type="submit" disabled={submitting}>
               {submitting ? "Submitting..." : "Submit"}

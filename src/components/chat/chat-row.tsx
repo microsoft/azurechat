@@ -50,7 +50,7 @@ export const ChatRow: FC<ChatRowProps> = props => {
                     chatThreadId={props.chatThreadId}
                     chatMessageId={props.chatMessageId}
                     onFeedbackChange={setFeedbackMessage}
-                    onAssistantButtonClick={(result: string) => setInput(result)}
+                    onAssistantButtonClick={setInput}
                   />
                 )}
               </div>
@@ -66,7 +66,7 @@ export const ChatRow: FC<ChatRowProps> = props => {
                 <RewriteMessageButton
                   fleschScore={fleschScore}
                   message={props.message}
-                  onAssistantButtonClick={(result: string) => setInput(result)}
+                  onAssistantButtonClick={setInput}
                 />
               )}
             </div>

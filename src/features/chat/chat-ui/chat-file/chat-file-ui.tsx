@@ -1,6 +1,6 @@
 import { ArrowUpCircle, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { FC, useEffect, useRef } from "react"
+import { FC, useEffect, useRef, useCallback } from "react"
 
 import { APP_NAME } from "@/app-global"
 
@@ -21,7 +21,7 @@ export const ChatFileUI: FC = () => {
   const router = useRouter()
   const files = chatBody.chatOverFileName.split(", ")
 
-  const getAcceptedFileType = (chatType: string): string => {
+  const getAcceptedFileType = useCallback((chatType: string): string => {
     switch (chatType) {
       case "data":
         return ".pdf"
@@ -30,7 +30,7 @@ export const ChatFileUI: FC = () => {
       default:
         return ""
     }
-  }
+  }, [])
 
   const acceptedFileType = getAcceptedFileType(chatBody.chatType)
 
@@ -40,11 +40,23 @@ export const ChatFileUI: FC = () => {
     }
   }, [isFileNull])
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    await uploadFile(e)
-    router.refresh()
-  }
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.currentTarget.files
+      if (files) {
+        setIsFileNull(files.length === 0)
+      }
+    },
+    [setIsFileNull]
+  )
 
+  const onSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      await uploadFile(e)
+      router.refresh()
+    },
+    [uploadFile, router]
+  )
   return (
     <div className="flex flex-col gap-2">
       {chatBody.chatType === "audio" && !chatBody.internalReference && <TranscriptForm />}
@@ -73,15 +85,10 @@ export const ChatFileUI: FC = () => {
           data-file-types={acceptedFileType}
           data-max-size="10"
           data-max-files="3"
-          multiple={true}
+          multiple
           label="Upload File"
           aria-describedby="file-upload-description"
-          onChange={e => {
-            const files = e.currentTarget.files
-            if (files) {
-              setIsFileNull(files.length === 0)
-            }
-          }}
+          onChange={handleFileChange}
           className="file-input-class"
         />
         <Button
@@ -105,7 +112,7 @@ export const ChatFileUI: FC = () => {
           )}
         </Button>
       </form>
-      {chatBody.chatOverFileName.length != 0 && <ChatFilesDisplay files={files} />}
+      {chatBody.chatOverFileName.length !== 0 && <ChatFilesDisplay files={files} />}
       <Typography variant="span" id="file-upload-description" className="text-muted-foreground">
         {uploadButtonLabel ||
           "Select a file to upload, please note files are not stored in their original format and may be cleared from the system after thirty days. You can upload up to 3 pdf files, each not exceeding 10mb in size."}
@@ -113,3 +120,5 @@ export const ChatFileUI: FC = () => {
     </div>
   )
 }
+
+export default ChatFileUI
