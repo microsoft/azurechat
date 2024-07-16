@@ -12,25 +12,24 @@ export default function Home() {
   const email = searchParams?.get('email')!;
   const betoken = searchParams?.get('token')!;
 
-  const createSession = async () => {
-    const result = await signIn('credentials', {
-      redirect: true,
-      username: name,
-      email: email,
-      callbackUrl: '/chat',
-    });
+  const createSession = async (hashval: string) => {
+    if (email && name && betoken === hashval) {
+      const result = await signIn('credentials', {
+        redirect: true,
+        username: name,
+        email: email,
+        callbackUrl: '/chat',
+      });
+    }
   };
 
-  if (email) {
-    const token = hashValue(email.split('').reverse().join(''));
-    const hashval = hashValue(token);
-    
-    useEffect(() => {
-      if (email && name && betoken === hashval) {
-        createSession();
-      }
-    });
-  }
+  useEffect(() => {
+    if (email) {
+      const token = hashValue(email.split('').reverse().join(''));
+      const hashval = hashValue(token);
+      createSession(hashval);
+    }
+  }, []);
 
   return (
     <main className="container max-w-lg flex items-center">
