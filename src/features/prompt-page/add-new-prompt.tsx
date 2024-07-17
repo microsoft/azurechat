@@ -6,7 +6,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/ui/sheet";
-import { useSession } from "next-auth/react";
 import { FC } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { ServerActionResponse } from "../common/server-action-response";
@@ -18,6 +17,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { addOrUpdatePrompt, promptStore, usePromptState } from "./prompt-store";
+import { cookiedata } from "@/lib/cookieStore";
 
 interface SliderProps {}
 
@@ -28,7 +28,7 @@ export const AddPromptSlider: FC<SliderProps> = (props) => {
 
   const [formState, formAction] = useFormState(addOrUpdatePrompt, initialState);
 
-  const { data } = useSession();
+  const { data } = cookiedata;
 
   const PublicSwitch = () => {
     if (data === undefined || data === null) return null;

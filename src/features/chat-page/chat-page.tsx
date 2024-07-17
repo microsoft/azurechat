@@ -6,7 +6,6 @@ import { ChatMessageArea } from "@/features/ui/chat/chat-message-area/chat-messa
 import ChatMessageContainer from "@/features/ui/chat/chat-message-area/chat-message-container";
 import ChatMessageContentArea from "@/features/ui/chat/chat-message-area/chat-message-content";
 import { useChatScrollAnchor } from "@/features/ui/chat/chat-message-area/use-chat-scroll-anchor";
-import { useSession } from "next-auth/react";
 import { FC, useEffect, useRef } from "react";
 import { ExtensionModel } from "../extensions-page/extension-services/models";
 import { ChatHeader } from "./chat-header/chat-header";
@@ -16,6 +15,7 @@ import {
   ChatThreadModel,
 } from "./chat-services/models";
 import MessageContent from "./message-content";
+import { cookiedata } from "@/lib/cookieStore";
 
 interface ChatPageProps {
   messages: Array<ChatMessageModel>;
@@ -25,7 +25,7 @@ interface ChatPageProps {
 }
 
 export const ChatPage: FC<ChatPageProps> = (props) => {
-  const { data: session } = useSession();
+  const { data: session } = cookiedata;
 
   useEffect(() => {
     chatStore.initChatSession({

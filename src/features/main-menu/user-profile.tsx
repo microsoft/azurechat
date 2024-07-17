@@ -10,13 +10,12 @@ import {
 } from "@/ui/dropdown-menu";
 import { menuIconProps } from "@/ui/menu";
 import { CircleUserRound, LogOut } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
+import { cookiedata } from "@/lib/cookieStore";
 
 export const UserProfile = () => {
-  const { data: session } = useSession();
-
+  const { data: session } = cookiedata;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -53,13 +52,6 @@ export const UserProfile = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="flex gap-2"
-          onClick={() => signOut({ callbackUrl: "/" })}
-        >
-          <LogOut {...menuIconProps} size={18} />
-          <span>Log out</span>
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

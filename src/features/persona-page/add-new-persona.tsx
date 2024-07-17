@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { FC } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { ServerActionResponse } from "../common/server-action-response";
@@ -23,6 +22,7 @@ import {
   personaStore,
   usePersonaState,
 } from "./persona-store";
+import { cookiedata } from "@/lib/cookieStore";
 
 interface Props {}
 
@@ -36,7 +36,7 @@ export const AddNewPersona: FC<Props> = (props) => {
     initialState
   );
 
-  const { data } = useSession();
+  const { data } = cookiedata;
 
   const PublicSwitch = () => {
     if (data === undefined || data === null) return null;

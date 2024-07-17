@@ -3,7 +3,6 @@
 import { ServerActionResponse } from "@/features/common/server-action-response";
 import { LoadingIndicator } from "@/features/ui/loading";
 import { Textarea } from "@/features/ui/textarea";
-import { useSession } from "next-auth/react";
 import { FC } from "react";
 import { useFormState } from "react-dom";
 import { Button } from "../../ui/button";
@@ -26,13 +25,14 @@ import {
 import { AddFunction } from "./add-function";
 import { EndpointHeader } from "./endpoint-header";
 import { ErrorMessages } from "./error-messages";
+import { cookiedata } from "@/lib/cookieStore";
 
 interface Props {}
 
 export const AddExtension: FC<Props> = (props) => {
   const { isOpened, extension } = useExtensionState();
 
-  const { data } = useSession();
+  const { data } = cookiedata;
   const initialState: ServerActionResponse | undefined = undefined;
 
   const [formState, formAction] = useFormState(

@@ -1,10 +1,13 @@
+"use server"
 import { createHash } from "crypto";
-import { getServerSession } from "next-auth";
 import { RedirectToPage } from "../common/navigation-helpers";
-import { options } from "./auth-api";
+import { cookies } from 'next/headers';
+import { getCookie } from 'cookies-next';
 
 export const userSession = async (): Promise<UserModel | null> => {
-  const session = await getServerSession(options);
+  const cookiedata = getCookie('sessiondata', { cookies });
+  const session = JSON.parse(cookiedata!);
+
   if (session && session.user) {
     return {
       name: session.user.name!,
@@ -34,9 +37,10 @@ export const userHashedId = async (): Promise<string> => {
   throw new Error("User not found");
 };
 
-export const hashValue = (value: string): string => {
+export const hashValue = async (value: Promise<string> | string): Promise<string> => {
+  const resolvedValue = await Promise.resolve(value); // Ensure the value is resolved if it's a Promise
   const hash = createHash("sha256");
-  hash.update(value);
+  hash.update(resolvedValue);
   return hash.digest("hex");
 };
 
