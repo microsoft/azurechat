@@ -1,5 +1,4 @@
 import { ArrowRightIcon } from "lucide-react"
-import React from "react"
 
 import Typography from "@/components/typography"
 import { Button } from "@/features/ui/button"

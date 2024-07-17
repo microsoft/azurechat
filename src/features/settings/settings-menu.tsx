@@ -1,5 +1,3 @@
-import React from "react"
-
 import { Menu, MenuContent, MenuHeader } from "@/components/menu"
 
 import { SettingsMenuItems } from "./settings-menu-items"

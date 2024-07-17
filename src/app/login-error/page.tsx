@@ -26,7 +26,7 @@ const ErrorPage: React.FC = () => {
         break
       case SignInErrorType.SignInFailed:
       default:
-        message = `It appears we ran into an error while logging you in to ${APP_NAME} if you believe your agency has been setup and continue to receive these errors, please contact our support team.`
+        message = `It appears we ran into an error while logging you in to ${APP_NAME}. If you believe your agency has been set up and continue to receive these errors, please contact our support team.`
         setDisplaySupportButton(true)
         break
     }

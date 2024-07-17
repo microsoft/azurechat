@@ -1,5 +1,3 @@
-import React from "react"
-
 import Typography from "@/components/typography"
 
 export const SupportEmail: React.FC<{ email: string }> = ({ email }) => (

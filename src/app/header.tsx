@@ -1,5 +1,4 @@
 import { getServerSession } from "next-auth"
-import React from "react"
 
 import { APP_NAME } from "@/app-global"
 

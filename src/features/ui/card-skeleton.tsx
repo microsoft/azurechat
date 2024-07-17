@@ -1,5 +1,4 @@
 "use client"
-import React from "react"
 
 type Props = { size?: "xs" | "sm" | "md" | "lg" | "xl" }
 

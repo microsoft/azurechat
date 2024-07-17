@@ -1,5 +1,4 @@
 import { Mail, CircleHelp, HeartHandshake } from "lucide-react"
-import React from "react"
 
 import { SUPPORT_EMAIL } from "@/app-global"
 

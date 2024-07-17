@@ -1,5 +1,3 @@
-import React from "react"
-
 import Typography from "@/components/typography"
 
 export const DepartmentName: React.FC<{ name: string }> = ({ name }) => (

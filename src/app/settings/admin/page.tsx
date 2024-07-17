@@ -41,16 +41,12 @@ function FancyQuote({
 
   const renderWords = (words: string[], baseDelay: number): JSX.Element[] =>
     words.map((word, index) => (
-      <span
-        key={index}
-        className="animate-[blurOut_0.8s_forwards_cubic-bezier(0.11,0,0.5,0)] opacity-0 blur-sm"
-        style={getStyles(index, baseDelay)}
-      >
+      <span key={index} className="animate-blurOut opacity-0 blur-sm" style={getStyles(index, baseDelay)}>
         {word + " "}
       </span>
     ))
   return (
-    <div className="scale-95 animate-[scale_3s_forwards_cubic-bezier(0.5,1,0.89,1)] italic">
+    <div className="scale-95 animate-scale italic">
       <b>{renderWords(quoteWords, initialDelay)}</b>
       <i>{renderWords(authorWords, initialDelay + (quoteWords.length * 2) / 10)}</i>
     </div>

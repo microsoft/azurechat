@@ -1,7 +1,6 @@
 "use client"
 
 import { signIn, SignInResponse } from "next-auth/react"
-import React from "react"
 
 import { signInProvider } from "@/app-global"
 import { APP_NAME } from "@/app-global"

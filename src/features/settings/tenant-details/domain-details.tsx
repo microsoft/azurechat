@@ -1,5 +1,3 @@
-import React from "react"
-
 import Typography from "@/components/typography"
 
 export const DomainDetails: React.FC<{ domain: string }> = ({ domain }) => (
