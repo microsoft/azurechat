@@ -2,7 +2,7 @@
 
 import { getTenantAndUser } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { SmartGenContainer } from "@/features/common/services/cosmos"
+import { SmartGenContainer } from "@/features/common/services/cosmos-service"
 import logger from "@/features/insights/app-insights"
 import { uniqueId } from "@/lib/utils"
 

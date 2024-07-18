@@ -11,7 +11,7 @@ import {
   UserChatMessageModel,
 } from "@/features/chat/models"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { HistoryContainer } from "@/features/common/services/cosmos"
+import { HistoryContainer } from "@/features/common/services/cosmos-service"
 
 export const FindAllChatMessagesForCurrentUser = async (
   chatThreadId: string

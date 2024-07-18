@@ -5,7 +5,7 @@ import { DEFAULT_MONTHS_AGO, DEFAULT_DAYS_AGO } from "@/features/chat/constants"
 import { ChatMessageModel, ChatRecordType, ChatThreadModel } from "@/features/chat/models"
 import { xDaysAgo, xMonthsAgo } from "@/features/common/date-helper"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { HistoryContainer } from "@/features/common/services/cosmos"
+import { HistoryContainer } from "@/features/common/services/cosmos-service"
 
 export const FindAllChatThreadsForUserReporting = async (
   pageSize = 10,

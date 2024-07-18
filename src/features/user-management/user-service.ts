@@ -1,6 +1,6 @@
 import { userSession } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { UserContainer } from "@/features/common/services/cosmos"
+import { UserContainer } from "@/features/common/services/cosmos-service"
 import { arraysAreEqual } from "@/lib/utils"
 
 import { UserPreferences, UserRecord } from "./models"

@@ -1,6 +1,6 @@
 import { getTenantId, userHashedId, userSession } from "@/features/auth/helpers"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { TenantContainer } from "@/features/common/services/cosmos"
+import { TenantContainer } from "@/features/common/services/cosmos-service"
 import {
   SmartToolConfig,
   TenantConfig,

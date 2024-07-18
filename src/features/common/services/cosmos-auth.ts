@@ -1,48 +1,52 @@
-/**
- * Calls Azure API Management Cosmos Auth API to fetch an access token returned on APIM managed identity.
- *
- * Managed Identity must be assigned the following built-in roles:
- * - Cosmos DB Built-in Data Reader
- * - Cosmos DB Built-in Data Contributor
- *
- * For more information:
- * - [RBAC for Azure Cosmos DB](https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#built-in-role-definitions)
- * - [Azure API Management /cosmos Policy](https://docs.microsoft.com/en-us/azure/api-management/api-management-access-restriction-policies#cosmos)
- *
- * @returns The authorization access token.
- */
-export const GetCosmosAccessToken = async (): Promise<string> => {
+import logger from "@/features/insights/app-insights"
+import { CosmosClient } from "@azure/cosmos"
+
+let _cosmosAccessToken: string | null = null
+
+export const CONFIG = {
+  endpoint: process.env.APIM_BASE,
+  key: process.env.APIM_KEY,
+  dbName: process.env.AZURE_COSMOSDB_DB_NAME || "localdev",
+}
+export type CosmosConfig = typeof CONFIG
+
+export const getCosmosAccessToken = async ({ endpoint, key }: CosmosConfig): Promise<string> => {
   try {
-    const response = await fetch(`${process.env.APIM_BASE}/cosmos`, {
+    if (_cosmosAccessToken && isTokenExpired(_cosmosAccessToken)) return _cosmosAccessToken
+
+    const response = await fetch(`${endpoint}/cosmos`, {
       method: "GET",
-      headers: {
-        "api-key": process.env.APIM_KEY!,
-      },
-      cache: "no-store",
+      headers: { "api-key": key },
+      cache: "reload",
     })
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch token: ${response.status} ${response.statusText}`)
+      logger.error(`🚀 > getCosmosAccessToken > ${response.status} ${response.statusText}`)
+      throw new Error(`${response.statusText}`)
     }
 
-    const token = await response.text()
-    return token
+    _cosmosAccessToken = await response.text()
+    logger.info(`🚀 > getCosmosAccessToken > ${_cosmosAccessToken}`)
+    return await response.text()
   } catch (error) {
-    throw new Error(`Failed to fetch Cosmos Auth Token: ${error}`)
+    throw new Error(`Failed to fetch Cosmos Auth Token: ${JSON.stringify(error)}`)
   }
 }
 
-/**
- * Get the expiry date time of the token
- *
- * @param authToken Authorization Access Token
- * @returns Expiry date time of the token
- */
-export const getTokenExpiry = (authToken: string): number => {
+export const isTokenExpired = (authToken: string | null = _cosmosAccessToken): boolean => {
   try {
-    const expiry = JSON.parse(Buffer.from(authToken.split(".")[1], "base64").toString()).exp
-    return expiry
+    return true
+    if (!authToken) return true
+    // const expiry = JSON.parse(Buffer.from(authToken.split(".")[1], "base64").toString()).exp
+    // const currentTime = Math.floor(Date.now() / 1000) // in seconds
+    // return expiry <= currentTime
   } catch (error) {
     throw new Error(`Failed to check token expiry: ${error}`)
   }
+}
+
+export async function createCosmosClient({ endpoint, key, ...rest }: CosmosConfig): Promise<CosmosClient> {
+  const authToken = await getCosmosAccessToken({ endpoint, key, ...rest })
+  const defaultHeaders = { "api-key": key, Authorization: `type=aad&ver=1.0&sig=${authToken}` }
+  return new CosmosClient({ endpoint, defaultHeaders })
 }

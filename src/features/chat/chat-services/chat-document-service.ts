@@ -7,7 +7,7 @@ import { DEFAULT_MONTHS_AGO, MAX_DOCUMENT_SIZE } from "@/features/chat/constants
 import { ChatDocumentModel, ChatRecordType } from "@/features/chat/models"
 import { xMonthsAgo } from "@/features/common/date-helper"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { HistoryContainer } from "@/features/common/services/cosmos"
+import { HistoryContainer } from "@/features/common/services/cosmos-service"
 import logger from "@/features/insights/app-insights"
 import { APP_URL } from "@/features/theme/theme-config"
 import { uniqueId } from "@/lib/utils"
