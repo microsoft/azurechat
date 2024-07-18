@@ -57,11 +57,11 @@ export const UserList = (props: UserListProps): JSX.Element => {
             <Button
               onClick={() => setShowFailedLogins(prevState => !prevState)}
               variant="outline"
-              aria-label="Toggle failed login attempts"
+              ariaLabel="Toggle failed login attempts"
             >
               {showFailedLogins ? "Show all Users" : "Show failed login attempts"}
             </Button>
-            <Button onClick={handleExport(filteredUsers)} variant="outline" aria-label="Export user list">
+            <Button onClick={handleExport(filteredUsers)} variant="outline" ariaLabel="Export user list">
               <FileDown size={14} />
             </Button>
           </div>
@@ -121,7 +121,7 @@ export const UserList = (props: UserListProps): JSX.Element => {
             </Table>
             <div className="flex justify-end gap-2 p-2">
               {previousPage >= 0 && (
-                <Button asChild size="icon" variant="outline" aria-label="Previous page">
+                <Button asChild size="icon" variant="outline" ariaLabel="Previous page">
                   <Link
                     href={{
                       pathname: "/settings/users",
@@ -133,7 +133,7 @@ export const UserList = (props: UserListProps): JSX.Element => {
                 </Button>
               )}
               {hasMoreResults && (
-                <Button asChild size="icon" variant="outline" aria-label="Next page">
+                <Button asChild size="icon" variant="outline" ariaLabel="Next page">
                   <Link
                     href={{
                       pathname: "/settings/users",

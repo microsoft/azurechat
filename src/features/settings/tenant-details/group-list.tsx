@@ -173,7 +173,7 @@ const DeleteGroupDialog: React.FC<{
           </Typography>
         </div>
         <div className="flex justify-end">
-          <Button variant="destructive" onClick={onClose} disabled={loading} aria-label="Cancel">
+          <Button variant="destructive" onClick={onClose} disabled={loading} ariaLabel="Cancel">
             Cancel
           </Button>
           <Button
@@ -181,7 +181,7 @@ const DeleteGroupDialog: React.FC<{
             className="ml-2"
             onClick={handleConfirm}
             disabled={loading}
-            aria-label="Confirm delete group"
+            ariaLabel="Confirm delete group"
           >
             Delete Group
           </Button>

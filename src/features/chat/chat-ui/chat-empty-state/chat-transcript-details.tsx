@@ -78,7 +78,7 @@ export const TranscriptForm = (): JSX.Element => {
               value={referenceId}
               onChange={handleChange}
             />
-            <Button variant="default" type="submit" disabled={submitting}>
+            <Button variant={"default"} type="submit" disabled={submitting} ariaLabel="Submit">
               {submitting ? "Submitting..." : "Submit"}
             </Button>
           </div>

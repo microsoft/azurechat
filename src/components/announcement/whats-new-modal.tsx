@@ -69,7 +69,7 @@ export default function WhatsNewModal({ targetVersion, onClose }: WhatsNewModalP
       </DialogContent>
       <DialogFooter>
         {isSubmitting && <Loader className={cn("animate-spin")} size={24} />}
-        <Button variant="default" onClick={handleSubmit} disabled={isLoading}>
+        <Button variant="default" onClick={handleSubmit} disabled={isLoading} ariaLabel="Acknowledge new features">
           Got it!
         </Button>
       </DialogFooter>

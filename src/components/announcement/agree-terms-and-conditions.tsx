@@ -72,7 +72,12 @@ export default function AgreeTermsAndConditions({ onClose }: AgreeTermsAndCondit
       </DialogContent>
       <DialogFooter>
         {isSubmitting && <Loader className={cn("animate-spin")} size={24} />}
-        <Button variant="default" onClick={handleSubmit} disabled={!canSubmit || isLoading || isSubmitting}>
+        <Button
+          variant="default"
+          onClick={handleSubmit}
+          disabled={!canSubmit || isLoading || isSubmitting}
+          ariaLabel="Agree to Terms and Conditions"
+        >
           Agree to terms and conditions
         </Button>
       </DialogFooter>

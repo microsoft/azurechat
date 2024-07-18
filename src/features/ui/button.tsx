@@ -15,15 +15,11 @@ const buttonVariants = cva(
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-button hover:text-buttonText",
-        newGhost: "hover:bg-button hover:text-buttonText bg-alert animate-pulse",
         negative: "hover:bg-destructive hover:text-buttonText",
         positive: "hover:bg-success hover:text-buttonText",
         link: "text-text underline-offset-4 hover:underline",
-        code: "absolute right-2 top-2 h-7 p-1 text-white focus:bg-accent focus:text-link",
-        copyCode: "absolute right-2 top-2 h-7 p-1 text-white focus:bg-accent focus:text-link",
-        menuRound: "size-10 rounded-full border border-input p-1 text-primary hover:bg-accent",
-        dropdownTrigger:
-          "flex cursor-pointer select-none items-center rounded-md px-2 py-1.5 text-left font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+        code: "absolute right-2 top-2 hidden h-7 gap-1 px-2 text-base capitalize focus:bg-accent focus:text-link group-hover:flex",
+        login: "max-w-[200px]",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -49,7 +45,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
-  ariaLabel?: string
+  ariaLabel: string
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

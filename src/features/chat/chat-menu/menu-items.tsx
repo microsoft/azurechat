@@ -78,10 +78,10 @@ const ChatMenuModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, focusAft
           </div>
         )}
         <div className="mt-4 flex justify-end gap-4">
-          <Button variant="default" onClick={handleSave} aria-label="Save">
+          <Button variant="default" onClick={handleSave} ariaLabel="Save">
             {type === "edit" ? "Save" : "Confirm"}
           </Button>
-          <Button variant="secondary" onClick={onClose} aria-label="Cancel">
+          <Button variant="secondary" onClick={onClose} ariaLabel="Cancel">
             Cancel
           </Button>
         </div>

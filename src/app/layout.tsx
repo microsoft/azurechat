@@ -9,6 +9,7 @@ import ErrorBoundary from "@/components/error-boundary"
 import { LogIn } from "@/components/login/login"
 import { GetApplicationSettings } from "@/features/application/application-service"
 import ApplicationProvider from "@/features/globals/application-provider"
+import { showError } from "@/features/globals/global-message-store"
 import { Providers } from "@/features/globals/providers"
 import { applicationInsights } from "@/features/insights/app-insights"
 import { AI_AUTHOR, AI_TAGLINE, APP_URL } from "@/features/theme/theme-config"
@@ -49,12 +50,19 @@ if (process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING)
   applicationInsights.initialize(process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING)
 
 export default async function RootLayout({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
-  const session = await getServerSession()
-  const settingsResult = await GetApplicationSettings()
+  const session = await getServerSession().catch(error => {
+    showError(error + "Failed to fetch session")
+    return null
+  })
+  const settingsResult = await GetApplicationSettings().catch(error => {
+    showError(error + "Failed to fetch application settings")
+    return { status: "ERROR", response: undefined }
+  })
   const settings = settingsResult.status === "OK" ? settingsResult.response : undefined
 
   const isProd = process.env.NODE_ENV === "production"
   const googleAnalyticsId = process.env.NEXT_PUBLIC_GTAG
+
   return (
     <html lang="en-AU" suppressHydrationWarning className="size-full overflow-hidden text-sm">
       <head>
@@ -62,6 +70,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="preconnect" href="https://www.google-analytics.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preload" as="image" href="/pattern.webp" />
+        <link rel="preload" as="style" href="https://use.typekit.net/fse2tsb.css" />
+        <meta httpEquiv="Cache-Control" content="no-cache, must-revalidate" />
       </head>
       <body className={cn(notoSans.className, "flex size-full min-w-[400px] flex-col bg-background")}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
@@ -85,8 +96,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </ApplicationProvider>
           </ErrorBoundary>
         </ThemeProvider>
+        {isProd && googleAnalyticsId && <GoogleAnalytics gaId={googleAnalyticsId} />}
       </body>
-      {isProd && googleAnalyticsId && <GoogleAnalytics gaId={googleAnalyticsId} />}
     </html>
   )
 }

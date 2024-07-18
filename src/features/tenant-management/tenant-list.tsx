@@ -96,7 +96,7 @@ export const TenantList = (props: TenantListProps): JSX.Element => {
               </TableBody>
             </Table>
             <div className="flex justify-end gap-2 p-2">
-              <Button size={"icon"} variant={"outline"} aria-label="Previous page" disabled={pageNumber === 0}>
+              <Button size={"icon"} variant={"outline"} ariaLabel="Previous page" disabled={pageNumber === 0}>
                 <Link
                   href={{
                     pathname: "/settings/tenants",
@@ -106,7 +106,7 @@ export const TenantList = (props: TenantListProps): JSX.Element => {
                   <ChevronLeft />
                 </Link>
               </Button>
-              <Button size={"icon"} variant={"outline"} aria-label="Next page" disabled={!hasMoreResults}>
+              <Button size={"icon"} variant={"outline"} ariaLabel="Next page" disabled={!hasMoreResults}>
                 <Link
                   href={{
                     pathname: "/settings/tenants",

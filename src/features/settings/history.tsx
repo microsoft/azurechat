@@ -67,7 +67,7 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
               </TableBody>
             </Table>
             <div className="flex justify-end gap-2 p-2">
-              <Button size={"icon"} variant={"outline"} disabled={pageNumber === 0}>
+              <Button size={"icon"} variant={"outline"} ariaLabel="Previous page" disabled={pageNumber === 0}>
                 <Link
                   href={{
                     pathname: "/reporting",
@@ -77,7 +77,7 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
                   <ChevronLeft />
                 </Link>
               </Button>
-              <Button size={"icon"} variant={"outline"} disabled={!hasMoreResults}>
+              <Button size={"icon"} variant={"outline"} ariaLabel="Next page" disabled={!hasMoreResults}>
                 <Link
                   href={{
                     pathname: "/reporting",

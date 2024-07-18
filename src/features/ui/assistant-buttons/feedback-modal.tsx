@@ -37,6 +37,7 @@ export default function FeedbackModal(props: FeedbackModalProps): ReturnType<FC>
       <DialogFooter>
         <Button
           variant="default"
+          ariaLabel="Submit feedback"
           onClick={async () => {
             await props.onSubmit(ChatSentiment.Negative, feedbackType, feedbackReason)
             props.onClose()
@@ -45,7 +46,7 @@ export default function FeedbackModal(props: FeedbackModalProps): ReturnType<FC>
         >
           Submit
         </Button>
-        <Button variant="secondary" onClick={props.onClose}>
+        <Button variant="secondary" onClick={props.onClose} ariaLabel="Close">
           Close
         </Button>
       </DialogFooter>

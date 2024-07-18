@@ -99,11 +99,7 @@ export const CodeBlock: FC<Props> = memo(({ language, children }): JSX.Element =
       <Prism language={language} style={atomDark} PreTag="pre">
         {children}
       </Prism>
-      <Button
-        onClick={handleCopy}
-        className="absolute right-2 top-2 hidden h-7 gap-1 px-2 text-base capitalize focus:bg-accent focus:text-link group-hover:flex"
-        title="Copy code"
-      >
+      <Button onClick={handleCopy} variant={"code"} title="Copy code" ariaLabel="Copy Code">
         <ClipboardIcon size={14} />
         Copy {language}
       </Button>

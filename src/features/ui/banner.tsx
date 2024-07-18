@@ -22,7 +22,9 @@ export const Banner: React.FC<BannerProps> = ({ title, description, ctaText, onC
       <Typography variant="p" className="text-lg">
         {description}
       </Typography>
-      <Button onClick={onClick}>{ctaText}</Button>
+      <Button ariaLabel={ctaText} onClick={onClick}>
+        {ctaText}
+      </Button>
     </div>
   )
 }

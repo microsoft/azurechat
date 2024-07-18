@@ -139,7 +139,7 @@ export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant 
         <Form.Field name="contextPrompt" serverInvalid={error}>
           <Form.Label htmlFor="contextPrompt" className="flex items-center gap-2">
             New Context Prompt:
-            <SmartGen onClick={sanitisePrompt} disabled={!input} />
+            <SmartGen onClick={sanitisePrompt} disabled={!input} ariaLabel="Check Context prompt" />
           </Form.Label>
           <Form.Control asChild>
             <Textarea

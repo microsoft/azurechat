@@ -1,5 +1,5 @@
 import { Message } from "ai"
-import { Menu, File, Clipboard, Bird } from "lucide-react"
+import { Menu, File, Clipboard } from "lucide-react"
 import { getSession } from "next-auth/react"
 import React, { useEffect, useRef, useCallback } from "react"
 
@@ -7,7 +7,6 @@ import { APP_NAME } from "@/app-global"
 
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
-import { Button } from "@/features/ui/button"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -21,7 +20,7 @@ interface ChatInputMenuProps {
   messageCopy: Message[]
 }
 const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport }) => {
-  const { setInput, handleSubmit, messages } = useChatContext()
+  const { messages } = useChatContext()
   const firstMenuItemRef = useRef<HTMLDivElement>(null)
   const { showError, showSuccess } = useGlobalMessageContext()
   useEffect(() => {
@@ -29,14 +28,6 @@ const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport }) => {
       firstMenuItemRef.current.focus()
     }
   }, [])
-
-  const fairClickHandler = useCallback((): void => {
-    const fairInput = "Help me complete a Queensland Government Foundational AI Risk Assessment (FAIRA)"
-    setInput(fairInput)
-    setTimeout(() => {
-      handleSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>)
-    }, 0)
-  }, [setInput, handleSubmit])
 
   const copyToClipboard = useCallback(async (): Promise<void> => {
     try {
@@ -59,47 +50,21 @@ const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button
-          aria-haspopup="true"
-          aria-expanded="false"
-          aria-controls="chat-input-options"
-          ariaLabel="Open chat input options menu"
-          type="button"
-          variant="ghost"
-          size="icon"
-        >
-          <Menu aria-hidden="true" focusable="false" />
-        </Button>
+        <Menu aria-hidden="true" focusable="false" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         id="chat-input-options"
         role="menu"
         aria-label="Chat input options"
-        className="z-90 min-w-[220px] rounded-md bg-background p-[5px] text-popover-foreground shadow-lg"
+        className="z-90 min-w-[220px] rounded-md p-[5px] shadow-lg"
         sideOffset={5}
       >
-        <DropdownMenuItem
-          onSelect={fairClickHandler}
-          className="DropdownMenuItem cursor-pointer rounded-md bg-background text-foreground hover:bg-secondary hover:text-secondary-foreground"
-        >
-          <div tabIndex={0} ref={firstMenuItemRef} className="flex items-center p-2">
-            <Bird size={20} className="mr-2" aria-hidden="true" />
-            Complete a Foundational AI Risk Assessment
-          </div>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator className="my-2 h-px bg-secondary" />
-        <DropdownMenuItem
-          onSelect={onDocExport}
-          className="flex cursor-pointer items-center rounded-md p-2 hover:bg-secondary hover:text-secondary-foreground"
-        >
+        <DropdownMenuItem onSelect={onDocExport} className="flex cursor-pointer items-center rounded-md p-2">
           <File size={20} className="mr-2" aria-hidden="true" />
           Export your Chat to File
         </DropdownMenuItem>
-        <DropdownMenuSeparator className="my-2 h-px bg-secondary" />
-        <DropdownMenuItem
-          onSelect={copyToClipboard}
-          className="flex cursor-pointer items-center rounded-md p-2 hover:bg-secondary hover:text-secondary-foreground"
-        >
+        <DropdownMenuSeparator className="my-2 h-px bg-primary" />
+        <DropdownMenuItem onSelect={copyToClipboard} className="flex cursor-pointer items-center rounded-md p-2">
           <Clipboard size={20} className="mr-2" aria-hidden="true" />
           Copy Chat to Clipboard
         </DropdownMenuItem>

@@ -19,7 +19,7 @@ export const LogIn: React.FC = () => {
           <CardDescription>Login in with your Queensland Government account</CardDescription>
         </CardHeader>
         <CardContent className="grid justify-center p-4">
-          <Button onClick={handleSignIn} className="max-w-[200px]">
+          <Button onClick={handleSignIn} variant={"login"} ariaLabel="Click to login">
             Log in to {APP_NAME}
           </Button>
         </CardContent>

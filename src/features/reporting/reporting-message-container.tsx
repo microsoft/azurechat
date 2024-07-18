@@ -37,11 +37,11 @@ export const ReportingMessageContainer: FC<Props> = ({ chatThreadId }) => {
   return (
     <div className="h-full overflow-y-auto" ref={scrollRef}>
       <div className="container my-4 flex items-center justify-between">
-        <Button asChild variant="outline">
+        <Button asChild variant="outline" ariaLabel="Back to Reporting">
           <Link href={"/settings/history"}>Back to Reporting</Link>
         </Button>
         <ChatHeader />
-        <Button asChild variant="outline">
+        <Button asChild variant="outline" ariaLabel="Access chat">
           <Link href={`/chat/${chatThreadId}`}>{chatThreadLocked ? "Continue this chat" : "View this chat"}</Link>
         </Button>
       </div>

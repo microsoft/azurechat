@@ -98,7 +98,7 @@ const ChatInput: FC<Props> = () => {
           disabled={isLoading || fileState.isUploadingFile}
         />
         {!!(!isDataChat || (isDataChat && fileChatVisible)) && (
-          <div className="absolute right-14 flex flex-col pb-4">
+          <div className="absolute right-14 flex flex-col items-center pb-4">
             <Button
               size="icon"
               type="submit"

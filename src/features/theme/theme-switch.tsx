@@ -22,6 +22,7 @@ export const ThemeSwitch: React.FC = () => {
         variant={"ghost"}
         className={`rounded-md hover:bg-altBackgroundShade hover:text-altButton focus-visible:ring-text ${classes.dark}`}
         onClick={() => setTheme("dark")}
+        ariaLabel="Dark Mode"
       >
         <Moon size={18} />
       </Button>
@@ -29,6 +30,7 @@ export const ThemeSwitch: React.FC = () => {
         variant={"ghost"}
         className={`rounded-md hover:bg-altBackgroundShade hover:text-altButton focus-visible:ring-text ${classes.light}`}
         onClick={() => setTheme("light")}
+        ariaLabel="Light Mode"
       >
         <Sun size={18} />
       </Button>

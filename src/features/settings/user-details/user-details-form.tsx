@@ -163,7 +163,7 @@ ${tenantPrompt}
         <Form.Field name="contextPrompt" serverInvalid={error}>
           <Form.Label htmlFor="contextPrompt" className="flex items-center gap-2">
             Set Context Prompt:
-            <SmartGen onClick={sanitisePrompt} />
+            <SmartGen onClick={sanitisePrompt} ariaLabel="Check prompt" />
           </Form.Label>
           <Form.Control asChild>
             <Textarea
@@ -189,7 +189,7 @@ ${tenantPrompt}
           <Button
             type="button"
             className="w-[14rem]"
-            variant="outline"
+            variant={"outline"}
             disabled={isSubmitting}
             onClick={handleTemplateClick}
             ariaLabel="Try Template"

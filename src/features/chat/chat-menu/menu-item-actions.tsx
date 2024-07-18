@@ -20,7 +20,7 @@ export const MenuItemActions: FC<MenuItemActionsProps> = ({ threadId, threadName
         className="opacity-20 group-hover:opacity-100"
         size="sm"
         variant="accent"
-        aria-label={`Rename ${threadName}`}
+        ariaLabel={`Rename ${threadName}`}
         onClick={handleEdit}
       >
         <Pencil size={16} />
@@ -29,7 +29,7 @@ export const MenuItemActions: FC<MenuItemActionsProps> = ({ threadId, threadName
         className="opacity-20 group-hover:opacity-100"
         size="sm"
         variant="destructive"
-        aria-label={`Delete ${threadName}`}
+        ariaLabel={`Delete ${threadName}`}
         onClick={handleDelete}
       >
         <Trash size={16} />

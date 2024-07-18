@@ -10,7 +10,7 @@ export const ChatFileSlider = (): JSX.Element => {
     <div>
       <Sheet>
         <SheetTrigger asChild>
-          <Button size="icon" variant={"ghost"}>
+          <Button size="icon" variant={"ghost"} ariaLabel="Add a file">
             <FilePlus size={16} />
           </Button>
         </SheetTrigger>

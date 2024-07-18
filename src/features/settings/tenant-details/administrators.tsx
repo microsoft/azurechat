@@ -184,7 +184,7 @@ const DeleteAdminDialog: React.FC<{
           </Typography>
         </div>
         <div className="flex justify-end">
-          <Button variant="destructive" onClick={onClose} disabled={loading} aria-label="Cancel">
+          <Button variant="destructive" onClick={onClose} disabled={loading} ariaLabel="Cancel">
             Cancel
           </Button>
           <Button
@@ -192,7 +192,7 @@ const DeleteAdminDialog: React.FC<{
             className="ml-2"
             onClick={handleClick}
             disabled={loading}
-            aria-label="Confirm delete administrator"
+            ariaLabel="Confirm delete administrator"
           >
             Delete Administrator
           </Button>

@@ -93,6 +93,7 @@ export const ChatFileUI: FC = () => {
         />
         <Button
           type="submit"
+          ariaLabel="Upload File"
           disabled={
             !(!isFileNull && !isUploadingFile) || (chatBody.chatType === "audio" && !chatBody.internalReference)
           }
