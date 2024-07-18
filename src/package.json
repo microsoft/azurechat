@@ -62,7 +62,7 @@
     "flesch": "^2.0.1",
     "highlight.js": "^11.10.0",
     "ip": "^2.0.1",
-    "lucide-react": "^0.400.0",
+    "lucide-react": "^0.408.0",
     "marked": "^13.0.2",
     "nanoid": "^5.0.7",
     "next": "^14.2.4",
