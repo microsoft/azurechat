@@ -189,8 +189,13 @@ describe("Containers", () => {
     const containerFactoryMock = jest.spyOn(cosmos, "containerFactory")
     containerFactoryMock.mockResolvedValue(expect.anything())
 
+    // Function to call each container
+    const callContainer = async (container: () => Promise<Container>): Promise<Container> => {
+      return await container()
+    }
+
     // Act
-    await Promise.all(containers.map(async container => container()))
+    await Promise.all(containers.map(callContainer))
 
     // Assert
     expect(containerFactoryMock).toHaveBeenCalledTimes(expectedNumberOfCalls)
@@ -198,7 +203,15 @@ describe("Containers", () => {
 })
 
 // #region Helpers
-const mockCosmosClient = (result: Container) => ({
+const mockCosmosClient = (
+  result: Container
+): {
+  databases: {
+    createIfNotExists: jest.Mock<
+      Promise<{ database: { containers: { createIfNotExists: jest.Mock<Promise<{ container: Container }>> } } }>
+    >
+  }
+} => ({
   databases: {
     createIfNotExists: jest.fn().mockResolvedValue({
       database: {
