@@ -27,7 +27,6 @@ const createTelemetryService = (): {
     appInsights.loadAppInsights()
 
     appInsights.addTelemetryInitializer(telemetry => {
-      // to avoid redundant page view telemetry being sent to Application Insights when a component re-renders.
       if (telemetry?.baseType === "PageviewData" && telemetry?.baseData?.refUri === telemetry?.baseData?.uri)
         return false
       if (telemetry?.baseData?.type === "Fetch" && telemetry?.baseData?.success) return false
