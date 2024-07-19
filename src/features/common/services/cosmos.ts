@@ -1,7 +1,5 @@
 import { Container, PartitionKeyDefinition } from "@azure/cosmos"
 
-import logger from "@/features/insights/app-insights"
-
 import { CONFIG, CosmosConfig, createCosmosClient, isTokenExpired } from "./cosmos-auth"
 
 const _containerCache: Map<string, Container> = new Map()
@@ -12,7 +10,6 @@ const getContainer = async (
   config: CosmosConfig
 ): Promise<Container> => {
   const client = await createCosmosClient(config)
-  logger.info(`🚀 > getContainer > new instance of ${containerName}`)
   const { database } = await client.databases.createIfNotExists({ id: config.dbName })
   const { container } = await database.containers.createIfNotExists({ id: containerName, partitionKey })
   return container
@@ -28,7 +25,6 @@ async function containerFactory(
     throw new Error("Azure Cosmos DB is not configured. Please configure it in the .env file.")
 
   if (containerCache.has(containerName) && !isTokenExpired()) return containerCache.get(containerName) as Container
-  logger.info(`🚀 > containerFactory > ${containerName}`)
 
   const container = await getContainer(containerName, partitionKey, config)
 

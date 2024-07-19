@@ -47,7 +47,7 @@ const SmartGenContainer = async (): Promise<Container> => {
 }
 
 const ApplicationContainer = async (): Promise<Container> => {
-  const containerName = process.env.AZURE_COSMOSDB_TENANT_CONTAINER_NAME || "applications"
+  const containerName = process.env.AZURE_COSMOSDB_APPLICATION_CONTAINER_NAME || "applications"
   const partitionKey = {
     paths: ["/applicationId"],
     kind: PartitionKeyKind.MultiHash,

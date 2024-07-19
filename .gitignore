@@ -7,11 +7,14 @@
 
 # testing
 **/coverage
+**/test-results/
+**/playwright-report
+**/blob-report/
+**/playwright/.cache/
 
 # next.js
 **/.next/
 **/out/
-
 **/analyze/
 
 # production
@@ -34,15 +37,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Azure
 .azure/
 infra/aad_setup.sh
-
-**./test-results/
-**/playwright-report
-**./playwright-report
-**./blob-report/
-**./playwright/.cache/
-model-report.md
 
 # Cache Files
 .eslintjscache

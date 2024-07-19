@@ -11,6 +11,16 @@ const config = {
   coverageProvider: "v8",
   roots: ["./tests/unit/"],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" }),
+  reporters: [
+    "default",
+    [
+      "jest-junit",
+      {
+        outputDirectory: "./test-results",
+        outputName: "test-results.xml",
+      },
+    ],
+  ],
 }
 
 module.exports = config
