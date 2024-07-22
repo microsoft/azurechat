@@ -33,7 +33,7 @@ export const NavBar: React.FC<{ session: Session | null }> = ({ session }) => {
       <div className="container hidden md:block">
         <div dir="ltr" className="grid grid-cols-6">
           {visibleLinks.map(link => (
-            <div key={link.name} className="col-span-1 flex min-h-[40px] items-center justify-center">
+            <div key={link.name} className="relative col-span-1 flex min-h-[40px] items-center justify-center">
               <a
                 key={link.name}
                 href={link.href}
