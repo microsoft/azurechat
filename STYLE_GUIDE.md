@@ -1,8 +1,8 @@
-## QChat Style Guide
+# QChat Style Guide
 
 This style guide ensures consistency and readability across the QChat codebase. The project uses Prettier for automatic code formatting. Below are the specific configurations and guidelines to follow:
 
-### General Formatting
+## General Formatting
 
 - **Tab Width:** Use 2 spaces for indentation.
 - **Tabs:** Do not use tabs for indentation.
@@ -38,7 +38,7 @@ module.exports = {
 };
 ```
 
-### Additional Guidelines
+## Additional Guidelines
 
 - **File Naming:** Use kebab-case for file names (e.g., `my-component.js`).
 - **Component Naming:** Use PascalCase for React components (e.g., `MyComponent`).
@@ -56,9 +56,9 @@ To format your code with Prettier, run the following command:
 npx prettier --write .
 ```
 
-### Code Style Guide: React Patterns and Best Practices
+## Code Style Guide: React Patterns and Best Practices
 
-#### Skeleton of a Provider
+### Skeleton of a Provider
 
 When creating a context provider in React, follow this basic structure to ensure consistency and readability:
 
@@ -260,6 +260,13 @@ const memoizedCallback = useCallback(() => {
   doSomething(a, b);
 }, [a, b]); // Dependencies array: `useCallback` will return the same function instance until `a` or `b` changes
 ```
+
+### Interact with backend features
+
+There are 2 ways of interacting with backend features, either via an api route or by calling a backend function directly. It's important to use the right way depending on the situation:
+
+- **React Server Components** (aka. RSC): Directly call backend functions.
+- **Client-Side Components** (with `"use client"` directive): Use API routes to interact with the backend, typically wrapped in a `useEffect`
 
 > **Note :** Understanding and applying these patterns and practices can enhance code readability, maintainability, and performance.
 

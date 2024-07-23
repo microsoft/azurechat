@@ -2,7 +2,7 @@
 
 import { UrlObject } from "url"
 
-import { CloudUpload, SpellCheck2, X, LogIn, LogOut, Moon, Sun, Home, Bookmark, UserCog } from "lucide-react"
+import { X, LogIn, LogOut, Moon, Sun } from "lucide-react"
 import Link from "next/link"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useTheme } from "next-themes"
@@ -11,6 +11,7 @@ import React, { useCallback, useState } from "react"
 import { signInProvider } from "@/app-global"
 
 import Typography from "@/components/typography"
+import { MenuItems, validateCondition } from "@/features/common/menu-items"
 import { cn } from "@/lib/utils"
 
 interface MiniMenuItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
@@ -41,13 +42,9 @@ const MiniMenuItem: React.FC<MiniMenuItemProps> = ({ href, icon: Icon, name, ari
 export const MiniMenu: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { data: session } = useSession({ required: false })
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
 
   const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), [])
-  const toggleThemeAndClose = useCallback(() => {
-    setIsMenuOpen(prev => !prev)
-    setTheme(prev => (prev === "light" ? "dark" : "light"))
-  }, [setTheme])
   const signout = useCallback(async () => {
     await signOut({ callbackUrl: "/" })
     setIsMenuOpen(false)
@@ -57,39 +54,38 @@ export const MiniMenu: React.FC = () => {
     setIsMenuOpen(false)
   }, [])
 
-  const menuItems = [
-    { name: "Home", href: "/chat", icon: Home, ariaLabel: "Navigate to home page" },
-    { name: "Settings", href: "/settings", icon: UserCog, ariaLabel: "Navigate to settings" },
-    { name: "Prompt Guide", href: "/prompt-guide", icon: Bookmark, ariaLabel: "Navigate to prompt guide" },
-    { name: "What's New", href: "/whats-new", icon: CloudUpload, ariaLabel: "Navigate to what's new page" },
-    {
-      name: "Factual Errors",
-      href: "/hallucinations",
-      icon: SpellCheck2,
-      ariaLabel: "Help with factual errors",
-    },
-  ]
+  const filteredMenuItems = MenuItems.filter(validateCondition(session))
 
   return (
     <>
-      <div
-        onClick={toggleMenu}
-        className="h-full cursor-pointer flex-col items-center justify-center border-accent text-darkAltButton hover:bg-background hover:underline"
-        aria-expanded="false"
-        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-        role="button"
-        tabIndex={0}
-      >
-        {isMenuOpen ? (
+      {isMenuOpen ? (
+        <div
+          onClick={toggleMenu}
+          className="h-full cursor-pointer flex-col items-center justify-center border-accent text-darkAltButton hover:bg-background hover:underline"
+          aria-expanded="true"
+          aria-label="Close menu"
+          role="button"
+          tabIndex={0}
+        >
           <X className="items-center hover:bg-link" aria-hidden="true" />
-        ) : (
+          Menu
+        </div>
+      ) : (
+        <div
+          onClick={toggleMenu}
+          className="h-full cursor-pointer flex-col items-center justify-center border-accent text-darkAltButton hover:bg-background hover:underline"
+          aria-expanded="false"
+          aria-label="Open menu"
+          role="button"
+          tabIndex={0}
+        >
           <div
             className="hover:text-darkAltButtonHover rounded-md pl-2 text-darkAltButton hover:bg-buttonHover"
             aria-hidden="true"
           />
-        )}
-        Menu
-      </div>
+          Menu
+        </div>
+      )}
       {isMenuOpen && (
         <div className="fixed inset-0 z-[99999] bg-altBackground text-link" role="dialog" aria-modal="true">
           <div className="absolute right-0 top-0 m-4 h-2/6">
@@ -107,40 +103,61 @@ export const MiniMenu: React.FC = () => {
             Menu
           </Typography>
           <div className="mt-16 p-2">
-            {menuItems.map(item => (
+            {filteredMenuItems.map(item => (
               <MiniMenuItem key={item.name} closeMenu={toggleMenu} {...item} />
             ))}
-            <div
-              onClick={toggleThemeAndClose}
-              className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 text-link hover:bg-accent hover:text-accent-foreground"
-              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-              role="button"
-              tabIndex={0}
-            >
-              {theme === "dark" ? <Sun className="mr-2 size-4" /> : <Moon className="mr-2 size-4" />}
-              {theme === "dark" ? "Light Mode" : "Dark Mode"}
-            </div>
+            <hr className="mx-4 my-2 w-1/2 border-t border-text" />
+            {resolvedTheme === "dark" ? (
+              <div
+                onClick={() => {
+                  setTheme("light")
+                  setIsMenuOpen(false)
+                }}
+                className="flex cursor-pointer items-center gap-2 whitespace-nowrap px-6 py-2 text-link hover:bg-accent hover:text-accent-foreground"
+                aria-label="Switch to light mode"
+                role="button"
+                tabIndex={0}
+              >
+                <Sun className="size-4" />
+                Switch to light mode
+              </div>
+            ) : (
+              <div
+                onClick={() => {
+                  setTheme("dark")
+                  setIsMenuOpen(false)
+                }}
+                className="flex cursor-pointer items-center gap-2 whitespace-nowrap px-6 py-2 text-link hover:bg-accent hover:text-accent-foreground"
+                aria-label="Switch to dark mode"
+                role="button"
+                tabIndex={0}
+              >
+                <Moon className="size-4" />
+                Switch to dark mode
+              </div>
+            )}
+            <hr className="m-4 border-t border-text" />
             {session ? (
               <div
                 onClick={signout}
-                className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 hover:bg-accent hover:text-accent-foreground"
+                className="flex cursor-pointer items-center justify-end gap-2 whitespace-nowrap px-6 py-2 hover:bg-accent hover:text-accent-foreground"
                 aria-label="Logout"
                 role="button"
                 tabIndex={0}
               >
-                <LogOut className="mr-2 size-4" />
                 Logout
+                <LogOut className="size-4" />
               </div>
             ) : (
               <div
                 onClick={signin}
-                className="flex cursor-pointer items-center whitespace-nowrap px-6 py-2 hover:bg-accent hover:text-accent-foreground"
+                className="flex cursor-pointer items-center justify-end gap-2 whitespace-nowrap px-6 py-2 hover:bg-accent hover:text-accent-foreground"
                 aria-label="Login"
                 role="button"
                 tabIndex={0}
               >
-                <LogIn className="mr-2 size-4" />
                 Login
+                <LogIn className="size-4" />
               </div>
             )}
           </div>

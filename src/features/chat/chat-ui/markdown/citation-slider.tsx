@@ -1,14 +1,12 @@
 "use client"
 
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
 import { FC, useCallback } from "react"
 import { useFormState } from "react-dom"
 
-import { APP_NAME } from "@/app-global"
-
-import Typography from "@/components/typography"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { Button } from "@/features/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/features/ui/sheet"
+import { Sheet, SheetContent, SheetTitle, SheetTrigger, SheetDescription } from "@/features/ui/sheet"
 
 import { CitationAction } from "./citation-action"
 
@@ -36,8 +34,9 @@ export const CitationSlider: FC<SliderProps> = props => {
     formData.append("tenantId", tenantId)
     formData.append("chatThreadId", chatThreadId)
     formData.append("order", props.order.toString())
+    formData.append("name", props.name)
     formAction(formData)
-  }, [props.index, props.id, userId, tenantId, chatThreadId, props.order, formAction])
+  }, [props.index, props.id, userId, tenantId, chatThreadId, props.order, props.name, formAction])
 
   return (
     <form>
@@ -45,7 +44,7 @@ export const CitationSlider: FC<SliderProps> = props => {
       <Sheet>
         <SheetTrigger asChild>
           <Button
-            ariaLabel={`Citation number ${props.order}`}
+            ariaLabel={`Open citation number ${props.order}`}
             variant="outline"
             onClick={handleButtonClick}
             type="button"
@@ -54,23 +53,12 @@ export const CitationSlider: FC<SliderProps> = props => {
             {props.order}
           </Button>
         </SheetTrigger>
-        <SheetContent aria-modal="true" role="dialog" aria-labelledby={"Section" + props.order}>
-          <SheetHeader>
-            <SheetTitle id={"Section" + props.order}>Citation for Section {props.order}</SheetTitle>
-          </SheetHeader>
-          <Typography variant="p" className="">
-            {node}
-          </Typography>
-          <Typography variant="h2" className="p-2">
-            Understanding Citations
-          </Typography>
-          <Typography variant="p" className="p-2">
-            The citation presented is a specific snippet from your document, selected by {APP_NAME} through
-            Retrieval-Augmented Generation (RAG) for its relevance to your question. If the snippets seem unrelated, it
-            might suggest that {APP_NAME} needs more context or clearer questions to accurately pinpoint the right
-            information. This method aims to deliver focused and relevant insights, but sometimes it may need further
-            clarification to match your question precisely.
-          </Typography>
+        <SheetContent aria-modal="true" role="dialog" aria-labelledby={undefined} aria-describedby={undefined}>
+          <SheetTitle>Citation for Section {props.order}</SheetTitle>
+          <VisuallyHidden.Root>
+            <SheetDescription>Detailed information about citation number {props.order}.</SheetDescription>
+          </VisuallyHidden.Root>
+          {node}
         </SheetContent>
       </Sheet>
     </form>

@@ -77,15 +77,8 @@ export const ChatTypeSelector: FC<Prop> = ({ disable }) => {
             <br />
             <strong>File</strong> - Upload PDF files to {APP_NAME} for questions or task completion based on it.
             <br />
-            {isAllowedTenant ? (
-              <>
-                <strong>Transcription</strong> - Available for authorised agencies.
-              </>
-            ) : (
-              <>
-                <strong>Transcription</strong> - is restricted to authorised agencies.
-              </>
-            )}
+            <strong>Transcription</strong>
+            {isAllowedTenant ? " - Available for authorised agencies." : " - Restricted to authorised agencies."}
           </Typography>
           <Tooltip.Arrow className="fill-primary-foreground" />
         </Tooltip.Content>

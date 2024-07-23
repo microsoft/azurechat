@@ -1,3 +1,4 @@
+import { ServerActionResponseAsync } from "@/features/common/server-action-response"
 import { OpenAIEmbeddingInstance } from "@/services/open-ai"
 
 export interface AzureCogDocumentIndex {
@@ -71,10 +72,10 @@ export const simpleSearch = async (
     vectorQueries: [],
   }
 
-  const resultDocuments = (await fetcher(url, {
+  const resultDocuments = await fetcher<DocumentSearchResponseModel<AzureCogDocumentIndex & DocumentSearchModel>>(url, {
     method: "POST",
     body: JSON.stringify(searchBody),
-  })) as DocumentSearchResponseModel<AzureCogDocumentIndex & DocumentSearchModel>
+  })
 
   return resultDocuments.value
 }
@@ -109,10 +110,10 @@ export const similaritySearchVectorWithScore = async (
     vectorQueries: [{ vector: embeddings.data[0].embedding, fields: "embedding", k: k, kind: "vector" }],
   }
 
-  const resultDocuments = (await fetcher(url, {
+  const resultDocuments = await fetcher<DocumentSearchResponseModel<AzureCogDocumentIndex & DocumentSearchModel>>(url, {
     method: "POST",
     body: JSON.stringify(searchBody),
-  })) as DocumentSearchResponseModel<AzureCogDocumentIndex & DocumentSearchModel>
+  })
 
   return resultDocuments.value
 }
@@ -125,7 +126,7 @@ export const indexDocuments = async (documents: Array<AzureCogDocumentIndex>): P
     value: documents,
   }
 
-  await fetcher(url, {
+  await fetcher<void>(url, {
     method: "POST",
     body: JSON.stringify(documentIndexRequest),
   })
@@ -145,10 +146,74 @@ export const deleteDocuments = async (chatThreadId: string, userId: string, tena
     documentsToDelete.push(doc)
   })
 
-  await fetcher(`${baseIndexUrl()}/docs/index?api-version=${process.env.AZURE_SEARCH_API_VERSION}`, {
+  await fetcher<void>(`${baseIndexUrl()}/docs/index?api-version=${process.env.AZURE_SEARCH_API_VERSION}`, {
     method: "POST",
     body: JSON.stringify({ value: documentsToDelete }),
   })
+}
+
+export const deleteDocumentById = async (
+  documentId: string,
+  chatThreadId: string,
+  userId: string,
+  tenantId: string
+): ServerActionResponseAsync<void> => {
+  const filter: AzureCogFilter = {
+    filter: `search.in(metadata, '${documentId}') and search.in(chatThreadId, '${chatThreadId}') and search.in(userId, '${userId}') and search.in(tenantId, '${tenantId}')`,
+  }
+
+  try {
+    const documents = await simpleSearch(userId, chatThreadId, tenantId, filter)
+
+    if (documents.length === 0) {
+      return {
+        status: "NOT_FOUND",
+        errors: [{ message: "No documents found to delete." }],
+      }
+    }
+
+    const documentsToDelete: DocumentDeleteModel[] = documents.map(document => ({
+      "@search.action": "delete",
+      id: document.id,
+    }))
+
+    const response = await fetcher<DocumentSearchResponseModel<{ status: boolean; key: string; errorMessage: string }>>(
+      `${baseIndexUrl()}/docs/index?api-version=${process.env.AZURE_SEARCH_API_VERSION}`,
+      {
+        method: "POST",
+        body: JSON.stringify({ value: documentsToDelete }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+
+    const failedDeletions = response.value.filter(result => !result.status)
+    if (failedDeletions.length > 0) {
+      return {
+        status: "ERROR",
+        errors: failedDeletions.map(result => ({
+          message: `Failed to delete document with key: ${result.key}, error: ${result.errorMessage}`,
+        })),
+      }
+    }
+
+    return {
+      status: "OK",
+      response: undefined,
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        status: "ERROR",
+        errors: [{ message: `Error deleting documents: ${error.message}` }],
+      }
+    }
+    return {
+      status: "ERROR",
+      errors: [{ message: `Error deleting documents: ${String(error)}` }],
+    }
+  }
 }
 
 export const embedDocuments = async (documents: Array<AzureCogDocumentIndex>): Promise<void> => {
@@ -164,9 +229,12 @@ export const embedDocuments = async (documents: Array<AzureCogDocumentIndex>): P
     embeddings.data.forEach((embedding, index) => {
       documents[index].embedding = embedding.embedding
     })
-  } catch (e: unknown) {
-    const error = e as { status: number }
-    throw new Error(`${e} with code ${error.status}`)
+  } catch (e) {
+    if (e instanceof Error) {
+      throw new Error(`${e.message}`)
+    } else {
+      throw new Error(`Unknown error: ${String(e)}`)
+    }
   }
 }
 
@@ -174,7 +242,7 @@ const baseIndexUrl = (): string => {
   return `${process.env.APIM_BASE}/indexes/${process.env.AZURE_SEARCH_INDEX_NAME}`
 }
 
-const fetcher = async (url: string, init?: RequestInit): Promise<unknown> => {
+const fetcher = async <T>(url: string, init?: RequestInit): Promise<T> => {
   const response = await fetch(url, {
     ...init,
     cache: "no-store",

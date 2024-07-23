@@ -1,5 +1,3 @@
-// ChatFilesDisplay.tsx
-
 import { FC } from "react"
 
 import Typography from "@/components/typography"
@@ -12,15 +10,17 @@ export const ChatFilesDisplay: FC<ChatFilesDisplayProps> = ({ files }) => {
   const descriptor = files.length > 1 ? "Files" : "File"
 
   return (
-    <div className="flex size-auto flex-col items-center justify-center gap-1 rounded-md bg-backgroundShade p-2">
-      <Typography variant="p" className="items-center font-bold" tabIndex={0}>
+    <div className="flex min-h-[40px] items-center gap-1 rounded-md bg-backgroundShade p-2">
+      <Typography variant="p" className="font-bold" tabIndex={0}>
         Uploaded {descriptor}:
       </Typography>
-      {files.map((file, index) => (
-        <Typography key={index} variant="span" className="mt-0 items-center" tabIndex={0}>
-          {file}
-        </Typography>
-      ))}
+      <div className="flex flex-wrap">
+        {files.map((file, index) => (
+          <Typography key={index} variant="span" className="ml-1" tabIndex={0}>
+            {file}
+          </Typography>
+        ))}
+      </div>
     </div>
   )
 }

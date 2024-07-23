@@ -65,8 +65,12 @@ export const ReportingMessageContainer: FC<Props> = ({ chatThreadId }) => {
             ? chatFiles.map(document => (
                 <ChatFileTranscription
                   key={document.id}
+                  chatThreadId={chatThreadId}
+                  documentId={document.id}
                   name={document.name}
                   contents={document.contents || ""}
+                  updatedContents={document.updatedContents || ""}
+                  accuracy={document.accuracy || 0}
                   vtt={document.extraContents || ""}
                 />
               ))

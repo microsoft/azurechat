@@ -22,7 +22,7 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   const { data: session } = useSession()
   const router = useRouter()
   const scrollRef = useRef<HTMLDivElement>(null)
-  const { messages, documents, isLoading, chatThreadLocked } = useChatContext()
+  const { messages, documents, isLoading, chatThreadLocked, chatBody } = useChatContext()
   const [selectedTab, setSelectedTab] = useState<SectionTabsProps["selectedTab"]>("chat")
 
   const [previousScrollTop, setPreviousScrollTop] = useState(0)
@@ -37,11 +37,19 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   }, [isLoading, router])
 
   useEffect(() => {
-    if (!isLoading) {
-      setSuppressScrolling(false)
-      setSelectedTab("chat")
+    if (isLoading) return
+    setSuppressScrolling(false)
+    if (messages.length === 0 && documents.length > 0) {
+      const chatFiles = documents.filter(document => document.contents)
+      if (chatFiles.length > 0) {
+        if (chatBody.chatType === "audio") {
+          setSelectedTab("transcription")
+        } else {
+          setSelectedTab("chat")
+        }
+      }
     }
-  }, [isLoading])
+  }, [isLoading, messages, documents, chatBody.chatType])
 
   const onScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>): void => {
@@ -80,8 +88,12 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
             ? chatFiles.map(document => (
                 <ChatFileTranscription
                   key={document.id}
+                  chatThreadId={chatThreadId}
+                  documentId={document.id}
                   name={document.name}
                   contents={document.contents || ""}
+                  updatedContents={document.updatedContents || ""}
+                  accuracy={document.accuracy || 0}
                   vtt={document.extraContents || ""}
                 />
               ))

@@ -17,19 +17,19 @@ export const ChatHeader: FC<Prop> = () => {
     <div className="flex items-start gap-2">
       <ChatSelectedOptions />
       <div className="hidden sm:block">
-        {chatBody.chatOverFileName.length != 0 && <ChatFilesDisplay files={files} />}
-      </div>
-      <div className="hidden sm:block">
         {(chatBody.internalReference?.length ?? 0) > 0 && (
-          <div className="flex size-auto flex-col items-center justify-center gap-1 rounded-md bg-backgroundShade p-2">
-            <Typography variant="p" className="items-center font-bold" tabIndex={0}>
+          <div className="flex min-h-[40px] items-center gap-1 rounded-md bg-backgroundShade p-2">
+            <Typography variant="p" className="font-bold" tabIndex={0}>
               {customRef?.label || "Reference ID"}:
             </Typography>
-            <Typography variant="span" className="mt-0 items-center" tabIndex={0}>
+            <Typography variant="span" className="ml-1" tabIndex={0}>
               {chatBody.internalReference}
             </Typography>
           </div>
         )}
+      </div>
+      <div className="hidden sm:block">
+        {chatBody.chatOverFileName.length !== 0 && <ChatFilesDisplay files={files} />}
       </div>
     </div>
   )

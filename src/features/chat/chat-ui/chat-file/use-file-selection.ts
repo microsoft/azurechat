@@ -2,6 +2,7 @@ import { IndexDocuments, UploadDocument } from "@/features/chat/chat-services/ch
 import { UpdateChatThreadToFileDetails } from "@/features/chat/chat-services/chat-thread-service"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { useGlobalMessageContext } from "@/features/globals/global-message-context"
+import { uniqueId } from "@/lib/utils"
 
 interface Props {
   id: string
@@ -44,7 +45,8 @@ export const useFileSelection = (
 
       try {
         setUploadButtonLabel(`Indexing file ${file.name}...`)
-        const indexResponse = await IndexDocuments(file.name, splitDocuments, props.id, contents, vtt)
+        const documentId = uniqueId()
+        const indexResponse = await IndexDocuments(file.name, splitDocuments, props.id, documentId, contents, vtt)
         if (indexResponse.status !== "OK") {
           indexErrors.push(indexResponse.errors[0].message)
         }

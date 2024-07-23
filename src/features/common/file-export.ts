@@ -362,6 +362,32 @@ export const convertMarkdownToWordDocument = async (
 
 export const convertTranscriptionReportToWordDocument = async (
   transcriptions: string[],
+  saveFileName: string
+): Promise<void> => {
+  try {
+    const transcriptObjects = transcriptions.map(details => ({ details }))
+
+    const doc = new Document({
+      sections: [
+        {
+          children: [createTranscriptTable(transcriptObjects)],
+        },
+      ],
+    })
+
+    const blob = await Packer.toBlob(doc)
+    saveAs(blob, saveFileName)
+    showSuccess({
+      title: "Success",
+      description: "Transcriptions exported to Word document",
+    })
+  } catch (error) {
+    showError("Failed to export transcriptions to Word document: " + error)
+  }
+}
+
+export const convertTranscriptionToWordDocument = async (
+  transcriptions: string[],
   audioFileName: string,
   saveFileName: string,
   aiName: string,
@@ -403,31 +429,74 @@ export const convertTranscriptionReportToWordDocument = async (
   )
 }
 
-export const convertTranscriptionToWordDocument = async (
-  transcriptions: string[],
-  saveFileName: string
-): Promise<void> => {
-  try {
-    const transcriptObjects = transcriptions.map(details => ({ details }))
+// export const convertTranscriptionReportToWordDocument = async (
+//   transcriptions: string[],
+//   audioFileName: string,
+//   saveFileName: string,
+//   aiName: string,
+//   chatThreadName: string
+// ): Promise<void> => {
+//   const messageParagraphPromises = transcriptions.map(transcription => {
+//     const speaker = "Offender Contact"
+//     const authorParagraph = new Paragraph({
+//       text: `${audioFileName}:`,
+//       heading: HeadingLevel.HEADING_2,
+//       style: "MyCustomHeading1",
+//     })
 
-    const doc = new Document({
-      sections: [
-        {
-          children: [createTranscriptTable(transcriptObjects)],
-        },
-      ],
-    })
+//     const paragraphs = transcription
+//       .split("\n\n")
+//       .flatMap(paragraph => paragraph.split("\n").map(line => `${speaker}: ${line}`))
 
-    const blob = await Packer.toBlob(doc)
-    saveAs(blob, saveFileName)
-    showSuccess({
-      title: "Success",
-      description: "Transcriptions exported to Word document",
-    })
-  } catch (error) {
-    showError("Failed to export transcriptions to Word document: " + error)
-  }
-}
+//     const contentParagraphs = paragraphs.map(line => {
+//       const textRun = new TextRun({
+//         text: line.replace("Offender Contact ", ""),
+//       })
+
+//       return new Paragraph({
+//         children: [textRun],
+//         style: "MyCustomParagraph",
+//       })
+//     })
+
+//     return [authorParagraph, ...contentParagraphs, new Paragraph({ style: "MyCustomParagraph" })]
+//   })
+
+//   const messageParagraphs = await Promise.all(messageParagraphPromises)
+
+//   await convertParagraphsToWordDocument(
+//     [Promise.resolve(messageParagraphs.flat())],
+//     saveFileName,
+//     aiName,
+//     chatThreadName
+//   )
+// }
+
+// export const convertTranscriptionToWordDocument = async (
+//   transcriptions: string[],
+//   saveFileName: string
+// ): Promise<void> => {
+//   try {
+//     const transcriptObjects = transcriptions.map(details => ({ details }))
+
+//     const doc = new Document({
+//       sections: [
+//         {
+//           children: [createTranscriptTable(transcriptObjects)],
+//         },
+//       ],
+//     })
+
+//     const blob = await Packer.toBlob(doc)
+//     saveAs(blob, saveFileName)
+//     showSuccess({
+//       title: "Success",
+//       description: "Transcriptions exported to Word document",
+//     })
+//   } catch (error) {
+//     showError("Failed to export transcriptions to Word document: " + error)
+//   }
+// }
 
 const convertParagraphsToWordDocument = async (
   paragraphs: Promise<Paragraph[]>[],

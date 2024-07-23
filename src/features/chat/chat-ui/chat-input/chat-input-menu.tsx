@@ -1,7 +1,7 @@
 import { Message } from "ai"
 import { Menu, File, Clipboard } from "lucide-react"
 import { getSession } from "next-auth/react"
-import React, { useEffect, useRef, useCallback } from "react"
+import React, { useCallback } from "react"
 
 import { APP_NAME } from "@/app-global"
 
@@ -21,13 +21,7 @@ interface ChatInputMenuProps {
 }
 const ChatInputMenu: React.FC<ChatInputMenuProps> = ({ onDocExport }) => {
   const { messages } = useChatContext()
-  const firstMenuItemRef = useRef<HTMLDivElement>(null)
   const { showError, showSuccess } = useGlobalMessageContext()
-  useEffect(() => {
-    if (firstMenuItemRef.current) {
-      firstMenuItemRef.current.focus()
-    }
-  }, [])
 
   const copyToClipboard = useCallback(async (): Promise<void> => {
     try {

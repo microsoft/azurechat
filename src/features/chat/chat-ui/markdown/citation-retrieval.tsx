@@ -17,7 +17,7 @@ export const citationRetrieval = async (
   const firstResult = result[0]
 
   return {
-    Filename: firstResult.metadata,
+    Filename: firstResult.fileName,
     Content: firstResult.pageContent,
     Section: firstResult.order,
   }
