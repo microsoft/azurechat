@@ -7,9 +7,9 @@ export const transformConversationStyleToTemperature = (conversationStyle: Conve
     case "balanced":
       return 0.5
     case "creative":
-      return 2
-    default:
       return 1
+    default:
+      return 0
   }
 }
 

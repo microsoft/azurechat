@@ -102,7 +102,6 @@ export const UpdateTenant = async (tenant: TenantRecord): ServerActionResponseAs
     const currentUser = await userHashedId()
     const updateTimestamp = new Date().toISOString()
 
-    // update tenant history
     const keysToTrack: (keyof TenantRecord)[] = [
       "primaryDomain",
       "email",
@@ -131,7 +130,6 @@ export const UpdateTenant = async (tenant: TenantRecord): ServerActionResponseAs
       ]
     }
 
-    // update tenant preferences history
     for (const k in tenant.preferences) {
       const key = k as keyof TenantPreferences
       if (key === "history" || oldTenant.preferences?.[key] === tenant.preferences[key]) continue

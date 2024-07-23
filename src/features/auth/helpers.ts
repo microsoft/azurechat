@@ -31,7 +31,8 @@ export const isTenantAdmin = async (): Promise<boolean> => {
   if (!userModel) throw new Error("User not found")
   const tenant = await GetTenantById(userModel.tenantId)
   if (tenant.status !== "OK") throw new Error("Tenant not found")
-  return tenant.response.administrators.includes(userModel.upn || userModel.email)
+  const userIdentifier = (userModel.upn || userModel.email).toLowerCase()
+  return tenant.response.administrators.map(admin => admin.toLowerCase()).includes(userIdentifier)
 }
 
 export const getTenantId = async (): Promise<string> => {
@@ -69,5 +70,6 @@ export const isAdminOrTenantAdmin = async (): Promise<boolean> => {
   if (userModel.admin) return true
   const tenant = await GetTenantById(userModel.tenantId)
   if (tenant.status !== "OK") return false
-  return tenant.response.administrators.includes(userModel.upn || userModel.email)
+  const userIdentifier = (userModel.upn || userModel.email).toLowerCase()
+  return tenant.response.administrators.map(admin => admin.toLowerCase()).includes(userIdentifier)
 }
