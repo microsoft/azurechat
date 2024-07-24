@@ -10,12 +10,14 @@ import { ChatFileTranscription } from "@/components/chat/chat-file-transcription
 import { ChatFileView } from "@/components/chat/chat-file-view"
 import ChatLoading from "@/components/chat/chat-loading"
 import ChatRow from "@/components/chat/chat-row"
+import TranscriptEditorProvider from "@/components/chat/chat-transcript-editor/transcript-editor-provider"
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatHeader } from "@/features/chat/chat-ui/chat-header"
 import { ChatRole } from "@/features/chat/models"
 import { Button } from "@/features/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
+
 interface Props {
   chatThreadId: string
 }
@@ -63,16 +65,19 @@ export const ReportingMessageContainer: FC<Props> = ({ chatThreadId }) => {
             ))
           : selectedTab === "transcription"
             ? chatFiles.map(document => (
-                <ChatFileTranscription
+                <TranscriptEditorProvider
                   key={document.id}
-                  chatThreadId={chatThreadId}
-                  documentId={document.id}
-                  name={document.name}
-                  contents={document.contents || ""}
-                  updatedContents={document.updatedContents || ""}
-                  accuracy={document.accuracy || 0}
-                  vtt={document.extraContents || ""}
-                />
+                  originalContent={document.contents}
+                  updatedContent={document.updatedContents}
+                >
+                  <ChatFileTranscription
+                    key={document.id}
+                    chatThreadId={chatThreadId}
+                    documentId={document.id}
+                    name={document.name}
+                    vtt={document.extraContents || ""}
+                  />
+                </TranscriptEditorProvider>
               ))
             : selectedTab === "document"
               ? chatFiles.map(document => (

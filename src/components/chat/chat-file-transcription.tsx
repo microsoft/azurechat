@@ -1,5 +1,7 @@
-import { DownloadIcon, CaptionsIcon, FileTextIcon } from "lucide-react"
-import { FC, useCallback, useState, useEffect } from "react"
+"use client"
+
+import { DownloadIcon, CaptionsIcon, FileTextIcon, SaveIcon } from "lucide-react"
+import { FC, useCallback, useState } from "react"
 
 import { APP_NAME } from "@/app-global"
 
@@ -16,39 +18,32 @@ import { useButtonStyles } from "@/features/ui/assistant-buttons/use-button-styl
 import { Button } from "@/features/ui/button"
 
 import { ChatTranscriptEditor } from "./chat-transcript-change"
+import { useTranscriptEditor } from "./chat-transcript-editor/transcript-editor-provider"
 
 interface ChatFileTranscriptionProps {
   chatThreadId: string
   documentId: string
   name: string
-  contents: string
-  updatedContents: string
-  accuracy: number
   vtt: string
 }
-
 export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
+  const { content, reset, undo, save } = useTranscriptEditor()
+
   const { chatBody, setInput } = useChatContext()
   const [feedbackMessage, setFeedbackMessage] = useState("")
-  const [displayedContents, setDisplayedContents] = useState(props.updatedContents || props.contents)
   const fileTitle = props.name.replace(/[^a-zA-Z0-9]/g, " ").trim()
-
-  useEffect(() => {
-    setDisplayedContents(props.updatedContents || props.contents)
-  }, [props.updatedContents, props.contents])
-
-  const showTranscriptWithSpeakers = "**Speaker:** " + displayedContents.replace(/\n/g, "\n\n**Speaker:** ")
+  const showTranscriptWithSpeakers = "**Speaker:** " + content.replace(/\n/g, "\n\n**Speaker:** ")
 
   const onDownloadTranscription = useCallback(async (): Promise<void> => {
     const fileName = `${fileTitle}-transcription.docx`
     const chatThreadName = chatBody.chatThreadName || `${APP_NAME} ${fileName}`
-    await convertTranscriptionToWordDocument([displayedContents], props.name, fileName, APP_NAME, chatThreadName)
-  }, [displayedContents, props.name, chatBody.chatThreadName, fileTitle])
+    await convertTranscriptionToWordDocument([content], props.name, fileName, APP_NAME, chatThreadName)
+  }, [content, props.name, chatBody.chatThreadName, fileTitle])
 
   const onDownloadReport = useCallback(async (): Promise<void> => {
     const fileName = `${fileTitle}-report.docx`
-    await convertTranscriptionReportToWordDocument([displayedContents], fileName)
-  }, [fileTitle, displayedContents])
+    await convertTranscriptionReportToWordDocument([content], fileName)
+  }, [fileTitle, content])
 
   const onDownloadVttFile = useCallback((): void => {
     const element = document.createElement("a")
@@ -61,14 +56,15 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
 
   const { iconSize, buttonClass } = useButtonStyles()
 
-  const handleSave = async (updatedContent: string): Promise<void> => {
+  const handleSave = async (): Promise<void> => {
     try {
       const response = await fetch(`/api/chat/${props.chatThreadId}/document/${props.documentId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ updatedContent }),
+        body: JSON.stringify({ updatedContent: content }),
       })
       if (!response.ok) throw new Error("Failed to save document.")
+      save()
       showSuccess({ title: "Document saved successfully" })
     } catch (err) {
       const error = err instanceof Error ? err.message : "Something went wrong and the document has not been saved."
@@ -83,48 +79,68 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
           <Typography variant="h3" className="flex-1">
             Transcription of: <b>{props.name}</b>
           </Typography>
-          <div className="flex flex-1 justify-end gap-2">
-            <Button
-              ariaLabel="Download Transcription"
-              variant={"ghost"}
-              size={"default"}
-              className={buttonClass}
-              title="Download Transcription"
-              onClick={onDownloadTranscription}
-            >
-              <DownloadIcon size={iconSize} />
-            </Button>
-            <Button
-              ariaLabel="Download Report"
-              variant={"ghost"}
-              size={"default"}
-              className={buttonClass}
-              title="Download Report"
-              onClick={onDownloadReport}
-            >
-              <FileTextIcon size={iconSize} />
-            </Button>
-            {props.vtt.length && (
+          <div className="flex flex-1 justify-between">
+            <div className="flex gap-2">
+              <Button variant="destructive" onClick={reset} ariaLabel="Reset from original" className={buttonClass}>
+                Reset
+              </Button>
               <Button
-                ariaLabel="Download WebVTT subtitles file"
+                variant="outline"
+                onClick={undo}
+                className={`${buttonClass} hover:bg-error`}
+                ariaLabel="Reset from latest update"
+              >
+                Undo
+              </Button>
+              <Button
+                variant="accent"
+                onClick={handleSave}
+                ariaLabel="Save changes"
+                className={`${buttonClass} flex gap-2`}
+              >
+                <SaveIcon size={iconSize} />
+                Save
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                ariaLabel="Download Transcription"
                 variant={"ghost"}
                 size={"default"}
                 className={buttonClass}
-                title="Download WebVTT subtitles file"
-                onClick={onDownloadVttFile}
+                title="Download Transcription"
+                onClick={onDownloadTranscription}
               >
-                <CaptionsIcon size={iconSize} />
+                <DownloadIcon size={iconSize} />
               </Button>
-            )}
-            <CheckTranscriptionButton transcription={showTranscriptWithSpeakers} onAssistantButtonClick={setInput} />
-            <CopyButton message={showTranscriptWithSpeakers} onFeedbackChange={setFeedbackMessage} />
+              <Button
+                ariaLabel="Download Report"
+                variant={"ghost"}
+                size={"default"}
+                className={buttonClass}
+                title="Download Report"
+                onClick={onDownloadReport}
+              >
+                <FileTextIcon size={iconSize} />
+              </Button>
+              {props.vtt.length && (
+                <Button
+                  ariaLabel="Download WebVTT subtitles file"
+                  variant={"ghost"}
+                  size={"default"}
+                  className={buttonClass}
+                  title="Download WebVTT subtitles file"
+                  onClick={onDownloadVttFile}
+                >
+                  <CaptionsIcon size={iconSize} />
+                </Button>
+              )}
+              <CheckTranscriptionButton transcription={showTranscriptWithSpeakers} onAssistantButtonClick={setInput} />
+              <CopyButton message={showTranscriptWithSpeakers} onFeedbackChange={setFeedbackMessage} />
+            </div>
           </div>
         </div>
-        <ChatTranscriptEditor
-          originalContent={props.contents}
-          updatedContent={displayedContents}
-          onChange={handleSave}
-        />
+        <ChatTranscriptEditor />
         <div className="sr-only" aria-live="assertive">
           {feedbackMessage}
         </div>

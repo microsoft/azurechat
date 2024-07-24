@@ -1,6 +1,8 @@
+"use client"
+
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { APP_NAME } from "@/app-global"
 
@@ -8,6 +10,7 @@ import { ChatFileTranscription } from "@/components/chat/chat-file-transcription
 import { ChatFileView } from "@/components/chat/chat-file-view"
 import ChatLoading from "@/components/chat/chat-loading"
 import ChatRow from "@/components/chat/chat-row"
+import TranscriptEditorProvider from "@/components/chat/chat-transcript-editor/transcript-editor-provider"
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor"
 import { ChatRole } from "@/features/chat/models"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
@@ -39,26 +42,21 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
   useEffect(() => {
     if (isLoading) return
     setSuppressScrolling(false)
-    if (messages.length === 0 && documents.length > 0) {
-      const chatFiles = documents.filter(document => document.contents)
-      if (chatFiles.length > 0) {
-        if (chatBody.chatType === "audio") {
-          setSelectedTab("transcription")
-        } else {
-          setSelectedTab("chat")
-        }
-      }
-    }
-  }, [isLoading, messages, documents, chatBody.chatType])
+  }, [isLoading])
 
-  const onScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement>): void => {
-      if (!isLoading) return
-      if (e.currentTarget.scrollTop < previousScrollTop) setSuppressScrolling(true)
-      setPreviousScrollTop(e.currentTarget.scrollTop)
-    },
-    [isLoading, previousScrollTop]
-  )
+  useEffect(() => {
+    if (messages.length || !documents.length) return
+    const chatFiles = documents.filter(document => document.contents)
+    if (!chatFiles.length) return
+    if (chatBody.chatType === "audio") setSelectedTab("transcription")
+    else setSelectedTab("chat")
+  }, [chatBody.chatType, documents, messages.length])
+
+  const onScroll = (e: React.UIEvent<HTMLDivElement>): void => {
+    if (!isLoading) return
+    if (e.currentTarget.scrollTop < previousScrollTop) setSuppressScrolling(true)
+    setPreviousScrollTop(e.currentTarget.scrollTop)
+  }
 
   const chatFiles = documents.filter(document => document.contents)
 
@@ -86,16 +84,19 @@ export const ChatMessageContainer: React.FC<Props> = ({ chatThreadId }) => {
             ))
           : selectedTab === "transcription"
             ? chatFiles.map(document => (
-                <ChatFileTranscription
+                <TranscriptEditorProvider
                   key={document.id}
-                  chatThreadId={chatThreadId}
-                  documentId={document.id}
-                  name={document.name}
-                  contents={document.contents || ""}
-                  updatedContents={document.updatedContents || ""}
-                  accuracy={document.accuracy || 0}
-                  vtt={document.extraContents || ""}
-                />
+                  originalContent={document.contents}
+                  updatedContent={document.updatedContents}
+                >
+                  <ChatFileTranscription
+                    key={document.id}
+                    chatThreadId={chatThreadId}
+                    documentId={document.id}
+                    name={document.name}
+                    vtt={document.extraContents || ""}
+                  />
+                </TranscriptEditorProvider>
               ))
             : selectedTab === "document"
               ? chatFiles.map(document => (

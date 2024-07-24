@@ -13,7 +13,6 @@ type SentenceProps = {
   id: string
   sentence: Sentence
   speaker: Speaker
-  background: string
   onChange: (sentence: Sentence) => void
   onMergeUp?: () => void
   onMergeDown?: () => void
@@ -22,7 +21,6 @@ type SentenceProps = {
 export const TranscriptSentence = ({
   sentence,
   speaker,
-  background,
   onChange,
   onMergeUp,
   onMergeDown,
@@ -41,7 +39,7 @@ export const TranscriptSentence = ({
 
   return (
     <div
-      className={`${background} group flex cursor-pointer items-start gap-2 rounded-sm border-2 border-transparent p-2 hover:border-accent`}
+      className={`${speaker?.background} group flex cursor-pointer items-start gap-2 rounded-sm border-2 border-transparent p-2 hover:border-accent`}
     >
       {isEditing ? (
         <SentenceForm id={sentence.id} line={sentence.line} onChange={handleChange} />
@@ -75,38 +73,26 @@ const SentenceDisplay = ({
 }: SentenceDisplayProps): JSX.Element => {
   const { line } = sentence
 
-  const handleMergeUpClick = useCallback((): void => {
-    if (onMergeUp) {
-      onMergeUp()
-    }
-  }, [onMergeUp])
-
-  const handleMergeDownClick = useCallback((): void => {
-    if (onMergeDown) {
-      onMergeDown()
-    }
-  }, [onMergeDown])
-
   return (
     <>
-      <div className={`flex flex-col ${speaker ? "gap-2" : ""}`}>
+      <div className={`flex flex-col ${speaker ? "gap-1" : ""}`}>
         {speaker && <b className="text-nowrap">{speaker.name}</b>}
         <div className="grid grid-cols-3 gap-1">
-          {onMergeUp ? (
+          {onMergeUp && (
             <Button
-              className="opacity-20 group-hover:opacity-100"
+              role="button"
+              className="col-start-1 opacity-20 group-hover:opacity-100"
               size="sm"
               variant="accent"
               ariaLabel="Merge Up"
-              onClick={handleMergeUpClick}
+              onClick={onMergeUp}
             >
               <ArrowUp size={16} />
             </Button>
-          ) : (
-            <div />
           )}
           <Button
-            className="opacity-20 group-hover:opacity-100"
+            role="button"
+            className="col-start-2 opacity-20 group-hover:opacity-100"
             size="sm"
             variant="accent"
             ariaLabel="Edit"
@@ -114,24 +100,28 @@ const SentenceDisplay = ({
           >
             <Pencil size={16} />
           </Button>
-          {onMergeDown ? (
+          {onMergeDown && (
             <Button
-              className="opacity-20 group-hover:opacity-100"
+              role="button"
+              className="col-start-3 opacity-20 group-hover:opacity-100"
               size="sm"
               variant="accent"
               ariaLabel="Merge Down"
-              onClick={handleMergeDownClick}
+              onClick={onMergeDown}
             >
               <ArrowDown size={16} />
             </Button>
-          ) : (
-            <div />
           )}
         </div>
       </div>
       <div className="flex flex-1 items-center">
         <div className="flex flex-1">
-          <span className="w-full">{line.replace(/\[(.*?)\]/, "").replace(/\((.*?)\)/, "")}</span>
+          <span className="w-full">
+            {line
+              .replace(/\[(.*?)\]/, "")
+              .replace(/\((.*?)\)/, "")
+              .replace(/(.*?):/, "")}
+          </span>
         </div>
       </div>
     </>
@@ -143,7 +133,6 @@ type SentenceFormProps = {
   line: string
   onChange: (line: string) => void
 }
-
 const SentenceForm = ({ id, line, onChange }: SentenceFormProps): JSX.Element => {
   const [input, setInput] = useState(line)
 

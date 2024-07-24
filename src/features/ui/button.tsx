@@ -56,6 +56,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
+        onClick={
+          props.onClick
+            ? e => {
+                e.preventDefault()
+                props.onClick?.(e)
+              }
+            : undefined
+        }
         aria-label={ariaLabel || props.children?.toString()}
       />
     )
