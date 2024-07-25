@@ -1,6 +1,6 @@
 "use client"
 
-import { DownloadIcon, CaptionsIcon, FileTextIcon, SaveIcon } from "lucide-react"
+import { DownloadIcon, CaptionsIcon, FileTextIcon, SaveIcon, Undo, Undo2 } from "lucide-react"
 import { FC, useCallback, useState } from "react"
 
 import { APP_NAME } from "@/app-global"
@@ -81,15 +81,22 @@ export const ChatFileTranscription: FC<ChatFileTranscriptionProps> = props => {
           </Typography>
           <div className="flex flex-1 justify-between">
             <div className="flex gap-2">
-              <Button variant="destructive" onClick={reset} ariaLabel="Reset from original" className={buttonClass}>
+              <Button
+                variant="destructive"
+                onClick={reset}
+                ariaLabel="Reset from original"
+                className={`${buttonClass} flex gap-2`}
+              >
+                <Undo2 size={iconSize} />
                 Reset
               </Button>
               <Button
-                variant="outline"
+                variant="destructive"
                 onClick={undo}
-                className={`${buttonClass} hover:bg-error`}
+                className={`${buttonClass} flex gap-2`}
                 ariaLabel="Reset from latest update"
               >
+                <Undo size={iconSize} />
                 Undo
               </Button>
               <Button

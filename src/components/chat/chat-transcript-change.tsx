@@ -55,7 +55,7 @@ export const ChatTranscriptEditor: React.FC = () => {
                 size={16}
                 className={`${editorType === "text" ? "" : "rotate-90"} transition-all duration-300 ease-in`}
               />
-              {`Switch to ${editorType === "text" ? "Form" : "Text"} Editor`}
+              {`Switch to ${editorType === "text" ? "Form" : "Text"}`}
             </Button>
           </Typography>
           <Panel ref={rightPanel}>
