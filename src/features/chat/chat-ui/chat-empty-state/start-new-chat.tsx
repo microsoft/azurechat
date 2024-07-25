@@ -1,10 +1,9 @@
 import { FC } from "react"
 
-import { APP_NAME } from "@/app-global"
+import { APP_NAME, AI_TAGLINE } from "@/app-global"
 
 import Typography from "@/components/typography"
 import { NewChat } from "@/features/chat/chat-menu/new-chat"
-import { AI_TAGLINE } from "@/features/theme/theme-config"
 import { Card } from "@/features/ui/card"
 
 export const StartNewChat: FC<object> = () => {

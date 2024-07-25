@@ -1,8 +1,8 @@
-# Prompt Guide for Queensland Government
+# Prompt Guide for {{AGENCY NAME}}
 
 ## Introduction 📜
 
-This updated guide builds upon the foundational principles of the QChat prompt guide, aiming to empower Queensland Government employees to craft and refine prompts for optimal effectiveness on digital platforms like QChat. Focus on clarity, context, and structured communication to ensure your interactions are both efficient and meaningful.
+This updated guide builds upon the foundational principles of the {{APP_NAME}} prompt guide, aiming to empower {{AGENCY NAME}} employees to craft and refine prompts for optimal effectiveness on digital platforms like {{APP_NAME}}. Focus on clarity, context, and structured communication to ensure your interactions are both efficient and meaningful.
 
 ## Tips for Good Prompt Creation ✍️
 
@@ -35,7 +35,7 @@ This updated guide builds upon the foundational principles of the QChat prompt g
 
 - The sequence and clarity of your instructions can greatly influence the outcomes.
 - Organise your prompts logically to direct the conversation.
-- **Example:** "Detail the measures taken by the Queensland Government to digitise public services, beginning with the most recent efforts."
+- **Example:** "Detail the measures taken by the {{AGENCY NAME}} to digitise public services, beginning with the most recent efforts."
 
 ### Utilise Follow-up Questions 🔄
 
@@ -82,7 +82,7 @@ When tasked with reviewing content and then drafting a response, here's a struct
 
 1. **Summarise the Content**: Briefly outline the main points or themes of the content you're reviewing. Use delimiters if necessary to organise your summary.
 
-   - **Example:** "The article discusses three major themes: sustainability in urban planning, technological innovation in public services, and cybersecurity measures. Each theme is explored in the context of recent Queensland Government initiatives."
+   - **Example:** "The article discusses three major themes: sustainability in urban planning, technological innovation in public services, and cybersecurity measures. Each theme is explored in the context of recent {{AGENCY NAME}} initiatives."
 
 2. **Drafting a Response**: After summarising, draft a response that addresses any specific queries, comments, or tasks related to the email.
 
@@ -107,6 +107,6 @@ Curabitur lobortis nisl a enim congue semper.
 
 ## Conclusion 🎉
 
-Crafting effective prompts is crucial for maximising the benefits of tools like QChat, enhancing workflows, and improving communication quality. By applying the strategies outlined in this guide and continuously experimenting and providing feedback, Queensland Government employees can refine their prompting techniques for more productive interactions with QChat and their colleagues 💼.
+Crafting effective prompts is crucial for maximising the benefits of tools like {{APP_NAME}}, enhancing workflows, and improving communication quality. By applying the strategies outlined in this guide and continuously experimenting and providing feedback, {{AGENCY NAME}} employees can refine their prompting techniques for more productive interactions with {{APP_NAME}} and their colleagues 💼.
 
-For additional support or more information about Queensland Government's AI initiatives, please contact the QChat Support Team 📧.
+For additional support or more information about {{AGENCY NAME}}'s AI initiatives, please contact the {{APP_NAME}} Support Team 📧.

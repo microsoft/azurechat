@@ -1,6 +1,6 @@
 {
   "name": "src",
-  "version": "1.7.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "tidy": "npm upgrade && npm i && npm run lint:fix && npm run build",
@@ -13,7 +13,6 @@
     "lint:css": "stylelint \"**/*.css\" --allow-empty-input --cache --cache-strategy=content --cache-location=.stylelintcache",
     "prettier": "prettier \"**/*.{js,mjs,ts,tsx,md,mdx,json,yml,css}\" --check --cache --cache-strategy=content --cache-location=.prettiercache",
     "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix && npm run prettier -- --write",
-    "test": "playwright test",
     "jest": "jest",
     "prepare": "cd .. && husky src/.husky"
   },
@@ -86,7 +85,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
-    "@playwright/test": "^1.45.1",
     "@testing-library/react": "^16.0.0",
     "@types/diff": "^5.2.1",
     "@types/estree": "^1.0.5",

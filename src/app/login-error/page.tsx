@@ -3,10 +3,9 @@
 import { SquareArrowOutUpRightIcon } from "lucide-react"
 import React, { useEffect, useState } from "react"
 
-import { APP_NAME } from "@/app-global"
+import { APP_NAME, errorMessages, INTRANET_NAME, INTRANET_URL } from "@/app-global"
 
 import { SignInErrorType } from "@/features/auth/sign-in"
-import { INTRANET_NAME, INTRANET_URL } from "@/features/theme/theme-config"
 import { Button } from "@/features/ui/button"
 import { Card, CardContent, CardHeader, CardDescription } from "@/features/ui/card"
 
@@ -25,15 +24,15 @@ const ErrorPage: React.FC = () => {
 
     switch (errorType) {
       case SignInErrorType.NotAuthorised:
-        message = `Your Agency may not yet be using ${APP_NAME}. If they are, it appears as if you are not in one of the permitted groups. Please contact your agency IT support team to request additional details or how to gain access.`
+        message = errorMessages.NotAuthorised
         showSupportButton = false
         break
       case SignInErrorType.SignInFailed:
-        message = `It appears we ran into an error while logging you in to ${APP_NAME}. If you believe your agency has been set up and you continue to receive these errors, please contact our support team.`
+        message = errorMessages.SignInFailed
         showSupportButton = true
         break
       default:
-        message = `An unknown error occurred while logging you in to ${APP_NAME}. Please contact support if the issue persists.`
+        message = errorMessages.UnknownError
         showSupportButton = true
         break
     }

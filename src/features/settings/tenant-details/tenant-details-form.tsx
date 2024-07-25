@@ -3,6 +3,8 @@
 import * as Form from "@radix-ui/react-form"
 import React, { useState, useCallback, FormEvent } from "react"
 
+import { AGENCY_NAME } from "@/app-global"
+
 import useSmartGen from "@/components/hooks/use-smart-gen"
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
@@ -115,7 +117,7 @@ export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant 
       </Typography>
       <Typography variant="h5" className="mt-4">
         <strong>Notice:</strong> Updating the context prompt here will append the message to the global system message.
-        This setting is regularly audited by the Queensland Government AI Unit.
+        This setting is regularly audited by the ${AGENCY_NAME} AI Unit.
       </Typography>
       <Typography variant="h5" className="mt-4">
         Current Prompt:

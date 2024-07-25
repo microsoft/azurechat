@@ -1,9 +1,8 @@
 import { Mail, CircleHelp, HeartHandshake } from "lucide-react"
 
-import { SUPPORT_EMAIL } from "@/app-global"
+import { SUPPORT_EMAIL, APP_URL, APP_VANITY_URL } from "@/app-global"
 
 import Typography from "@/components/typography"
-import { APP_URL, APP_VANITY_URL } from "@/features/theme/theme-config"
 
 export const Footer: React.FC = () => {
   return (

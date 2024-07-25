@@ -1,14 +1,18 @@
-# Queensland Government QChat
+# {{AGENCY NAME}} {{APP_NAME}}
 
-Below are the updates for the Queensland Government QChat Virtual Assistant.
+Below are the updates for the {{AGENCY NAME}} {{APP_NAME}} Virtual Assistant.
 
-## 🤝 Join the Qld Gov AI Community of Practice
+## 🤝 Join the {{AGENCY NAME}} AI Community of Practice
 
-- If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the Queensland Government AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
+- If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the {{AGENCY NAME}} AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
+
+## 🎨 Version 2.0.0 Updates - 25 July 2024
+
+We have made {{APP_NAME}} easier to customise and whitelabel. In doing so we have made some background changes.
 
 ## 🛡️ Version 1.7.0 Updates - 23 July 2024
 
-We've release some exciting changes for our agencies using Transcription. You will find the ability to Edit via free text or form and 'update' the transcription uploaded to QChat as well as help us calculate the accuracy and areas for improvement. Please enjoy the new features and reach out to our team if you have any questions.
+We've release some exciting changes for our agencies using Transcription. You will find the ability to Edit via free text or form and 'update' the transcription uploaded to {{APP_NAME}} as well as help us calculate the accuracy and areas for improvement. Please enjoy the new features and reach out to our team if you have any questions.
 
 ## 🛡️ Version 1.6.3 Updates - 19 July 2024
 
@@ -21,17 +25,17 @@ We've released some minor system changes to support your experience better.
 
 ## 🌟 Version 1.6.1 Updates - 2 July 2024
 
-- **Extra code languages supported:** We now support additional code languages for watermarking. If you are a developer and would like to contribute or build your own feature for QChat please reach out to our support team so we can make it happen!
+- **Extra code languages supported:** We now support additional code languages for watermarking. If you are a developer and would like to contribute or build your own feature for {{APP_NAME}} please reach out to our support team so we can make it happen!
 
 ## 🌟 Version 1.6.0 Updates - 2 July 2024
 
-- **More enhancements inbound:** We will be making multiple releases in the coming weeks to launch QChat 2.0.0 which will feature our new Chat with your data feature. For now we have some additional back end upgrades to support this transition.
+- **More enhancements inbound:** We will be making multiple releases in the coming weeks to launch {{APP_NAME}} 2.0.0 which will feature our new Chat with your data feature. For now we have some additional back end upgrades to support this transition.
 
 ## 🌟 Version 1.5.5 Updates - 28 June 2024
 
 ### 🚀 Exciting changes to File Upload are coming soon
 
-We are preparing to **update the way you upload files** and **revolutionise how you chat with your data in QChat**. To achieve this, we may need to **remove files from older chats**.
+We are preparing to **update the way you upload files** and **revolutionise how you chat with your data in {{APP_NAME}}**. To achieve this, we may need to **remove files from older chats**.
 
 We've updated our guidance and implemented additional measures to minimise disruption during this transition.
 
@@ -55,7 +59,7 @@ We've updated our guidance and implemented additional measures to minimise disru
 
 ## 🐞 Version 1.4.8 Updates - 7 June 2024
 
-- **Stop Scrolling QChat!:** We've updated QChat to not scroll to bottom when receiving messages after you first scroll, this will help you stop and read longer messages at your own pace. Simply scroll up from the bottom of the screen and QChat won't bring you down to the end of it's response!
+- **Stop Scrolling {{APP_NAME}}!:** We've updated {{APP_NAME}} to not scroll to bottom when receiving messages after you first scroll, this will help you stop and read longer messages at your own pace. Simply scroll up from the bottom of the screen and {{APP_NAME}} won't bring you down to the end of it's response!
 
 ## 🌟🌟🌟 Version 1.4.7 Updates - 31 May 2024
 
@@ -63,7 +67,7 @@ We've updated our guidance and implemented additional measures to minimise disru
 
 - **Feedback Finesse:** Encountered a snag? Tell us about it! We've upped our error logging game so we can pounce on those pesky problem gremlins faster than ever.
 
-- **Performance Pep-Up:** As always, we've tinkered under the hood to make sure your QChat experience is faster, smoother, and more reliable. Because waiting is so last season.
+- **Performance Pep-Up:** As always, we've tinkered under the hood to make sure your {{APP_NAME}} experience is faster, smoother, and more reliable. Because waiting is so last season.
 
 ## 🐞 Version 1.4.6 Updates - 27 MAY 2024
 
@@ -75,11 +79,11 @@ We've updated our guidance and implemented additional measures to minimise disru
 
 ## 🎨 Version 1.4.4 Updates - 11 MAY 2024
 
-- **Design Changes:** We've updated more design changes to align to the Queensland Government Design System, check it out [here](https://www.design-system.health.qld.gov.au)
+- **Design Changes:** We've updated more design changes to align to the {{AGENCY NAME}} Design System, check it out [here](https://www.design-system.health.qld.gov.au)
 
 ## ⌨️ Version 1.4.3 Updates - 7 MAY 2024
 
-- **Text Area and Design Changes:** We've updated the size of the text area when chatting with QChat and made it resizable. We've also incorporated some design changes to align to the Queensland Government Design System.
+- **Text Area and Design Changes:** We've updated the size of the text area when chatting with {{APP_NAME}} and made it resizable. We've also incorporated some design changes to align to the {{AGENCY NAME}} Design System.
 
 ## 🐞 Version 1.4.2 Updates - 1 MAY 2024
 
@@ -91,30 +95,30 @@ We've updated our guidance and implemented additional measures to minimise disru
 
 ## ☎️ Version 1.4.0 Updates - 25 APR 2024
 
-- **New User and Department Context Settings:** Behind the scenes we're preparing QChat to take your own personal User Context Prompt - where you can provide information for QChat to use in every conversation. We can't wait to release this functionality for you shorlty.
+- **New User and Department Context Settings:** Behind the scenes we're preparing {{APP_NAME}} to take your own personal User Context Prompt - where you can provide information for {{APP_NAME}} to use in every conversation. We can't wait to release this functionality for you shorlty.
 
-- **Call Transcription Updates:** We've introduced a new interface for our call transcription test cases, now you will be able to toggle between asking QChat questions about the call transcriptions and reviewing or downloading the call transcript.
+- **Call Transcription Updates:** We've introduced a new interface for our call transcription test cases, now you will be able to toggle between asking {{APP_NAME}} questions about the call transcriptions and reviewing or downloading the call transcript.
 
 ## 👨🏻‍💻 Version 1.3.8 Updates - 15 APR 2024
 
-- **Minor Software Changes:** This update has some security enhancements to keep QChat secure and ready to assist you!
+- **Minor Software Changes:** This update has some security enhancements to keep {{APP_NAME}} secure and ready to assist you!
 
 ## 🛡️ Version 1.3.7 Updates - 12 APR 2024
 
-- **Enhanced Content Safety Measures:** This update introduces significant improvements to our content safety protocols. QChat will now more effectively identify messages that potentially breach our content safety guidelines. Such messages will be flagged with a clear warning. Furthermore, if three messages in a conversation are flagged for content safety violations, the ongoing conversation will be locked to prevent the exchange of new messages. We encourage users to make use of the feedback options provided if they encounter any messages that they believe should have been flagged but were not. This helps us continually refine and enhance our content safety measures.
+- **Enhanced Content Safety Measures:** This update introduces significant improvements to our content safety protocols. {{APP_NAME}} will now more effectively identify messages that potentially breach our content safety guidelines. Such messages will be flagged with a clear warning. Furthermore, if three messages in a conversation are flagged for content safety violations, the ongoing conversation will be locked to prevent the exchange of new messages. We encourage users to make use of the feedback options provided if they encounter any messages that they believe should have been flagged but were not. This helps us continually refine and enhance our content safety measures.
 
 ## 🆕 Version 1.3.5 Updates - 5 APR 2024
 
-- **Display Name Context:** Since version 1.3.5, QChat now has access to your Display Name as additional context when responding to you. This enhancement aims to personalise your interaction with QChat further.
+- **Display Name Context:** Since version 1.3.5, {{APP_NAME}} now has access to your Display Name as additional context when responding to you. This enhancement aims to personalise your interaction with {{APP_NAME}} further.
 
 ## ✨ New Features
 
 - **Copy Chat to Clipboard & Export Documents:** You can now easily copy your chat to the clipboard or export it as a document for your records. These options are available next to the text input bar in the chat interface.
-- **Watermarking:** Please note that text copied from QChat has watermarking. It indicates "Text generated by QChat," and for code, it says "Code Language generated by QChat," with the note being commented out. This feature helps identify the source of the information for reference and integrity.
+- **Watermarking:** Please note that text copied from {{APP_NAME}} has watermarking. It indicates "Text generated by {{APP_NAME}}," and for code, it says "Code Language generated by {{APP_NAME}}," with the note being commented out. This feature helps identify the source of the information for reference and integrity.
 
 ## 🚀 UI and Accessibility Improvements
 
-- Significant UI and accessibility changes have been made to ensure a more user-friendly and inclusive experience for all users. These improvements aim to enhance navigation, readability, and overall interaction with QChat.
+- Significant UI and accessibility changes have been made to ensure a more user-friendly and inclusive experience for all users. These improvements aim to enhance navigation, readability, and overall interaction with {{APP_NAME}}.
 
 ## Version 1.0.1 Updates 23 FEB 2024
 
@@ -124,4 +128,4 @@ We've updated our guidance and implemented additional measures to minimise disru
 
 - **Important Note:** A new **Sensitivity Selector** has been introduced to help categorise the sensitivity of the information in your documents. Despite this feature, remember that Protected Information should not be uploaded at any time.
 
-Stay updated with QChat for more features and enhancements designed to make your experience as efficient and helpful as possible.
+Stay updated with {{APP_NAME}} for more features and enhancements designed to make your experience as efficient and helpful as possible.

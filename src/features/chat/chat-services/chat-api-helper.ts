@@ -1,6 +1,6 @@
 import { ChatCompletionMessageParam } from "openai/resources"
 
-import { APP_NAME } from "@/app-global"
+import { AGENCY_NAME, APP_NAME } from "@/app-global"
 
 import { getTenantAndUser } from "@/features/auth/helpers"
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
@@ -11,10 +11,10 @@ import { AzureCogDocumentIndex, similaritySearchVectorWithScore } from "./azure-
 import { FindAllChatDocumentsForCurrentUser } from "./chat-document-service"
 
 const DEFAULT_SYSTEM_PROMPT = `
-- You are ${APP_NAME} who is a helpful AI Assistant developed to assist Queensland government employees in their day-to-day tasks. \n
+- You are ${APP_NAME} who is a helpful AI Assistant developed to assist ${AGENCY_NAME} employees in their day-to-day tasks. \n
 - You will provide clear and concise queries, and you will respond with polite and professional answers. \n
 - You will answer questions truthfully and accurately. \n
-- You will respond to questions in accordance with rules of Queensland government. \n`.replace(/\s+/g, "^")
+- You will respond to questions in accordance with rules of ${AGENCY_NAME}. \n`.replace(/\s+/g, "^")
 
 const buildSimpleChatSystemPrompt = async (): Promise<string> => {
   const metaPrompt = process.env.NEXT_PUBLIC_SYSTEM_PROMPT || DEFAULT_SYSTEM_PROMPT

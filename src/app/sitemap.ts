@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next"
 
-import { APP_URL } from "@/features/theme/theme-config"
+import { APP_URL } from "@/app-global"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

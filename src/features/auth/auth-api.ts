@@ -3,6 +3,8 @@ import { JWT } from "next-auth/jwt"
 import { Provider } from "next-auth/providers"
 import AzureADProvider from "next-auth/providers/azure-ad"
 
+import { AGENCY_NAME } from "@/app-global"
+
 import { isAdmin } from "@/features/application/application-service"
 
 import { UserSignInHandler, SignInErrorType, isTenantAdmin, getUser } from "./sign-in"
@@ -20,7 +22,7 @@ const configureIdentityProvider = (): Provider[] => {
   if (process.env.AZURE_AD_CLIENT_ID && process.env.AZURE_AD_CLIENT_SECRET && process.env.AZURE_AD_TENANT_ID) {
     providers.push(
       AzureADProvider({
-        name: "Queensland Government Single Sign On",
+        name: `${AGENCY_NAME} Single Sign On`,
         style: { logo: "", text: "#ffffff", bg: "#09549f" },
         clientId: process.env.AZURE_AD_CLIENT_ID,
         clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
@@ -144,7 +146,7 @@ export const options: NextAuthOptions = {
     colorScheme: "dark",
     brandColor: "#09549f",
     logo: "/ai-icon.webp",
-    buttonText: "Single sign-on in with your Queensland Government Account",
+    buttonText: `Single sign-on in with your ${AGENCY_NAME} Account`,
   },
   useSecureCookies: true,
   debug: process.env.NODE_ENV === "development",

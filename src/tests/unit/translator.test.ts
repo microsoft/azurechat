@@ -55,9 +55,9 @@ describe("translator", () => {
 
   it("should handle capital after code block", () => {
     // Arrange
-    const originalText = "Welcome to QChat,\n\n__codeblock_1__\n\n**Color**"
-    const translatedText = "welcome to qchat,\n\n__codeblock_1__\n\n**colour**"
-    const expected = "Welcome to QChat,\n\n__codeblock_1__\n\n**Colour**"
+    const originalText = "Welcome to Application,\n\n__codeblock_1__\n\n**Color**"
+    const translatedText = "welcome to application,\n\n__codeblock_1__\n\n**colour**"
+    const expected = "Welcome to Application,\n\n__codeblock_1__\n\n**Colour**"
 
     // Act
     const actual = revertCase(originalText, translatedText)
@@ -94,9 +94,9 @@ describe("translator", () => {
 
   it("should handle stars after code blocks", () => {
     // Arrange
-    const originalText = "Welcome to QChat,\n\n__codeblock_1__\n*Color*"
-    const translatedText = "welcome to qchat,\n\n__codeblock_1__\n*colour*"
-    const expected = "Welcome to QChat,\n\n__codeblock_1__\n*Colour*"
+    const originalText = "Welcome to Application,\n\n__codeblock_1__\n*Color*"
+    const translatedText = "welcome to application,\n\n__codeblock_1__\n*colour*"
+    const expected = "Welcome to Application,\n\n__codeblock_1__\n*Colour*"
 
     // Act
     const actual = revertCase(originalText, translatedText)
