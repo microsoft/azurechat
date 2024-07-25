@@ -3,7 +3,7 @@ import { APP_NAME, AGENCY_NAME, APP_VERSION } from "@/app-global"
 import Typography from "@/components/typography"
 import { Card } from "@/features/ui/card"
 
-import { Markdown } from "./markdown"
+import { MarkdownPlaceholder } from "./markdown-placeholder"
 
 interface MarkDownPageProps {
   content: string
@@ -24,7 +24,7 @@ const MarkDownPage: React.FC<MarkDownPageProps> = ({ content }) => {
       <div className="flex flex-col gap-8 py-8">
         <div className="prose prose-slate max-w-4xl break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
           <Typography variant="h3">App Version {versionNum}</Typography>
-          <Markdown content={contentWithPlaceholders} />
+          <MarkdownPlaceholder content={contentWithPlaceholders} />
         </div>
       </div>
     </Card>

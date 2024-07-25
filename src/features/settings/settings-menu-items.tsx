@@ -1,4 +1,4 @@
-import { UserRoundCog, FileClock, Building2, ShieldCheck, Factory } from "lucide-react"
+import { UserRoundCog, FileClock, Building2, ShieldCheck, Factory, Settings } from "lucide-react"
 
 import { isTenantAdmin, isAdmin } from "@/features/auth/helpers"
 import { SettingsMenuItem } from "@/features/settings/settings-menu-item"
@@ -7,8 +7,16 @@ const menuItems = [
   { url: "/settings", icon: <UserRoundCog size={16} />, text: "Your details" },
   { url: "/settings/history", icon: <FileClock size={16} />, text: "Chat history" },
   { url: "/settings/tenant", icon: <Building2 size={16} />, text: "Department details", tenantAdminRequired: true },
-  { url: "/settings/tenants", icon: <Factory size={16} />, text: "Tenants", adminRequired: true },
-  { url: "/settings/admin", icon: <ShieldCheck size={16} />, text: "Admin", adminRequired: true },
+  {
+    url: "/settings/admin",
+    icon: <ShieldCheck size={16} />,
+    text: "Admin",
+    adminRequired: true,
+    items: [
+      { url: "/tenants", icon: <Factory size={16} />, text: "Support", adminRequired: true },
+      { url: "/manage", icon: <Settings size={16} />, text: "Manage", adminRequired: true },
+    ],
+  },
 ]
 
 const adminFilters =
@@ -26,7 +34,7 @@ export const SettingsMenuItems = async (): Promise<JSX.Element> => {
   return (
     <div className="flex flex-col gap-4">
       {menuItems.filter(adminFilters(tenantAdmin, admin)).map(item => (
-        <SettingsMenuItem key={item.url} url={item.url} icon={item.icon} text={item.text} />
+        <SettingsMenuItem key={item.url} url={item.url} icon={item.icon} text={item.text} items={item.items} />
       ))}
     </div>
   )

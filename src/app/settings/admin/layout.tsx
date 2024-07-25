@@ -5,8 +5,6 @@ import { GetTenants } from "@/features/tenant-management/tenant-service"
 import { UserRecord } from "@/features/user-management/models"
 import { GetUsersByTenantId } from "@/features/user-management/user-service"
 
-import { Selectors } from "./selectors"
-
 const getTenants = async (): Promise<TenantDetails[]> => {
   const result = await GetTenants()
   if (result.status !== "OK") throw new Error("Failed to get user preferences")
@@ -25,9 +23,6 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <AdminProvider tenants={await getTenants()} fetchUserRecords={getUsersByTenantId}>
       <div className="flex size-full flex-col gap-4 bg-altBackground text-foreground">
-        <ErrorBoundary>
-          <Selectors />
-        </ErrorBoundary>
         <ErrorBoundary>{children}</ErrorBoundary>
       </div>
     </AdminProvider>

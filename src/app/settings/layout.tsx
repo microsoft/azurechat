@@ -15,10 +15,8 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
-  const session = await getServerSession()
-  if (!session) return redirect("/")
-  const config = await GetTenantConfig()
-  if (config.status !== "OK") return redirect("/")
+  const [session, config] = await Promise.all([getServerSession(), GetTenantConfig()])
+  if (!session || config.status !== "OK") return redirect("/")
 
   return (
     <SettingsProvider config={config.response}>
@@ -26,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SettingsMenu />
       </div>
       <div className="col-span-10 size-full overflow-auto bg-altBackground">
-        <section className="mx-auto size-full justify-center bg-altBackground">{children}</section>
+        <section className="mx-auto size-full justify-center bg-altBackground p-4">{children}</section>
       </div>
     </SettingsProvider>
   )

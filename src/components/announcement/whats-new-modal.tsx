@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 
 import { APP_VERSION } from "@/app-global"
 
-import { Markdown } from "@/components/markdown/markdown"
+import { MarkdownPlaceholder } from "@/components/markdown/markdown-placeholder"
 import Typography from "@/components/typography"
 import logger from "@/features/insights/app-insights"
 import { Button } from "@/features/ui/button"
@@ -64,7 +64,7 @@ export default function WhatsNewModal({ targetVersion, onClose }: WhatsNewModalP
       <DialogContent>
         <div className="prose prose-slate max-w-4xl break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
           <Typography variant="h3">App Version {APP_VERSION}</Typography>
-          {isLoading ? "Loading terms and conditions..." : <Markdown content={content} />}
+          {isLoading ? "Loading terms and conditions..." : <MarkdownPlaceholder content={content} />}
         </div>
       </DialogContent>
       <DialogFooter>

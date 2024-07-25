@@ -26,9 +26,5 @@ type Props = {
 }
 export default async function Home({ params: { tenantId, personaId } }: Props): Promise<JSX.Element> {
   const persona = await getPersona(tenantId, personaId)
-  return (
-    <div>
-      <UserDetailsForm preferences={persona.preferences} name={persona.name} email={persona.email} />
-    </div>
-  )
+  return <UserDetailsForm preferences={persona.preferences} name={persona.name} email={persona.email} />
 }

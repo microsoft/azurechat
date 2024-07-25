@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react"
 import { APP_VERSION } from "@/app-global"
 
 import useOnScreen from "@/components/hooks/use-on-screen"
-import { Markdown } from "@/components/markdown/markdown"
+import { MarkdownPlaceholder } from "@/components/markdown/markdown-placeholder"
 import Typography from "@/components/typography"
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
@@ -66,7 +66,7 @@ export default function AgreeTermsAndConditions({ onClose }: AgreeTermsAndCondit
       <DialogContent>
         <div className="prose prose-slate max-w-4xl break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
           <Typography variant="h3">App Version {APP_VERSION}</Typography>
-          {isLoading ? "Loading terms and conditions..." : <Markdown content={content} />}
+          {isLoading ? "Loading terms and conditions..." : <MarkdownPlaceholder content={content} />}
           <div ref={endOfScrollRef} id="sentinel" />
         </div>
       </DialogContent>

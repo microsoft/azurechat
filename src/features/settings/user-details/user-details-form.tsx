@@ -129,7 +129,7 @@ ${tenantPrompt}
   }, [submit])
 
   return (
-    <>
+    <div>
       <Typography variant="h4" className="font-bold underline underline-offset-2">
         Account Details
       </Typography>
@@ -209,6 +209,6 @@ ${tenantPrompt}
           </Form.Submit>
         </div>
       </Form.Root>
-    </>
+    </div>
   )
 }

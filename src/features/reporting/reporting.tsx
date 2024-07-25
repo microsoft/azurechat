@@ -48,8 +48,12 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead scope="col">Chat Title</TableHead>
-                  <TableHead scope="col">Category</TableHead>
+                  <TableHead className="text-left" scope="col">
+                    Chat Title
+                  </TableHead>
+                  <TableHead className="text-left" scope="col">
+                    Category
+                  </TableHead>
                   <TableHead scope="col">Type</TableHead>
                   <TableHead scope="col">Style</TableHead>
                   <TableHead scope="col">Sensitivity</TableHead>
@@ -60,7 +64,7 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
                 {threads &&
                   threads.map(chatThread => (
                     <TableRow key={chatThread.id}>
-                      <TableCell className="font-medium">
+                      <TableCell className="text-left">
                         <Link
                           href={"/settings/history/" + chatThread.id}
                           aria-label={`View chat details for ${chatThread.name}`}
@@ -68,7 +72,9 @@ export const Reporting = async (props: ReportingProp): Promise<JSX.Element> => {
                           {chatThread.name}
                         </Link>
                       </TableCell>
-                      <TableCell>{chatThread.chatCategory === "None" ? "-" : chatThread.chatCategory}</TableCell>
+                      <TableCell className="text-left">
+                        {chatThread.chatCategory === "None" ? "-" : chatThread.chatCategory}
+                      </TableCell>
                       <TableCell>{formatTypeValue(chatThread.chatType)}</TableCell>
                       <TableCell>{formatStyleValue(chatThread.conversationStyle)}</TableCell>
                       <TableCell>{formatSensitivityValue(chatThread.conversationSensitivity)}</TableCell>

@@ -11,7 +11,7 @@ export const Selectors = (): JSX.Element => {
   const pathname = usePathname()
 
   useEffect(() => {
-    const [, , , tenantId, userId] = pathname.split("/")
+    const [, , , , tenantId, userId] = pathname.split("/")
     selectTenant(tenants.find(t => t?.id === tenantId))
     selectUser(users.find(u => u?.id === userId))
   }, [pathname, selectTenant, selectUser, tenants, users])
@@ -20,13 +20,13 @@ export const Selectors = (): JSX.Element => {
     const selectedTenant = tenants.find(t => t.id === value)
     selectTenant(selectedTenant)
     selectUser(undefined)
-    router.push(`/settings/admin/${value}`)
+    router.push(`/settings/admin/manage/${value}`)
   }
 
   const handleSelectUser = (value: string): void => {
     if (!selectedTenant?.id) return
     selectUser(users.find(u => u.id === value))
-    router.push(`/settings/admin/${selectedTenant.id}/${value}`)
+    router.push(`/settings/admin/manage/${selectedTenant.id}/${value}`)
   }
 
   return (

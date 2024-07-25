@@ -19,17 +19,16 @@ interface MiniMenuItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
   icon: React.ElementType
   name: string
   ariaLabel: string
-  closeMenu: () => void
 }
 
-const MiniMenuItem: React.FC<MiniMenuItemProps> = ({ href, icon: Icon, name, ariaLabel, closeMenu, ...props }) => {
+const MiniMenuItem: React.FC<MiniMenuItemProps> = ({ href, icon: Icon, name, ariaLabel, ...props }) => {
   const menuItemClass = cn(
     "cursor-pointer px-6 py-2 hover:bg-accent hover:text-accent-foreground flex items-center whitespace-nowrap",
     props.className
   )
 
   return (
-    <Link href={href} passHref={true} onClick={closeMenu}>
+    <Link href={href} passHref={true}>
       <div className={menuItemClass} role="button" tabIndex={0} aria-label={ariaLabel}>
         <Icon className="mr-2 size-4" aria-hidden="true" />
         {name}
@@ -104,7 +103,7 @@ export const MiniMenu: React.FC = () => {
           </Typography>
           <div className="mt-16 p-2">
             {filteredMenuItems.map(item => (
-              <MiniMenuItem key={item.name} closeMenu={toggleMenu} {...item} />
+              <MiniMenuItem key={item.name} onClick={toggleMenu} {...item} />
             ))}
             <hr className="mx-4 my-2 w-1/2 border-t border-text" />
             {resolvedTheme === "dark" ? (
