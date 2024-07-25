@@ -4,6 +4,7 @@ import { Sparkles, Sparkle } from "lucide-react"
 import React, { useState, useCallback } from "react"
 
 import useSmartGen from "@/components/hooks/use-smart-gen"
+import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { PromptMessage } from "@/features/chat/models"
 import logger from "@/features/insights/app-insights"
 import { useSettingsContext } from "@/features/settings/settings-provider"
@@ -56,6 +57,7 @@ const RewriteMessageButtonInternal: React.FC<{
 }> = ({ toolName, context, input, onAssistantButtonClick }) => {
   const { iconSize, buttonClass } = useButtonStyles()
   const { config } = useSettingsContext()
+  const { chatThreadLocked } = useChatContext()
 
   const { smartGen } = useSmartGen(config.tools || [])
 
@@ -90,6 +92,7 @@ const RewriteMessageButtonInternal: React.FC<{
       className={`${buttonClass} ${rewriteClicked ? "bg-button text-buttonText" : ""}`}
       title="Rewrite with suggestions"
       onClick={handleRewriteWithSuggestions}
+      disabled={chatThreadLocked}
     >
       {rewriteClicked ? (
         <Sparkles size={iconSize} className={isLoading ? "animate-spin" : ""} />

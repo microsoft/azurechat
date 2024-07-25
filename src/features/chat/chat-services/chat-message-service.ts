@@ -3,6 +3,7 @@
 import { SqlQuerySpec } from "@azure/cosmos"
 
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
+import { MESSAGE_COUNT } from "@/features/chat/constants"
 import {
   AssistantChatMessageModel,
   ChatRecordType,
@@ -45,7 +46,7 @@ export const FindAllChatMessagesForCurrentUser = async (
 
 export const FindTopChatMessagesForCurrentUser = async (
   chatThreadId: string,
-  top = 30
+  top = MESSAGE_COUNT
 ): ServerActionResponseAsync<(UserChatMessageModel | AssistantChatMessageModel)[]> => {
   try {
     const [userId, tenantId] = await Promise.all([userHashedId(), getTenantId()])

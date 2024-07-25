@@ -59,7 +59,7 @@ export const ReportingMessageContainer: FC<Props> = ({ chatThreadId }) => {
                 type={message.role as ChatRole}
                 chatThreadId={chatThreadId}
                 showAssistantButtons={index === messages.length - 1 ? !isLoading : true}
-                threadLocked={index === messages.length - 1 && chatThreadLocked}
+                lockMessage={index === messages.length - 1 && chatThreadLocked}
                 disableButtons={true}
               />
             ))
