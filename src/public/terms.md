@@ -8,7 +8,7 @@ Before you start chatting with our automated assistant, we need to share a few i
 
 ## Security First
 
-Privacy and security are paramount in {{AGENCY NAME}}. You can share most {{AGENCY NAME}} information with {{APP_NAME}} (unlike ChatGPT and others) but please don’t share any information that could be classified PROTECTED or above.
+Privacy and security are paramount in {{AGENCY_NAME}}. You can share most {{AGENCY_NAME}} information with {{APP_NAME}} (unlike ChatGPT and others) but please don’t share any information that could be classified PROTECTED or above.
 
 ## Not The Last Word
 

@@ -1,10 +1,10 @@
-# {{AGENCY NAME}} {{APP_NAME}}
+# {{AGENCY_NAME}} {{APP_NAME}}
 
-Below are the updates for the {{AGENCY NAME}} {{APP_NAME}} Virtual Assistant.
+Below are the updates for the {{AGENCY_NAME}} {{APP_NAME}} Virtual Assistant.
 
-## 🤝 Join the {{AGENCY NAME}} AI Community of Practice
+## 🤝 Join the {{AGENCY_NAME}} AI Community of Practice
 
-- If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the {{AGENCY NAME}} AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
+- If you are a technical or business staff member working on AI Projects, you can click [here](https://forms.office.com/r/YZzMFLexPK) to request to join the {{AGENCY_NAME}} AI Community of Practice. This platform is designed to facilitate knowledge sharing and collaboration among AI professionals within the government.
 
 ## 🎨 Version 2.0.0 Updates - 25 July 2024
 
@@ -79,11 +79,11 @@ We've updated our guidance and implemented additional measures to minimise disru
 
 ## 🎨 Version 1.4.4 Updates - 11 MAY 2024
 
-- **Design Changes:** We've updated more design changes to align to the {{AGENCY NAME}} Design System, check it out [here](https://www.design-system.health.qld.gov.au)
+- **Design Changes:** We've updated more design changes to align to the {{AGENCY_NAME}} Design System, check it out [here](https://www.design-system.health.qld.gov.au)
 
 ## ⌨️ Version 1.4.3 Updates - 7 MAY 2024
 
-- **Text Area and Design Changes:** We've updated the size of the text area when chatting with {{APP_NAME}} and made it resizable. We've also incorporated some design changes to align to the {{AGENCY NAME}} Design System.
+- **Text Area and Design Changes:** We've updated the size of the text area when chatting with {{APP_NAME}} and made it resizable. We've also incorporated some design changes to align to the {{AGENCY_NAME}} Design System.
 
 ## 🐞 Version 1.4.2 Updates - 1 MAY 2024
 
