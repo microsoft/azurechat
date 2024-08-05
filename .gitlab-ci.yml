@@ -1,0 +1,73 @@
+# GitLab CI/CD pipeline for Azure Chat
+stages:
+  - build
+  - deploy
+
+variables:
+  # using alpine image for smaller image size and performance
+  NODE_VERSION: "20-alpine"
+
+before_script:
+  # apt get is not available in alpine, using apk instead
+  - apk update
+  - apk add zip unzip
+
+build:
+  stage: build
+  image: node:$NODE_VERSION
+  script:
+    - echo "🌱 Checkout to the branch"
+    - cd ./src
+    - echo "🍏 Set up Node.js version"
+    - npm install
+    - echo "⚙️ npm install and build"
+    - npm run build --if-present
+    - cd ..
+    - echo "📂 Copy standalone into the root"
+    - cp -R ./src/.next/standalone ./site-deploy
+    - echo "📂 Copy static into the .next folder"
+    - cp -R ./src/.next/static ./site-deploy/.next/static
+    - echo "📂 Copy Public folder"
+    - cp -R ./src/public ./site-deploy/public
+    - echo "📦 Package Next application"
+    - cd ./site-deploy
+    - zip Nextjs-site.zip ./* .next -qr
+    - cd ..
+    - echo "🔍 Diagnostics"
+    - ls ./src
+    - ls ./src/.next
+    - ls ./site-deploy
+  artifacts:
+    paths:
+      - ./site-deploy/Nextjs-site.zip
+
+deploy:
+  stage: deploy
+  # using the Azure CLI image for deployment
+  image: mcr.microsoft.com/azure-cli
+  environment:
+    name: production
+  dependencies:
+    - build
+  before_script:
+    # Install jq for JSON processing
+    - apk add --no-cache jq
+    - echo "🗝️ Azure Login"
+    # Write Azure credentials a JSON file, deleted later
+    - echo $AZURE_CREDENTIALS > azure_credentials.json
+
+  script:
+    # Login to Azure using the standard credentials
+    - az login --service-principal --username $(jq -r '.clientId' azure_credentials.json) --password $(jq -r '.clientSecret' azure_credentials.json) --tenant $(jq -r '.tenantId' azure_credentials.json)
+    # Disable build during deployment, copied from the original github workflow
+    - rg=$(az webapp list --query "[?name=='$AZURE_APP_SERVICE_NAME'].resourceGroup" --output tsv)
+    - echo "Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service $AZURE_APP_SERVICE_NAME"
+    - az webapp config appsettings set -n $AZURE_APP_SERVICE_NAME -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
+    - echo "Setting --startup-file=\"node server.js\" on app service $AZURE_APP_SERVICE_NAME"
+    - az webapp config set --startup-file="node server.js" -n $AZURE_APP_SERVICE_NAME -g $rg -o none
+    - sleep 10
+    - echo "🚀 Deploy to Azure Web App"
+    - az webapp deployment source config-zip -g $rg -n $AZURE_APP_SERVICE_NAME --src ./site-deploy/Nextjs-site.zip
+  after_script:
+    - echo "🧹 Cleanup"
+    - rm ./site-deploy/Nextjs-site.zip
