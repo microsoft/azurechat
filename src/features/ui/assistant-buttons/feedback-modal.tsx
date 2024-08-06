@@ -26,7 +26,7 @@ export default function FeedbackModal(props: FeedbackModalProps): ReturnType<FC>
           name={props.chatMessageId + "Feedback text"}
           id={props.chatMessageId + "Feedback text id"}
           aria-label="Enter your feedback"
-          placeholder="Please provide any additional details about the message or your feedback, our team will not reply directly but it will assist us in improving our service. If you believe a serious issue has occured please contact support directly."
+          placeholder="Please provide any additional details about the message or your feedback, our team will not reply directly but it will assist us in improving our service. If you believe a serious issue has occurred please contact support directly."
           rows={4}
           className="gp-4 w-full rounded border border-gray-300 bg-background"
           value={feedbackReason}
