@@ -254,6 +254,16 @@ export const CreateChatThread = async (title?: string): ServerActionResponseAsyn
       conversationSensitivity: ConversationSensitivity.Official,
       type: ChatRecordType.Thread,
       chatOverFileName: "",
+      evaluationMetrics: {
+        outputLength: null,
+        interactionTimeMin: null,
+        numberOfCompletedTasks: null,
+        interactionTurns: null,
+        userSatisfaction: null,
+        productivityScoreEfficiencyFocused: null,
+        productivityScoreTaskCompletionFocused: null,
+        productivityScoreUserSatisfactionFocused: null,
+      },
     }
 
     const container = await HistoryContainer()

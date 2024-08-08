@@ -95,6 +95,18 @@ export interface ChatThreadModel {
   internalReference?: string
   isDisabled: boolean
   contentFilterTriggerCount?: number
+  evaluationMetrics?: EvaluationMetrics
+}
+
+export interface EvaluationMetrics {
+  outputLength: number | null
+  interactionTimeMin: number | null
+  numberOfCompletedTasks: number | null
+  interactionTurns: number | null
+  userSatisfaction: number | null
+  productivityScoreEfficiencyFocused: number | null
+  productivityScoreTaskCompletionFocused: number | null
+  productivityScoreUserSatisfactionFocused: number | null
 }
 
 export interface PromptBody {
