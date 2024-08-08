@@ -73,6 +73,24 @@ const SentenceDisplay = ({
 }: SentenceDisplayProps): JSX.Element => {
   const { line } = sentence
 
+  const handleMergeUp = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault()
+    if (onMergeUp) {
+      onMergeUp()
+    }
+  }
+
+  const handleMergeDown = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault()
+    if (onMergeDown) {
+      onMergeDown()
+    }
+  }
+
+  const handleSwitchToEdit = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault()
+    switchToEdit()
+  }
   return (
     <>
       <div className={`flex flex-col ${speaker ? "gap-1" : ""}`}>
@@ -85,7 +103,8 @@ const SentenceDisplay = ({
               size="sm"
               variant="accent"
               ariaLabel="Merge Up"
-              onClick={onMergeUp}
+              onClick={handleMergeUp}
+              type="button"
             >
               <ArrowUp size={16} />
             </Button>
@@ -96,7 +115,8 @@ const SentenceDisplay = ({
             size="sm"
             variant="accent"
             ariaLabel="Edit"
-            onClick={switchToEdit}
+            onClick={handleSwitchToEdit}
+            type="button"
           >
             <Pencil size={16} />
           </Button>
@@ -107,7 +127,8 @@ const SentenceDisplay = ({
               size="sm"
               variant="accent"
               ariaLabel="Merge Down"
-              onClick={onMergeDown}
+              onClick={handleMergeDown}
+              type="button"
             >
               <ArrowDown size={16} />
             </Button>
@@ -133,6 +154,7 @@ type SentenceFormProps = {
   line: string
   onChange: (line: string) => void
 }
+
 const SentenceForm = ({ id, line, onChange }: SentenceFormProps): JSX.Element => {
   const [input, setInput] = useState(line)
 

@@ -1,6 +1,6 @@
 {
   "name": "src",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "private": true,
   "scripts": {
     "tidy": "npm upgrade && npm i && npm run lint:fix && npm run build",
@@ -8,10 +8,10 @@
     "dev": "next dev --experimental-https --experimental-https-key ./certificates/localhost-key.pem --experimental-https-cert ./certificates/localhost.pem --port 443",
     "build": "next build",
     "start": "next start",
-    "lint": "npm run lint:js && npm run lint:css",
-    "lint:js": "eslint \"**/*.{js,mjs,ts,tsx}\" --cache --cache-strategy=content --cache-location=.eslintjscache",
-    "lint:css": "stylelint \"**/*.css\" --allow-empty-input --cache --cache-strategy=content --cache-location=.stylelintcache",
-    "prettier": "prettier \"**/*.{js,mjs,ts,tsx,md,mdx,json,yml,css}\" --check --cache --cache-strategy=content --cache-location=.prettiercache",
+    "lint": "npm-run-all --parallel lint:*",
+    "lint:js": "eslint \"**/*.{js,mjs,ts,tsx}\"",
+    "lint:css": "stylelint \"**/*.css\" --allow-empty-input",
+    "prettier": "prettier \"**/*.{js,mjs,ts,tsx,md,mdx,json,yml,css}\" --check",
     "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix && npm run prettier -- --write",
     "jest": "jest",
     "prepare": "cd .. && husky src/.husky"
@@ -21,6 +21,7 @@
     "@azure-rest/ai-translation-text": "^1.0.0",
     "@azure/ai-form-recognizer": "^5.0.0",
     "@azure/cosmos": "^4.0.0",
+    "@azure/identity": "^4.4.1",
     "@azure/monitor-opentelemetry-exporter": "^1.0.0-beta.24",
     "@azure/msal-node": "^2.10.0",
     "@azure/openai": "^2.0.0-beta.1",
@@ -106,6 +107,7 @@
     "eslint-plugin-tailwindcss": "^3.17.4",
     "jest": "^29.7.0",
     "jest-junit": "^16.0.0",
+    "npm-run-all": "^4.1.5",
     "postcss": "^8.4.39",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
@@ -114,7 +116,7 @@
     "stylelint-order": "^6.0.4",
     "stylelint-selector-bem-pattern": "^4.0.0",
     "tailwindcss": "^3.4.4",
-    "ts-jest": "^29.1.5",
+    "ts-jest": "^29.2.4",
     "typescript": "^5.5.3"
   },
   "optionalDependencies": {

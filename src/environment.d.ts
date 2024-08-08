@@ -32,6 +32,7 @@ declare global {
       AZURE_SEARCH_API_VERSION: string
       AZURE_SEARCH_INDEX_NAME: string
       AZURE_SEARCH_NAME: string
+      COSMOS_DB_ENDPOINT: string
       NEXTAUTH_SECRET: string
       NEXTAUTH_URL: string
       NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING: string

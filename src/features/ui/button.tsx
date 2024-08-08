@@ -59,7 +59,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         onClick={
           props.onClick
             ? e => {
-                e.preventDefault()
                 props.onClick?.(e)
               }
             : undefined
