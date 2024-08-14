@@ -1,8 +1,7 @@
 import { ServerActionResponse } from "@/features/common/server-action-response";
 import { AzureKeyCredential } from "@azure/core-auth";
 // import { OpenAIClient, ChatRequestSystemMessage } from "@azure/openai";
-import AzureOpenAI from "openai";
-import sql from "mssql";
+import * as sql from "mssql";
 import { OpenAIInstance } from "../../../common/services/openai";
 
 interface AIQuery {
