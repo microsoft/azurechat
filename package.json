@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
     "@azure/core-auth": "^1.7.2",
     "@azure/openai": "^2.0.0-beta.1",
