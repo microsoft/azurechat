@@ -6,6 +6,7 @@ import { OpenAIDALLEInstance } from "@/features/common/services/openai";
 import { uniqueId } from "@/features/common/util";
 import { GetImageUrl, UploadImageToStore } from "../chat-image-service";
 import { ChatThreadModel } from "../models";
+import { executeCreateSQLQuery } from "./sqlExtensions";
 
 export const GetDefaultExtensions = async (props: {
   chatThread: ChatThreadModel;
@@ -39,6 +40,28 @@ export const GetDefaultExtensions = async (props: {
   });
 
   // Add any other default Extension here
+  defaultExtensions.push({
+    type: "function",
+    function: {
+      function: async (args: any) =>
+        await executeCreateSQLQuery(
+          args,
+          props.chatThread.id,
+          props.userMessage,
+          props.signal
+        ),
+      parse: (input: string) => JSON.parse(input),
+      parameters: {
+        type: "object",
+        properties: {
+          prompt: { type: "string" },
+        },
+      },
+      description:
+        "Use this tool if the user asks for Company Data or database-related tasks. Do not use this tool with an SQL statement. You can ask the create_sql_query tool in natural language. This tool generates an SQL query from a text input and executes it.",
+      name: "create_sql_query",
+    },
+  });
 
   return {
     status: "OK",

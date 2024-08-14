@@ -1,7 +1,8 @@
 import { CosmosClient } from "@azure/cosmos";
 
 // Read Cosmos DB_NAME and CONTAINER_NAME from .env
-const DB_NAME = process.env.AZURE_COSMOSDB_DB_NAME || "chat";
+const DB_NAME =
+  process.env.AZURE_COSMOSDB_DB_NAME || "okplattfromchat-cosmos-35nc3a3bnwt2k";
 const CONTAINER_NAME = process.env.AZURE_COSMOSDB_CONTAINER_NAME || "history";
 const CONFIG_CONTAINER_NAME =
   process.env.AZURE_COSMOSDB_CONFIG_CONTAINER_NAME || "config";
@@ -15,7 +16,6 @@ export const CosmosInstance = () => {
       "Azure Cosmos DB is not configured. Please configure it in the .env file."
     );
   }
-
   return new CosmosClient({ endpoint, key });
 };
 
