@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "@azure/core-auth": "^1.7.2",
+    "@azure/openai": "^2.0.0-beta.1",
+    "mssql": "^11.0.1",
     "@azure/ai-form-recognizer": "^5.0.0",
     "@azure/cosmos": "^4.0.0",
     "@azure/identity": "^4.0.0",
