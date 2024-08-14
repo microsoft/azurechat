@@ -1,7 +1,7 @@
 import { ServerActionResponse } from "@/features/common/server-action-response";
 import { AzureKeyCredential } from "@azure/core-auth";
 // import { OpenAIClient, ChatRequestSystemMessage } from "@azure/openai";
-import * as sql from "mssql";
+import { Connection, Request } from "tedious";
 import { OpenAIInstance } from "../../../common/services/openai";
 
 interface AIQuery {
@@ -169,49 +169,8 @@ export const executeCreateSQLQuery = async (
   }
 };
 
-export async function getDataTable(
-  sqlQuery: string
-): Promise<Array<Array<string>>> {
-  const connectionString =
-    "Server=tcp:nstokchat.database.windows.net,1433;Initial Catalog=OKChatData;Persist Security Info=False;User ID=nst;Password=DerLOL123456789;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+//     "Server=tcp:nstokchat.database.windows.net,1433;Initial Catalog=OKChatData;Persist Security Info=False;User ID=nst;Password=DerLOL123456789;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
-  const rows: Array<Array<string>> = [];
-
-  let pool: sql.ConnectionPool | null = null;
-
-  try {
-    // Connect to the database
-    pool = await sql.connect(connectionString);
-
-    // Execute the query
-    const result = await pool.request().query(sqlQuery);
-
-    // Check if there are any rows in the result
-    if (result.recordset.length > 0) {
-      // Add column headers
-      const headers = Object.keys(result.recordset[0]);
-      rows.push(headers);
-
-      // Add rows
-      result.recordset.forEach((row) => {
-        const cols = headers.map((header) =>
-          row[header] ? row[header].toString() : "DataTypeConversionError"
-        );
-        rows.push(cols);
-      });
-    }
-  } catch (err) {
-    console.error("SQL error", err);
-  } finally {
-    // Close the database connection
-    if (pool) {
-      await pool.close();
-    }
-  }
-
-  console.log("🟢 SQL Query Result:", rows);
-  return rows;
-}
 export function extractAIQuery(chatCompletionsResponse: any): {
   summary: string;
   query: string;
@@ -230,4 +189,63 @@ export function extractAIQuery(chatCompletionsResponse: any): {
   const query = response.query;
 
   return { summary, query };
+}
+
+export async function getDataTable(
+  sqlQuery: string
+): Promise<Array<Array<string>>> {
+  const config = {
+    server: "nstokchat.database.windows.net",
+    authentication: {
+      type: "default",
+      options: {
+        userName: "nst",
+        password: "DerLOL123456789",
+      },
+    },
+    options: {
+      database: "OKChatData",
+      encrypt: true,
+      trustServerCertificate: false,
+    },
+  };
+
+  const rows: Array<Array<string>> = [];
+
+  return new Promise((resolve, reject) => {
+    const connection = new Connection(config);
+
+    connection.on("connect", (err) => {
+      if (err) {
+        console.error("Connection error", err);
+        reject(err);
+        return;
+      }
+
+      const request = new Request(sqlQuery, (err, rowCount) => {
+        if (err) {
+          console.error("Request error", err);
+          reject(err);
+          return;
+        }
+
+        console.log(`${rowCount} row(s) returned`);
+        resolve(rows);
+      });
+
+      request.on("row", (columns) => {
+        const row: Array<string> = [];
+        columns.forEach((column) => {
+          row.push(
+            column.value ? column.value.toString() : "DataTypeConversionError"
+          );
+        });
+        rows.push(row);
+      });
+
+      connection.execSql(request);
+    });
+
+    connection.connect();
+  });
 }

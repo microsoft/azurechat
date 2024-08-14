@@ -1,5 +1,5 @@
-export const AI_NAME = "OK GPT";
-export const AI_DESCRIPTION = "OK GPT is a friendly AI assistant.";
+export const AI_NAME = "OK Chat";
+export const AI_DESCRIPTION = "OK Chat is a friendly AI assistant.";
 export const CHAT_DEFAULT_PERSONA = AI_NAME + " default";
 
 export const CHAT_DEFAULT_SYSTEM_PROMPT = `You are a friendly ${AI_NAME} AI assistant. You must always return in markdown format.
