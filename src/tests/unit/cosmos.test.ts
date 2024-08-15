@@ -1,7 +1,6 @@
 import { Container } from "@azure/cosmos"
 
 import { containerFactory } from "@/features/common/services/cosmos"
-import { getCosmosAccessToken, isTokenExpired } from "@/features/common/services/cosmos-auth"
 import {
   ApplicationContainer,
   HistoryContainer,
@@ -21,78 +20,6 @@ jest.mock("@azure/cosmos", () => ({
   PartitionKeyDefinitionVersion: jest.requireActual("@azure/cosmos").PartitionKeyDefinitionVersion,
 }))
 
-describe("getCosmosAccessToken", () => {
-  // Mock the fetch function
-  global.fetch = jest.fn()
-
-  it("should throw an error if fetch fails", async () => {
-    // Arrange
-    const dummyConfig = { endpoint: "", key: "", dbName: "" }
-    const expectedErrorStatus = "Some Error Status"
-    ;(global.fetch as jest.Mock).mockResolvedValue({ ok: false, statusText: expectedErrorStatus })
-    // Act
-    const actual = getCosmosAccessToken(dummyConfig)
-
-    // Assert
-    await expect(actual).rejects.toThrow(
-      `Failed to fetch Cosmos Auth Token: ${JSON.stringify(new Error(expectedErrorStatus))}`
-    )
-  })
-
-  it("should throw an error if fetch fails", async () => {
-    // Arrange
-    const dummyConfig = { endpoint: "", key: "", dbName: "" }
-    const expectedError = new Error("Some Error")
-    ;(global.fetch as jest.Mock).mockRejectedValue(expectedError)
-    // Act
-    const actual = getCosmosAccessToken(dummyConfig)
-
-    // Assert
-    await expect(actual).rejects.toThrow(`Failed to fetch Cosmos Auth Token: ${JSON.stringify(expectedError)}`)
-  })
-})
-
-describe("isTokenExpired", () => {
-  it("should returns true for null token", () => {
-    // Arrange
-    const nullToken = null
-    const expected = true
-    // Act
-    const actual = isTokenExpired(nullToken)
-    // Assert
-    expect(actual).toBe(expected)
-  })
-
-  it("should returns true for expired token", () => {
-    // Arrange
-    const expiredToken = createMockToken(Date.now() / 1000 - 3600)
-    const expected = true
-    // Act
-    const actual = isTokenExpired(expiredToken)
-    // Assert
-    expect(actual).toBe(expected)
-  })
-
-  it("should returns false for valid token", () => {
-    // Arrange
-    const validToken = createMockToken(Date.now() / 1000 + 3600)
-    const expected = false
-    // Act
-    const actual = isTokenExpired(validToken)
-    // Assert
-    expect(actual).toBe(expected)
-  })
-
-  it("should throws an error for malformed token", () => {
-    // Arrange
-    const malformedToken = "malformed.token"
-    // Act
-    const actual = (): boolean => isTokenExpired(malformedToken)
-    // Assert
-    expect(actual).toThrow("Failed to check token expiry")
-  })
-})
-
 describe("containerFactory", () => {
   // Mock the fetch function
   global.fetch = jest.fn()
@@ -107,14 +34,8 @@ describe("containerFactory", () => {
   it("should return a container", async () => {
     // Arrange
     const dummyConfig = { endpoint: "https://dummy.com", key: "dummyKey", dbName: "dummyDb" }
-    const containerMock = { id: "someContainer", partitionKey: { paths: ["/id"] } }
     const expectedNumberOfCalls = 1
-    const validToken = createMockToken(Date.now() / 1000 + 3600)
-    ;(global.fetch as jest.Mock).mockResolvedValue({
-      ok: true,
-      statusText: "OK",
-      text: () => validToken,
-    })
+    const containerMock = { id: "someContainer", partitionKey: { paths: ["/id"] } }
     CosmosClient.mockImplementation(() => mockCosmosClient(containerMock as unknown as Container))
 
     // Act
@@ -125,39 +46,13 @@ describe("containerFactory", () => {
     expect(CosmosClient).toHaveBeenCalledTimes(expectedNumberOfCalls)
   })
 
-  it("should return cached container if token is valid", async () => {
+  it("should return cached container", async () => {
     // Arrange
     const dummyConfig = { endpoint: "https://dummy.com", key: "dummyKey", dbName: "dummyDb" }
-    const containerMock = { id: "someContainer", partitionKey: { paths: ["/id"] } }
     const expectedNumberOfCalls = 0
-    CosmosClient.mockImplementation(() => mockCosmosClient(containerMock as unknown as Container))
-
-    // Act
-    containerCache.set(containerMock.id, containerMock as unknown as Container)
-    const actual = await containerFactory(containerMock.id, containerMock.partitionKey, dummyConfig, containerCache)
-
-    // Assert
-    expect(actual.id).toBe(containerMock.id)
-    expect(CosmosClient).toHaveBeenCalledTimes(expectedNumberOfCalls)
-  })
-
-  it("should return new container instance if token is expired", async () => {
-    // Arrange
-    const dummyConfig = { endpoint: "https://dummy.com", key: "dummyKey", dbName: "dummyDb" }
     const containerMock = { id: "someContainer", partitionKey: { paths: ["/id"] } }
-    const expectedNumberOfCalls = 1
-
-    const createCosmosClientMock = jest.spyOn(cosmosAuth, "createCosmosClient")
-    const isTokenExpiredMock = jest.spyOn(cosmosAuth, "isTokenExpired")
-    isTokenExpiredMock.mockReturnValue(true)
-
-    const validToken = createMockToken(Date.now() / 1000 + 3600)
-    ;(global.fetch as jest.Mock).mockResolvedValue({
-      ok: true,
-      statusText: "OK",
-      text: () => validToken,
-    })
     CosmosClient.mockImplementation(() => mockCosmosClient(containerMock as unknown as Container))
+    const createCosmosClientMock = jest.spyOn(cosmosAuth, "createCosmosClient")
 
     // Act
     containerCache.set(containerMock.id, containerMock as unknown as Container)
@@ -168,10 +63,27 @@ describe("containerFactory", () => {
     expect(createCosmosClientMock).toHaveBeenCalledTimes(expectedNumberOfCalls)
   })
 
+  it("should return new container instance when not cached", async () => {
+    // Arrange
+    const dummyConfig = { endpoint: "https://dummy.com", dbName: "dummyDb" }
+    const containerMock = { id: "someContainer", partitionKey: { paths: ["/id"] } }
+    const expectedNumberOfCalls = 1
+    const createCosmosClientMock = jest.spyOn(cosmosAuth, "createCosmosClient")
+
+    // Act
+    containerCache.delete(containerMock.id)
+    const actual = await containerFactory(containerMock.id, containerMock.partitionKey, dummyConfig, containerCache)
+
+    // Assert
+    expect(actual.id).toBe(containerMock.id)
+    expect(createCosmosClientMock).toHaveBeenCalledTimes(expectedNumberOfCalls)
+  })
+
   it("should throw an error if Cosmos DB is not configured", async () => {
     // Arrange
-    const containerMock = { id: "someContainer", partitionKey: { paths: ["/id"] } }
     const dummyConfig = { endpoint: "", key: "", dbName: "" }
+    const containerMock = { id: "someContainer", partitionKey: { paths: ["/id"] } }
+    CosmosClient.mockImplementation(() => mockCosmosClient(containerMock as unknown as Container))
 
     // Act
     const actual = containerFactory(containerMock.id, containerMock.partitionKey, dummyConfig)
@@ -224,10 +136,4 @@ const mockCosmosClient = (
     }),
   },
 })
-
-function createMockToken(expiryTime: number): string {
-  const header = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64")
-  const payload = Buffer.from(JSON.stringify({ exp: expiryTime })).toString("base64")
-  return `${header}.${payload}.signature`
-}
 // #endregion Helpers
