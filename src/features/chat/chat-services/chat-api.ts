@@ -177,8 +177,8 @@ export const ChatApi = async (props: PromptProps): Promise<Response> => {
           // name: addedMessage.response.name,
         })
 
-        addedMessage.response.content &&
-          (await UpdateChatThreadIfUncategorised(updatedThread, addedMessage.response.content))
+        updatedLastHumanMessage.content &&
+          (await UpdateChatThreadIfUncategorised(updatedThread, updatedLastHumanMessage.content))
       },
       async onFinal() {
         await data.close()
