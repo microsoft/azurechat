@@ -122,10 +122,36 @@ export interface PromptBody {
 }
 
 export interface PromptMessage extends Message {
-  contentFilterResult?: { category: string; severity: number }
+  contentFilterResult?: ContentFilterResult
   sentiment?: ChatSentiment
   feedback?: FeedbackType
   reason?: string
+}
+
+export interface ContentFilterResult {
+  message: string
+  param: string
+  code: string
+  status: number
+  innererror: ContentFilterResultInnererror
+}
+
+export interface ContentFilterResultInnererror {
+  code: string
+  content_filter_result: ContentFilterResult
+}
+
+export interface ContentFilterResult {
+  hate: ContentFilterResultCategory
+  jailbreak: ContentFilterResultCategory
+  self_harm: ContentFilterResultCategory
+  sexual: ContentFilterResultCategory
+  violence: ContentFilterResultCategory
+}
+
+export interface ContentFilterResultCategory {
+  filtered: boolean
+  severity: string
 }
 
 export interface PromptProps extends PromptBody {

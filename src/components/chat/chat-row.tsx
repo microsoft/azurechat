@@ -9,7 +9,7 @@ import Typography from "@/components/typography"
 import { calculateFleschKincaidScore } from "@/features/chat/chat-services/chat-flesch"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { SHORT_MESSAGE_LENGTH } from "@/features/chat/constants"
-import { ChatRole, PromptMessage } from "@/features/chat/models"
+import { ChatRole, ContentFilterResult, ContentFilterResultCategory, PromptMessage } from "@/features/chat/models"
 import { AssistantButtons } from "@/features/ui/assistant-buttons"
 import { RewriteMessageButton } from "@/features/ui/assistant-buttons/rewrite-message-button"
 
@@ -33,6 +33,19 @@ export const ChatRow: FC<ChatRowProps> = props => {
   const fleschScore = calculateFleschKincaidScore(props.message.content)
 
   const isShortInput = (text: string): boolean => text.length < SHORT_MESSAGE_LENGTH
+  const makeMessage = (result: ContentFilterResult): string => {
+    const categories: string[] = []
+    Object.keys(result).forEach(element => {
+      const category = (result as unknown as { [value: string]: string })[
+        element
+      ] as unknown as ContentFilterResultCategory
+      if (category.filtered) {
+        categories.push(element.replace("_", " "))
+      }
+    })
+
+    return categories.join(", ")
+  }
 
   return (
     <article className={"container mx-auto flex flex-col py-1 pb-2"}>
@@ -84,8 +97,9 @@ export const ChatRow: FC<ChatRowProps> = props => {
                 <OctagonAlert size={20} />
               </div>
               <div className="flex flex-grow items-center justify-center text-center">
-                This message has triggered our content safety warnings, please rephrase your message, start a new chat
-                or reach out to support if you have concerns.
+                This message or the reply that could have been generated has triggered a content safety warning and may be considered harmful content related to{" "}
+                {makeMessage(props.message?.contentFilterResult.innererror.content_filter_result)}, please consider providing additional context, try rephrasing your
+                message, start a new chat or please reach out to support if you believe you have received this in error.
               </div>
               <div className="flex items-center justify-center">
                 <OctagonAlert size={20} />

@@ -206,7 +206,7 @@ async function* makeContentFilterResponse(lockChatThread: boolean): AsyncGenerat
         delta: {
           content: lockChatThread
             ? "I'm sorry, but this chat is now locked after multiple safety concerns. We can't proceed with more messages. Please start a new chat."
-            : "I'm sorry I wasn't able to respond to that message, could you try rephrasing, using different language or starting a new chat if this persists.",
+            : "I'm sorry I wasn't able to respond to that message, I am still learning how best to detect and prevent the generation of potentially harmful content. Could you try rephrasing, using different language or starting a new chat if this persists.",
         },
         finish_reason: "stop",
         index: 0,
