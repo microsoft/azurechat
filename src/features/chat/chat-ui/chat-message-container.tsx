@@ -12,6 +12,7 @@ import ChatLoading from "@/components/chat/chat-loading"
 import ChatRow from "@/components/chat/chat-row"
 import TranscriptEditorProvider from "@/components/chat/chat-transcript-editor/transcript-editor-provider"
 import { useChatScrollAnchor } from "@/components/hooks/use-chat-scroll-anchor"
+
 import { ChatRole } from "@/features/chat/models"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"
 

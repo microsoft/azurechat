@@ -18,7 +18,7 @@ import {
   ChatDocumentModel,
 } from "@/features/chat/models"
 import { showError } from "@/features/globals/global-message-store"
-import { TenantPreferences } from "@/features/tenant-management/models"
+import { TenantPreferences } from "@/features/models/tenant-models"
 import { uniqueId } from "@/lib/utils"
 
 import { FileState, useFileState } from "./chat-file/use-file-state"

@@ -1,19 +1,17 @@
 import { NextRequest } from "next/server"
 
-import { GetApplicationSettings } from "@/features/application/application-service"
-import { ApplicationSettings } from "@/features/globals/model"
+import { ApplicationSettings } from "@/features/models/application-models"
+import { GetApplicationSettings } from "@/features/services/application-service"
 
 export async function GET(_request: NextRequest): Promise<Response> {
   const configResult = await GetApplicationSettings()
   if (configResult.status === "OK") {
     const response: ApplicationSettings = {
-      applicationId: configResult.response.applicationId,
+      id: configResult.response.id,
       name: configResult.response.name,
       description: configResult.response.description,
       version: configResult.response.version,
       termsAndConditionsDate: configResult.response.termsAndConditionsDate,
-      administratorAccess: configResult.response.administratorAccess,
-      transcriptionAccess: configResult.response.transcriptionAccess,
     }
     return new Response(JSON.stringify({ status: "OK", data: response }), {
       status: 200,

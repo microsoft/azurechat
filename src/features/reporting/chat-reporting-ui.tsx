@@ -1,9 +1,8 @@
 import { FC } from "react"
 
 import { ReportingMessageContainer } from "@/features/reporting/reporting-message-container"
+import { FindAllChatsInThread, FindChatThreadById } from "@/features/services/reporting-service"
 import { Card } from "@/features/ui/card"
-
-import { FindAllChatsInThread, FindChatThreadById } from "./reporting-service"
 
 interface Props {
   chatThreadId: string

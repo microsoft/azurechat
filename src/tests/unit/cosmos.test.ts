@@ -1,18 +1,18 @@
 import { Container } from "@azure/cosmos"
 
-import { containerFactory } from "@/features/common/services/cosmos"
+import { containerFactory } from "@/features/database/cosmos"
 import {
   ApplicationContainer,
   HistoryContainer,
   SmartGenContainer,
   TenantContainer,
   UserContainer,
-} from "@/features/common/services/cosmos-service"
+} from "@/features/database/cosmos-containers"
 
 const { CosmosClient } = require("@azure/cosmos")
 
-const cosmos = require("@/features/common/services/cosmos")
-const cosmosAuth = require("@/features/common/services/cosmos-auth")
+const cosmos = require("@/features/database/cosmos")
+const cosmosAuth = require("@/features/database/cosmos-auth")
 
 jest.mock("@azure/cosmos", () => ({
   CosmosClient: jest.fn(),

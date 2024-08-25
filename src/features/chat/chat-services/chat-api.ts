@@ -17,8 +17,8 @@ import {
   PromptProps,
 } from "@/features/chat/models"
 import { mapOpenAIChatMessages } from "@/features/common/mapping-helper"
-import { OpenAIInstance } from "@/features/common/services/open-ai"
 import logger from "@/features/insights/app-insights"
+import { OpenAIInstance } from "@/features/services/open-ai"
 
 import {
   buildAudioChatMessages,

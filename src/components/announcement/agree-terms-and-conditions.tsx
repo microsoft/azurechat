@@ -7,6 +7,7 @@ import { APP_VERSION } from "@/app-global"
 import useOnScreen from "@/components/hooks/use-on-screen"
 import { MarkdownPlaceholder } from "@/components/markdown/markdown-placeholder"
 import Typography from "@/components/typography"
+
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
 import { Button } from "@/features/ui/button"

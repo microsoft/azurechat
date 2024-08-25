@@ -12,7 +12,7 @@ import {
   UserChatMessageModel,
 } from "@/features/chat/models"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { HistoryContainer } from "@/features/common/services/cosmos-service"
+import { HistoryContainer } from "@/features/database/cosmos-containers"
 
 export const FindAllChatMessagesForCurrentUser = async (
   chatThreadId: string

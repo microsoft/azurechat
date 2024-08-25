@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server"
 
 import { isAdminOrTenantAdmin } from "@/features/auth/helpers"
-import { GetTenantToolConfig } from "@/features/tenant-management/tenant-service"
+import { GetTenantToolConfig } from "@/features/services/tenant-service"
 
 export async function GET(_request: NextRequest, { params }: { params: { tenantId: string } }): Promise<Response> {
   const { tenantId } = params

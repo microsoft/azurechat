@@ -4,20 +4,17 @@ import { createContext, PropsWithChildren, useContext, useEffect, useReducer } f
 import { APP_NAME, APP_DESCRIPTION, APP_VERSION } from "@/app-global"
 
 import logger from "@/features/insights/app-insights"
+import { ApplicationSettings } from "@/features/models/application-models"
 import { ActionBase } from "@/lib/utils"
-
-import { ApplicationSettings } from "./model"
 
 type ContextDefinition = ReturnType<typeof useApplicationHook>
 const ApplicationContext = createContext<ContextDefinition | null>(null)
 const DEFAULT_APPLICATION_SETTINGS: ApplicationSettings = {
-  applicationId: process.env.APPLICATION_ID || "",
+  id: process.env.APPLICATION_ID || "",
   name: APP_NAME,
   description: APP_DESCRIPTION,
   version: APP_VERSION,
   termsAndConditionsDate: new Date().toISOString(),
-  administratorAccess: [],
-  transcriptionAccess: [],
 }
 
 const useApplicationHook = (settings?: ApplicationSettings): State => {

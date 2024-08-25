@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { APP_NAME, AI_TAGLINE, APP_VANITY_URL } from "@/app-global"
 
 import Typography from "@/components/typography"
+
 import { MiniMenu } from "@/features/ui/mini-menu"
 import { SVGLogo } from "@/features/ui/svg-logo"
 import { SVGLogoScaled } from "@/features/ui/svg-logo-scaled"

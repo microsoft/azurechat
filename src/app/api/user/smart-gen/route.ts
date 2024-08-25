@@ -1,10 +1,10 @@
 import * as yup from "yup"
 
-import { SmartGenModel, SmartGenToolNames } from "@/features/smart-gen/models"
+import { SmartGenModel, SupportedSmartGenTools } from "@/features/smart-gen/models"
 import { UpsertSmartGen } from "@/features/smart-gen/smart-gen-service"
 
 const smartGenItemSchema = yup.object<SmartGenModel>({
-  action: yup.string().oneOf(SmartGenToolNames).required(),
+  action: yup.string().oneOf(SupportedSmartGenTools).required(),
   context: yup.mixed().required(),
   output: yup.string().required(),
 })

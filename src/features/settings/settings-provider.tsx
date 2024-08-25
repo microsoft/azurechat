@@ -2,7 +2,7 @@
 
 import { PropsWithChildren, createContext, useContext } from "react"
 
-import { TenantConfig } from "@/features/tenant-management/models"
+import { TenantConfig } from "@/features/models/tenant-models"
 
 type SettingsContextDefinition = {
   config: TenantConfig

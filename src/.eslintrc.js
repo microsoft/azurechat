@@ -68,7 +68,7 @@ module.exports = {
       {
         pathGroups: [
           {
-            pattern: "{@/features,@/components,@/ui,@/services,@/lib}/**",
+            pattern: "{@/features,@/lib}/**",
             group: "internal",
             position: "after",
           },

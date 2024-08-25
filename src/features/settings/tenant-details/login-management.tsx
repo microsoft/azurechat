@@ -4,9 +4,11 @@ import React, { useState, useCallback } from "react"
 import { APP_NAME } from "@/app-global"
 
 import Typography from "@/components/typography"
+
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
-import { SwitchComponent } from "@/ui/switch"
+import { SwitchComponent } from "@/features/ui/switch"
+
 export const LoginManagement: React.FC<{ requiresGroupLogin: boolean; tenantId: string }> = ({
   requiresGroupLogin,
   tenantId,

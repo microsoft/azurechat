@@ -5,6 +5,7 @@ import { Session } from "next-auth"
 import { createElement } from "react"
 
 import Typography from "@/components/typography"
+
 import { MenuItems, validateCondition } from "@/features/common/menu-items"
 
 export const NavBarItems = ({ session }: { session: Session | null }): JSX.Element[] => {

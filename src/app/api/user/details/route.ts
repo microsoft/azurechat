@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import * as yup from "yup"
 
 import { userSession } from "@/features/auth/helpers"
-import { GetUserByUpn, UpdateUser } from "@/features/user-management/user-service"
+import { GetUserByUpn, UpdateUser } from "@/features/services/user-service"
 
 const userUpdateSchema = yup
   .object({
@@ -27,19 +27,19 @@ export async function POST(request: NextRequest, _response: NextResponse): Promi
     // TODO: validate new prompt
 
     const existingUserResult = await GetUserByUpn(tenantId, upn)
-    if (existingUserResult.status !== "OK") {
+    if (existingUserResult.status !== "OK")
       return new Response(JSON.stringify({ error: "User not found" }), { status: 404 })
-    }
-    if (contextPrompt === existingUserResult.response?.preferences?.contextPrompt) {
+
+    if (contextPrompt === existingUserResult.response?.preferences?.contextPrompt)
       return new Response("Context prompt already set", { status: 200 })
-    }
-    const updatedUserResult = await UpdateUser(tenantId, existingUserResult.response.userId, {
-      ...existingUserResult.response,
+
+    const updatedUserResult = await UpdateUser(tenantId, existingUserResult.response.id, {
       preferences: { contextPrompt },
     })
-    if (updatedUserResult.status === "OK") {
+
+    if (updatedUserResult.status === "OK")
       return new Response(JSON.stringify(updatedUserResult.response), { status: 200 })
-    }
+
     return new Response(JSON.stringify({ error: "Failed to update user" }), { status: 400 })
   } catch (error) {
     const errorMessage = error instanceof yup.ValidationError ? { errors: error.errors } : "Internal Server Error"

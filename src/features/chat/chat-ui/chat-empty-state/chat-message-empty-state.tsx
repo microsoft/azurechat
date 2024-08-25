@@ -1,6 +1,7 @@
 import { FC } from "react"
 
 import Typography from "@/components/typography"
+
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatFileUI } from "@/features/chat/chat-ui/chat-file/chat-file-ui"
 import { Card } from "@/features/ui/card"

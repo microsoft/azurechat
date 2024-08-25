@@ -3,6 +3,7 @@ import { cva } from "class-variance-authority"
 import React from "react"
 
 import Typography from "@/components/typography"
+
 import { cn } from "@/lib/utils"
 
 const switchVariants = cva(

@@ -5,6 +5,7 @@ import React, { useEffect, useState, FC, useCallback } from "react"
 import { APP_NAME } from "@/app-global"
 
 import Typography from "@/components/typography"
+
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ChatType } from "@/features/chat/models"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"

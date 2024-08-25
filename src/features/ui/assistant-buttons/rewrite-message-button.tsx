@@ -4,11 +4,12 @@ import { Sparkles, Sparkle } from "lucide-react"
 import React, { useState, useCallback } from "react"
 
 import useSmartGen from "@/components/hooks/use-smart-gen"
+
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { PromptMessage } from "@/features/chat/models"
 import logger from "@/features/insights/app-insights"
 import { useSettingsContext } from "@/features/settings/settings-provider"
-import { SmartGenToolName } from "@/features/smart-gen/models"
+import { SupportedSmartGenToolId } from "@/features/smart-gen/models"
 import { Button } from "@/features/ui/button"
 
 import { useButtonStyles } from "./use-button-styles"
@@ -25,7 +26,7 @@ export const RewriteMessageButton: React.FC<RewriteMessageButtonProps> = ({
   onAssistantButtonClick,
 }) => (
   <RewriteMessageButtonInternal
-    toolName={getRewriterAction(fleschScore, !!message.contentFilterResult)}
+    toolId={getRewriterAction(fleschScore, !!message.contentFilterResult)}
     context={message}
     input={message.content}
     onAssistantButtonClick={onAssistantButtonClick}
@@ -42,7 +43,7 @@ export const CheckTranscriptionButton: React.FC<CheckTranscriptionButtonProps> =
   onAssistantButtonClick,
 }) => (
   <RewriteMessageButtonInternal
-    toolName={"checkTranscription"}
+    toolId={"checkTranscription"}
     context={transcription}
     input={transcription}
     onAssistantButtonClick={onAssistantButtonClick}
@@ -50,16 +51,16 @@ export const CheckTranscriptionButton: React.FC<CheckTranscriptionButtonProps> =
 )
 
 const RewriteMessageButtonInternal: React.FC<{
-  toolName: SmartGenToolName
+  toolId: SupportedSmartGenToolId
   context: unknown
   input: string
   onAssistantButtonClick: (result: string) => void
-}> = ({ toolName, context, input, onAssistantButtonClick }) => {
+}> = ({ toolId, context, input, onAssistantButtonClick }) => {
   const { iconSize, buttonClass } = useButtonStyles()
-  const { config } = useSettingsContext()
   const { chatThreadLocked } = useChatContext()
 
-  const { smartGen } = useSmartGen(config.tools || [])
+  const { config } = useSettingsContext()
+  const { smartGen } = useSmartGen(config.tools)
 
   const [rewriteClicked, setRewriteClicked] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -70,7 +71,7 @@ const RewriteMessageButtonInternal: React.FC<{
 
     try {
       const response = await smartGen({
-        toolName: toolName,
+        toolId: toolId,
         context: { context, uiComponent: "RewriteMessageButton" },
         input: input,
       })
@@ -82,7 +83,7 @@ const RewriteMessageButtonInternal: React.FC<{
       setIsLoading(false)
       setTimeout(() => setRewriteClicked(false), 2000)
     }
-  }, [toolName, context, input, onAssistantButtonClick, smartGen])
+  }, [toolId, context, input, onAssistantButtonClick, smartGen])
 
   return (
     <Button
@@ -103,7 +104,7 @@ const RewriteMessageButtonInternal: React.FC<{
   )
 }
 
-const getRewriterAction = (score: number, contentFilter: boolean): SmartGenToolName => {
+const getRewriterAction = (score: number, contentFilter: boolean): SupportedSmartGenToolId => {
   if (contentFilter) return "formatToExplain"
   if (score > 8) return "formatToSimplify"
   if (score <= 8) return "formatToImprove"

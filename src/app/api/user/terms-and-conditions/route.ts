@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import * as yup from "yup"
 
 import { userSession } from "@/features/auth/helpers"
-import { GetUserByUpn, UpdateUser } from "@/features/user-management/user-service"
+import { GetUserByUpn, UpdateUser } from "@/features/services/user-service"
 
 const userUpdateSchema = yup
   .object({
@@ -26,9 +26,7 @@ export async function POST(_request: NextRequest, _response: NextResponse): Prom
     }
 
     const updatedUserResult = await UpdateUser(tenantId, existingUserResult.response.userId, {
-      ...existingUserResult.response,
       accepted_terms: true,
-      accepted_terms_date: new Date().toISOString(),
     })
     if (updatedUserResult.status === "OK") {
       return new Response(JSON.stringify(updatedUserResult.response), { status: 200 })

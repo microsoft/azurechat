@@ -8,14 +8,16 @@ import { AGENCY_NAME } from "@/app-global"
 import useSmartGen from "@/components/hooks/use-smart-gen"
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
+
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
+import { TenantDetails } from "@/features/models/tenant-models"
 import { useSettingsContext } from "@/features/settings/settings-provider"
-import { TenantDetails } from "@/features/tenant-management/models"
 import SystemPrompt from "@/features/theme/readable-systemprompt"
 import { Button } from "@/features/ui/button"
 import { SmartGen } from "@/features/ui/smart-gen"
 import { Textarea } from "@/features/ui/textarea"
+
 export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isClearing, setIsClearing] = useState(false)
@@ -23,7 +25,7 @@ export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant 
   const [contextPrompt, setContextPrompt] = useState(tenant.preferences.contextPrompt)
   const [input, setInput] = useState<string>("")
   const { config } = useSettingsContext()
-  const { smartGen } = useSmartGen(config.tools || [])
+  const { smartGen } = useSmartGen(config.tools)
 
   const submit = useCallback(
     async (newContextPrompt: string): Promise<void> => {
@@ -94,7 +96,7 @@ export const TenantDetailsForm: React.FC<{ tenant: TenantDetails }> = ({ tenant 
     try {
       const formatInput = buildInput({ systemPrompt: config.systemPrompt, tenantPrompt: input })
       const res = await smartGen({
-        toolName: "contextPromptSanitiser",
+        toolId: "contextPromptSanitiser",
         context: { uiComponent: "TenantDetailsForm" },
         input: formatInput,
       })

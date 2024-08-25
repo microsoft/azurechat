@@ -1,11 +1,11 @@
+import { UserEntity } from "@/features/database/entities"
+import { GetUserById } from "@/features/services/user-service"
 import { UserDetailsForm } from "@/features/settings/user-details"
 import { UserDetailsFormProps } from "@/features/settings/user-details/user-details-form"
-import { UserRecord } from "@/features/user-management/models"
-import { GetUserById } from "@/features/user-management/user-service"
 
 export const dynamic = "force-dynamic"
 
-const toUserDetailsForm = (user: UserRecord): UserDetailsFormProps => ({
+const toUserDetailsForm = (user: UserEntity): UserDetailsFormProps => ({
   preferences: user.preferences || { contextPrompt: "" },
   name: user.name || "",
   email: user.email || "",

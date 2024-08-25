@@ -1,16 +1,13 @@
+"use client"
+
 import Typography from "@/components/typography"
-import { TenantDetails, toTenantDetails } from "@/features/tenant-management/models"
-import TenantList from "@/features/tenant-management/tenant-list"
-import { GetTenants } from "@/features/tenant-management/tenant-service"
 
-const getTenants = async (): Promise<TenantDetails[]> => {
-  const result = await GetTenants()
-  if (result.status !== "OK") throw new Error("Failed to get user preferences")
-  const details = result.response.map<TenantDetails>(toTenantDetails)
-  return details
-}
+import { useAdminContext } from "@/features/settings/admin/admin-provider"
+import TenantList from "@/features/settings/admin/tenant-list"
 
-export default async function TenantsPage(): Promise<JSX.Element> {
+export default function TenantsPage(): JSX.Element {
+  const { tenants } = useAdminContext()
+
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -21,11 +18,7 @@ export default async function TenantsPage(): Promise<JSX.Element> {
           Below is a list of all tenants
         </Typography>
       </div>
-      <TenantList
-        searchParams={{ pageSize: 10, pageNumber: 0 }}
-        tenants={await getTenants()}
-        baseUrl="/settings/admin/tenants"
-      />
+      <TenantList searchParams={{ pageSize: 10, pageNumber: 0 }} tenants={tenants} baseUrl="/settings/admin/tenants" />
     </div>
   )
 }

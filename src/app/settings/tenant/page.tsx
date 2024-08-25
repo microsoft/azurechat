@@ -1,3 +1,5 @@
+import { TenantDetails } from "@/features/models/tenant-models"
+import { GetTenantDetails } from "@/features/services/tenant-service"
 import {
   Administrators,
   DepartmentName,
@@ -7,8 +9,6 @@ import {
   TenantDetailsForm,
   GroupList,
 } from "@/features/settings/tenant-details"
-import { TenantDetails } from "@/features/tenant-management/models"
-import { GetTenantDetails } from "@/features/tenant-management/tenant-service"
 
 const getTenantDetails = async (): Promise<TenantDetails> => {
   const result = await GetTenantDetails()

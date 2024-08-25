@@ -1,6 +1,6 @@
 import Typography from "@/components/typography"
 
-export const DepartmentName: React.FC<{ name: string }> = ({ name }) => (
+export const DepartmentName: React.FC<{ name: string | null }> = ({ name }) => (
   <Typography variant="h5" className="mb-4">
     Department Name:
     <div className="mt-2 rounded-md bg-altBackgroundShade p-4">

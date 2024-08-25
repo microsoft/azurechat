@@ -3,9 +3,9 @@ import { getServerSession } from "next-auth"
 
 import { APP_NAME } from "@/app-global"
 
+import { GetTenantConfig } from "@/features/services/tenant-service"
 import { SettingsMenu } from "@/features/settings/settings-menu"
 import SettingsProvider from "@/features/settings/settings-provider"
-import { GetTenantConfig } from "@/features/tenant-management/tenant-service"
 
 export const dynamic = "force-dynamic"
 

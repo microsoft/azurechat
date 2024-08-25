@@ -1,4 +1,14 @@
-import { UserRoundCog, FileClock, Building2, ShieldCheck, Factory, Settings } from "lucide-react"
+import {
+  UserRoundCog,
+  FileClock,
+  Building2,
+  ShieldCheck,
+  Factory,
+  Settings,
+  DraftingCompass,
+  Library,
+  BookMarked,
+} from "lucide-react"
 
 import { isTenantAdmin, isAdmin } from "@/features/auth/helpers"
 import { SettingsMenuItem } from "@/features/settings/settings-menu-item"
@@ -15,6 +25,9 @@ const menuItems = [
     items: [
       { url: "/tenants", icon: <Factory size={16} />, text: "Support", adminRequired: true },
       { url: "/manage", icon: <Settings size={16} />, text: "Manage", adminRequired: true },
+      { url: "/smart-tools", icon: <DraftingCompass size={16} />, text: "Smart Tools", adminRequired: true },
+      { url: "/features", icon: <Library size={16} />, text: "Features", adminRequired: true },
+      { url: "/indexes", icon: <BookMarked size={16} />, text: "Indexes", adminRequired: true },
     ],
   },
 ]

@@ -3,8 +3,8 @@
 import { PropsWithChildren, createContext, useContext, useEffect, useReducer } from "react"
 
 import { showError } from "@/features/globals/global-message-store"
-import { TenantDetails } from "@/features/tenant-management/models"
-import { UserRecord } from "@/features/user-management/models"
+import { TenantDetails } from "@/features/models/tenant-models"
+import { UserRecord } from "@/features/models/user-models"
 import { ActionBase } from "@/lib/utils"
 
 type AdminContextDefinition = ReturnType<typeof useAdminContextHook>

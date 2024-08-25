@@ -5,6 +5,7 @@ import { ReactNode, createContext, forwardRef, useContext } from "react"
 
 import useFocusTrap from "@/components/hooks/use-focus-trap"
 import useOnClickOutside from "@/components/hooks/use-on-click-outside"
+
 import { cn } from "@/lib/utils"
 
 type DialogContextDefinition = {

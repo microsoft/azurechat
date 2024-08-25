@@ -4,8 +4,8 @@ import { getServerSession } from "next-auth"
 import { APP_NAME } from "@/app-global"
 
 import ChatThreadsProvider from "@/features/chat/chat-ui/chat-threads-context"
+import { GetTenantConfig } from "@/features/services/tenant-service"
 import SettingsProvider from "@/features/settings/settings-provider"
-import { GetTenantConfig } from "@/features/tenant-management/tenant-service"
 
 export const metadata = {
   title: APP_NAME,
@@ -13,11 +13,9 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }): Promise<JSX.Element> {
-  const session = await getServerSession()
-  if (!session) return redirect("/")
+  const [session, config] = await Promise.all([getServerSession(), GetTenantConfig()])
+  if (!session || config.status !== "OK") return redirect("/")
 
-  const config = await GetTenantConfig()
-  if (config.status !== "OK") return redirect("/")
   return (
     <SettingsProvider config={config.response}>
       <ChatThreadsProvider>

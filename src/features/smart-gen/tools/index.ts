@@ -28,31 +28,7 @@ export function contextPromptSanitiser(template: string): (input: string) => Pro
   }
 }
 
-export function formatToImprove(template: string): (input: string) => Promise<string> {
-  return async (input: string) => {
-    const combinedInput = template.replace(inputRegex, input)
-    const result = await Promise.resolve(combinedInput)
-    return result
-  }
-}
-
-export function formatToSimplify(template: string): (input: string) => Promise<string> {
-  return async (input: string) => {
-    const combinedInput = template.replace(inputRegex, input)
-    const result = await Promise.resolve(combinedInput)
-    return result
-  }
-}
-
-export function formatToExplain(template: string): (input: string) => Promise<string> {
-  return async (input: string) => {
-    const combinedInput = template.replace(inputRegex, input)
-    const result = await Promise.resolve(combinedInput)
-    return result
-  }
-}
-
-export function checkTranscription(template: string): (input: string) => Promise<string> {
+export function templateFormatter(template: string): (input: string) => Promise<string> {
   return async (input: string) => {
     const combinedInput = template.replace(inputRegex, input)
     const result = await Promise.resolve(combinedInput)

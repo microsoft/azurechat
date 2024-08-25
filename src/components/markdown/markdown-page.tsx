@@ -1,6 +1,7 @@
 import { APP_NAME, AGENCY_NAME, APP_VERSION } from "@/app-global"
 
 import Typography from "@/components/typography"
+
 import { Card } from "@/features/ui/card"
 
 import { MarkdownPlaceholder } from "./markdown-placeholder"

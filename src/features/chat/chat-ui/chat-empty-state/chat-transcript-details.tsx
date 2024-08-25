@@ -2,6 +2,7 @@ import * as Label from "@radix-ui/react-label"
 import React, { useState, useCallback } from "react"
 
 import Typography from "@/components/typography"
+
 import { AssociateReferenceWithChatThread } from "@/features/chat/chat-services/chat-thread-service"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import logger from "@/features/insights/app-insights"

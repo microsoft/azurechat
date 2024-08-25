@@ -1,14 +1,15 @@
 import ErrorBoundary from "@/components/error-boundary"
+
+import { TenantDetails } from "@/features/models/tenant-models"
+import { UserRecord } from "@/features/models/user-models"
+import { GetTenants } from "@/features/services/tenant-service"
+import { GetUsersByTenantId } from "@/features/services/user-service"
 import AdminProvider from "@/features/settings/admin/admin-provider"
-import { TenantDetails, toTenantDetails } from "@/features/tenant-management/models"
-import { GetTenants } from "@/features/tenant-management/tenant-service"
-import { UserRecord } from "@/features/user-management/models"
-import { GetUsersByTenantId } from "@/features/user-management/user-service"
 
 const getTenants = async (): Promise<TenantDetails[]> => {
   const result = await GetTenants()
-  if (result.status !== "OK") throw new Error("Failed to get user preferences")
-  const details = result.response.map<TenantDetails>(toTenantDetails)
+  if (result.status !== "OK") throw new Error("Failed to get tenants")
+  const details = result.response
   return details
 }
 

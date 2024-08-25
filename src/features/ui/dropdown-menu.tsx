@@ -5,6 +5,7 @@ import { Check, ChevronRight, Circle } from "lucide-react"
 import React from "react"
 
 import Typography from "@/components/typography"
+
 import { cn } from "@/lib/utils"
 
 import { Button } from "./button"

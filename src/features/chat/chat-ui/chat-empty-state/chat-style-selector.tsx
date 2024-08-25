@@ -3,6 +3,7 @@ import { Brush, CircleDot, Scale } from "lucide-react"
 import React, { FC, useCallback } from "react"
 
 import Typography from "@/components/typography"
+
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { ConversationStyle } from "@/features/chat/models"
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/tabs"

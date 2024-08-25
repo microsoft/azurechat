@@ -16,7 +16,7 @@ import {
 } from "@/features/chat/models"
 import { xMonthsAgo } from "@/features/common/date-helper"
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { HistoryContainer } from "@/features/common/services/cosmos-service"
+import { HistoryContainer } from "@/features/database/cosmos-containers"
 import logger from "@/features/insights/app-insights"
 import { uniqueId } from "@/lib/utils"
 

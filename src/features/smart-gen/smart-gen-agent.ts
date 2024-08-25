@@ -1,38 +1,36 @@
-import { SmartGenRequest, SmartGenTools, SmartGenToolNames, SmartGenToolName } from "./models"
-import { contextPromptSanitiser, formatToImprove, formatToSimplify, formatToExplain, checkTranscription } from "./tools"
+import { SmartGenRequest, SmartGenTools, SupportedSmartGenTools, SupportedSmartGenToolId } from "./models"
+import { contextPromptSanitiser, templateFormatter } from "./tools"
 
-export type SmartToolConfig = {
+export type SmartGenToolAgentConfig = {
+  id: string
   name: string
   enabled: boolean
   template: string
-}
-
+  description: string
+}[]
 type SmartGenToolAgent = {
   execute: (request: SmartGenRequest) => Promise<string>
 }
-export default function SmartGenToolAgent(config: SmartToolConfig[]): SmartGenToolAgent {
+export default function SmartGenToolAgent(config: SmartGenToolAgentConfig): SmartGenToolAgent {
   const availableSmartGenTools: SmartGenTools = config
-    .filter(tool => tool.enabled && SmartGenToolNames.includes(tool.name as SmartGenToolName))
+    .filter(tool => tool.enabled && SupportedSmartGenTools.includes(tool.id as SupportedSmartGenToolId))
     .map(tool => {
-      switch (tool.name) {
+      switch (tool.id) {
         case "contextPromptSanitiser":
-          return { name: tool.name, execute: contextPromptSanitiser(tool.template) }
+          return { id: tool.id, execute: contextPromptSanitiser(tool.template) }
         case "formatToImprove":
-          return { name: tool.name, execute: formatToImprove(tool.template) }
         case "formatToSimplify":
-          return { name: tool.name, execute: formatToSimplify(tool.template) }
         case "formatToExplain":
-          return { name: tool.name, execute: formatToExplain(tool.template) }
         case "checkTranscription":
-          return { name: tool.name, execute: checkTranscription(tool.template) }
+          return { id: tool.id, execute: templateFormatter(tool.template) }
         default:
           throw new Error("Tool not found")
       }
     })
-    .reduce((acc, tool) => ({ ...acc, [tool.name]: tool }), {} as SmartGenTools)
+    .reduce((acc, tool) => ({ ...acc, [tool.id]: tool }), {} as SmartGenTools)
 
   return {
     execute: async (request: SmartGenRequest): Promise<string> =>
-      await availableSmartGenTools[request.toolName].execute(request.input),
+      await availableSmartGenTools[request.toolId].execute(request.input),
   }
 }

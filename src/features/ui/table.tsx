@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import Typography from "@/components/typography"
+
 import { cn } from "@/lib/utils"
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(

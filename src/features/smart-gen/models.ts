@@ -1,11 +1,11 @@
-export type SmartGenModel<K extends SmartGenToolName = SmartGenToolName> = {
+export type SmartGenModel<K extends SupportedSmartGenToolId = SupportedSmartGenToolId> = {
   id?: string
-  action: SmartGenToolName
+  action: SupportedSmartGenToolId
   context: Record<string, unknown>
   output: Awaited<ReturnType<SmartGenTools[K]["execute"]>>
 }
 
-export type SmartGenEntity = SmartGenModel<SmartGenToolName> & {
+export type SmartGenEntity = SmartGenModel<SupportedSmartGenToolId> & {
   tenantId: string
   userId: string
   createdAt: string
@@ -13,11 +13,11 @@ export type SmartGenEntity = SmartGenModel<SmartGenToolName> & {
 
 export type SmartGenRequest = {
   input: string
-  toolName: SmartGenToolName
+  toolId: SupportedSmartGenToolId
   context: Record<string, unknown> & { uiComponent: string }
 }
 
-export const SmartGenToolNames = [
+export const SupportedSmartGenTools = [
   "contextPromptSanitiser",
   "formatToImprove",
   "formatToSimplify",
@@ -25,11 +25,11 @@ export const SmartGenToolNames = [
   "checkTranscription",
 ] as const
 
-export type SmartGenToolName = (typeof SmartGenToolNames)[number]
+export type SupportedSmartGenToolId = (typeof SupportedSmartGenTools)[number]
 
 export type SmartGenTool = {
-  name: SmartGenToolName
+  name: SupportedSmartGenToolId
   execute: (request: string) => Promise<string>
 }
 
-export type SmartGenTools = Record<SmartGenToolName, SmartGenTool>
+export type SmartGenTools = Record<SupportedSmartGenToolId, SmartGenTool>

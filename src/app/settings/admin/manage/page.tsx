@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { APP_VERSION } from "@/app-global"
 
 import Typography from "@/components/typography"
+
 import { isAdmin } from "@/features/auth/helpers"
 
 export const dynamic = "force-dynamic"

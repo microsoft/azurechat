@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation"
 import { getServerSession } from "next-auth"
 
+import { UserPreferences } from "@/features/models/user-models"
+import { GetUserPreferences } from "@/features/services/user-service"
 import { ContextGuide, UserDetailsForm } from "@/features/settings/user-details"
-import { UserPreferences } from "@/features/user-management/models"
-import { GetUserPreferences } from "@/features/user-management/user-service"
 
 const getUserPreferences = async (): Promise<UserPreferences> => {
   const result = await GetUserPreferences()

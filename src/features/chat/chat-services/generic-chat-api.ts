@@ -5,8 +5,8 @@ import { ChatCompletionMessageParam } from "openai/resources"
 
 import { getTenantId, userHashedId } from "@/features/auth/helpers"
 import { ChatRecordType } from "@/features/chat/models"
-import { HistoryContainer } from "@/features/common/services/cosmos-service"
-import { OpenAIInstance } from "@/features/common/services/open-ai"
+import { HistoryContainer } from "@/features/database/cosmos-containers"
+import { OpenAIInstance } from "@/features/services/open-ai"
 
 import { translator } from "./chat-translator-service"
 

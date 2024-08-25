@@ -5,9 +5,9 @@ import AzureADProvider from "next-auth/providers/azure-ad"
 
 import { AGENCY_NAME } from "@/app-global"
 
-import { isAdmin } from "@/features/application/application-service"
+import { GetTenantApplicationConfig, GetTenantDetailsById } from "@/features/services/tenant-service"
 
-import { UserSignInHandler, SignInErrorType, isTenantAdmin, getUser } from "./sign-in"
+import { UserSignInHandler, SignInErrorType, getUser } from "./sign-in"
 
 export type AuthToken = JWT &
   Omit<User, "groups"> & {
@@ -20,6 +20,7 @@ const configureIdentityProvider = (): Provider[] => {
   const providers: Provider[] = []
 
   if (process.env.AZURE_AD_CLIENT_ID && process.env.AZURE_AD_CLIENT_SECRET && process.env.AZURE_AD_TENANT_ID) {
+    const redirectUri = `${process.env.NEXTAUTH_URL}/api/auth/callback/azure-ad`
     providers.push(
       AzureADProvider({
         name: `${AGENCY_NAME} Single Sign On`,
@@ -32,7 +33,7 @@ const configureIdentityProvider = (): Provider[] => {
           url: process.env.AZURE_AD_AUTHORIZATION_ENDPOINT,
           params: {
             client_id: process.env.AZURE_AD_CLIENT_ID,
-            redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/azure-ad`,
+            redirect_uri: redirectUri,
             response_type: "code",
           },
         },
@@ -42,7 +43,7 @@ const configureIdentityProvider = (): Provider[] => {
             client_id: process.env.AZURE_AD_CLIENT_ID,
             client_secret: process.env.AZURE_AD_CLIENT_SECRET,
             grant_type: "authorization_code",
-            redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/azure-ad`,
+            redirect_uri: redirectUri,
           },
         },
         userinfo: process.env.AZURE_AD_USERINFO_ENDPOINT,
@@ -53,10 +54,21 @@ const configureIdentityProvider = (): Provider[] => {
           profile.tenantId = profile.employee_idp || profile.tid
           profile.groups = profile.groups || profile.employee_groups
 
-          const admin = await isAdmin(profile)
-          const tenantAdmin = admin || (await isTenantAdmin(profile))
+          const [tenantAppResult, tenantResult, user] = await Promise.all([
+            GetTenantApplicationConfig(profile.tenantId),
+            GetTenantDetailsById(profile.tenantId),
+            getUser(profile.tenantId, profile.upn),
+          ])
+          if (tenantAppResult.status !== "OK" || tenantResult.status !== "OK" || !user)
+            throw new Error("Failed to retrieve tenant or user details")
 
-          const user = await getUser(profile.tenantId, profile.upn)
+          const isAppAdmin = tenantAppResult.response.accessGroups.some(accessGroup =>
+            profile.groups.includes(accessGroup)
+          )
+          const normalisedUserIdentifier = (profile.upn || profile.email || "")?.toLowerCase()
+          const isTenantAdmin = tenantResult.response.administrators
+            .map(admin => admin.toLowerCase())
+            .includes(normalisedUserIdentifier)
 
           return {
             ...profile,
@@ -64,9 +76,9 @@ const configureIdentityProvider = (): Provider[] => {
             name: profile.name,
             email: email,
             upn: profile.upn,
-            admin: admin,
+            admin: isAppAdmin,
             globalAdmin: globalAdmin,
-            tenantAdmin: tenantAdmin,
+            tenantAdmin: isTenantAdmin,
             userId: profile.upn,
             acceptedTermsDate: (user?.accepted_terms && user?.accepted_terms_date) || null,
             lastVersionSeen: user?.last_version_seen || null,

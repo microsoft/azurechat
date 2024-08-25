@@ -5,6 +5,7 @@ import React from "react"
 
 import useSyncScroll from "@/components/hooks/use-sync-scroll"
 import Typography from "@/components/typography"
+
 import { Button } from "@/features/ui/button"
 
 import { TranscriptForm, TranscriptionTextEditor } from "./chat-transcript-editor"

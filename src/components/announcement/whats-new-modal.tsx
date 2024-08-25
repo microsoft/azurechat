@@ -6,6 +6,7 @@ import { APP_VERSION } from "@/app-global"
 
 import { MarkdownPlaceholder } from "@/components/markdown/markdown-placeholder"
 import Typography from "@/components/typography"
+
 import logger from "@/features/insights/app-insights"
 import { Button } from "@/features/ui/button"
 import { DialogHeader, DialogFooter, Dialog, DialogContent } from "@/features/ui/dialog"

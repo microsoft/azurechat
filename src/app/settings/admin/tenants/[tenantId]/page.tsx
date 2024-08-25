@@ -1,7 +1,8 @@
 import Typography from "@/components/typography"
-import { UserRecord } from "@/features/user-management/models"
-import UserList from "@/features/user-management/user-list"
-import { GetUsersByTenantId } from "@/features/user-management/user-service"
+
+import { UserRecord } from "@/features/models/user-models"
+import { GetUsersByTenantId } from "@/features/services/user-service"
+import UserList from "@/features/settings/admin/user-list"
 
 const getUsersByTenantId = async (tenantId: string): Promise<UserRecord[]> => {
   const result = await GetUsersByTenantId(tenantId)

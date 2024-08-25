@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server"
 import * as yup from "yup"
 
-import { isAdmin } from "@/features/auth/helpers"
-import { GetTenantById, UpdateTenant } from "@/features/tenant-management/tenant-service"
+import { isAdmin, isTenantAdmin } from "@/features/auth/helpers"
+import { GetTenantById, UpdateTenant } from "@/features/services/tenant-service"
 
 const tenantUpdateSchema = yup
   .object({
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest, { params }: { params: { tenantI
     )
     const { tenantId, administrators } = validatedData
 
-    const isAuthorized = await isAdmin()
+    const isAuthorized = (await isAdmin()) || (await isTenantAdmin())
     if (!isAuthorized) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 })
 
     const existingTenantResult = await GetTenantById(tenantId)

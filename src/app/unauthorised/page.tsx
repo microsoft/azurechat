@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from "lucide-react"
 
 import Typography from "@/components/typography"
+
 import { Button } from "@/features/ui/button"
 import { Card } from "@/features/ui/card"
 

@@ -2,10 +2,9 @@ import { createHash } from "crypto"
 
 import { getServerSession } from "next-auth"
 
-import { TenantRecord } from "@/features/tenant-management/models"
-import { GetTenantById } from "@/features/tenant-management/tenant-service"
-import { UserRecord } from "@/features/user-management/models"
-import { GetUserByUpn } from "@/features/user-management/user-service"
+import { TenantEntity, UserEntity } from "@/features/database/entities"
+import { GetTenantById } from "@/features/services/tenant-service"
+import { GetUserByUpnOld } from "@/features/services/user-service"
 
 import { options } from "./auth-api"
 import { UserModel } from "./models"
@@ -37,18 +36,17 @@ export const isTenantAdmin = async (): Promise<boolean> => {
 
 export const getTenantId = async (): Promise<string> => {
   const user = await userSession()
-  if (user) {
-    return user.tenantId
-  }
+  if (user) return user.tenantId
   throw new Error("Tenant not found")
 }
 
-export const getTenantAndUser = async (): Promise<[TenantRecord, UserRecord]> => {
+/** @deprecated */
+export const getTenantAndUser = async (): Promise<[TenantEntity, UserEntity]> => {
   const userModel = await userSession()
   if (!userModel) throw new Error("User not found")
   const tenant = await GetTenantById(userModel.tenantId)
   if (tenant.status !== "OK") throw new Error("Tenant not found")
-  const user = await GetUserByUpn(tenant.response.id, userModel.upn)
+  const user = await GetUserByUpnOld(tenant.response.id, userModel.upn)
   if (user.status !== "OK") throw new Error("User not found")
   return [tenant.response, user.response]
 }

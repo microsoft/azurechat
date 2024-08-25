@@ -1,5 +1,5 @@
 import { ServerActionResponseAsync } from "@/features/common/server-action-response"
-import { OpenAIEmbeddingInstance } from "@/services/open-ai"
+import { OpenAIEmbeddingInstance } from "@/features/services/open-ai"
 
 export interface AzureCogDocumentIndex {
   id: string

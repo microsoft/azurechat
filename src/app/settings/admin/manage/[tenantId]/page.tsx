@@ -1,3 +1,5 @@
+import { TenantDetails } from "@/features/models/tenant-models"
+import { GetTenantDetailsById } from "@/features/services/tenant-service"
 import {
   Administrators,
   DepartmentName,
@@ -8,15 +10,13 @@ import {
   TenantDetailsForm,
 } from "@/features/settings/tenant-details"
 import { SmartToolsConfig } from "@/features/settings/tenant-details/smart-tools-config"
-import { TenantDetails, toTenantDetails } from "@/features/tenant-management/models"
-import { GetTenantById } from "@/features/tenant-management/tenant-service"
 
 export const dynamic = "force-dynamic"
 
 const getTenantDetails = async (tenantId: string): Promise<TenantDetails> => {
-  const result = await GetTenantById(tenantId)
+  const result = await GetTenantDetailsById(tenantId)
   if (result.status !== "OK") throw new Error("Failed to get tenant details")
-  return toTenantDetails(result.response)
+  return result.response
 }
 
 type Props = { params: { tenantId: string } }

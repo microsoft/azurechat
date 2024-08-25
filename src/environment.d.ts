@@ -41,6 +41,7 @@ declare global {
       NEXT_PUBLIC_SYSTEM_PROMPT: string
       NEXT_TELEMETRY_DISABLED: string
       REGION_NAME: string
+      USE_DEVICE_CREDENTIAL: string
     }
   }
 }

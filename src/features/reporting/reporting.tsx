@@ -2,16 +2,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 
 import Typography from "@/components/typography"
+
 import {
   formatSensitivityValue,
   formatStyleValue,
   formatTypeValue,
 } from "@/features/chat/chat-ui/chat-header-display/icon-helpers"
+import { FindAllChatThreadsForUserReporting } from "@/features/services/reporting-service"
 import { Button } from "@/features/ui/button"
 import { Card } from "@/features/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/features/ui/table"
-
-import { FindAllChatThreadsForUserReporting } from "./reporting-service"
 
 export type ReportingProp = {
   searchParams: {

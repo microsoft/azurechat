@@ -1,4 +1,5 @@
 import Typography from "@/components/typography"
+
 import { Card } from "@/features/ui/card"
 
 export default function NotFound(): JSX.Element {

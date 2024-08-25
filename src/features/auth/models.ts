@@ -6,5 +6,6 @@ export type UserModel = {
   tenantId: string
   admin: boolean
   tenantAdmin: boolean
+  globalAdmin: boolean
   userId: string
 }

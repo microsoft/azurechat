@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react"
 import React, { FormEvent, useState } from "react"
 
 import Typography from "@/components/typography"
+
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
 import { Button } from "@/features/ui/button"
@@ -17,13 +18,13 @@ export const Administrators: React.FC<{ administrators: string[]; tenantId: stri
 }) => {
   const DEFAULT_ITEMS_TO_SHOW = 6
   const [showMore, setShowMore] = useState(false)
-  const session = useSession()
+  const { data: session } = useSession()
   const [adminEmails, setAdminEmails] = useState<string[]>(administrators)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState("")
 
-  const isAdmin = session?.data?.user?.admin
+  const isAdmin = !!(session?.user?.admin || session?.user?.globalAdmin || session?.user?.tenantAdmin)
 
   const handleNewTenantAdmins = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()

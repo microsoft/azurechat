@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import * as yup from "yup"
 
 import { userSession } from "@/features/auth/helpers"
-import { GetUserByUpn, UpdateUser } from "@/features/user-management/user-service"
+import { GetUserByUpn, UpdateUser } from "@/features/services/user-service"
 
 const userUpdateSchema = yup
   .object({

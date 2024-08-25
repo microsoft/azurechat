@@ -2,7 +2,7 @@ import { Document, Packer, Paragraph, Table, TableCell, TableRow, WidthType } fr
 import { saveAs } from "file-saver"
 
 import { showError, showSuccess } from "@/features/globals/global-message-store"
-import { UserRecord } from "@/features/user-management/models"
+import { UserRecord } from "@/features/models/user-models"
 
 export const convertUserListToWordDocument = async (users: UserRecord[], fileName: string): Promise<void> => {
   try {

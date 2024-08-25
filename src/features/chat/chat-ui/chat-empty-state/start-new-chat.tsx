@@ -3,6 +3,7 @@ import { FC } from "react"
 import { APP_NAME, AI_TAGLINE } from "@/app-global"
 
 import Typography from "@/components/typography"
+
 import { NewChat } from "@/features/chat/chat-menu/new-chat"
 import { Card } from "@/features/ui/card"
 

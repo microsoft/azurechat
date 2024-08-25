@@ -6,14 +6,15 @@ import React, { useState, useCallback, FormEvent, ChangeEvent } from "react"
 import useSmartGen from "@/components/hooks/use-smart-gen"
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
+
 import { showError, showSuccess } from "@/features/globals/global-message-store"
 import logger from "@/features/insights/app-insights"
+import { UserPreferences } from "@/features/models/user-models"
 import { useSettingsContext } from "@/features/settings/settings-provider"
 import { Button } from "@/features/ui/button"
 import { CardSkeleton } from "@/features/ui/card-skeleton"
 import { SmartGen } from "@/features/ui/smart-gen"
 import { Textarea } from "@/features/ui/textarea"
-import { UserPreferences } from "@/features/user-management/models"
 
 export type UserDetailsFormProps = { preferences: UserPreferences; name: string; email: string }
 
@@ -24,7 +25,7 @@ export const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ preferences, n
   const [contextPrompt, setContextPrompt] = useState(preferences.contextPrompt)
   const [input, setInput] = useState<string>("")
   const { config } = useSettingsContext()
-  const { smartGen } = useSmartGen(config.tools || [])
+  const { smartGen } = useSmartGen(config.tools)
 
   const submit = useCallback(
     async (newContextPrompt: string): Promise<void> => {
@@ -106,7 +107,7 @@ ${tenantPrompt}
         userPrompt: input,
       })
       const res = await smartGen({
-        toolName: "contextPromptSanitiser",
+        toolId: "contextPromptSanitiser",
         context: { uiComponent: "UserDetailsForm" },
         input: formatInput,
       })

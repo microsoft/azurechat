@@ -3,6 +3,7 @@ import { FC, useState } from "react"
 
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
+
 import { CopyButton } from "@/features/ui/assistant-buttons"
 
 interface ChatFileProps {

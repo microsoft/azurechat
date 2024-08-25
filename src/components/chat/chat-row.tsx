@@ -6,6 +6,7 @@ import React, { FC, useState } from "react"
 import ErrorBoundary from "@/components/error-boundary"
 import { Markdown } from "@/components/markdown/markdown"
 import Typography from "@/components/typography"
+
 import { calculateFleschKincaidScore } from "@/features/chat/chat-services/chat-flesch"
 import { useChatContext } from "@/features/chat/chat-ui/chat-context"
 import { SHORT_MESSAGE_LENGTH } from "@/features/chat/constants"
@@ -97,9 +98,11 @@ export const ChatRow: FC<ChatRowProps> = props => {
                 <OctagonAlert size={20} />
               </div>
               <div className="flex flex-grow items-center justify-center text-center">
-                This message or the reply that could have been generated has triggered a content safety warning and may be considered harmful content related to{" "}
-                {makeMessage(props.message?.contentFilterResult.innererror.content_filter_result)}, please consider providing additional context, try rephrasing your
-                message, start a new chat or please reach out to support if you believe you have received this in error.
+                This message or the reply that could have been generated has triggered a content safety warning and may
+                be considered harmful content related to{" "}
+                {makeMessage(props.message?.contentFilterResult.innererror.content_filter_result)}, please consider
+                providing additional context, try rephrasing your message, start a new chat or please reach out to
+                support if you believe you have received this in error.
               </div>
               <div className="flex items-center justify-center">
                 <OctagonAlert size={20} />

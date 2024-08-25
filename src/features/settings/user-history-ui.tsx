@@ -3,9 +3,10 @@ import { FC } from "react"
 import { APP_NAME } from "@/app-global"
 
 import ChatRow from "@/components/chat/chat-row"
+
 import { ChatRole } from "@/features/chat/models"
+import { FindAllChatsInThread, FindChatThreadById } from "@/features/services/history-service"
 import { Card } from "@/features/ui/card"
-import { FindAllChatsInThread, FindChatThreadById } from "@/features/user-management/history-service"
 
 interface Props {
   chatThreadId: string

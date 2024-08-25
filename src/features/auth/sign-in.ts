@@ -1,21 +1,12 @@
 import { User } from "next-auth"
 import { AdapterUser } from "next-auth/adapters"
 
-import {
-  STATUS_UNAUTHORIZED,
-  STATUS_ERROR,
-  STATUS_NOT_FOUND,
-  STATUS_OK,
-  SUPPORT_EMAIL_PREFIX,
-  CONTEXT_PROMPT_DEFAULT,
-} from "@/app-global"
+import { STATUS_UNAUTHORIZED, STATUS_ERROR, STATUS_NOT_FOUND, STATUS_OK, SUPPORT_EMAIL_PREFIX } from "@/app-global"
 
-import { hashValue } from "@/features/auth/helpers"
 import logger from "@/features/insights/app-insights"
-import { type TenantRecord } from "@/features/tenant-management/models"
-import { CreateTenant, GetTenantById } from "@/features/tenant-management/tenant-service"
-import { UserRecord } from "@/features/user-management/models"
-import { CreateUser, GetUserByUpn, UpdateUser } from "@/features/user-management/user-service"
+import { UserRecord } from "@/features/models/user-models"
+import { CreateTenant, GetTenantById } from "@/features/services/tenant-service"
+import { CreateUser, GetUserByUpn, UpdateUser } from "@/features/services/user-service"
 
 export enum SignInErrorType {
   NotAuthorised = "notAuthorised",
@@ -39,56 +30,30 @@ export class UserSignInHandler {
       const admins = process.env.ADMIN_EMAIL_ADDRESS?.split(",").map(email => email.toLowerCase().trim()) || []
       const tenantResponse = await GetTenantById(user.tenantId)
       const userRecord = await getsertUser(userGroups, user)
-      const onBoardDate = user.globalAdmin ? null : new Date().toISOString()
 
-      if (tenantResponse.status === STATUS_ERROR || tenantResponse.status === STATUS_UNAUTHORIZED) {
-        return {
-          success: false,
-          errorCode: SignInErrorType.NotAuthorised,
-        }
-      }
+      if (tenantResponse.status === STATUS_ERROR || tenantResponse.status === STATUS_UNAUTHORIZED)
+        return { success: false, errorCode: SignInErrorType.NotAuthorised }
 
       if (tenantResponse.status === STATUS_NOT_FOUND) {
-        const now = new Date()
         const domain = user.upn?.split("@")[1] || ""
-        const historyMessage = user.globalAdmin
-          ? `${now.toISOString()}: Tenant created by global admin user ${user.upn}.`
-          : `${now.toISOString()}: Tenant created by user ${user.upn} on failed login.`
 
-        const tenantRecord: TenantRecord = {
-          tenantId: user.tenantId,
-          primaryDomain: domain,
-          requiresGroupLogin: true,
-          id: user.tenantId,
-          email: user.upn,
-          supportEmail: SUPPORT_EMAIL_PREFIX + domain,
-          dateCreated: now.toISOString(),
-          dateUpdated: now.toISOString(),
-          dateOnBoarded: onBoardDate,
-          dateOffBoarded: null,
-          modifiedBy: user.upn,
-          createdBy: user.upn,
-          departmentName: null,
-          groups: [],
-          administrators: admins,
-          features: [],
-          serviceTier: null,
-          history: [`${historyMessage}`],
-          preferences: { contextPrompt: CONTEXT_PROMPT_DEFAULT },
-          smartTools: [],
-        }
-        const tenant = await CreateTenant(tenantRecord, user.upn)
+        const tenant = await CreateTenant(
+          {
+            tenantId: user.tenantId,
+            primaryDomain: domain,
+            email: user.upn,
+            supportEmail: SUPPORT_EMAIL_PREFIX + domain,
+            departmentName: "",
+            administrators: admins,
+            serviceTier: "",
+            requiresGroupLogin: true,
+          },
+          user.upn
+        )
         if (tenant.status !== STATUS_OK) throw tenant
+        const updatedUser = await UpdateUser(user.tenantId, userRecord.id, { failed_login_attempts: 0 })
 
-        const userUpdate = {
-          ...resetFailedLogin(userRecord),
-          groups: userGroups,
-          globalAdmin: user.globalAdmin,
-          tenantAdmin: user.tenantAdmin,
-        }
-        const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
         if (updatedUser.status !== STATUS_OK) throw updatedUser
-
         return user.globalAdmin ? { success: true } : { success: false, errorCode: SignInErrorType.NotAuthorised }
       }
 
@@ -99,24 +64,14 @@ export class UserSignInHandler {
         !tenant.requiresGroupLogin || isUserInRequiredGroups(userGroups, tenant.groups || [])
 
       if (userHasRequiredGroupAccess) {
-        const userUpdate = {
-          ...resetFailedLogin(userRecord),
-          groups: userGroups,
-          globalAdmin: user.globalAdmin,
-          tenantAdmin: user.tenantAdmin,
-        }
-
-        const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
+        const updatedUser = await UpdateUser(user.tenantId, userRecord.id, { failed_login_attempts: 0 })
         if (updatedUser.status !== STATUS_OK) throw updatedUser
-
         return { success: true }
       }
 
-      const userUpdate = {
-        ...updateFailedLogin(userRecord),
-        groups: userGroups,
-      }
-      const updatedUser = await UpdateUser(user.tenantId, user.userId, userUpdate)
+      const updatedUser = await UpdateUser(user.tenantId, userRecord.id, {
+        failed_login_attempts: userRecord.failed_login_attempts + 1,
+      })
       if (updatedUser.status !== STATUS_OK) throw updatedUser
 
       return { success: false, errorCode: SignInErrorType.NotAuthorised }
@@ -127,48 +82,22 @@ export class UserSignInHandler {
   }
 }
 
-const updateFailedLogin = (existingUser: UserRecord): UserRecord => ({
-  ...existingUser,
-  failed_login_attempts: existingUser.failed_login_attempts + 1,
-  last_failed_login: new Date(),
-})
-
-const resetFailedLogin = (existingUser: UserRecord): UserRecord => ({
-  ...existingUser,
-  failed_login_attempts: 0,
-})
-
 const isUserInRequiredGroups = (userGroups: string[], requiredGroups: string[]): boolean =>
   !!requiredGroups.length && requiredGroups.some(groupId => userGroups.includes(groupId))
 
 const getsertUser = async (userGroups: string[], user: User | AdapterUser): Promise<UserRecord> => {
   try {
-    const now = new Date()
     const existingUserResponse = await GetUserByUpn(user.tenantId, user.upn ?? "")
-
     if (existingUserResponse.status === STATUS_NOT_FOUND) {
       const createUserResponse = await CreateUser({
-        id: hashValue(user.upn),
         tenantId: user.tenantId,
-        email: user.email,
-        name: user.name,
+        email: user.email || "",
+        name: user.name || "",
         upn: user.upn,
-        userId: user.upn,
         admin: user.admin,
-        last_login: now,
-        first_login: now,
-        accepted_terms: false,
-        accepted_terms_date: "",
         groups: userGroups,
-        failed_login_attempts: 0,
-        last_failed_login: null,
-        tenantAdmin: user.tenantAdmin,
         globalAdmin: user.globalAdmin,
-        history: [`${now}: User created.`],
-        preferences: {
-          contextPrompt: CONTEXT_PROMPT_DEFAULT,
-          history: [],
-        },
+        tenantAdmin: user.tenantAdmin,
       })
       if (createUserResponse.status !== STATUS_OK) throw createUserResponse
       return createUserResponse.response
@@ -178,22 +107,6 @@ const getsertUser = async (userGroups: string[], user: User | AdapterUser): Prom
   } catch (error) {
     logger.error("Error getserting user", { error })
     throw error
-  }
-}
-
-export async function isTenantAdmin(user: User | AdapterUser): Promise<boolean> {
-  try {
-    const tenantResponse = await GetTenantById(user.tenantId)
-    if (tenantResponse.status !== STATUS_OK) {
-      return false
-    }
-
-    const tenant = tenantResponse.response
-    const normalisedUserIdentifier = (user.upn || user.email || "")?.toLowerCase()
-    const isTenantAdmin = tenant.administrators.map(admin => admin.toLowerCase()).includes(normalisedUserIdentifier)
-    return isTenantAdmin
-  } catch (_error) {
-    return false
   }
 }
 

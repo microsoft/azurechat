@@ -7,11 +7,12 @@ import { APP_NAME, AI_AUTHOR, AI_TAGLINE, APP_URL } from "@/app-global"
 
 import ErrorBoundary from "@/components/error-boundary"
 import { LogIn } from "@/components/login/login"
-import { GetApplicationSettings } from "@/features/application/application-service"
+
 import ApplicationProvider from "@/features/globals/application-provider"
 import { showError } from "@/features/globals/global-message-store"
 import { Providers } from "@/features/globals/providers"
 import { applicationInsights } from "@/features/insights/app-insights"
+import { GetApplicationSettings } from "@/features/services/application-service"
 import { ThemeProvider } from "@/features/theme/theme-provider"
 import { NavBar } from "@/features/ui/navbar"
 import { Toaster } from "@/features/ui/toaster"

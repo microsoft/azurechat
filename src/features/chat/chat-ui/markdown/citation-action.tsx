@@ -5,6 +5,7 @@ import { ReactElement } from "react"
 import { APP_NAME } from "@/app-global"
 
 import Typography from "@/components/typography"
+
 import { simpleSearch } from "@/features/chat/chat-services/azure-cog-search/azure-cog-vector-store"
 
 export const CitationAction = async (_previousState: unknown, formData: FormData): Promise<ReactElement> => {

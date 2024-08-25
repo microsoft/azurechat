@@ -7,6 +7,7 @@ import { signIn, signOut } from "next-auth/react"
 import { signInProvider } from "@/app-global"
 
 import Typography from "@/components/typography"
+
 import { Button } from "@/features/ui/button"
 
 export const UserLoginLogout = ({ session }: { session: Session | null }): JSX.Element => {

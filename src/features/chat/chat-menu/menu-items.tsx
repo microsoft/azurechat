@@ -6,6 +6,7 @@ import React, { FC, useState, useEffect, useRef, useCallback } from "react"
 
 import { MenuItem } from "@/components/menu"
 import Typography from "@/components/typography"
+
 import { useChatThreads } from "@/features/chat/chat-ui/chat-threads-context"
 import { showError } from "@/features/globals/global-message-store"
 import { Button } from "@/features/ui/button"
