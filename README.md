@@ -63,7 +63,7 @@ azd up --debug
 
 Click on the Deploy to Azure button to deploy the Azure resources for the application.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/anzappazurechatgpt)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FWEMcJJJ%2Fazurechat-dev%2Fmain%2Finfra%2Fmain.json)
 
 > [!IMPORTANT]
 > The application is protected by an identity provider and follow the steps in [Add an identity provider](/docs/5-add-identity.md) section for adding authentication to your app.
