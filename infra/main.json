@@ -81,7 +81,8 @@
     "dalleLocation": {
       "type": "string",
       "allowedValues": [
-        "swedencentral"
+        "swedencentral",
+        "eastus"
       ],
       "metadata": {
         "description": "Location for the OpenAI DALL-E 3 instance resource group"
