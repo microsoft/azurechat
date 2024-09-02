@@ -52,23 +52,6 @@ const configureIdentityProvider = () => {
         },
       })
     );
-  } else {
-    AzureADProvider({
-      clientId: process.env.AZURE_AD_CLIENT_ID!,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
-      tenantId: process.env.AZURE_AD_TENANT_ID!,
-      async profile(profile) {
-        const newProfile = {
-          ...profile,
-          // throws error without this - unsure of the root cause (https://stackoverflow.com/questions/76244244/profile-id-is-missing-in-google-oauth-profile-response-nextauth)
-          id: profile.sub,
-          isAdmin:
-            adminEmails?.includes(profile.email.toLowerCase()) ||
-            adminEmails?.includes(profile.preferred_username.toLowerCase()),
-        };
-        return newProfile;
-      },
-    })
   }
 
   if (
@@ -80,7 +63,7 @@ const configureIdentityProvider = () => {
       OktaProvider({
         clientId: process.env.OKTA_CLIENT_ID!,
         clientSecret: process.env.OKTA_CLIENT_SECRET!,
-        tenantId: process.env.OKTA_ISSUER!,
+        issuer: process.env.OKTA_ISSUER!,
         async profile(profile) {
           const newProfile = {
             ...profile,
@@ -126,7 +109,25 @@ const configureIdentityProvider = () => {
         },
       })
     );
+  } else {
+    AzureADProvider({
+      clientId: process.env.AZURE_AD_CLIENT_ID!,
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
+      tenantId: process.env.AZURE_AD_TENANT_ID!,
+      async profile(profile) {
+        const newProfile = {
+          ...profile,
+          // throws error without this - unsure of the root cause (https://stackoverflow.com/questions/76244244/profile-id-is-missing-in-google-oauth-profile-response-nextauth)
+          id: profile.sub,
+          isAdmin:
+            adminEmails?.includes(profile.email.toLowerCase()) ||
+            adminEmails?.includes(profile.preferred_username.toLowerCase()),
+        };
+        return newProfile;
+      },
+    })
   }
+
 
   return providers;
 };
