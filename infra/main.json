@@ -48,7 +48,7 @@
     },
     "openAIApiVersion": {
       "type": "string",
-      "defaultValue": "2023-12-01-preview"
+      "defaultValue": "2024-02-01"
     },
     "chatGptDeploymentCapacity": {
       "type": "int",
@@ -102,7 +102,7 @@
     },
     "dalleApiVersion": {
       "type": "string",
-      "defaultValue": "2023-12-01-preview"
+      "defaultValue": "2024-02-01"
     },
     "gptvisionLocation": {
       "type": "string",
@@ -128,7 +128,7 @@
     },
     "gptvisionApiVersion": {
       "type": "string",
-      "defaultValue": "2023-12-01-preview"
+      "defaultValue": "2024-02-01"
     },
     "gptvisionModelVersion": {
       "type": "string",
@@ -365,7 +365,7 @@
             },
             "gptvisionApiVersion": {
               "type": "string",
-              "defaultValue": "2023-12-01-preview"
+              "defaultValue": "2024-02-01"
             },
             "gptvisionModelVersion": {
               "type": "string",
@@ -416,7 +416,8 @@
             "search_name": "[toLower(format('{0}search{1}', parameters('name'), parameters('resourceToken')))]",
             "webapp_name": "[toLower(format('{0}-webapp-{1}', parameters('name'), parameters('resourceToken')))]",
             "appservice_name": "[toLower(format('{0}-app-{1}', parameters('name'), parameters('resourceToken')))]",
-            "storage_prefix": "[take(parameters('name'), 8)]",
+            "clean_name": "[replace(replace(parameters('name'), '-', ''), '_', '')]",
+            "storage_prefix": "[take(variables('clean_name'), 8)]",
             "storage_name": "[toLower(format('{0}sto{1}', variables('storage_prefix'), parameters('resourceToken')))]",
             "kv_prefix": "[take(parameters('name'), 7)]",
             "keyVaultName": "[toLower(format('{0}-kv-{1}', variables('kv_prefix'), parameters('resourceToken')))]",

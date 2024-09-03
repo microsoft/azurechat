@@ -54,7 +54,8 @@ var search_name = toLower('${name}search${resourceToken}')
 var webapp_name = toLower('${name}-webapp-${resourceToken}')
 var appservice_name = toLower('${name}-app-${resourceToken}')
 // storage name must be less than 24 chars, alphanumeric only - token is 13
-var storage_prefix = take(name, 8)
+var clean_name = replace(replace(name, '-', ''), '_', '')
+var storage_prefix = take(clean_name, 8)
 var storage_name = toLower('${storage_prefix}sto${resourceToken}')
 // keyvault name must be less than 24 chars - token is 13
 var kv_prefix = take(name, 7)

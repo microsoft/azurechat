@@ -20,7 +20,7 @@ param location string
 param openAILocation string
 
 param openAISku string = 'S0'
-param openAIApiVersion string = '2023-12-01-preview'
+param openAIApiVersion string = '2024-02-01'
 
 param chatGptDeploymentCapacity int = 120
 param chatGptDeploymentName string = 'chat-gpt-35-turbo'
@@ -38,17 +38,17 @@ param dalleLocation string
 param dalleDeploymentCapacity int = 1
 param dalleDeploymentName string = 'dall-e-3'
 param dalleModelName string = 'dall-e-3'
-param dalleApiVersion string = '2023-12-01-preview'
+param dalleApiVersion string = '2024-02-01'
 
 // DALL-E v3 only supported in Sweden Central for now
 @description('Location for the GPT vision instance resource')
-@allowed(['swedencentral','westus',])
+@allowed(['australiaeast','swedencentral','westus',])
 param gptvisionLocation string
 
 param gptvisionDeploymentCapacity int = 1
 param gptvisionDeploymentName string = 'gpt-4-vision'
 param gptvisionModelName string = 'gpt-4'
-param gptvisionApiVersion string = '2023-12-01-preview'
+param gptvisionApiVersion string = '2024-02-01'
 param gptvisionModelVersion string = 'vision-preview'
 
 param formRecognizerSkuName string = 'S0'
