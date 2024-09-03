@@ -45,10 +45,10 @@ const configureIdentityProvider = () => {
             // throws error without this - unsure of the root cause (https://stackoverflow.com/questions/76244244/profile-id-is-missing-in-google-oauth-profile-response-nextauth)
             id: profile.sub,
             // needed to add the following, since it's not capturing the email address
-            //email: profile.preferred_username,
+            email: profile.preferred_username,
             // the following doesn't work with our setup because there's no email address and it throws an undefined error
-            isAdmin: adminEmails?.includes(profile.email.toLowerCase()) || adminEmails?.includes(profile.preferred_username.toLowerCase()),
-            //isAdmin: adminEmails?.includes(profile.preferred_username.toLowerCase()),
+            //isAdmin: adminEmails?.includes(profile.email.toLowerCase()) || adminEmails?.includes(profile.preferred_username.toLowerCase()),
+            isAdmin: adminEmails?.includes(profile.preferred_username.toLowerCase()),
           };
           return newProfile;
         },
