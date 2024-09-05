@@ -1,4 +1,6 @@
 "use client";
+import { Alert, AlertDescription, AlertTitle } from "@/features/ui/alert";
+import { AlertCircle } from "lucide-react";
 import { ChatInput } from "@/features/chat-page/chat-input/chat-input";
 import { chatStore, useChat } from "@/features/chat-page/chat-store";
 import { ChatLoading } from "@/features/ui/chat/chat-message-area/chat-loading";
@@ -39,6 +41,8 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
 
   const current = useRef<HTMLDivElement>(null);
 
+  const maxMessages = 15;
+
   useChatScrollAnchor({ ref: current });
 
   return (
@@ -48,6 +52,15 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
         chatDocuments={props.chatDocuments}
         extensions={props.extensions}
       />
+  
+      {messages.length > maxMessages && (
+        <Alert className="text-x bg-primary bg-orange-400">
+        <AlertCircle size={20} />
+        <AlertTitle>Warning: Too Many Messages</AlertTitle>
+        <AlertDescription className="text">
+            This chat has more than {maxMessages} messages. Long chats cost more money because the whole context with all messages is sent to the LLM when clicking on submit. Please open a new chat whenever the context or topic switches.              </AlertDescription>
+        </Alert>
+      )}
       <ChatMessageContainer ref={current}>
         <ChatMessageContentArea>
           {messages.map((message) => {
