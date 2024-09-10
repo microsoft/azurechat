@@ -4,27 +4,20 @@ param resourceToken string
 param openai_api_version string
 
 param openAiLocation string
-param openAiSkuName string = 'S0'
-param chatGptDeploymentCapacity int = 30
-param chatGptDeploymentName string = 'chat-gpt-35-turbo'
-param chatGptModelName string = 'chat-gpt-35-turbo'
-param chatGptModelVersion string = '1106'
-param embeddingDeploymentName string = 'text-embedding-ada-002'
-param embeddingDeploymentCapacity int = 10
-param embeddingModelName string = 'text-embedding-ada-002'
+param openAiSkuName string 
+param chatGptDeploymentCapacity int 
+param chatGptDeploymentName string
+param chatGptModelName string 
+param chatGptModelVersion string
+param embeddingDeploymentName string 
+param embeddingDeploymentCapacity int
+param embeddingModelName string 
 
 param dalleLocation string
 param dalleDeploymentCapacity int
 param dalleDeploymentName string
 param dalleModelName string
 param dalleApiVersion string
-
-param gptvisionLocation string
-param gptvisionDeploymentCapacity int = 30
-param gptvisionDeploymentName string = 'gpt-4-vision'
-param gptvisionModelName string = 'gpt-4'
-param gptvisionApiVersion string = '2023-12-01-preview'
-param gptvisionModelVersion string = 'vision-preview'
 
 param speechServiceSkuName string = 'S0'
 
@@ -45,7 +38,6 @@ param tags object = {}
 
 var openai_name = toLower('${name}-aillm-${resourceToken}')
 var openai_dalle_name = toLower('${name}-aidalle-${resourceToken}')
-var openai_gpt_vision_name = toLower('${name}-aivision-${resourceToken}')
 
 var form_recognizer_name = toLower('${name}-form-${resourceToken}')
 var speech_service_name = toLower('${name}-speech-${resourceToken}')
@@ -79,7 +71,7 @@ var llmDeployments = [
       version: chatGptModelVersion
     }
     sku: {
-      name: 'Standard'
+      name: 'GlobalStandard'
       capacity: chatGptDeploymentCapacity
     }
   }
@@ -121,7 +113,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
     siteConfig: {
       linuxFxVersion: 'node|18-lts'
       alwaysOn: true
-      appCommandLine: 'next start'
+      appCommandLine: 'node .next/standalone/server.js'
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
       appSettings: [ 
@@ -132,22 +124,6 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         { 
           name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
           value: 'true'
-        }
-        {
-          name: 'AZURE_OPENAI_VISION_API_KEY'
-          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_OPENAI_VISION_API_KEY.name})'
-        }
-        {
-          name: 'AZURE_OPENAI_VISION_API_INSTANCE_NAME'
-          value: openai_gpt_vision_name
-        }
-        {
-          name: 'AZURE_OPENAI_VISION_API_DEPLOYMENT_NAME'
-          value: gptvisionDeploymentName
-        }
-        {
-          name: 'AZURE_OPENAI_VISION_API_VERSION'
-          value: gptvisionApiVersion
         }
         {
           name: 'AZURE_OPENAI_API_KEY'
@@ -296,14 +272,6 @@ resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
     enabledForDeployment: false
     enabledForDiskEncryption: true
     enabledForTemplateDeployment: false
-  }
-
-  resource AZURE_OPENAI_VISION_API_KEY 'secrets' = {
-    name: 'AZURE-OPENAI-VISION-API-KEY'
-    properties: {
-      contentType: 'text/plain'
-      value: azureopenaivision.listKeys().key1
-    }
   }
 
   resource AZURE_OPENAI_API_KEY 'secrets' = {
@@ -515,35 +483,6 @@ resource azureopenaidalle 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
 }
 
 
-
-resource azureopenaivision 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
-  name: openai_gpt_vision_name
-  location: gptvisionLocation
-  tags: tags
-  kind: 'OpenAI'
-  properties: {
-    customSubDomainName: openai_gpt_vision_name
-    publicNetworkAccess: 'Enabled'
-  }
-  sku: {
-    name: openAiSkuName
-  }
-
-  resource dalleDeployment 'deployments' = {
-    name: gptvisionDeploymentName
-    properties: {
-      model: {
-        format: 'OpenAI'
-        name: gptvisionModelName
-        version:gptvisionModelVersion
-      }
-    }
-    sku: {
-      name: 'Standard'
-      capacity: gptvisionDeploymentCapacity
-    }
-  }
-}
 
 resource speechService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: speech_service_name

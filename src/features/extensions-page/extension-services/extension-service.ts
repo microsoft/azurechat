@@ -123,7 +123,7 @@ export const CreateExtension = async (
           status: "ERROR",
           errors: [
             {
-              message: `Error adding Extension: ${resource}`,
+              message: `Unable to add Extension: ${resource}`,
             },
           ],
         };
