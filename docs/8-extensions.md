@@ -47,6 +47,9 @@ As an example you can create an extension that calls Bing Search API to search f
 
 In the example below only the `query` is required as Bing does not require a body parameter.
 
+> [!NOTE]
+> As header values specified for an extension often contain secrets (e.g. API keys) Azure Chat stores those values securely in Azure Key Vault. If you are deploying the solution to Azure using azd or the bicep templates the required Key Vault role assignment is automatically created. If you are running the solution locally you will need to manually add the "Key Vault Secrets Officer" role to identy that is running the solution (wh8ch will typically be the user logged into the Azure CLI)
+
 # Bing Search Extension
 
 1.  **Name**: `Bing Search`
