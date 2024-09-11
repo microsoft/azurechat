@@ -97,7 +97,7 @@ class ExtensionState {
       });
     }
   }
-
+  
   public addFunction() {
     this.extension.functions.push({
       ...this.createDefaultFunction(),

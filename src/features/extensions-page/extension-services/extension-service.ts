@@ -378,6 +378,53 @@ export const FindAllExtensionForCurrentUser = async (): Promise<
   }
 };
 
+export const FindAllExtensionForCurrentUserAndIds = async (extensionIds:string[]): Promise<
+  ServerActionResponse<Array<ExtensionModel>>
+> => {
+  try {
+    const querySpec: SqlQuerySpec = {
+      query:
+        "SELECT * FROM root r WHERE r.type=@type AND (r.isPublished=@isPublished OR r.userId=@userId OR ARRAY_CONTAINS(@ids, r.id,false) ) ORDER BY r.createdAt DESC",
+      parameters: [
+        {
+          name: "@type",
+          value: EXTENSION_ATTRIBUTE,
+        },
+        {
+          name: "@isPublished",
+          value: true,
+        },
+        {
+          name: "@userId",
+          value: await userHashedId(),
+        },
+        {
+          name: "@ids",
+          value: extensionIds || [],
+        },
+      ],
+    };
+
+    const { resources } = await HistoryContainer()
+      .items.query<ExtensionModel>(querySpec)
+      .fetchAll();
+
+    return {
+      status: "OK",
+      response: resources,
+    };
+  } catch (error) {
+    return {
+      status: "ERROR",
+      errors: [
+        {
+          message: `Error finding Extension: ${error}`,
+        },
+      ],
+    };
+  }
+};
+
 export const CreateChatWithExtension = async (
   extensionId: string
 ): Promise<ServerActionResponse<ChatThreadModel>> => {

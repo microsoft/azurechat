@@ -16,11 +16,26 @@ class PersonaState {
     isPublished: false,
     type: "PERSONA",
     userId: "",
+    extensionIds: []
   };
 
   public isOpened: boolean = false;
   public errors: string[] = [];
   public persona: PersonaModel = { ...this.defaultModel };
+
+  public addExtension(id: string): void{
+    if (!this.persona.extensionIds) {
+      this.persona.extensionIds = [];
+    }
+    this.persona.extensionIds.push(id);
+  }
+
+  public removeExtension(id: string): void {
+    if (!this.persona.extensionIds) {
+      return;
+    }
+    this.persona.extensionIds = this.persona.extensionIds.filter((e) => e !== id);
+  };
 
   public updateOpened(value: boolean) {
     this.isOpened = value;
@@ -62,13 +77,14 @@ class PersonaState {
 export const personaStore = proxy(new PersonaState());
 
 export const usePersonaState = () => {
-  return useSnapshot(personaStore);
+  return useSnapshot(personaStore, { sync: true });
 };
 
 export const addOrUpdatePersona = async (previous: any, formData: FormData) => {
   personaStore.updateErrors([]);
 
   const model = FormDataToPersonaModel(formData);
+  model.extensionIds = personaStore.persona.extensionIds.map((e) => e);
   const response =
     model.id && model.id !== ""
       ? await UpsertPersona(model)
@@ -93,6 +109,7 @@ export const FormDataToPersonaModel = (formData: FormData): PersonaModel => {
     personaMessage: formData.get("personaMessage") as string,
     isPublished: formData.get("isPublished") === "on" ? true : false,
     userId: "", // the user id is set on the server once the user is authenticated
+    extensionIds: formData.getAll("extensionIds") as string[],
     createdAt: new Date(),
     type: PERSONA_ATTRIBUTE,
   };

@@ -23,8 +23,12 @@ import {
   personaStore,
   usePersonaState,
 } from "./persona-store";
+import { ExtensionDetail } from "../chat-page/chat-header/extension-detail";
+import { ExtensionModel } from "../extensions-page/extension-services/models";
 
-interface Props {}
+interface Props {
+  extensions: Array<ExtensionModel>;
+}
 
 export const AddNewPersona: FC<Props> = (props) => {
   const initialState: ServerActionResponse | undefined = undefined;
@@ -37,7 +41,7 @@ export const AddNewPersona: FC<Props> = (props) => {
   );
 
   const { data } = useSession();
-
+  
   const PublicSwitch = () => {
     if (data === undefined || data === null) return null;
 
@@ -51,6 +55,8 @@ export const AddNewPersona: FC<Props> = (props) => {
     }
   };
 
+  const store = personaStore;
+
   return (
     <Sheet
       open={isOpened}
@@ -61,6 +67,7 @@ export const AddNewPersona: FC<Props> = (props) => {
       <SheetContent className="min-w-[480px] sm:w-[540px] flex flex-col">
         <SheetHeader>
           <SheetTitle>Persona</SheetTitle>
+
         </SheetHeader>
         <form action={formAction} className="flex-1 flex flex-col">
           <ScrollArea
@@ -107,6 +114,17 @@ export const AddNewPersona: FC<Props> = (props) => {
                   defaultValue={persona.personaMessage}
                   name="personaMessage"
                   placeholder="Personality of your persona"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="extensionIds[]">Extensions</Label>
+                <input type="hidden" name="extensionIds[]" value={persona.extensionIds}/>
+                <ExtensionDetail
+                  disabled={false}
+                  extensions={props.extensions}
+                  installedExtensionIds={persona.extensionIds?.map(e => e) || []}
+                  chatThreadId={persona.id}
+                  parent="persona"
                 />
               </div>
             </div>

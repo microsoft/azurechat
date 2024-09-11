@@ -12,20 +12,30 @@ import { Switch } from "@/features/ui/switch";
 import { PocketKnife } from "lucide-react";
 import { FC } from "react";
 import { chatStore } from "../chat-store";
+import { personaStore } from "@/features/persona-page/persona-store";
 
 interface Props {
   extensions: Array<ExtensionModel>;
   chatThreadId: string;
-  installedExtensionIds: Array<string> | undefined;
+  installedExtensionIds: Array<string>;
   disabled: boolean;
+  parent: string;
 }
 
 export const ExtensionDetail: FC<Props> = (props) => {
   const toggleInstall = async (isChecked: boolean, extensionId: string) => {
     if (isChecked) {
-      await chatStore.AddExtensionToChatThread(extensionId);
+      if (props.parent === "chat") {
+        await chatStore.AddExtensionToChatThread(extensionId);
+      } else {
+        personaStore.addExtension(extensionId);
+      }
     } else {
-      await chatStore.RemoveExtensionFromChatThread(extensionId);
+      if (props.parent === "chat") {
+        await chatStore.RemoveExtensionFromChatThread(extensionId);
+      }else {
+        personaStore.removeExtension(extensionId);
+      }
     }
   };
 

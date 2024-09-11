@@ -21,6 +21,7 @@ interface PersonaInput {
   description: string;
   personaMessage: string;
   isPublished: boolean;
+  extensionIds: string[];
 }
 
 export const FindPersonaByID = async (
@@ -86,6 +87,7 @@ export const CreatePersona = async (
       isPublished: user.isAdmin ? props.isPublished : false,
       userId: await userHashedId(),
       createdAt: new Date(),
+      extensionIds: props.extensionIds,
       type: "PERSONA",
     };
 
@@ -198,6 +200,7 @@ export const UpsertPersona = async (
           ? personaInput.isPublished
           : persona.isPublished,
         createdAt: new Date(),
+        extensionIds: personaInput.extensionIds
       };
 
       const validationResponse = ValidateSchema(modelToUpdate);
@@ -303,7 +306,7 @@ export const CreatePersonaChat = async (
       type: CHAT_THREAD_ATTRIBUTE,
       personaMessage: persona.personaMessage,
       personaMessageTitle: persona.name,
-      extension: [],
+      extension: persona.extensionIds || [],
     });
 
     return response;

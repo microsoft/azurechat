@@ -25,6 +25,7 @@ export const PersonaModelSchema = z.object({
     })
     .min(1)
     .refine(refineFromEmpty, "System message cannot be empty"),
+  extensionIds: z.array(z.string()),
   isPublished: z.boolean(),
   type: z.literal(PERSONA_ATTRIBUTE),
   createdAt: z.date(),

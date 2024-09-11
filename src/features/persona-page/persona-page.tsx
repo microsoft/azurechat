@@ -4,9 +4,11 @@ import { AddNewPersona } from "./add-new-persona";
 import { PersonaCard } from "./persona-card/persona-card";
 import { PersonaHero } from "./persona-hero/persona-hero";
 import { PersonaModel } from "./persona-services/models";
+import { ExtensionModel } from "../extensions-page/extension-services/models";
 
 interface ChatPersonaProps {
   personas: PersonaModel[];
+  extensions: ExtensionModel[];
 }
 
 export const ChatPersonaPage: FC<ChatPersonaProps> = (props) => {
@@ -27,7 +29,7 @@ export const ChatPersonaPage: FC<ChatPersonaProps> = (props) => {
             })}
           </div>
         </div>
-        <AddNewPersona />
+        <AddNewPersona extensions={props.extensions} />
       </main>
     </ScrollArea>
   );
