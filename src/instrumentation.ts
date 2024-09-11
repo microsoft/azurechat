@@ -36,7 +36,8 @@ export function register() {
         connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
 
       },
-      enableStandardMetrics: true, 
+      enableStandardMetrics: true,
+      enableLiveMetrics: false,
       instrumentationOptions: {
         azureSdk: { enabled: false },
         http: httpInstrumentationConfig
