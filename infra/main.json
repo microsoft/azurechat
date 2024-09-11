@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.24.24.22086",
-      "templateHash": "16779160080190232837"
+      "version": "0.29.47.4906",
+      "templateHash": "18214004695586675733"
     }
   },
   "parameters": {
@@ -48,23 +48,23 @@
     },
     "openAIApiVersion": {
       "type": "string",
-      "defaultValue": "2023-12-01-preview"
+      "defaultValue": "2024-05-13"
     },
     "chatGptDeploymentCapacity": {
       "type": "int",
-      "defaultValue": 120
+      "defaultValue": 30
     },
     "chatGptDeploymentName": {
       "type": "string",
-      "defaultValue": "chat-gpt-35-turbo"
+      "defaultValue": "gpt-4o"
     },
     "chatGptModelName": {
       "type": "string",
-      "defaultValue": "gpt-35-turbo"
+      "defaultValue": "gpt-4o"
     },
     "chatGptModelVersion": {
       "type": "string",
-      "defaultValue": "1106"
+      "defaultValue": "2024-05-13"
     },
     "embeddingDeploymentName": {
       "type": "string",
@@ -102,36 +102,6 @@
     "dalleApiVersion": {
       "type": "string",
       "defaultValue": "2023-12-01-preview"
-    },
-    "gptvisionLocation": {
-      "type": "string",
-      "allowedValues": [
-        "swedencentral",
-        "westus"
-      ],
-      "metadata": {
-        "description": "Location for the GPT vision instance resource"
-      }
-    },
-    "gptvisionDeploymentCapacity": {
-      "type": "int",
-      "defaultValue": 1
-    },
-    "gptvisionDeploymentName": {
-      "type": "string",
-      "defaultValue": "gpt-4-vision"
-    },
-    "gptvisionModelName": {
-      "type": "string",
-      "defaultValue": "gpt-4"
-    },
-    "gptvisionApiVersion": {
-      "type": "string",
-      "defaultValue": "2023-12-01-preview"
-    },
-    "gptvisionModelVersion": {
-      "type": "string",
-      "defaultValue": "vision-preview"
     },
     "formRecognizerSkuName": {
       "type": "string",
@@ -239,24 +209,6 @@
           "dalleApiVersion": {
             "value": "[parameters('dalleApiVersion')]"
           },
-          "gptvisionLocation": {
-            "value": "[parameters('gptvisionLocation')]"
-          },
-          "gptvisionApiVersion": {
-            "value": "[parameters('gptvisionApiVersion')]"
-          },
-          "gptvisionDeploymentCapacity": {
-            "value": "[parameters('gptvisionDeploymentCapacity')]"
-          },
-          "gptvisionDeploymentName": {
-            "value": "[parameters('gptvisionDeploymentName')]"
-          },
-          "gptvisionModelName": {
-            "value": "[parameters('gptvisionModelName')]"
-          },
-          "gptvisionModelVersion": {
-            "value": "[parameters('gptvisionModelVersion')]"
-          },
           "formRecognizerSkuName": {
             "value": "[parameters('formRecognizerSkuName')]"
           },
@@ -282,8 +234,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.24.24.22086",
-              "templateHash": "14077555141603956691"
+              "version": "0.29.47.4906",
+              "templateHash": "18109441359842852578"
             }
           },
           "parameters": {
@@ -301,36 +253,28 @@
               "type": "string"
             },
             "openAiSkuName": {
-              "type": "string",
-              "defaultValue": "S0"
+              "type": "string"
             },
             "chatGptDeploymentCapacity": {
-              "type": "int",
-              "defaultValue": 30
+              "type": "int"
             },
             "chatGptDeploymentName": {
-              "type": "string",
-              "defaultValue": "chat-gpt-35-turbo"
+              "type": "string"
             },
             "chatGptModelName": {
-              "type": "string",
-              "defaultValue": "chat-gpt-35-turbo"
+              "type": "string"
             },
             "chatGptModelVersion": {
-              "type": "string",
-              "defaultValue": "1106"
+              "type": "string"
             },
             "embeddingDeploymentName": {
-              "type": "string",
-              "defaultValue": "text-embedding-ada-002"
+              "type": "string"
             },
             "embeddingDeploymentCapacity": {
-              "type": "int",
-              "defaultValue": 10
+              "type": "int"
             },
             "embeddingModelName": {
-              "type": "string",
-              "defaultValue": "text-embedding-ada-002"
+              "type": "string"
             },
             "dalleLocation": {
               "type": "string"
@@ -346,29 +290,6 @@
             },
             "dalleApiVersion": {
               "type": "string"
-            },
-            "gptvisionLocation": {
-              "type": "string"
-            },
-            "gptvisionDeploymentCapacity": {
-              "type": "int",
-              "defaultValue": 30
-            },
-            "gptvisionDeploymentName": {
-              "type": "string",
-              "defaultValue": "gpt-4-vision"
-            },
-            "gptvisionModelName": {
-              "type": "string",
-              "defaultValue": "gpt-4"
-            },
-            "gptvisionApiVersion": {
-              "type": "string",
-              "defaultValue": "2023-12-01-preview"
-            },
-            "gptvisionModelVersion": {
-              "type": "string",
-              "defaultValue": "vision-preview"
             },
             "speechServiceSkuName": {
               "type": "string",
@@ -408,7 +329,6 @@
           "variables": {
             "openai_name": "[toLower(format('{0}-aillm-{1}', parameters('name'), parameters('resourceToken')))]",
             "openai_dalle_name": "[toLower(format('{0}-aidalle-{1}', parameters('name'), parameters('resourceToken')))]",
-            "openai_gpt_vision_name": "[toLower(format('{0}-aivision-{1}', parameters('name'), parameters('resourceToken')))]",
             "form_recognizer_name": "[toLower(format('{0}-form-{1}', parameters('name'), parameters('resourceToken')))]",
             "speech_service_name": "[toLower(format('{0}-speech-{1}', parameters('name'), parameters('resourceToken')))]",
             "cosmos_name": "[toLower(format('{0}-cosmos-{1}', parameters('name'), parameters('resourceToken')))]",
@@ -435,7 +355,7 @@
                   "version": "[parameters('chatGptModelVersion')]"
                 },
                 "sku": {
-                  "name": "Standard",
+                  "name": "GlobalStandard",
                   "capacity": "[parameters('chatGptDeploymentCapacity')]"
                 }
               },
@@ -477,19 +397,6 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', variables('webapp_name'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2021-06-01-preview",
-              "name": "[format('{0}/{1}', variables('keyVaultName'), 'AZURE-OPENAI-VISION-API-KEY')]",
-              "properties": {
-                "contentType": "text/plain",
-                "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('openai_gpt_vision_name')), '2023-05-01').key1]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts', variables('openai_gpt_vision_name'))]",
-                "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
               ]
             },
             {
@@ -614,25 +521,6 @@
               ]
             },
             {
-              "type": "Microsoft.CognitiveServices/accounts/deployments",
-              "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', variables('openai_gpt_vision_name'), parameters('gptvisionDeploymentName'))]",
-              "properties": {
-                "model": {
-                  "format": "OpenAI",
-                  "name": "[parameters('gptvisionModelName')]",
-                  "version": "[parameters('gptvisionModelVersion')]"
-                }
-              },
-              "sku": {
-                "name": "Standard",
-                "capacity": "[parameters('gptvisionDeploymentCapacity')]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts', variables('openai_gpt_vision_name'))]"
-              ]
-            },
-            {
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
               "apiVersion": "2022-05-01",
               "name": "[format('{0}/{1}/{2}', variables('storage_name'), 'default', variables('validStorageServiceImageContainerName'))]",
@@ -692,22 +580,6 @@
                     {
                       "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
                       "value": "true"
-                    },
-                    {
-                      "name": "AZURE_OPENAI_VISION_API_KEY",
-                      "value": "[format('@Microsoft.KeyVault(VaultName={0};SecretName={1})', variables('keyVaultName'), 'AZURE-OPENAI-VISION-API-KEY')]"
-                    },
-                    {
-                      "name": "AZURE_OPENAI_VISION_API_INSTANCE_NAME",
-                      "value": "[variables('openai_gpt_vision_name')]"
-                    },
-                    {
-                      "name": "AZURE_OPENAI_VISION_API_DEPLOYMENT_NAME",
-                      "value": "[parameters('gptvisionDeploymentName')]"
-                    },
-                    {
-                      "name": "AZURE_OPENAI_VISION_API_VERSION",
-                      "value": "[parameters('gptvisionApiVersion')]"
                     },
                     {
                       "name": "AZURE_OPENAI_API_KEY",
@@ -809,7 +681,6 @@
                 "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-DOCUMENT-INTELLIGENCE-KEY')]",
                 "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-OPENAI-API-KEY')]",
                 "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-OPENAI-DALLE-API-KEY')]",
-                "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-OPENAI-VISION-API-KEY')]",
                 "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-SEARCH-API-KEY')]",
                 "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-SPEECH-KEY')]",
                 "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'AZURE-STORAGE-ACCOUNT-KEY')]",
@@ -1018,21 +889,6 @@
               "kind": "OpenAI",
               "properties": {
                 "customSubDomainName": "[variables('openai_dalle_name')]",
-                "publicNetworkAccess": "Enabled"
-              },
-              "sku": {
-                "name": "[parameters('openAiSkuName')]"
-              }
-            },
-            {
-              "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2023-05-01",
-              "name": "[variables('openai_gpt_vision_name')]",
-              "location": "[parameters('gptvisionLocation')]",
-              "tags": "[parameters('tags')]",
-              "kind": "OpenAI",
-              "properties": {
-                "customSubDomainName": "[variables('openai_gpt_vision_name')]",
                 "publicNetworkAccess": "Enabled"
               },
               "sku": {
