@@ -10,8 +10,9 @@ const InitBlobServiceClient = () => {
     throw new Error(
       "Azure Storage Account not configured correctly, check environment variables."
     );
+  const endpointSuffix = process.env.AZURE_STORAGE_ENDPOINT_SUFFIX || "core.windows.net";
 
-  const connectionString = `DefaultEndpointsProtocol=https;AccountName=${acc};AccountKey=${key};EndpointSuffix=core.windows.net`;
+  const connectionString = `DefaultEndpointsProtocol=https;AccountName=${acc};AccountKey=${key};EndpointSuffix=${endpointSuffix}`;
 
   const blobServiceClient =
     BlobServiceClient.fromConnectionString(connectionString);
