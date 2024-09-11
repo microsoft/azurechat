@@ -9,9 +9,9 @@ param name string
 @description('Primary location for all resources')
 param location string
 
-// azure open ai -- only regions supporting gpt-35-turbo v1106
+// azure open ai -- regions currently support gpt-4o global-standard
 @description('Location for the OpenAI resource group')
-@allowed(['australiaeast', 'canadaeast', 'francecentral', 'southindia', 'uksouth', 'swedencentral', 'westus'])
+@allowed(['australiaeast', 'brazilsouth', 'canadaeast', 'eastus', 'eastus2', 'francecentral', 'germanywestcentral', 'japaneast', 'koreacentral', 'northcentralus', 'norwayeast', 'polandcentral', 'spaincentral', 'southafricanorth', 'southcentralus', 'southindia', 'swedencentral', 'switzerlandnorth', 'uksouth', 'westeurope', 'westus', 'westus3'])
 @metadata({
   azd: {
     type: 'location'
@@ -30,9 +30,9 @@ param embeddingDeploymentName string = 'embedding'
 param embeddingDeploymentCapacity int = 120
 param embeddingModelName string = 'text-embedding-ada-002'
 
-// DALL-E v3 only supported in Sweden Central for now
+// DALL-E v3 only supported in limited regions for now
 @description('Location for the OpenAI DALL-E 3 instance resource group')
-@allowed(['swedencentral'])
+@allowed(['swedencentral', 'eastus', 'australiaeast'])
 param dalleLocation string
 
 param dalleDeploymentCapacity int = 1
