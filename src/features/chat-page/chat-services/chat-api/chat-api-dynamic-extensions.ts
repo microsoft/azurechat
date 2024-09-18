@@ -5,7 +5,7 @@ import { ServerActionResponse } from "@/features/common/server-action-response";
 
 import { userHashedId } from "@/features/auth-page/helpers";
 import {
-  FindAllExtensionForCurrentUser,
+  FindAllExtensionForCurrentUserAndIds,
   FindSecureHeaderValue,
 } from "@/features/extensions-page/extension-services/extension-service";
 import {
@@ -17,7 +17,7 @@ import { ToolsInterface } from "../models";
 export const GetDynamicExtensions = async (props: {
   extensionIds: string[];
 }): Promise<ServerActionResponse<Array<any>>> => {
-  const extensionResponse = await FindAllExtensionForCurrentUser();
+  const extensionResponse = await FindAllExtensionForCurrentUserAndIds(props.extensionIds);
 
   if (extensionResponse.status === "OK") {
     const extensionToReturn = extensionResponse.response.filter((e) =>
