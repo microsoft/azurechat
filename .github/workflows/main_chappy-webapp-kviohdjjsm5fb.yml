@@ -1,12 +1,12 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+name: Build & deploy Next.js app to Azure Web App
 
-name: Build and deploy Node.js app to Azure Web App - chappy-webapp-kviohdjjsm5fb
-
+# When this action will be executed
 on:
+  # Automatically trigger it when detected changes in repo
   push:
-    branches:
-      - main
+    branches: [main]
+
+  # Allow manual workflow trigger
   workflow_dispatch:
 
 jobs:
@@ -14,58 +14,87 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 🌱 Checkout to the branch
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: 🍏 Set up Node.js version
+        uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+          node-version: "20.x"
 
-      - name: npm install, build, and test
+      - name: ⚙️ npm install and build
         run: |
+          cd ./src
           npm install
           npm run build --if-present
-          npm run test --if-present
+          cd ..
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+      - name: 📂 Copy standalone into the root
+        run: cp -R ./src/.next/standalone ./site-deploy
 
-      - name: Upload artifact for deployment job
+      - name: 📂 Copy static into the .next folder
+        run: cp -R ./src/.next/static ./site-deploy/.next/static
+
+      - name: 📂 Copy Public folder
+        run: cp -R ./src/public ./site-deploy/public
+
+      - name: 📦 Package Next application
+        run: |
+          cd ./site-deploy
+          zip Nextjs-site.zip ./* .next -qr
+
+      - name: 🔍 Diagnostics
+        run: |
+          ls ./src
+          ls ./src/.next
+          ls ./site-deploy
+
+      - name: ⬆️ Publish Next Application artifact
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: release.zip
+          name: Nextjs-site
+          path: ./site-deploy/Nextjs-site.zip
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
+      name: Production
 
     steps:
-      - name: Download artifact from build job
+      - name: 🍏 Set up Node.js version
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: ⬇️ Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: node-app
+          name: Nextjs-site
 
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-      
-      - name: Login to Azure
-        uses: azure/login@v2
+      - name: 🗝️ Azure Login
+        uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FAF593DB8F9E4C8CB0254C6470D11B8D }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F70F32E49DC849379708CBBC8CC4D95D }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_39A3A839F52A4141ADAD38F98D39A317 }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: 'Deploy to Azure Web App'
+      # Set the build during deployment setting to false. This setting was added in the templates to all azd to work, but breaks deployment via webapps-deploy
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            rg=$(az webapp list --query "[?name=='${{ secrets.AZURE_APP_SERVICE_NAME }}'].resourceGroup" --output tsv)
+            echo Setting SCM_DO_BUILD_DURING_DEPLOYMENT=false on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
+            az webapp config appsettings set -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false -o none
+            echo Setting --startup-file=\"node server.js\" on app service ${{ secrets.AZURE_APP_SERVICE_NAME }}
+            az webapp config set --startup-file="node server.js" -n ${{ secrets.AZURE_APP_SERVICE_NAME }} -g $rg -o none
+            sleep 10
+
+      - name: 🚀 Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2
         with:
-          app-name: 'chappy-webapp-kviohdjjsm5fb'
-          slot-name: 'Production'
-          package: .
-          
+          app-name: ${{ secrets.AZURE_APP_SERVICE_NAME }}
+          package: ${{ github.workspace }}/Nextjs-site.zip
+
+      - name: 🧹 Cleanup
+        run: rm ${{ github.workspace }}/Nextjs-site.zip
