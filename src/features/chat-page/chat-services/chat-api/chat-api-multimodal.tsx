@@ -18,7 +18,7 @@ export const ChatApiMultimodal = (props: {
     {
       model: "",
       stream: true,
-      max_tokens: 4096,
+      max_tokens: 16384,
       messages: [
         {
           role: "system",
