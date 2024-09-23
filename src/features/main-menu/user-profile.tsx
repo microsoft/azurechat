@@ -46,13 +46,6 @@ export const UserProfile = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col gap-1">
-            <p className="text-sm font-medium leading-none">Switch themes</p>
-            <ThemeToggle />
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem
           className="flex gap-2"
           onClick={() => signOut({ callbackUrl: "/" })}

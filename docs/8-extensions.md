@@ -1,12 +1,12 @@
 # 💡🔗 Extensions
 
-With Extensions, you can enhance the functionality of Azure Chat by integrating it with your internal APIs or external resources.Extensions are created using OpenAI Tools, specifically through Function Calling.
+With Extensions, you can enhance the functionality of Corporate Chat by integrating it with your internal APIs or external resources.Extensions are created using OpenAI Tools, specifically through Function Calling.
 
 As a user, you have the ability to create extensions that call your own internal APIs or external resources. However, if you are an admin, you can create extensions that can be utilised by all users within your organization.
 
 Refer to the [OpenAI Tools](https://platform.openai.com/docs/guides/function-calling) documentation for more information on how tools and functions call works.
 
-Azure Chat expects the following from the function definition:
+Corporate Chat expects the following from the function definition:
 
 ```json
 {
@@ -141,7 +141,7 @@ In this example you will be able to create and update GitHub Issues using the Gi
 
     - The function definition for creating GitHub issue
 
-      The `body` parameter is required by Azure Chat as it uses it to generate request body for the function call. The parameters of the `body` is a representation of the GitHub issues API. You can find the full documentation [here](https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#create-an-issue).
+      The `body` parameter is required by Corporate Chat as it uses it to generate request body for the function call. The parameters of the `body` is a representation of the GitHub issues API. You can find the full documentation [here](https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#create-an-issue).
 
       ```json
       {
@@ -198,7 +198,7 @@ In this example you will be able to create and update GitHub Issues using the Gi
 
     - The function definition for updating GitHub issue
 
-      The `body` parameter is the same scheme as CreateGitHubIssue function. However you will notice that the `query` parameter is added to the function definition. This is because Azure Chat will automatically pass the query parameters to the function as part of the request. In this case the query parameter is ISSUE_NUMBER.G
+      The `body` parameter is the same scheme as CreateGitHubIssue function. However you will notice that the `query` parameter is added to the function definition. This is because Corporate Chat will automatically pass the query parameters to the function as part of the request. In this case the query parameter is ISSUE_NUMBER.G
 
       ```json
       {

@@ -14,11 +14,11 @@
 
 # Introduction
 
-_Azure Chat Solution Accelerator powered by Azure Open AI Service_
+_Corporate Chat Solution Accelerator powered by Azure Open AI Service_
 
 ![](/docs/images/intro.png)
 
-_Azure Chat Solution Accelerator powered by Azure Open AI Service_ is a solution accelerator that allows organisations to deploy a private chat tenant in their Azure Subscription, with a familiar user experience and the added capabilities of chatting over your data and files.
+_Corporate Chat Solution Accelerator powered by Azure Open AI Service_ is a solution accelerator that allows organisations to deploy a private chat tenant in their Azure Subscription, with a familiar user experience and the added capabilities of chatting over your data and files.
 
 Benefits are:
 

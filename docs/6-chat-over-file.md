@@ -27,7 +27,7 @@ With the help of Extensions feature you can bring your own Azure AI Search and i
 
 Advantages of using this approach:
 
-1.  Index and maintain your own data outside of Azure Chat.
+1.  Index and maintain your own data outside of Corporate Chat.
 2.  Re-use the index across multiple chat sessions.
 3.  As an admin, you can publish the index across organisation. e.g. HR, Finance, IT etc.
 

@@ -12,7 +12,7 @@ Please make sure the following prerequisites are in place prior to deploying thi
 
 ## 👋🏻 Introduction
 
-_Azure Chat Solution Accelerator powered by Azure Open AI Service_ solution accelerator is built using the following technologies:
+_Corporate Chat Solution Accelerator powered by Azure Open AI Service_ solution accelerator is built using the following technologies:
 
 - [Node.js 18](https://nodejs.org/en): an open-source, cross-platform JavaScript runtime environment.
 

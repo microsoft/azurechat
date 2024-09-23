@@ -4,7 +4,7 @@ The following changes and services are required to migrate from the old version 
 
 Refer the `.env.example` file for the latest environment variable changes.
 
-If you previously had Azure Chat running and have pulled the v2 version you will need at minimum to make the following changes:
+If you previously had Corporate Chat running and have pulled the v2 version you will need at minimum to make the following changes:
 
 * Change the "OPENAI_API_KEY" environment setting to "AZURE_OPENAI_API_KEY"
 * Add an additional container to your Cosmos DB database called "config" with a partition key of "/userId"
