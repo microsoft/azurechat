@@ -60,6 +60,10 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
+//Activates/Deactivates Authentication by key, if true it will enforce RBAC using managed identities
+param disableLocalAuth  bool = false
+
+
 module resources 'resources.bicep' = {
   name: 'all-resources'
   scope: rg
@@ -88,6 +92,7 @@ module resources 'resources.bicep' = {
     storageServiceSku: storageServiceSku
     storageServiceImageContainerName: storageServiceImageContainerName
     location: location
+    disableLocalAuth:disableLocalAuth
   }
 }
 
