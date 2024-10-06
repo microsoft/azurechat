@@ -1,22 +1,28 @@
 import { BlobServiceClient, RestError } from "@azure/storage-blob";
 import { ServerActionResponse } from "../server-action-response";
+import { DefaultAzureCredential } from "@azure/identity";
 
 // initialize the blobServiceClient
-const InitBlobServiceClient = () => {
-  const acc = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-  const key = process.env.AZURE_STORAGE_ACCOUNT_KEY;
+const USE_MANAGED_IDENTITIES = process.env.USE_MANAGED_IDENTITIES === "true";
 
-  if (!acc || !key)
+const InitBlobServiceClient = () => {
+  const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+  const endpointSuffix = process.env.AZURE_STORAGE_ENDPOINT_SUFFIX || "core.windows.net";
+  const endpoint = `https://${accountName}.blob.${endpointSuffix}`;
+
+  if (USE_MANAGED_IDENTITIES) {
+    return new BlobServiceClient(endpoint, new DefaultAzureCredential());
+  }
+
+  const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
+  if (!accountName || !accountKey) {
     throw new Error(
       "Azure Storage Account not configured correctly, check environment variables."
     );
-  const endpointSuffix = process.env.AZURE_STORAGE_ENDPOINT_SUFFIX || "core.windows.net";
+  }
 
-  const connectionString = `DefaultEndpointsProtocol=https;AccountName=${acc};AccountKey=${key};EndpointSuffix=${endpointSuffix}`;
-
-  const blobServiceClient =
-    BlobServiceClient.fromConnectionString(connectionString);
-  return blobServiceClient;
+  const connectionString = `DefaultEndpointsProtocol=https;AccountName=${accountName};AccountKey=${accountKey};EndpointSuffix=${endpointSuffix}`;
+  return BlobServiceClient.fromConnectionString(connectionString);
 };
 
 export const UploadBlob = async (
@@ -79,7 +85,8 @@ export const GetBlob = async (
     };
   } catch (error) {
     if (error instanceof RestError) {
-      if (error.statusCode === 404) {
+      const restError = error as RestError;
+      if (restError.statusCode === 404) {
         return {
           status: "NOT_FOUND",
           errors: [

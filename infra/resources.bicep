@@ -31,6 +31,8 @@ param storageServiceImageContainerName string
 
 param location string = resourceGroup().location
 
+param disableLocalAuth bool= false
+
 @secure()
 param nextAuthHash string = uniqueString(newGuid())
 
@@ -118,6 +120,11 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
       appSettings: [ 
+        {
+          name: 'USE_MANAGED_IDENTITIES'
+          value: disableLocalAuth
+        }
+        
         { 
           name: 'AZURE_KEY_VAULT_NAME'
           value: keyVaultName
@@ -128,7 +135,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'AZURE_OPENAI_API_KEY'
-          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_OPENAI_API_KEY.name})'
+          value:  disableLocalAuth ? '' :'@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_OPENAI_API_KEY.name})'
         }
         {
           name: 'AZURE_OPENAI_API_INSTANCE_NAME'
@@ -254,7 +261,7 @@ resource kvFunctionAppPermissions 'Microsoft.Authorization/roleAssignments@2020-
   name: guid(kv.id, webApp.name, keyVaultSecretsOfficerRole)
   scope: kv
   properties: {
-    principalId: webApp.identity.principalId
+    principalId: targetUserPrincipal
     principalType: 'ServicePrincipal'
     roleDefinitionId: keyVaultSecretsOfficerRole
   }
@@ -347,6 +354,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   kind: 'GlobalDocumentDB'
   properties: {
     databaseAccountOfferType: 'Standard'
+    disableLocalAuth: disableLocalAuth
     locations: [
       {
         locationName: location
@@ -407,6 +415,7 @@ resource formRecognizer 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   properties: {
     customSubDomainName: form_recognizer_name
     publicNetworkAccess: 'Enabled'
+    disableLocalAuth: disableLocalAuth
   }
   sku: {
     name: formRecognizerSkuName
@@ -421,6 +430,7 @@ resource searchService 'Microsoft.Search/searchServices@2022-09-01' = {
     partitionCount: 1
     publicNetworkAccess: 'enabled'
     replicaCount: 1
+    disableLocalAuth: disableLocalAuth
   }
   sku: {
     name: searchServiceSkuName
@@ -435,6 +445,7 @@ resource azureopenai 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   properties: {
     customSubDomainName: openai_name
     publicNetworkAccess: 'Enabled'
+    disableLocalAuth: disableLocalAuth
   }
   sku: {
     name: openAiSkuName
@@ -447,7 +458,7 @@ resource llmdeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05
   name: deployment.name
   properties: {
     model: deployment.model
-    raiPolicyName: contains(deployment, 'raiPolicyName') ? deployment.raiPolicyName : null
+    /*raiPolicyName: contains(deployment, 'raiPolicyName') ? deployment.raiPolicyName : null*/
   }
   sku: contains(deployment, 'sku') ? deployment.sku : {
     name: 'Standard'
@@ -463,6 +474,7 @@ resource azureopenaidalle 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   properties: {
     customSubDomainName: openai_dalle_name
     publicNetworkAccess: 'Enabled'
+    disableLocalAuth: disableLocalAuth
   }
   sku: {
     name: openAiSkuName
@@ -493,6 +505,7 @@ resource speechService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   properties: {
     customSubDomainName: speech_service_name
     publicNetworkAccess: 'Enabled'
+    /* TODO: disableLocalAuth: disableLocalAuth*/
   }
   sku: {
     name: speechServiceSkuName
@@ -506,6 +519,9 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   tags: tags
   kind: 'StorageV2'
   sku: storageServiceSku
+  properties:{
+    allowSharedKeyAccess: !disableLocalAuth
+  }
 
   resource blobServices 'blobServices' = {
     name: 'default'
@@ -516,6 +532,134 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
       }
     }
   }
+}
+
+
+//RBAC Roles for managed identity authentication
+
+var cosmosDbContributorRoleId = '5bd9cd88-fe45-4216-938b-f97437e15450' // Replace with actual role ID for Cosmos DB.
+var cosmosDbOperatorRoleId= '230815da-be43-4aae-9cb4-875f7bd000aa'
+var cognitiveServicesContributorRoleId = '25fbc0a9-bd7c-42a3-aa1a-3b75d497ee68' // Replace with actual role ID for Cognitive Services.
+var cognitiveServicesUserRoleId='a97b65f3-24c7-4388-baec-2e87135dc908'
+var storageBlobDataContributorRoleId = 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Replace with actual role ID for Blob Data Contributor.
+var searchServiceContributorRoleId = '7ca78c08-252a-4471-8644-bb5ff32d4ba0' // Replace with actual role ID for Azure Search.
+var cognitiveServicesOpenAIContributorRoleId='a001fd3d-188f-4b5d-821b-7da978bf7442'
+var searchIndexDataContributorRoleId='8ebe5a00-799e-43f5-93ac-243d3dce84a7'
+
+var targetUserPrincipal = webApp.identity.principalId
+// These are only deployed if local authentication has been disabled in the parameters
+
+resource cosmosDbRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+  name: guid(cosmosDbAccount.id, cosmosDbContributorRoleId, 'role-assignment-cosmosDb')
+  scope: cosmosDbAccount
+  properties: {
+    principalId: targetUserPrincipal
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cosmosDbContributorRoleId)
+  }
+}
+
+
+resource cosmosDbRoleAssignmentOpperator 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+  name: guid(cosmosDbAccount.id, cosmosDbOperatorRoleId, 'role-assignment-cosmosDb')
+  scope: cosmosDbAccount
+  properties: {
+    principalId: targetUserPrincipal
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cosmosDbOperatorRoleId)
+  }
+}
+
+resource cognitiveServicesRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+  name: guid(azureopenai.id, cognitiveServicesContributorRoleId, 'role-assignment-cognitiveServices')
+  scope: resourceGroup()
+  properties: {
+    principalId: targetUserPrincipal
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cognitiveServicesContributorRoleId)
+  }
+}
+
+
+resource cognitivbeServicesOpenAIcONTRIBUTORRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+  name: guid(azureopenai.id, cognitiveServicesOpenAIContributorRoleId, 'role-assignment-cognitiveServices')
+  scope: azureopenai
+  properties: {
+    principalId: targetUserPrincipal
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cognitiveServicesOpenAIContributorRoleId)
+  }
+}
+
+resource  cognitiveServicesUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+  name: guid(formRecognizer.id, cognitiveServicesUserRoleId, 'role-assignment-cognitiveServices')
+  scope:  resourceGroup()
+  properties: {
+    principalId: targetUserPrincipal
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cognitiveServicesUserRoleId)
+  }
+}
+
+
+
+resource storageBlobDataContributorRole 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+  name: guid(storage.id, storageBlobDataContributorRoleId, 'role-assignment-storage')
+  scope: storage
+  properties: {
+    principalId: targetUserPrincipal
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', storageBlobDataContributorRoleId)
+  }
+}
+
+resource searchServiceContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+  name: guid(searchService.id, searchServiceContributorRoleId, 'role-assignment-searchService')
+  scope: searchService
+  properties: {
+    principalId: targetUserPrincipal
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', searchServiceContributorRoleId)
+  }
+}
+resource searchServiceIndexDataContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+  name: guid(searchService.id, searchIndexDataContributorRoleId, 'role-assignment-searchService')
+  scope: searchService
+  properties: {
+    principalId: targetUserPrincipal
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', searchIndexDataContributorRoleId)
+  }
+}
+//Special case for cosmosdb
+
+
+@description('Name of the role definition.')
+param roleDefinitionName string = 'Azure Cosmos DB for NoSQL Data Plane Owner'
+
+
+resource definition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2024-05-15'=  if (disableLocalAuth) {
+  name: guid(cosmosDbAccount.id, roleDefinitionName)
+  parent: cosmosDbAccount
+  properties: {
+    roleName: roleDefinitionName
+    type: 'CustomRole'
+    assignableScopes: [
+      cosmosDbAccount.id
+    ]
+    permissions: [
+      {
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+      }
+    ]
+  }
+}
+
+resource assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15'= if (disableLocalAuth) {
+  name: guid(definition.id, webApp.name, cosmosDbAccount.id)
+  parent: cosmosDbAccount
+  properties: {
+    principalId: targetUserPrincipal
+    roleDefinitionId: definition.id
+    scope: cosmosDbAccount.id
+  }
+
 }
 
 output url string = 'https://${webApp.properties.defaultHostName}'
