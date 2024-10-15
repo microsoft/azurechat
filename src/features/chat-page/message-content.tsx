@@ -1,7 +1,7 @@
 import { Markdown } from "@/features/ui/markdown/markdown";
 import { FunctionSquare } from "lucide-react";
 import React from "react";
-import MermaidDiagram from "@/features/chat-page/MermaidDiagram"; // Adjust the import path as necessary
+
 import {
   Accordion,
   AccordionContent,
@@ -10,6 +10,8 @@ import {
 } from "../ui/accordion";
 import { RecursiveUI } from "../ui/recursive-ui";
 import { CitationAction } from "./citation/citation-action";
+import MermaidComponent from "./MermaidDiagram";
+
 
 interface MessageContentProps {
   message: {
@@ -29,13 +31,18 @@ const MessageContent: React.FC<MessageContentProps> = ({ message }) => {
 
   if (message.role === "assistant" || message.role === "user") {
     const mermaidCode = getMermaidCode(message.content);
+    const mermaidDiagramId = useMemo(() => `mermaid-${Date.now()}`, []); // Generate a unique ID
 
     return (
       <>
-        {mermaidCode ? (
-          <><Markdown content={message.content} onCitationClick={CitationAction}></Markdown><br></br><MermaidDiagram chartCode={mermaidCode} /></>
-        ) : (
-          <Markdown content={message.content} onCitationClick={CitationAction}></Markdown>
+        {/* Render message content and optionally a mermaid diagram */}
+        <Markdown content={message.content} onCitationClick={CitationAction} />
+        {mermaidCode && (
+          <>
+            <br />
+            {/* Render Mermaid diagram with the extracted code and unique ID */}
+            <MermaidComponent source={mermaidCode.trim()} id={mermaidDiagramId} />
+          </>
         )}
         {message.multiModalImage && <img src={message.multiModalImage} alt="Multimodal" />}
       </>
@@ -82,3 +89,7 @@ const toJson = (value: string) => {
 };
 
 export default MessageContent;
+  function useMemo(arg0: () => string, arg1: never[]) {
+    throw new Error("Function not implemented.");
+  }
+

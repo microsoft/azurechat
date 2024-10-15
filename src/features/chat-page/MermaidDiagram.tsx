@@ -1,50 +1,30 @@
-import React, { useEffect, useRef, useState } from 'react';
-import mermaid from 'mermaid';
+import mermaid from "mermaid";
+import { useEffect, useRef } from "react";
 
-interface MermaidDiagramProps {
-  chartCode: string;
-}
+mermaid.initialize({});
 
-const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chartCode }) => {
-  const mermaidRef = useRef<HTMLDivElement>(null);
-  const [loaded, setLoaded] = useState(false);
+const MermaidComponent = ({ source, id }: { source: string; id: string }) => {
+    const mermaidRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const renderMermaid = async () => {
-      mermaid.initialize({
-        startOnLoad: false,
-        logLevel: 'warn', // Use logLevel for better error handling
-      });
+    useEffect(() => {
+        const initializeMermaid = async () => {
+            if (mermaidRef.current) {
+                mermaidRef.current.innerHTML = source;
+                const { svg, bindFunctions } = await mermaid.render(`mermaid-diagram-${id}`, source);
+                mermaidRef.current.innerHTML = svg;
+                bindFunctions?.(mermaidRef.current);
+            }
+        };
 
-      const elementId = `mermaid-${Math.random().toString(36).substr(2, 9)}`; // Unique ID for the diagram
+        initializeMermaid();
 
-      if (mermaidRef.current) {
-        try {
-          // Using callback method according to Mermaid's latest documentation at the time of writing
-          const svgContainer = document.createElement('div');
-          mermaid.render(elementId, chartCode, svgContainer);
-          if (mermaidRef.current) {
-            mermaidRef.current.innerHTML = svgContainer.innerHTML;
-            setLoaded(true);
-          }
-        } catch (err) {
-          console.error('Mermaid diagram rendering failed', err);
-        }
-      }
-    };
+        // Clean up mermaid instance when unmounting; doing nothing at the momemt
+        return () => {
 
-    renderMermaid();
-  }, [chartCode]);
+        };
+    }, [source]);
 
-  if (!loaded) {
-    return <div>Loading Mermaid diagram...</div>;
-  }
-
-  return (
-    <div>
-      <div ref={mermaidRef} />
-    </div>
-  );
+    return <div id={id} ref={mermaidRef}></div>;
 };
 
-export default MermaidDiagram;
+export default MermaidComponent;
