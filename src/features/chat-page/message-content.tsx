@@ -33,7 +33,7 @@ const MessageContent: React.FC<MessageContentProps> = ({ message }) => {
     return (
       <>
         {mermaidCode ? (
-          <MermaidDiagram chartCode={mermaidCode} />
+          <><Markdown content={message.content} onCitationClick={CitationAction}></Markdown><br></br><MermaidDiagram chartCode={mermaidCode} /></>
         ) : (
           <Markdown content={message.content} onCitationClick={CitationAction}></Markdown>
         )}
