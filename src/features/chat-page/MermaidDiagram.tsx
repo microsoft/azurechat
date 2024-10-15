@@ -13,7 +13,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chartCode }) => {
     const renderMermaid = async () => {
       mermaid.initialize({
         startOnLoad: false,
-        logLevel: mermaid.LogLevel.Warn, // Use LogLevel for better error handling
+        logLevel: 'warn', // Use logLevel for better error handling
       });
 
       const elementId = `mermaid-${Math.random().toString(36).substr(2, 9)}`; // Unique ID for the diagram
@@ -21,12 +21,12 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chartCode }) => {
       if (mermaidRef.current) {
         try {
           // Using callback method according to Mermaid's latest documentation at the time of writing
-          mermaid.render(elementId, chartCode, (svgCode) => {
-            if (mermaidRef.current) {
-              mermaidRef.current.innerHTML = svgCode;
-              setLoaded(true);
-            }
-          }, mermaidRef.current);
+          const svgContainer = document.createElement('div');
+          mermaid.render(elementId, chartCode, svgContainer);
+          if (mermaidRef.current) {
+            mermaidRef.current.innerHTML = svgContainer.innerHTML;
+            setLoaded(true);
+          }
         } catch (err) {
           console.error('Mermaid diagram rendering failed', err);
         }
