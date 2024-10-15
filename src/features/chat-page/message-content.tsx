@@ -1,6 +1,6 @@
 import { Markdown } from "@/features/ui/markdown/markdown";
 import { FunctionSquare } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 
 import {
   Accordion,
@@ -89,7 +89,4 @@ const toJson = (value: string) => {
 };
 
 export default MessageContent;
-  function useMemo(arg0: () => string, arg1: never[]) {
-    throw new Error("Function not implemented.");
-  }
 
