@@ -1,5 +1,6 @@
 import mermaid from "mermaid";
 import { useEffect, useRef } from "react";
+import { Button } from "@/features/ui/button";  // Import your custom Button component
 
 mermaid.initialize({});
 
@@ -42,7 +43,9 @@ const MermaidComponent = ({ source, id }: { source: string; id: string }) => {
     return (
         <div>
             <div id={id} ref={mermaidRef}></div>
-            <button onClick={downloadSVG}>Download SVG</button>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                <Button variant="outline" onClick={downloadSVG}>Download SVG</Button>
+            </div>
         </div>
     );
 };
