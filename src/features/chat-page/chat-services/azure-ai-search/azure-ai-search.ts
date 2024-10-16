@@ -380,8 +380,7 @@ export const EnsureIndexIsCreated = async (): Promise<
       response: result,
     };
   } catch (e) {
-    console.log(e);
-    console.log("Index does not exist, creating new index");
+    console.log(`Error Creating index:${e}`);
     return await CreateSearchIndex();
   }
 };
