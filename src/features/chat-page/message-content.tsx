@@ -10,7 +10,7 @@ import {
 } from "../ui/accordion";
 import { RecursiveUI } from "../ui/recursive-ui";
 import { CitationAction } from "./citation/citation-action";
-import MermaidComponent from "./MermaidDiagram";
+import MermaidComponent from "./mermaid-diagram";
 
 
 interface MessageContentProps {
