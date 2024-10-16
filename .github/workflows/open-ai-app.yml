@@ -4,7 +4,7 @@ name: Build & deploy Next.js app to Azure Web App
 on:
   # Automatically trigger it when detected changes in repo
   push:
-    branches: [main]
+    branches: [oct-update]
 
 jobs:
   build:
