@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - master
+      - oct-update
   pull_request:
     branches:
       - main
-      - master
+      - oct-update
 
 jobs:
   build:
