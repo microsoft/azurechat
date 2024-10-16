@@ -371,14 +371,16 @@ export const EnsureIndexIsCreated = async (): Promise<
 > => {
   try {
     console.log("Ensuring index is created");
+    console.log(process.env.AZURE_SEARCH_INDEX_NAME);
     const client = AzureAISearchIndexClientInstance();
     const result = await client.getIndex(process.env.AZURE_SEARCH_INDEX_NAME);
-    console.log("Index already exists:", result);
+    console.log("Index  exists:", result);
     return {
       status: "OK",
       response: result,
     };
   } catch (e) {
+    console.log(e);
     console.log("Index does not exist, creating new index");
     return await CreateSearchIndex();
   }
