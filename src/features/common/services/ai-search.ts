@@ -13,14 +13,26 @@ const searchName = process.env.AZURE_SEARCH_NAME;
 const indexName = process.env.AZURE_SEARCH_INDEX_NAME;
 const endpoint = `https://${searchName}.${endpointSuffix}`;
 
+console.log("Configuration parameters:", {
+  USE_MANAGED_IDENTITIES,
+  endpointSuffix,
+  searchName,
+  indexName,
+  endpoint,
+});
 
 export const GetCredential = () => {
-  return USE_MANAGED_IDENTITIES
+  console.log("Getting credential using", USE_MANAGED_IDENTITIES ? "Managed Identities" : "API Key");
+  const credential = USE_MANAGED_IDENTITIES
     ? new DefaultAzureCredential()
     : new AzureKeyCredential(apiKey);
+  
+  console.log("Credential obtained:", credential);
+  return credential;
 }
 
 export const AzureAISearchInstance = <T extends object>() => {
+  console.log("Creating Azure AI Search Client Instance");
   const credential = GetCredential();
 
   const searchClient = new SearchClient<T>(
@@ -29,13 +41,12 @@ export const AzureAISearchInstance = <T extends object>() => {
     credential
   );
 
+  console.log("Search Client created:", searchClient);
   return searchClient;
-
-
 };
 
 export const AzureAISearchIndexClientInstance = () => {
-
+  console.log("Creating Azure AI Search Index Client Instance");
   const credential = GetCredential();
 
   const searchClient = new SearchIndexClient(
@@ -43,11 +54,12 @@ export const AzureAISearchIndexClientInstance = () => {
     credential
   );
 
+  console.log("Search Index Client created:", searchClient);
   return searchClient;
 };
 
 export const AzureAISearchIndexerClientInstance = () => {
-
+  console.log("Creating Azure AI Search Indexer Client Instance");
   const credential = GetCredential();
 
   const client = new SearchIndexerClient(
@@ -55,5 +67,6 @@ export const AzureAISearchIndexerClientInstance = () => {
     credential
   );
 
+  console.log("Search Indexer Client created:", client);
   return client;
 };
