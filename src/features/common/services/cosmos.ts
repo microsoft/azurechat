@@ -1,38 +1,22 @@
 import { CosmosClient } from "@azure/cosmos";
-import { DefaultAzureCredential } from "@azure/identity";
 
-// Configure Cosmos DB details
+// Read Cosmos DB_NAME and CONTAINER_NAME from .env
 const DB_NAME = process.env.AZURE_COSMOSDB_DB_NAME || "chat";
 const CONTAINER_NAME = process.env.AZURE_COSMOSDB_CONTAINER_NAME || "history";
-const CONFIG_CONTAINER_NAME = process.env.AZURE_COSMOSDB_CONFIG_CONTAINER_NAME || "config";
-const USE_MANAGED_IDENTITIES = process.env.USE_MANAGED_IDENTITIES === "true";
-
-const getCosmosCredential = () => {
-  if (USE_MANAGED_IDENTITIES) {
-    return new DefaultAzureCredential();
-  }
-  const key = process.env.AZURE_COSMOSDB_KEY;
-  if (!key) {
-    throw new Error("Azure Cosmos DB key is not provided in environment variables.");
-  }
-  return key;
-};
+const CONFIG_CONTAINER_NAME =
+  process.env.AZURE_COSMOSDB_CONFIG_CONTAINER_NAME || "config";
 
 export const CosmosInstance = () => {
   const endpoint = process.env.AZURE_COSMOSDB_URI;
+  const key = process.env.AZURE_COSMOSDB_KEY;
 
-  if (!endpoint) {
+  if (!endpoint || !key) {
     throw new Error(
-      "Azure Cosmos DB endpoint is not configured. Please configure it in the .env file."
+      "Azure Cosmos DB is not configured. Please configure it in the .env file."
     );
   }
 
-  const credential = getCosmosCredential();
-  if (credential instanceof DefaultAzureCredential) {
-    return new CosmosClient({ endpoint, aadCredentials: credential });
-  } else {
-    return new CosmosClient({ endpoint, key: credential });
-  }
+  return new CosmosClient({ endpoint, key });
 };
 
 export const ConfigContainer = () => {
