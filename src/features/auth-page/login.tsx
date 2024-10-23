@@ -20,7 +20,7 @@ interface LoginProps {
 
 export const LogIn: FC<LoginProps> = (props) => {
   return (
-    <Card className="flex gap-2 flex-col min-w-[300px]">
+    <Card className="flex gap-2 flex-col min-w-[400px]">
       <CardHeader className="gap-2">
         <CardTitle className="text-2xl flex gap-2">
           <Avatar className="h-8 w-8">
@@ -29,7 +29,7 @@ export const LogIn: FC<LoginProps> = (props) => {
           <span className="text-primary">{AI_NAME}</span>
         </CardTitle>
         <CardDescription>
-          Login with your Credentials
+           AI for Comau
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
