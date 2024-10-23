@@ -29,7 +29,7 @@ export const LogIn: FC<LoginProps> = (props) => {
           <span className="text-primary">{AI_NAME}</span>
         </CardTitle>
         <CardDescription>
-          Login in with your GitHub or Microsoft 365 account
+          Login with your Credentials
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -37,7 +37,7 @@ export const LogIn: FC<LoginProps> = (props) => {
           <Button onClick={() => signIn("github")}>GitHub</Button>
         )}
         {props.entraIdEnabled && (
-          <Button onClick={() => signIn("azure-ad")}>Microsoft 365</Button>
+          <Button onClick={() => signIn("azure-ad")}>Microsoft Login</Button>
         )}
         {props.isDevMode && (
           <Button onClick={() => signIn("localdev")}>
