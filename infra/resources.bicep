@@ -447,13 +447,13 @@ resource llmdeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05
   name: deployment.name
   properties: {
     model: deployment.model
-    raiPolicyName: deployment.raiPolicyName ?? null  // Safe access with null fallback
   }
-  sku: deployment.sku != null ? deployment.sku : {   // Ensure we handle the `sku` logic correctly
+  sku: deployment.sku != null ? deployment.sku : {
     name: 'Standard'
     capacity: deployment.capacity
   }
 }]
+
 
 
 resource azureopenaidalle 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
