@@ -9,9 +9,9 @@ param name string
 @description('Primary location for all resources')
 param location string
 
-// azure open ai -- only regions supporting gpt-35-turbo v1106
+// azure open ai -- regions currently support gpt-4o global-standard
 @description('Location for the OpenAI resource group')
-@allowed(['australiaeast', 'canadaeast', 'francecentral', 'southindia', 'uksouth', 'swedencentral', 'westus'])
+@allowed(['australiaeast', 'brazilsouth', 'canadaeast', 'eastus', 'eastus2', 'francecentral', 'germanywestcentral', 'japaneast', 'koreacentral', 'northcentralus', 'norwayeast', 'polandcentral', 'spaincentral', 'southafricanorth', 'southcentralus', 'southindia', 'swedencentral', 'switzerlandnorth', 'uksouth', 'westeurope', 'westus', 'westus3'])
 @metadata({
   azd: {
     type: 'location'
@@ -20,36 +20,25 @@ param location string
 param openAILocation string
 
 param openAISku string = 'S0'
-param openAIApiVersion string = '2023-12-01-preview'
+param openAIApiVersion string ='2024-08-01-preview'
 
-param chatGptDeploymentCapacity int = 120
-param chatGptDeploymentName string = 'chat-gpt-35-turbo'
-param chatGptModelName string = 'gpt-35-turbo'
-param chatGptModelVersion string = '1106'
+param chatGptDeploymentCapacity int = 30
+param chatGptDeploymentName string = 'gpt-4o'
+param chatGptModelName string = 'gpt-4o'
+param chatGptModelVersion string = '2024-05-13'
 param embeddingDeploymentName string = 'embedding'
 param embeddingDeploymentCapacity int = 120
 param embeddingModelName string = 'text-embedding-ada-002'
 
-// DALL-E v3 only supported in Sweden Central for now
+// DALL-E v3 only supported in limited regions for now
 @description('Location for the OpenAI DALL-E 3 instance resource group')
-@allowed(['swedencentral'])
+@allowed(['swedencentral', 'eastus', 'australiaeast'])
 param dalleLocation string
 
 param dalleDeploymentCapacity int = 1
 param dalleDeploymentName string = 'dall-e-3'
 param dalleModelName string = 'dall-e-3'
 param dalleApiVersion string = '2023-12-01-preview'
-
-// DALL-E v3 only supported in Sweden Central for now
-@description('Location for the GPT vision instance resource')
-@allowed(['swedencentral','westus',])
-param gptvisionLocation string
-
-param gptvisionDeploymentCapacity int = 1
-param gptvisionDeploymentName string = 'gpt-4-vision'
-param gptvisionModelName string = 'gpt-4'
-param gptvisionApiVersion string = '2023-12-01-preview'
-param gptvisionModelVersion string = 'vision-preview'
 
 param formRecognizerSkuName string = 'S0'
 param searchServiceIndexName string = 'azure-chat'
@@ -93,12 +82,6 @@ module resources 'resources.bicep' = {
     dalleDeploymentName: dalleDeploymentName
     dalleModelName: dalleModelName
     dalleApiVersion: dalleApiVersion
-    gptvisionLocation: gptvisionLocation
-    gptvisionApiVersion: gptvisionApiVersion
-    gptvisionDeploymentCapacity: gptvisionDeploymentCapacity
-    gptvisionDeploymentName: gptvisionDeploymentName
-    gptvisionModelName: gptvisionModelName
-    gptvisionModelVersion: gptvisionModelVersion
     formRecognizerSkuName: formRecognizerSkuName
     searchServiceIndexName: searchServiceIndexName
     searchServiceSkuName: searchServiceSkuName
