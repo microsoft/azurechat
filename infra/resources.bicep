@@ -447,13 +447,14 @@ resource llmdeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05
   name: deployment.name
   properties: {
     model: deployment.model
-    raiPolicyName: deployment.raiPolicyName?
+    raiPolicyName: contains(deployment, 'raiPolicyName') ? deployment.raiPolicyName : null
   }
   sku: deployment.sku ? deployment.sku : {
     name: 'Standard'
     capacity: deployment.capacity
   }
 }]
+
 
 
 resource azureopenaidalle 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
