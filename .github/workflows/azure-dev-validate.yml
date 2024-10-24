@@ -19,9 +19,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Bicep for linting
-        uses: azure/CLI@v1
+        uses: azure/cli@v2
         with:
-          inlineScript: az config set bicep.use_binary_from_path=false && az bicep build -f infra/main.bicep --stdout
+           azcliversion: 2.64.0
+           inlineScript: |
+              tdnf install -y icu
+              tdnf install –y jq
+              az config set bicep.use_binary_from_path=false && az bicep build -f infra/main.bicep --stdout
 
       - name: Run Microsoft Security DevOps Analysis
         uses: microsoft/security-devops-action@preview
