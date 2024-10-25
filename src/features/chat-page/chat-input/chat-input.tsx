@@ -49,7 +49,7 @@ export const ChatInput = () => {
   };
 
   return (
-    <ChatInputForm
+    (<ChatInputForm
       ref={formRef}
       onSubmit={(e) => {
         e.preventDefault();
@@ -100,6 +100,6 @@ export const ChatInput = () => {
           )}
         </ChatInputPrimaryActionArea>
       </ChatInputActionArea>
-    </ChatInputForm>
+    </ChatInputForm>)
   );
 };

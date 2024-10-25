@@ -18,9 +18,8 @@ import { GetDynamicExtensions } from "./chat-api-dynamic-extensions";
 import { ChatApiExtensions } from "./chat-api-extension";
 import { ChatApiMultimodal } from "./chat-api-multimodal";
 import { OpenAIStream } from "./open-ai-stream";
-import { reportCompletionTokens, reportPromptTokens, reportUserChatMessage } from "../../../common/services/chat-metrics-service";
+import { reportCompletionTokens, reportUserChatMessage } from "../../../common/services/chat-metrics-service";
 import { ChatTokenService } from "@/features/common/services/chat-token-service";
-import { isRunningInBrowser } from "openai/core.mjs";
 type ChatTypes = "extensions" | "chat-with-file" | "multimodal";
 
 export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
@@ -96,7 +95,7 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
       break;
   }
 
-  reportUserChatMessage("gpt-4", { personaMessageTitle: currentChatThread.personaMessageTitle });
+  reportUserChatMessage("gpt-4", { personaMessageTitle: currentChatThread.personaMessageTitle, threadId: currentChatThread.id});
 
   const readableStream = OpenAIStream({
     runner: runner,
