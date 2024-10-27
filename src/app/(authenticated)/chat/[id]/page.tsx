@@ -13,13 +13,13 @@ export const metadata = {
 };
 
 interface HomeParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function Home(props: HomeParams) {
-  const { id } = props.params;
+  const { id } = (await props.params);
   const [chatResponse, chatThreadResponse, docsResponse] =
     await Promise.all([
       FindAllChatMessagesForCurrentUser(id),

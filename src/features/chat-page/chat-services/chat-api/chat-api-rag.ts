@@ -86,7 +86,7 @@ ${userMessage}
   let promptTokens = chatTokenService.getTokenCountFromHistory(stream.messages);
 
   for (let tokens of promptTokens) {
-    reportPromptTokens(tokens.tokens, "gpt-4", tokens.role, { personaMessageTitle: chatThread.personaMessageTitle });
+    reportPromptTokens(tokens.tokens, "gpt-4", tokens.role, { personaMessageTitle: chatThread.personaMessageTitle, messageCount: stream.messages.length, threadId: chatThread.id });
   }
 
   return openAI.beta.chat.completions.stream(stream, { signal });

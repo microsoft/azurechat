@@ -3,14 +3,14 @@ import { FindAllChatMessagesForAdmin } from "@/features/reporting-page/reporting
 import { DisplayError } from "@/features/ui/error/display-error";
 
 interface HomeParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function Home(props: HomeParams) {
   const [chatResponse] = await Promise.all([
-    FindAllChatMessagesForAdmin(props.params.id),
+    FindAllChatMessagesForAdmin((await props.params).id),
   ]);
 
   if (chatResponse.status !== "OK") {

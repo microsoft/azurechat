@@ -37,7 +37,7 @@ export const ChatApiExtensions = async (props: {
   let promptTokens = tokenService.getTokenCountFromHistory(messages);
 
   for (const tokens of promptTokens) {
-    reportPromptTokens(tokens.tokens, "gpt-4", tokens.role, {personaMessageTitle: chatThread.personaMessageTitle});
+    reportPromptTokens(tokens.tokens, "gpt-4", tokens.role, {personaMessageTitle: chatThread.personaMessageTitle, messageCount: messages.length, threadId: chatThread.id});
   }
 
   for (const e of extensions) {
@@ -48,7 +48,7 @@ export const ChatApiExtensions = async (props: {
     toolsText += `${JSON.stringify(e.function.parameters)} \n`;
 
     let toolsTokens = tokenService.getTokenCount(toolsText);
-    reportPromptTokens(toolsTokens, "gpt-4", "tools", {"functionName": e.function.name || "", "personaMessageTitle": chatThread.personaMessageTitle});
+    reportPromptTokens(toolsTokens, "gpt-4", "tools", {"functionName": e.function.name || "", "personaMessageTitle": chatThread.personaMessageTitle, threadId: chatThread.id, messageCount: messages.length});
   }
 
   return openAI.beta.chat.completions.runTools(

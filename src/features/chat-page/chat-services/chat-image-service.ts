@@ -7,7 +7,7 @@ import { GetBlob, UploadBlob } from "../../common/services/azure-storage";
 const IMAGE_CONTAINER_NAME = "images";
 const IMAGE_API_PATH = process.env.NEXTAUTH_URL + "/api/images";
 
-export const GetBlobPath = (threadId: string, blobName: string): string => {
+export const GetBlobPath = async (threadId: string, blobName: string): Promise<string> => {
   return `${threadId}/${blobName}`;
 };
 
@@ -31,16 +31,16 @@ export const GetImageFromStore = async (
   return await GetBlob(IMAGE_CONTAINER_NAME, blobPath);
 };
 
-export const GetImageUrl = (threadId: string, fileName: string): string => {
+export const GetImageUrl = async (threadId: string, fileName: string): Promise<string> => {
   // add threadId and fileName as query parameters t and img respectively
   const params = `?t=${threadId}&img=${fileName}`;
 
   return `${IMAGE_API_PATH}/${params}`;
 };
 
-export const GetThreadAndImageFromUrl = (
+export const GetThreadAndImageFromUrl = async (
   urlString: string
-): ServerActionResponse<{ threadId: string; imgName: string }> => {
+): Promise<ServerActionResponse<{ threadId: string; imgName: string }>> => {
   // Get threadId and img from query parameters t and img
   const url = new URL(urlString);
   const threadId = url.searchParams.get("t");
