@@ -6,6 +6,7 @@ import { ChatDocumentModel, ChatThreadModel } from "../chat-services/models";
 import { DocumentDetail } from "./document-detail";
 import { ExtensionDetail } from "./extension-detail";
 import { PersonaDetail } from "./persona-detail";
+import Image from "next/image";
 
 interface Props {
   chatThread: ChatThreadModel;
@@ -25,7 +26,7 @@ export const ChatHeader: FC<Props> = (props) => {
         <div className="flex flex-col">
           <span>{props.chatThread.name}</span>
           <span className="text-sm text-muted-foreground flex gap-1 items-center">
-            <VenetianMask size={18} />
+            {/* <VenetianMask size={18} /> */}
             {persona}
           </span>
         </div>
