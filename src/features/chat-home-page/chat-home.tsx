@@ -17,10 +17,9 @@ interface ChatPersonaProps {
 export const ChatHome: FC<ChatPersonaProps> = (props) => {
   return (
     <ScrollArea className="flex-1">
-      <main className="flex flex-1 flex-col gap-6 pb-6">
-        <Hero
-          title={
-            <>
+      <main className="flex flex-1 flex-col gap-6">
+
+            <div className="flex justify-center items-center">
               <Image
                 src={"/ai-icon.png"}
                 width={60}
@@ -28,12 +27,12 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                 quality={100}
                 alt="ai-icon"
               />{" "}
-              {AI_NAME}
-            </>
-          }
-          description={AI_DESCRIPTION}
-        ></Hero>
-        <div className="container max-w-4xl flex gap-20 flex-col">
+             <h1>{AI_NAME}</h1> 
+            </div>
+
+         <p className="flex justify-center items-center">{AI_DESCRIPTION}</p>
+
+        {/* <div className="container max-w-4xl flex gap-20 flex-col">
           <div>
             <h2 className="text-2xl font-bold mb-3">Extensions</h2>
 
@@ -73,7 +72,7 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
               <p className="text-muted-foreground max-w-xl">No personas created</p>
             }
           </div>
-        </div>
+        </div> */}
         <AddExtension />
       </main>
     </ScrollArea>

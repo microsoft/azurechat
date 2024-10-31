@@ -4,6 +4,7 @@ import { Button } from "@/features/ui/button";
 import { LoadingIndicator } from "@/features/ui/loading";
 import { Plus } from "lucide-react";
 import { useFormStatus } from "react-dom";
+import { MessageCircle } from "lucide-react";
 
 export const NewChat = () => {
   const { pending } = useFormStatus();

@@ -3,7 +3,7 @@ class Menu {
   public isMenuOpen: boolean;
 
   constructor() {
-    this.isMenuOpen = true;
+    this.isMenuOpen = false;
   }
 
   toggleMenu() {

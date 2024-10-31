@@ -1,8 +1,8 @@
-export const AI_NAME = "Chat with AIKO";
-export const AI_DESCRIPTION = "AIKO is a friendly AI assistant.";
-export const CHAT_DEFAULT_PERSONA = AI_NAME + " default";
+export const AI_NAME = "AIKO";
+export const AI_DESCRIPTION = "Hey, I'm AIKO (Artificial Intelligence for Comau), your super assistant.";
+export const CHAT_DEFAULT_PERSONA = AI_NAME;
 
-export const CHAT_DEFAULT_SYSTEM_PROMPT = `You are a friendly ${AI_NAME} AI assistant. You must always return in markdown format.
+export const CHAT_DEFAULT_SYSTEM_PROMPT = `Your name is ${AI_NAME}. You are a friendly AI assistant. You must always return in markdown format.
 
 You have access to the following functions:
 1. create_img: You must only use the function create_img if the user asks you to create an image.`;
