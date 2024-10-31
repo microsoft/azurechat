@@ -7,6 +7,7 @@ import { DocumentDetail } from "./document-detail";
 import { ExtensionDetail } from "./extension-detail";
 import { PersonaDetail } from "./persona-detail";
 import Image from "next/image";
+import Image from "next/image";
 
 interface Props {
   chatThread: ChatThreadModel;
