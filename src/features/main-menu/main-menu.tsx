@@ -32,14 +32,14 @@ export const MainMenu = async () => {
         <MenuItemContainer>
           <MenuItem tooltip="Home" asChild>
             <MenuLink href="/chat" ariaLabel="Go to the Home page">
-              {/* <Home {...menuIconProps} /> */}
-              <Image
+              <Home {...menuIconProps} />
+              {/* <Image
                 src="/ai-icon.png"
                 width={45}
                 height={45}
                 quality={100}
                 alt="ai-icon"
-              />
+              /> */}
             </MenuLink>
           </MenuItem>
           <MenuTrayToggle />
