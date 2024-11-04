@@ -24,12 +24,27 @@ export const ChatHeader: FC<Props> = (props) => {
     <div className="bg-background border-b flex items-center py-2">
       <div className="container max-w-3xl flex justify-between items-center">
         <div className="flex flex-col">
-          <span>{props.chatThread.name}</span>
-          <span className="text-sm text-muted-foreground flex gap-1 items-center">
-            {/* <VenetianMask size={18} /> */}
-            {persona}
-          </span>
+          <div className="grid grid-rows-2 grid-flow-col gap-2 items-center">
+            <div className="row-span-2">
+              <Image
+                src="/ai-icon.png"
+                alt={props.chatThread.name}
+                width={50}
+                height={50}
+              ></Image>
+            </div>
+            <div className="row-span-2">
+              <span className="flex items-center">{props.chatThread.name}</span>
+              <span className="text-sm text-muted-foreground flex items-center">
+                {/* <VenetianMask size={18} /> */}
+                {persona} (AI for Comau)
+              </span>
+            </div>
+          </div>
         </div>
+
+       
+
         <div className="flex gap-2">
           <PersonaDetail chatThread={props.chatThread} />
           <DocumentDetail chatDocuments={props.chatDocuments} />
