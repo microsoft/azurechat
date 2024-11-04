@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: AI_NAME,
+  openGraph: {
+    images: ['/ai-icon.jpg', '/ai-icon.jpg'],
+  },
   description: AI_NAME,
 };
 
