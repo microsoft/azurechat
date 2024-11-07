@@ -34,11 +34,9 @@ export const ChatHeader: FC<Props> = (props) => {
               ></Image>
             </div>
             <div className="row-span-2">
-               <span className="text-sm text-muted-foreground flex items-center">
-                {/* <VenetianMask size={18} /> */}
-                {persona} (AI for Comau)
-              </span>
-              <span className="flex items-center">{props.chatThread.name}</span>
+              <span style="font-weight: bold; font-size: 20px;">AIKP (AI for Comau)</span>
+              <span style="font-weight: bold; font-size: 10px;"> </span>
+              <span style="font-weight: bold; font-size: 10px;" className="flex items-center">Title chat: {props.chatThread.name}</span>
             </div>
           </div>
         </div>
