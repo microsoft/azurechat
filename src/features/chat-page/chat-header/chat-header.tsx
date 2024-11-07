@@ -29,16 +29,16 @@ export const ChatHeader: FC<Props> = (props) => {
               <Image
                 src="/ai-icon.png"
                 alt={props.chatThread.name}
-                width={50}
-                height={50}
+                width={100}
+                height={100}
               ></Image>
             </div>
             <div className="row-span-2">
-              <span className="flex items-center">{props.chatThread.name}</span>
-              <span className="text-sm text-muted-foreground flex items-center">
+               <span className="text-sm text-muted-foreground flex items-center">
                 {/* <VenetianMask size={18} /> */}
                 {persona} (AI for Comau)
               </span>
+              <span className="flex items-center">{props.chatThread.name}</span>
             </div>
           </div>
         </div>
@@ -46,7 +46,6 @@ export const ChatHeader: FC<Props> = (props) => {
        
 
         <div className="flex gap-2">
-          <PersonaDetail chatThread={props.chatThread} />
           <DocumentDetail chatDocuments={props.chatDocuments} />
           <ExtensionDetail
             disabled={props.chatDocuments.length !== 0}
