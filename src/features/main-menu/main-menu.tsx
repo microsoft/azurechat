@@ -35,8 +35,8 @@ export const MainMenu = async () => {
               <Home {...menuIconProps} />
               {/* <Image
                 src="/ai-icon.png"
-                width={45}
-                height={45}
+                width={70}
+                height={70}
                 quality={100}
                 alt="ai-icon"
               /> */}
