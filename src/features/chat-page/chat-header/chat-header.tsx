@@ -34,8 +34,9 @@ export const ChatHeader: FC<Props> = (props) => {
               ></Image>
             </div>
             <div className="row-span-2">
-              <span style="font-weight: bold; font-size: 10px;">AIKO (AI for Comau)</span>
-              <span style="font-weight: bold; font-size: 10px;" className="flex items-center">Title chat: {props.chatThread.name}</span>
+              <span style={{ fontWeight: 'bold', fontSize: '30px' }}>AIKO (AI for COMAU)</span>
+               {/* Riga vuota */}
+              <span className="flex items-center" style={{ fontSize: '15px', fontWeight: 'bold' }}> Title chat: <span style={{ fontWeight: 'normal' }}>{props.chatThread.name}</span>
             </div>
           </div>
         </div>
