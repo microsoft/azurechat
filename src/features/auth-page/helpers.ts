@@ -1,7 +1,8 @@
 import { createHash } from "crypto";
 import { getServerSession } from "next-auth";
-import { RedirectToPage } from "../common/navigation-helpers";
+import { RedirectToChatThread, RedirectToPage } from "../common/navigation-helpers";
 import { options } from "./auth-api";
+import { CreateChatThread } from "../chat-page/chat-services/chat-thread-service";
 
 export const userSession = async (): Promise<UserModel | null> => {
   const session = await getServerSession(options);
@@ -43,7 +44,11 @@ export const hashValue = (value: string): string => {
 export const redirectIfAuthenticated = async () => {
   const user = await userSession();
   if (user) {
-    RedirectToPage("chat");
+    // RedirectToPage("chat");
+    const response = await CreateChatThread();
+       if (response.status === "OK") {
+        RedirectToChatThread(response.response.id);
+      }
   }
 };
 

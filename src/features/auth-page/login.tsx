@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { useTheme } from "next-themes";
 
 interface LoginProps {
   isDevMode: boolean;
@@ -19,28 +20,30 @@ interface LoginProps {
 }
 
 export const LogIn: FC<LoginProps> = (props) => {
+  const { theme } = useTheme();
+  
   return (
-    <Card className="flex gap-2 flex-col min-w-[400px]">
-      <CardHeader className="gap-2">
-        <CardTitle className="text-2xl flex gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={"ai-icon.png"} />
+    <Card className="flex gap-2 flex-col min-h-[200px] min-w-[400px]">
+      <CardHeader className="gap-32">
+        <CardTitle className="text-2xl flex gap-2 items-center">
+          <Avatar className="h-36 w-30">
+            <AvatarImage src={theme === 'dark' ? "/Logo-COMAU-white.png" : "/ai-icon.png"} />
           </Avatar>
-          <span className="text-primary">{AI_NAME}</span>
+          <span className={theme === 'dark' ? "text-white" : "text-blue"}>AIKO - AI for Comau</span>
         </CardTitle>
-        <CardDescription>
-           AI for Comau
-        </CardDescription>
+        {/* <CardDescription className="text-center text-sm">
+        Welcome to Comau Generalist AI platform
+        </CardDescription> */}
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid gap-32 align-bottom">
         {props.githubEnabled && (
-          <Button onClick={() => signIn("github")}>GitHub</Button>
+          <Button onClick={() => signIn("github")} className="bg-blue-500 hover:bg-blue-600">GitHub</Button>
         )}
         {props.entraIdEnabled && (
-          <Button onClick={() => signIn("azure-ad")}>Login</Button>
+          <Button onClick={() => signIn("azure-ad")} className="bg-blue-500 hover:bg-blue-600">Login</Button>
         )}
         {props.isDevMode && (
-          <Button onClick={() => signIn("localdev")}>
+          <Button onClick={() => signIn("localdev")} className="bg-blue-400 hover:bg-blue-600">
             Basic Auth (DEV ONLY)
           </Button>
         )}

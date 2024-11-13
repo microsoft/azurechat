@@ -8,6 +8,8 @@ import { ExtensionDetail } from "./extension-detail";
 import { PersonaDetail } from "./persona-detail";
 import Image from "next/image";
 import Image from "next/image";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 interface Props {
   chatThread: ChatThreadModel;
@@ -16,6 +18,7 @@ interface Props {
 }
 
 export const ChatHeader: FC<Props> = (props) => {
+  const { theme } = useTheme();
   const persona =
     props.chatThread.personaMessageTitle === "" ||
     props.chatThread.personaMessageTitle === undefined
@@ -28,7 +31,7 @@ export const ChatHeader: FC<Props> = (props) => {
           <div className="grid grid-rows-2 grid-flow-col gap-2 items-center">
             <div className="row-span-2">
               <Image
-                src="/ai-icon.png"
+                src={theme === 'dark' ? "/Logo-COMAU-white.png" : "/ai-icon.png"}
                 alt={props.chatThread.name}
                 width={100}
                 height={100}
@@ -57,3 +60,5 @@ export const ChatHeader: FC<Props> = (props) => {
     </div>
   );
 };
+
+
