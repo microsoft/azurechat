@@ -7,8 +7,6 @@ import { DocumentDetail } from "./document-detail";
 import { ExtensionDetail } from "./extension-detail";
 import { PersonaDetail } from "./persona-detail";
 import Image from "next/image";
-import Image from "next/image";
-import Image from "next/image";
 import { useTheme } from "next-themes";
 
 interface Props {
@@ -33,14 +31,16 @@ export const ChatHeader: FC<Props> = (props) => {
               <Image
                 src={theme === 'dark' ? "/Logo-COMAU-white.png" : "/ai-icon.png"}
                 alt={props.chatThread.name}
-                width={100}
-                height={100}
-              ></Image>
+                width={60}
+                height={60}
+              />
             </div>
-            <div className="row-span-2">
-              <span style={{ fontWeight: 'bold', fontSize: '30px' }}>AIKO (AI for COMAU)</span>
-               {/* Riga vuota */}
-              <span className="flex items-center" style={{ fontSize: '15px', fontWeight: 'bold' }}> Title chat: <span style={{ fontWeight: 'normal' }}>{props.chatThread.name}</span>
+            <div className="row-span-3">
+              <span className="flex items-center">{props.chatThread.name}</span>
+              <span className="text-sm text-muted-foreground flex items-center">
+                {/* <VenetianMask size={18} /> */}
+                {persona} (AI for Comau)
+              </span>
             </div>
           </div>
         </div>
@@ -48,6 +48,7 @@ export const ChatHeader: FC<Props> = (props) => {
        
 
         <div className="flex gap-2">
+          {/* <PersonaDetail chatThread={props.chatThread} /> */}
           <DocumentDetail chatDocuments={props.chatDocuments} />
           <ExtensionDetail
             disabled={props.chatDocuments.length !== 0}
