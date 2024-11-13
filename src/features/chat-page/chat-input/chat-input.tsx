@@ -49,6 +49,7 @@ export const ChatInput = () => {
   };
 
   return (
+  
     <ChatInputForm
       ref={formRef}
       onSubmit={(e) => {
@@ -57,6 +58,7 @@ export const ChatInput = () => {
       }}
       status={uploadButtonLabel}
     >
+     
       <ChatTextInput
         onBlur={(e) => {
           if (e.currentTarget.value.replace(/\s/g, "").length === 0) {

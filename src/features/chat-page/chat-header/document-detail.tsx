@@ -19,8 +19,8 @@ export const DocumentDetail: FC<Props> = (props) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant={"outline"} className="gap-2" aria-label="Current Chat Documents Menu">
-          <File size={16} /> {props.chatDocuments.length}
+        <Button variant={"outline"} className="gap-2" size="comau" aria-label="Current Chat Documents Menu">
+          <File size={24} /> {props.chatDocuments.length}
         </Button>
       </SheetTrigger>
       <SheetContent className="min-w-[480px] sm:w-[540px] flex flex-col">
