@@ -31,16 +31,18 @@ export const ChatHeader: FC<Props> = (props) => {
               <Image
                 src={theme === 'dark' ? "/Logo-COMAU-white.png" : "/ai-icon.png"}
                 alt={props.chatThread.name}
-                width={60}
-                height={60}
+                width={100}
+                height={100}
               />
             </div>
             <div className="row-span-3">
-              <span className="flex items-center">{props.chatThread.name}</span>
-              <span className="text-sm text-muted-foreground flex items-center">
+                {/* Riga vuota */} <div style={{ height: '20px' }}></div>
+                <span style={{ fontWeight: 'bold', fontSize: '30px' }}>
                 {/* <VenetianMask size={18} /> */}
                 {persona} (AI for Comau)
               </span>
+              <div style={{ height: '20px' }}></div>
+              <span className="flex flex-col" style={{ fontSize: '15px'}}>Current Chat:  {props.chatThread.name}</span>
             </div>
           </div>
         </div>
@@ -48,14 +50,15 @@ export const ChatHeader: FC<Props> = (props) => {
        
 
         <div className="flex gap-2">
-          {/* <PersonaDetail chatThread={props.chatThread} /> */}
-          <DocumentDetail chatDocuments={props.chatDocuments} />
+          {/* <PersonaDetail chatThread={props.chatThread} /> 
+          
           <ExtensionDetail
             disabled={props.chatDocuments.length !== 0}
             extensions={props.extensions}
             installedExtensionIds={props.chatThread.extension}
             chatThreadId={props.chatThread.id}
-          />
+          />*/}
+          <DocumentDetail chatDocuments={props.chatDocuments} />
         </div>
       </div>
     </div>

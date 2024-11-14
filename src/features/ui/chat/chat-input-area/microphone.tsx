@@ -40,7 +40,7 @@ export const Microphone = (props: {
           }
           aria-label="Microphone for speech input"
         >
-          <Mic size={16} />
+          <Mic size={26} />
         </Button>
       )}
     </>

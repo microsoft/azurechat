@@ -26,7 +26,7 @@ export const AttachFile = (props: {
   return (
     <>
       <Button size="icon" variant={"ghost"} onClick={handleClick} type="button" aria-label="Attach file to chat">
-        <Paperclip size={16} />
+        <Paperclip size={26} />
       </Button>
       {/* This file input is hidden, and opens when the Button is clicked */}
       <input
