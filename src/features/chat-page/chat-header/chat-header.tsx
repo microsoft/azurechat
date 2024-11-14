@@ -39,7 +39,7 @@ export const ChatHeader: FC<Props> = (props) => {
                 {/* Riga vuota  <div style={{ height: '5px' }}></div>*/}
                 <span style={{ fontWeight: 'bold', fontSize: '30px' }}>
                 {/* <VenetianMask size={18} /> */}
-                {persona} (AI for Comau)
+                {persona} - AI for Comau
               </span>
               <div style={{ height: '10px' }}></div>
               <span className="flex flex-col" style={{ fontSize: '15px'}}>Current Chat:  {props.chatThread.name}</span>

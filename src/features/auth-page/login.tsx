@@ -29,7 +29,7 @@ export const LogIn: FC<LoginProps> = (props) => {
           <Avatar className="h-36 w-30">
             <AvatarImage src={theme === 'dark' ? "/Logo-COMAU-white.png" : "/ai-icon.png"} />
           </Avatar>
-          <span className={theme === 'dark' ? "text-white" : "text-blue"}>AIKO - AI for Comau</span>
+          <span className={theme === 'dark' ? "text-white" : "text-blue"}>AICO - AI for Comau</span>
         </CardTitle>
         {/* <CardDescription className="text-center text-sm">
         Welcome to Comau Generalist AI platform

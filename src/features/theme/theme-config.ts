@@ -1,5 +1,5 @@
-export const AI_NAME = "AIKO";
-export const AI_DESCRIPTION = "Hey, I'm AIKO (Artificial Intelligence for Comau), your super assistant.";
+export const AI_NAME = "AICO";
+export const AI_DESCRIPTION = "Hey, I'm AICO (Artificial Intelligence for Comau), your super assistant.";
 export const CHAT_DEFAULT_PERSONA = AI_NAME;
 
 export const CHAT_DEFAULT_SYSTEM_PROMPT = `Your name is ${AI_NAME}. You are a friendly AI assistant. You must always return in markdown format.
