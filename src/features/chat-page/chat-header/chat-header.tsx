@@ -26,22 +26,22 @@ export const ChatHeader: FC<Props> = (props) => {
     <div className="bg-background border-b flex items-center py-2">
       <div className="container max-w-3xl flex justify-between items-center">
         <div className="flex flex-col">
-          <div className="grid grid-rows-2 grid-flow-col gap-2 items-center">
+          <div className="grid grid-rows-2 grid-flow-col gap-5 items-center">
             <div className="row-span-2">
               <Image
-                src={theme === 'dark' ? "/Logo-COMAU-white.png" : "/ai-icon.png"}
+                src={theme === 'dark' ? "/aico-white.png" : "/aico-blue.png"}
                 alt={props.chatThread.name}
                 width={100}
                 height={100}
               />
             </div>
             <div className="row-span-3">
-                {/* Riga vuota */} <div style={{ height: '20px' }}></div>
+                {/* Riga vuota  <div style={{ height: '5px' }}></div>*/}
                 <span style={{ fontWeight: 'bold', fontSize: '30px' }}>
                 {/* <VenetianMask size={18} /> */}
                 {persona} (AI for Comau)
               </span>
-              <div style={{ height: '20px' }}></div>
+              <div style={{ height: '10px' }}></div>
               <span className="flex flex-col" style={{ fontSize: '15px'}}>Current Chat:  {props.chatThread.name}</span>
             </div>
           </div>
