@@ -25,14 +25,14 @@ export const ThemeToggle = () => {
         >
           <Moon size={18} />
         </TabsTrigger>
-        <TabsTrigger
+        {/*<TabsTrigger
           value="system"
           onClick={() => setTheme("system")}
           className="flex-1"
           title="System theme"
         >
           <Laptop2 size={18} />
-        </TabsTrigger>
+        </TabsTrigger>*/}
       </TabsList>
     </Tabs>
   );

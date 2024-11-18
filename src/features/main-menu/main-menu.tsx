@@ -23,23 +23,26 @@ import { MenuLink } from "./menu-link";
 import { UserProfile } from "./user-profile";
 import Image from "next/image";
 
+
+
 export const MainMenu = async () => {
   const user = await getCurrentUser();
-
+  
   return (
     <Menu>
       <MenuBar>
         <MenuItemContainer>
           <MenuItem tooltip="Home" asChild>
-            <MenuLink href="/chat" ariaLabel="Go to the Home page">
+            <MenuLink href="https://www.comau.com/en/" ariaLabel="Go to the Home page">
               <Home {...menuIconProps} />
-              {/* <Image
+              
+              <Image 
                 src="/ai-icon.png"
-                width={45}
-                height={45}
+                width={50}
+                height={50}
                 quality={100}
                 alt="ai-icon"
-              /> */}
+              />
             </MenuLink>
           </MenuItem>
           <MenuTrayToggle />
