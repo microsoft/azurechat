@@ -1,5 +1,6 @@
 // Disclaimer Component in TypeScript
-import React from 'react';
+import React, { ReactNode } from 'react';
+
 
 interface DisclaimerProps {
   text: ReactNode;
