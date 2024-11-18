@@ -2,7 +2,7 @@
 import React from 'react';
 
 interface DisclaimerProps {
-  text: string;
+  text: ReactNode;
 }
 
 const Disclaimer: React.FC<DisclaimerProps> = ({ text }) => {
