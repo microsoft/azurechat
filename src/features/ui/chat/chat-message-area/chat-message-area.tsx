@@ -15,6 +15,7 @@ export const ChatMessageArea = (props: {
   profilePicture?: string | null;
   profileName?: string;
   role: "function" | "user" | "assistant" | "system" | "tool";
+  theme?: string;
   onCopy: () => void;
 }) => {
   const [isIconChecked, setIsIconChecked] = useState(false);
@@ -74,10 +75,11 @@ export const ChatMessageArea = (props: {
           {profile}
           <div
             className={cn(
-              "text-primary capitalize items-center flex",
+              "text-primary capitalize items-center flex text-muted-foreground",
               props.role === "function" || props.role === "tool"
                 ? "text-muted-foreground text-sm"
-                : ""
+                : "",
+              props.theme === "dark" ? "text-white" : "text-black"
             )}
           >
             {props.profileName}

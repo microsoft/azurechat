@@ -25,21 +25,22 @@ import Image from "next/image";
 
 
 
+
 export const MainMenu = async () => {
   const user = await getCurrentUser();
+ 
   
   return (
     <Menu>
       <MenuBar>
         <MenuItemContainer>
-          <MenuItem tooltip="Home" asChild>
-            <MenuLink href="https://www.comau.com/en/" ariaLabel="Go to the Home page">
-              <Home {...menuIconProps} />
-              
+          <MenuItem tooltip="Corporate" asChild>
+            <MenuLink href="https://www.comau.com/en/" ariaLabel="Go to the Corporate Site">
+              <Home/>
               <Image 
                 src="/ai-icon.png"
-                width={50}
-                height={50}
+                width={80}
+                height={80}
                 quality={100}
                 alt="ai-icon"
               />

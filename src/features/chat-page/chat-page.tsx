@@ -19,6 +19,7 @@ import {
 import MessageContent from "./message-content";
 import Disclaimer from "../ui/chat/disclaimer";
 import { AlignCenter } from "lucide-react";
+import { useTheme } from "next-themes";
 
 interface ChatPageProps {
   messages: Array<ChatMessageModel>;
@@ -29,6 +30,7 @@ interface ChatPageProps {
 
 export const ChatPage: FC<ChatPageProps> = (props) => {
   const { data: session } = useSession();
+  const { theme } = useTheme();
 
   useEffect(() => {
     chatStore.initChatSession({
@@ -64,9 +66,10 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
                 }}
                 profilePicture={
                   message.role === "assistant"
-                    ? "/aiko.png"
+                    ? theme === 'dark' ? "/logo-COMAU-white.png" : "/logo-COMAU.png"
                     : session?.user?.image
                 }
+                theme={theme}
               >
                 <MessageContent message={message} />
               </ChatMessageArea>
