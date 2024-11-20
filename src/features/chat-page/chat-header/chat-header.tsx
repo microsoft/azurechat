@@ -36,7 +36,10 @@ export const ChatHeader: FC<Props> = (props) => {
               />
             </div>
             <div className="row-span-3">
-                {/* Riga vuota */} <div style={{ height: '20px' }}></div>
+                 <span style={{ fontWeight: 'bold', fontSize: '30px' }}>
+                 {/* <VenetianMask size={18} /> */}
+                {persona} (AI for Comau)
+              </span>
               <div style={{ height: '10px' }}></div>
               <span className="flex flex-col" style={{ fontSize: '15px'}}>Current Chat:  {props.chatThread.name}</span>
             </div>
