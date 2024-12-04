@@ -32,7 +32,7 @@ function initializeTelemetry(instrumentationKey: string, session: SessionContext
       enableAutoRouteTracking: true,
       disableAjaxTracking: true,
       disableFetchTracking: true,
-      autoTrackPageVisitTime: true,
+      autoTrackPageVisitTime: false,
       enableCorsCorrelation: true,
       enableRequestHeaderTracking: true,
       enableResponseHeaderTracking: true,
