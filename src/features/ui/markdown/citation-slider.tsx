@@ -6,8 +6,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/ui/sheet";
-import { FC } from "react";
-import { useFormState } from "react-dom";
+import { FC, useActionState } from "react";
 import { ScrollArea } from "../scroll-area";
 import { useMarkdownContext } from "./markdown-context";
 
@@ -22,7 +21,7 @@ export const CitationSlider: FC<SliderProps> = (props) => {
 
   if (!onCitationClick) throw new Error("onCitationClick is null");
 
-  const [node, formAction] = useFormState(onCitationClick, null);
+  const [node, formAction] = useActionState(onCitationClick, null);
 
   return (
     <form>
