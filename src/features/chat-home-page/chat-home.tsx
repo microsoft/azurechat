@@ -42,14 +42,12 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
               <h2 className="text-2xl font-bold mb-3">Articles</h2>
               <div className="space-y-4">
                 {props.news && props.news.length > 0 ? (
-                  
                   props.news.map((newsArticle) => {
-                    return (NewsArticle({newsArticle}))
-                  }
-                  )
+                  return <NewsArticle newsArticle={newsArticle} key={newsArticle.id} />;
+                  })
                 ) : (
                   <p className="text-muted-foreground max-w-xl">
-                    No current news
+                  No current news
                   </p>
                 )}
               </div>
