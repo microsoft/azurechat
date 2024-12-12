@@ -37,7 +37,7 @@ export const AddNewPersona: FC<Props> = (props) => {
 
   const [formState, formAction] = useActionState(
     addOrUpdatePersona,
-    initialState
+    initialState,
   );
 
   const { data } = useSession();
@@ -55,8 +55,6 @@ export const AddNewPersona: FC<Props> = (props) => {
     }
   };
 
-  const store = personaStore;
-
   return (
     <Sheet
       open={isOpened}
@@ -67,7 +65,6 @@ export const AddNewPersona: FC<Props> = (props) => {
       <SheetContent className="min-w-[480px] sm:w-[540px] flex flex-col">
         <SheetHeader>
           <SheetTitle>Persona</SheetTitle>
-
         </SheetHeader>
         <form action={formAction} className="flex-1 flex flex-col">
           <ScrollArea

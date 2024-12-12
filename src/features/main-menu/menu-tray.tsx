@@ -9,6 +9,7 @@ export const MenuTray = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
   const { isMenuOpen } = useMenuState();
+
   return (
     <div
       ref={ref}

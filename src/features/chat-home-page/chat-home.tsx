@@ -64,6 +64,7 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                       persona={persona}
                       key={persona.id}
                       showContextMenu={false}
+                      showActionMenu={false}
                     />
                   );
                 })}

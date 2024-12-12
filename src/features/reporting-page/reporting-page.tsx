@@ -52,7 +52,7 @@ async function ReportingContent(props: ChatReportingProps) {
   const chatThreads = chatHistoryResponse.response;
   const hasMoreResults = chatThreads.length === SEARCH_PAGE_SIZE;
   return (
-    <div className="container max-w-4xl py-3">
+    <div className="container max-w-4xl py-8">
       <Table>
         <TableHeader>
           <TableRow>
