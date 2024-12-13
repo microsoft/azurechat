@@ -7,8 +7,8 @@ import {
   SheetTitle,
 } from "@/ui/sheet";
 import { useSession } from "next-auth/react";
-import { FC } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { FC, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { ServerActionResponse } from "../common/server-action-response";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -26,7 +26,7 @@ export const AddPromptSlider: FC<SliderProps> = (props) => {
 
   const { isOpened, prompt } = usePromptState();
 
-  const [formState, formAction] = useFormState(addOrUpdatePrompt, initialState);
+  const [formState, formAction] = useActionState(addOrUpdatePrompt, initialState);
 
   const { data } = useSession();
 

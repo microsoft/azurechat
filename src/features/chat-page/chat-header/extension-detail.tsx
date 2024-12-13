@@ -46,7 +46,8 @@ export const ExtensionDetail: FC<Props> = (props) => {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant={"outline"} className="gap-2" disabled={props.disabled} aria-label="Current Chat Extensions Menu">
-          <PocketKnife size={16} /> {installedCount} ({totalCount})
+          <PocketKnife size={16} /> 
+          {installedCount > 0 ? `Installed ${installedCount}` : `Add Extensions (Available: ${totalCount})`}
         </Button>
       </SheetTrigger>
       <SheetContent className="min-w-[480px] sm:w-[540px] flex flex-col">

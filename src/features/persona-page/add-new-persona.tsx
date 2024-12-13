@@ -1,8 +1,8 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { FC } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { FC, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { ServerActionResponse } from "../common/server-action-response";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -35,9 +35,9 @@ export const AddNewPersona: FC<Props> = (props) => {
 
   const { isOpened, persona } = usePersonaState();
 
-  const [formState, formAction] = useFormState(
+  const [formState, formAction] = useActionState(
     addOrUpdatePersona,
-    initialState
+    initialState,
   );
 
   const { data } = useSession();
@@ -55,8 +55,6 @@ export const AddNewPersona: FC<Props> = (props) => {
     }
   };
 
-  const store = personaStore;
-
   return (
     <Sheet
       open={isOpened}
@@ -67,7 +65,6 @@ export const AddNewPersona: FC<Props> = (props) => {
       <SheetContent className="min-w-[480px] sm:w-[540px] flex flex-col">
         <SheetHeader>
           <SheetTitle>Persona</SheetTitle>
-
         </SheetHeader>
         <form action={formAction} className="flex-1 flex flex-col">
           <ScrollArea

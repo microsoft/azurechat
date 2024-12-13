@@ -16,14 +16,14 @@ class PersonaState {
     isPublished: false,
     type: "PERSONA",
     userId: "",
-    extensionIds: []
+    extensionIds: [],
   };
 
   public isOpened: boolean = false;
   public errors: string[] = [];
   public persona: PersonaModel = { ...this.defaultModel };
 
-  public addExtension(id: string): void{
+  public addExtension(id: string): void {
     if (!this.persona.extensionIds) {
       this.persona.extensionIds = [];
     }
@@ -34,8 +34,10 @@ class PersonaState {
     if (!this.persona.extensionIds) {
       return;
     }
-    this.persona.extensionIds = this.persona.extensionIds.filter((e) => e !== id);
-  };
+    this.persona.extensionIds = this.persona.extensionIds.filter(
+      (e) => e !== id
+    );
+  }
 
   public updateOpened(value: boolean) {
     this.isOpened = value;
@@ -81,10 +83,12 @@ export const usePersonaState = () => {
 };
 
 export const addOrUpdatePersona = async (previous: any, formData: FormData) => {
-  personaStore.updateErrors([]);
-
   const model = FormDataToPersonaModel(formData);
-  model.extensionIds = personaStore.persona.extensionIds.map((e) => e);
+
+  if (personaStore.persona.extensionIds) {
+    model.extensionIds = personaStore.persona.extensionIds.map((e) => e);
+  }
+
   const response =
     model.id && model.id !== ""
       ? await UpsertPersona(model)
@@ -95,9 +99,8 @@ export const addOrUpdatePersona = async (previous: any, formData: FormData) => {
     RevalidateCache({
       page: "persona",
     });
-  } else {
-    personaStore.updateErrors(response.errors.map((e) => e.message));
   }
+
   return response;
 };
 

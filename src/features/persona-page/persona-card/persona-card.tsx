@@ -15,6 +15,7 @@ import { CopyToClipboardButton } from "./copy-to-clipboard-button";
 interface Props {
   persona: PersonaModel;
   showContextMenu: boolean;
+  showActionMenu: boolean;
 }
 
 export const PersonaCard: FC<Props> = (props) => {
@@ -25,7 +26,7 @@ export const PersonaCard: FC<Props> = (props) => {
     <Card key={persona.id} className="flex flex-col">
       <CardHeader className="flex flex-row">
         <CardTitle className="flex-1">{persona.name}</CardTitle>
-        {props.showContextMenu && (
+        {props.showActionMenu && (
           <div>
             <PersonaCardContextMenu persona={persona} />
           </div>
