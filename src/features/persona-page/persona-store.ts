@@ -89,8 +89,6 @@ export const addOrUpdatePersona = async (previous: any, formData: FormData) => {
     model.extensionIds = personaStore.persona.extensionIds.map((e) => e);
   }
 
-  console.log("model", model);
-
   const response =
     model.id && model.id !== ""
       ? await UpsertPersona(model)
