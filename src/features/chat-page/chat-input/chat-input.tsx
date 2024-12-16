@@ -6,7 +6,6 @@ import {
   onKeyUp,
   useChatInputDynamicHeight,
 } from "@/features/chat-page/chat-input/use-chat-input-dynamic-height";
-
 import { AttachFile } from "@/features/ui/chat/chat-input-area/attach-file";
 import {
   ChatInputActionArea,
@@ -48,6 +47,22 @@ export const ChatInput = () => {
     }
   };
 
+  const handlePaste = async (event: any) => {
+    const items = (event.clipboardData || event.nativeEvent.clipboardData)?.items;
+    const item = Array.from(items as DataTransferItem[]).find((i) => i.type.indexOf('image') !== -1);
+
+    if (item) {
+      const blob = (item as DataTransferItem).getAsFile();
+      if (blob) {
+        const formData = new FormData();
+        formData.append('file', blob);
+
+        // Trigger file upload
+        await fileStore.onFileChange({ formData, chatThreadId });
+      }
+    }
+  };
+
   return (
     (<ChatInputForm
       ref={formRef}
@@ -56,6 +71,7 @@ export const ChatInput = () => {
         chatStore.submitChat(e);
       }}
       status={uploadButtonLabel}
+      onPaste={handlePaste}
     >
       <ChatTextInput
         onBlur={(e) => {
