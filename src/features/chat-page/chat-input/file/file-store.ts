@@ -13,6 +13,7 @@ import {
 } from "../../chat-services/chat-document-service";
 import { chatStore } from "../../chat-store";
 
+const MAX_UPLOAD_DOCUMENT_SIZE: number = 25165824; // 3MB in bits
 class FileStore {
   public uploadButtonLabel: string = "";
 
@@ -27,10 +28,14 @@ class FileStore {
 
       formData.append("id", chatThreadId);
       const file: File | null = formData.get("file") as unknown as File;
+      
+      if(file.size > MAX_UPLOAD_DOCUMENT_SIZE){
+        showError("File size is too large. Please upload a file less than 3MB.");
+        return;
+      }
 
       this.uploadButtonLabel = "Processing document";
       const crackingResponse = await CrackDocument(formData);
-
       if (crackingResponse.status === "OK") {
         let index = 0;
 
