@@ -11,7 +11,7 @@ param location string
 
 // azure open ai -- regions currently support gpt-4o global-standard
 @description('Location for the OpenAI resource group')
-@allowed(['australiaeast', 'brazilsouth', 'canadaeast', 'eastus', 'eastus2', 'francecentral', 'germanywestcentral', 'japaneast', 'koreacentral', 'northcentralus', 'norwayeast', 'polandcentral', 'spaincentral', 'southafricanorth', 'southcentralus', 'southindia', 'swedencentral', 'switzerlandnorth', 'uksouth', 'westeurope', 'westus', 'westus3'])
+@allowed(['australiaeast', 'brazilsouth', 'canadaeast', 'eastus', 'eastus2', 'francecentral', 'germanywestcentral', 'japaneast', 'koreacentral', 'northcentralus', 'norwayeast', 'polandcentral', 'spaincentral', 'southafricanorth', 'southcentralus', 'southindia', 'swedencentral', 'switzerlandnorth', 'uksouth', 'westeurope', 'westus', 'westus3','usgovvirginia','usgovarizona'])
 @metadata({
   azd: {
     type: 'location'
@@ -31,14 +31,14 @@ param embeddingDeploymentCapacity int = 120
 param embeddingModelName string = 'text-embedding-ada-002'
 
 // DALL-E v3 only supported in limited regions for now
-@description('Location for the OpenAI DALL-E 3 instance resource group')
-@allowed(['swedencentral', 'eastus', 'australiaeast'])
-param dalleLocation string
+// @description('Location for the OpenAI DALL-E 3 instance resource group')
+// @allowed(['swedencentral', 'eastus', 'australiaeast'])
+// param dalleLocation string
 
-param dalleDeploymentCapacity int = 1
-param dalleDeploymentName string = 'dall-e-3'
-param dalleModelName string = 'dall-e-3'
-param dalleApiVersion string = '2023-12-01-preview'
+// param dalleDeploymentCapacity int = 1
+// param dalleDeploymentName string = 'dall-e-3'
+// param dalleModelName string = 'dall-e-3'
+// param dalleApiVersion string = '2023-12-01-preview'
 
 param formRecognizerSkuName string = 'S0'
 param searchServiceIndexName string = 'azure-chat'
@@ -77,11 +77,11 @@ module resources 'resources.bicep' = {
     embeddingDeploymentName: embeddingDeploymentName
     embeddingDeploymentCapacity: embeddingDeploymentCapacity
     embeddingModelName: embeddingModelName
-    dalleLocation: dalleLocation
-    dalleDeploymentCapacity: dalleDeploymentCapacity
-    dalleDeploymentName: dalleDeploymentName
-    dalleModelName: dalleModelName
-    dalleApiVersion: dalleApiVersion
+    // dalleLocation: dalleLocation
+    // dalleDeploymentCapacity: dalleDeploymentCapacity
+    // dalleDeploymentName: dalleDeploymentName
+    // dalleModelName: dalleModelName
+    // dalleApiVersion: dalleApiVersion
     formRecognizerSkuName: formRecognizerSkuName
     searchServiceIndexName: searchServiceIndexName
     searchServiceSkuName: searchServiceSkuName
