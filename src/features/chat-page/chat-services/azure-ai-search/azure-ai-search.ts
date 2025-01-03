@@ -15,6 +15,8 @@ import {
   SearchIndex,
 } from "@azure/search-documents";
 
+const debug = process.env.DEBUG === "true";
+
 export interface AzureSearchDocumentIndex {
   id: string;
   pageContent: string;
@@ -34,7 +36,7 @@ export const SimpleSearch = async (
   filter?: string
 ): Promise<ServerActionResponse<Array<DocumentSearchResponse>>> => {
   try {
-    console.log("Executing SimpleSearch with searchText:", searchText, "filter:", filter);
+    if (debug) console.log("Executing SimpleSearch with searchText:", searchText, "filter:", filter);
     const instance = AzureAISearchInstance<AzureSearchDocumentIndex>();
     const searchResults = await instance.search(searchText, { filter: filter });
 
@@ -46,7 +48,7 @@ export const SimpleSearch = async (
       });
     }
 
-    console.log("SimpleSearch results:", results);
+    if (debug) console.log("SimpleSearch results:", results);
     return {
       status: "OK",
       response: results,
@@ -70,14 +72,14 @@ export const SimilaritySearch = async (
   filter?: string
 ): Promise<ServerActionResponse<Array<DocumentSearchResponse>>> => {
   try {
-    console.log("Executing SimilaritySearch with searchText:", searchText, "k:", k, "filter:", filter);
+    if (debug) console.log("Executing SimilaritySearch with searchText:", searchText, "k:", k, "filter:", filter);
     const openai = OpenAIEmbeddingInstance();
     const embeddings = await openai.embeddings.create({
       input: searchText,
       model: "",
     });
 
-    console.log("Embeddings obtained:", embeddings);
+    if (debug) console.log("Embeddings obtained:", embeddings);
 
     const searchClient = AzureAISearchInstance<AzureSearchDocumentIndex>();
     const searchResults = await searchClient.search(searchText, {
@@ -103,7 +105,7 @@ export const SimilaritySearch = async (
       });
     }
 
-    console.log("SimilaritySearch results:", results);
+    if (debug) console.log("SimilaritySearch results:", results);
     return {
       status: "OK",
       response: results,
@@ -129,7 +131,7 @@ export const ExtensionSimilaritySearch = async (props: {
   indexName: string;
 }): Promise<ServerActionResponse<Array<DocumentSearchResponse>>> => {
   try {
-    console.log("Executing ExtensionSimilaritySearch with props:", props);
+    if (debug) console.log("Executing ExtensionSimilaritySearch with props:", props);
     const openai = OpenAIEmbeddingInstance();
     const { searchText, vectors, apiKey, searchName, indexName } = props;
 
@@ -138,7 +140,7 @@ export const ExtensionSimilaritySearch = async (props: {
       model: "",
     });
 
-    console.log("Embeddings obtained:", embeddings);
+    if (debug) console.log("Embeddings obtained:", embeddings);
 
     const endpointSuffix = process.env.AZURE_SEARCH_ENDPOINT_SUFFIX || "search.windows.net";
     const endpoint = `https://${searchName}.${endpointSuffix}`;
@@ -185,7 +187,7 @@ export const ExtensionSimilaritySearch = async (props: {
       });
     }
 
-    console.log("ExtensionSimilaritySearch results:", results);
+    if (debug) console.log("ExtensionSimilaritySearch results:", results);
     return {
       status: "OK",
       response: results,
@@ -209,7 +211,7 @@ export const IndexDocuments = async (
   chatThreadId: string
 ): Promise<Array<ServerActionResponse<boolean>>> => {
   try {
-    console.log("Indexing documents with fileName:", fileName, "chatThreadId:", chatThreadId);
+    if (debug) console.log("Indexing documents with fileName:", fileName, "chatThreadId:", chatThreadId);
     const documentsToIndex: AzureSearchDocumentIndex[] = [];
 
     for (const doc of docs) {
@@ -225,7 +227,7 @@ export const IndexDocuments = async (
       documentsToIndex.push(docToAdd);
     }
 
-    console.log("Documents to index:", documentsToIndex);
+    if (debug) console.log("Documents to index:", documentsToIndex);
 
     const instance = AzureAISearchInstance();
     const embeddingsResponse = await EmbedDocuments(documentsToIndex);
@@ -254,7 +256,7 @@ export const IndexDocuments = async (
         }
       });
 
-      console.log("IndexDocuments response:", response);
+      if (debug) console.log("IndexDocuments response:", response);
       return response;
     }
 
@@ -278,7 +280,7 @@ export const DeleteDocuments = async (
   chatThreadId: string
 ): Promise<Array<ServerActionResponse<boolean>>> => {
   try {
-    console.log("Deleting documents for chatThreadId:", chatThreadId);
+    if (debug) console.log("Deleting documents for chatThreadId:", chatThreadId);
     const documentsInChatResponse = await SimpleSearch(
       undefined,
       `chatThreadId eq '${chatThreadId}'`
@@ -309,7 +311,7 @@ export const DeleteDocuments = async (
         }
       });
 
-      console.log("DeleteDocuments response:", response);
+      if (debug) console.log("DeleteDocuments response:", response);
       return response;
     }
 
@@ -333,7 +335,7 @@ export const EmbedDocuments = async (
   documents: Array<AzureSearchDocumentIndex>
 ): Promise<ServerActionResponse<Array<AzureSearchDocumentIndex>>> => {
   try {
-    console.log("Embedding documents:", documents.map((d) => d.id));
+    if (debug) console.log("Embedding documents:", documents.map((d) => d.id));
     const openai = OpenAIEmbeddingInstance();
     const contentsToEmbed = documents.map((d) => d.pageContent);
 
@@ -342,13 +344,13 @@ export const EmbedDocuments = async (
       model: process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
     });
 
-    console.log("Embeddings received:", embeddings);
+    if (debug) console.log("Embeddings received:", embeddings);
 
     embeddings.data.forEach((embedding, index) => {
       documents[index].embedding = embedding.embedding;
     });
 
-    console.log("Documents after embedding:", documents);
+    if (debug) console.log("Documents after embedding:", documents);
     return {
       status: "OK",
       response: documents,
@@ -370,11 +372,10 @@ export const EnsureIndexIsCreated = async (): Promise<
   ServerActionResponse<SearchIndex>
 > => {
   try {
-    console.log("Ensuring index is created");
-    console.log(process.env.AZURE_SEARCH_INDEX_NAME);
+    console.log("Ensuring index is created: ", process.env.AZURE_SEARCH_INDEX_NAME);
     const client = AzureAISearchIndexClientInstance();
     const result = await client.getIndex(process.env.AZURE_SEARCH_INDEX_NAME);
-    console.log("Index  exists:", result);
+    console.log("Index exists: ", result);
     return {
       status: "OK",
       response: result,

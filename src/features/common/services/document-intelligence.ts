@@ -7,6 +7,8 @@ import { DefaultAzureCredential } from "@azure/identity";
 const USE_MANAGED_IDENTITIES = process.env.USE_MANAGED_IDENTITIES === "true";
 console.log("Using Managed Identities:", USE_MANAGED_IDENTITIES);
 
+const debug = process.env.DEBUG === "true";
+
 export const DocumentIntelligenceInstance = () => {
   const endpoint = process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT;
   console.log("Document Intelligence Endpoint:", endpoint);
@@ -30,7 +32,7 @@ export const DocumentIntelligenceInstance = () => {
   console.log("Credential obtained using", USE_MANAGED_IDENTITIES ? "Managed Identities" : "API Key");
 
   const client = new DocumentAnalysisClient(endpoint, credential);
-  console.log("Document Analysis Client created:", client);
+  if (debug) console.log("Document Analysis Client created:", client);
 
   return client;
 };

@@ -16,22 +16,24 @@ const MAX_UPLOAD_DOCUMENT_SIZE: number = 20000000;
 const CHUNK_SIZE = 2300;
 const CHUNK_OVERLAP = CHUNK_SIZE * 0.25;
 
+const debug = process.env.DEBUG === "true";
+
 export const CrackDocument = async (
   formData: FormData
 ): Promise<ServerActionResponse<string[]>> => {
   try {
-    console.log("CrackDocument: Ensuring index is created.");
+    if (debug) console.log("CrackDocument: Ensuring index is created.");
     const response = await EnsureIndexIsCreated();
     if (response.status === "OK") {
-      console.log("CrackDocument: Index is created, loading file.");
+      if (debug) console.log("CrackDocument: Index is created, loading file.");
       const fileResponse = await LoadFile(formData);
       if (fileResponse.status === "OK") {
-        console.log("CrackDocument: File loaded successfully, splitting documents.");
+        if (debug) console.log("CrackDocument: File loaded successfully, splitting documents.");
         const splitDocuments = await ChunkDocumentWithOverlap(
           fileResponse.response.join("\n")
         );
 
-        console.log("CrackDocument: Documents split successfully.");
+        if (debug) console.log("CrackDocument: Documents split successfully.");
         return {
           status: "OK",
           response: splitDocuments,
@@ -61,7 +63,7 @@ const LoadFile = async (
   formData: FormData
 ): Promise<ServerActionResponse<string[]>> => {
   try {
-    console.log("LoadFile: Loading file from form data.");
+    if (debug) console.log("LoadFile: Loading file from form data.");
     const file: File | null = formData.get("file") as unknown as File;
 
     const fileSize = process.env.MAX_UPLOAD_DOCUMENT_SIZE
@@ -69,12 +71,12 @@ const LoadFile = async (
       : MAX_UPLOAD_DOCUMENT_SIZE;
 
     if (file && file.size < fileSize) {
-      console.log("LoadFile: File size is within the acceptable limit.");
+      if (debug) console.log("LoadFile: File size is within the acceptable limit.");
       const client = DocumentIntelligenceInstance();
 
       const blob = new Blob([file], { type: file.type });
 
-      console.log("LoadFile: Beginning document analysis.");
+      if (debug) console.log("LoadFile: Beginning document analysis.");
       const poller = await client.beginAnalyzeDocument(
         "prebuilt-read",
         await blob.arrayBuffer()
@@ -87,7 +89,7 @@ const LoadFile = async (
         for (const paragraph of paragraphs) {
           docs.push(paragraph.content);
         }
-        console.log("LoadFile: Document analysis completed successfully.");
+        if (debug) console.log("LoadFile: Document analysis completed successfully.");
       }
 
       return {
@@ -122,7 +124,7 @@ export const FindAllChatDocuments = async (
   chatThreadID: string
 ): Promise<ServerActionResponse<ChatDocumentModel[]>> => {
   try {
-    console.log("FindAllChatDocuments: Searching documents for chatThreadID:", chatThreadID);
+    if (debug) console.log("FindAllChatDocuments: Searching documents for chatThreadID:", chatThreadID);
     const querySpec: SqlQuerySpec = {
       query:
         "SELECT * FROM root r WHERE r.type=@type AND r.chatThreadId = @threadId AND r.isDeleted=@isDeleted",
@@ -147,7 +149,7 @@ export const FindAllChatDocuments = async (
       .fetchAll();
 
     if (resources) {
-      console.log("FindAllChatDocuments: Documents found.");
+      if (debug) console.log("FindAllChatDocuments: Documents found.");
       return {
         status: "OK",
         response: resources,
@@ -181,7 +183,7 @@ export const CreateChatDocument = async (
   chatThreadID: string
 ): Promise<ServerActionResponse<ChatDocumentModel>> => {
   try {
-    console.log("CreateChatDocument: Creating document with fileName:", fileName, "chatThreadID:", chatThreadID);
+    if (debug) console.log("CreateChatDocument: Creating document with fileName:", fileName, "chatThreadID:", chatThreadID);
     const modelToSave: ChatDocumentModel = {
       chatThreadId: chatThreadID,
       id: uniqueId(),
@@ -199,7 +201,7 @@ export const CreateChatDocument = async (
     });
 
     if (resource) {
-      console.log("CreateChatDocument: Document created successfully.");
+      if (debug) console.log("CreateChatDocument: Document created successfully.");
       return {
         status: "OK",
         response: resource,
@@ -231,11 +233,11 @@ export const CreateChatDocument = async (
 export async function ChunkDocumentWithOverlap(
   document: string
 ): Promise<string[]> {
-  console.log("ChunkDocumentWithOverlap: Starting chunking process.");
+  if (debug) console.log("ChunkDocumentWithOverlap: Starting chunking process.");
   const chunks: string[] = [];
 
   if (document.length <= CHUNK_SIZE) {
-    console.log("ChunkDocumentWithOverlap: Document length is within single chunk size.");
+    if (debug) console.log("ChunkDocumentWithOverlap: Document length is within single chunk size.");
     chunks.push(document);
     return chunks;
   }
@@ -249,6 +251,6 @@ export async function ChunkDocumentWithOverlap(
     startIndex = endIndex - CHUNK_OVERLAP;
   }
 
-  console.log("ChunkDocumentWithOverlap: Chunking completed.", chunks);
+  if (debug) console.log("ChunkDocumentWithOverlap: Chunking completed.", chunks);
   return chunks;
 }

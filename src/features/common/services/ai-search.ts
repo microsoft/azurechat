@@ -12,6 +12,7 @@ const apiKey = process.env.AZURE_SEARCH_API_KEY;
 const searchName = process.env.AZURE_SEARCH_NAME;
 const indexName = process.env.AZURE_SEARCH_INDEX_NAME;
 const endpoint = `https://${searchName}.${endpointSuffix}`;
+const debug = process.env.DEBUG === "true";
 
 console.log("Configuration parameters:", {
   USE_MANAGED_IDENTITIES,
@@ -27,7 +28,7 @@ export const GetCredential = () => {
     ? new DefaultAzureCredential()
     : new AzureKeyCredential(apiKey);
   
-  console.log("Credential obtained:", credential);
+  if (debug) console.log("Credential obtained:", credential);
   return credential;
 }
 
