@@ -42,8 +42,10 @@ Using Managed Identities is preferred for production deployments due to:
 To deploy the application to Azure App Service with Managed Identities, follow the standard deployment instructions available in the [Deploy to Azure - GitHub Actions](https://github.com/microsoft/azurechat) section of the repository. Ensure to:
 
 1. **Update the Parameter**:
-   - Set the parameter `disableLocalAuth` to `true` to use Managed Identities.
-1. **Remove  Parameter**:
+   - Set the parameter `disableLocalAuth` to `true` in `infra/main.bicep` (or `infra/main.json` for ARM deployment) to use Managed Identities.
+2. **Deploy as normal**:
+   - refer to the [README](../README.md)
+3. **Remove  Parameter**:
 After deployment remove the value in AZURE_OPENAI_API_KEY (if there is any) in the Environment Variables of the WebApp, the openai npm package requires this to be empty if using EntraID Authentication.
 
 
