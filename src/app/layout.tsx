@@ -4,6 +4,7 @@ import { Toaster } from "@/features/ui/toaster";
 import { cn } from "@/ui/lib";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ClientTracker from "./lib/clientTracker";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,7 +14,6 @@ export const metadata = {
 };
 
 export const dynamic = "force-dynamic";
-
 export default function RootLayout({
   children,
 }: {
@@ -26,10 +26,11 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
+        <ClientTracker />
           {children}
           <Toaster />
         </ThemeProvider>

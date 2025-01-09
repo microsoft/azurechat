@@ -17,6 +17,7 @@
     "@azure/storage-blob": "^12.17.0",
     "@codemirror/lang-javascript": "^6.2.1",
     "@markdoc/markdoc": "^0.4.0",
+    "@microsoft/applicationinsights-web": "^3.3.4",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-context-menu": "^2.1.5",
