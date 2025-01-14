@@ -2,13 +2,11 @@
 # This script adds a the required Cosmos DB Data Contributor role to the local user, 
 # so you can do local dev connecting to the deployed Azure resources.
 # It reads from the APP_URL from the AZD .env file 
-# -- otherwise you can set it yourself using -URL https://<appname>.azurewebsites.net
+# -- otherwise you can set it yourself using -APP_URL https://<appname>.azurewebsites.net
 
 param (
-    [string]$URL
+    [string]$APP_URL
 )
-
-Write-Host "URL parameter: $URL"
 
 Write-Host "Loading azd .env file from current environment"
 $output = azd env get-values
@@ -23,13 +21,14 @@ foreach ($line in $output) {
 }
 
 # take the parameter from command line if provided
-if ($URL) {
-  $appUri = $URL
+if ($APP_URL) {
+  Write-Host "`nUsing APP_URL from command line: $APP_URL"
+  $appUri = $APP_URL
 } else {
   # Check AZD env variables and figure out the cosmos account name and resource group
   if (-not $env:APP_URL) {
       Write-Host "APP_URL not found in AZD environment (.azure/). Please run `azd env set` first."
-      Write-Host "Alternatively, provide app URL using -URL https://<appname>.azurewebsites.net"
+      Write-Host "Alternatively, provide app URL using -APP_URL https://<appname>.azurewebsites.net"
       exit 1
   }
   $appUri = $env:APP_URL
@@ -43,7 +42,7 @@ $cosmosAccName = $appName -replace "webapp", "cosmos"
 $userId = az ad signed-in-user show --query id --output tsv
 
 
-Write-Host "`nApp Name: $appName"
+Write-Host "`nApp Host Name: $appName"
 Write-Host "Resource Group: $resGrp"
 Write-Host "CosmosDB Account: $cosmosAccName"
 Write-Host "`nReady to add 'Cosmos DB Built-in Data Contributor' role for local user Principal ID: $userId"
