@@ -13,6 +13,7 @@ import { CircleUserRound, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
+import { initAppInsights, flushTelemetry } from '../../app/lib/appInsights';
 
 export const UserProfile = () => {
   const { data: session } = useSession();
@@ -55,7 +56,7 @@ export const UserProfile = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="flex gap-2"
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={() => { flushTelemetry(); signOut({ callbackUrl: "/" });}}
         >
           <LogOut {...menuIconProps} size={18} />
           <span>Log out</span>
