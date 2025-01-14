@@ -14,6 +14,6 @@ class Menu {
 export const menuStore = proxy(new Menu());
 // Hook to use the menu state
 export const useMenuState = () => {
-  console.log(menuStore.isMenuOpen);
+  //console.log(menuStore.isMenuOpen);
   return useSnapshot(menuStore);
 };

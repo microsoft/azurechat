@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import { getServerSession } from "next-auth";
 import { RedirectToPage } from "../common/navigation-helpers";
 import { options } from "./auth-api";
+import { initAppInsights, setUserContext } from '../../app/lib/appInsights';
 
 export const userSession = async (): Promise<UserModel | null> => {
   const session = await getServerSession(options);
@@ -43,6 +44,7 @@ export const hashValue = (value: string): string => {
 export const redirectIfAuthenticated = async () => {
   const user = await userSession();
   if (user) {
+    setUserContext(user.name, user.email);
     RedirectToPage("chat");
   }
 };
