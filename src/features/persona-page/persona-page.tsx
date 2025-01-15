@@ -5,7 +5,6 @@ import { PersonaCard } from "./persona-card/persona-card";
 import { PersonaHero } from "./persona-hero/persona-hero";
 import { PersonaModel } from "./persona-services/models";
 import { ExtensionModel } from "../extensions-page/extension-services/models";
-import { useSession } from "next-auth/react";
 import { userHashedId } from "../auth-page/helpers";
 
 interface ChatPersonaProps {

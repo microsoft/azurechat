@@ -20,8 +20,8 @@ export const UserProfile = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        {session?.user?.image ? (
-          <Avatar className="">
+        {session?.user.image ? (
+          <Avatar className="rounded-md">
             <AvatarImage
               src={session?.user?.image!}
               alt={session?.user?.name!}
@@ -40,14 +40,16 @@ export const UserProfile = () => {
             <p className="text-xs leading-none text-muted-foreground">
               {session?.user?.email}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {session?.user?.isAdmin ? "Admin" : ""}
-            </p>
+            {session?.user?.isAdmin ? (
+              <p className="text-xs leading-none text-muted-foreground">
+                Admin
+              </p>
+            ) : null}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-2">
             <p className="text-sm font-medium leading-none">Switch themes</p>
             <ThemeToggle />
           </div>

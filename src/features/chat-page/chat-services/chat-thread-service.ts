@@ -6,7 +6,6 @@ import {
   userHashedId,
   userSession,
 } from "@/features/auth-page/helpers";
-import { RedirectToChatThread } from "@/features/common/navigation-helpers";
 import { ServerActionResponse } from "@/features/common/server-action-response";
 import { uniqueId } from "@/features/common/util";
 import {
