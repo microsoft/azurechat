@@ -43,11 +43,16 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
               <div className="space-y-4">
                 {props.news && props.news.length > 0 ? (
                   props.news.map((newsArticle) => {
-                  return <NewsArticle newsArticle={newsArticle} key={newsArticle.id} />;
+                    return (
+                      <NewsArticle
+                        newsArticle={newsArticle}
+                        key={newsArticle.id}
+                      />
+                    );
                   })
                 ) : (
                   <p className="text-muted-foreground max-w-xl">
-                  No current news
+                    No current news
                   </p>
                 )}
               </div>
@@ -69,9 +74,11 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
                   );
                 })}
               </div>
-            ) :
-              <p className="text-muted-foreground max-w-xl">No personas created</p>
-            }
+            ) : (
+              <p className="text-muted-foreground max-w-xl">
+                No personas created
+              </p>
+            )}
           </div>
         </div>
         <AddExtension />
