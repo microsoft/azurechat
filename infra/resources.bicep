@@ -559,7 +559,7 @@ resource cosmosDbRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04
 }
 
 
-resource cosmosDbRoleAssignmentOpperator 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+resource cosmosDbRoleAssignmentOperator 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
   name: guid(cosmosDbAccount.id, cosmosDbOperatorRoleId, 'role-assignment-cosmosDb')
   scope: cosmosDbAccount
   properties: {
@@ -577,8 +577,7 @@ resource cognitiveServicesRoleAssignment 'Microsoft.Authorization/roleAssignment
   }
 }
 
-
-resource cognitivbeServicesOpenAIcONTRIBUTORRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
+resource cognitiveServicesOpenAIContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (disableLocalAuth) {
   name: guid(azureopenai.id, cognitiveServicesOpenAIContributorRoleId, 'role-assignment-cognitiveServices')
   scope: azureopenai
   properties: {
@@ -663,3 +662,15 @@ resource assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@20
 }
 
 output url string = 'https://${webApp.properties.defaultHostName}'
+output webapp_name string = webapp_name
+output openai_name string = openai_name
+output openai_dalle_name string = openai_dalle_name
+output cosmos_name string = cosmos_name
+output cosmos_endpoint string = cosmosDbAccount.properties.documentEndpoint
+output database_name string = databaseName
+output history_container_name string = historyContainerName
+output config_container_name string = configContainerName
+output search_name string = search_name
+output form_recognizer_name string = form_recognizer_name
+output storage_name string = storage_name
+output key_vault_name string = keyVaultName
