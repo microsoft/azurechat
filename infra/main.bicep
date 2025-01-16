@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+// Activates/Deactivates Authentication using keys. If true it will enforce RBAC using managed identities
+param disableLocalAuth bool = false
+
 @minLength(1)
 @maxLength(64)
 @description('Name of the the environment which is used to generate a short unique hash used in all resources.')
@@ -59,10 +62,6 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
   tags: tags
 }
-
-//Activates/Deactivates Authentication by key, if true it will enforce RBAC using managed identities
-param disableLocalAuth  bool = false
-
 
 module resources 'resources.bicep' = {
   name: 'all-resources'
