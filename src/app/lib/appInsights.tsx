@@ -33,7 +33,7 @@ export function initAppInsights(instrumentationKey: string) {
         exception: error,
         severityLevel,
       });
-    }
+    } 
   }
   
   export function setUserContext(userId: string, accountId?: string){
