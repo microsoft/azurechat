@@ -149,7 +149,7 @@ export const FindAllChatDocuments = async (
       .fetchAll();
 
     if (resources) {
-      if (debug) console.log("FindAllChatDocuments: Documents found.");
+      if (debug) console.log(`FindAllChatDocuments: ${resources.length} Documents found.`);
       return {
         status: "OK",
         response: resources,
