@@ -21,6 +21,9 @@ export const userSession = async (): Promise<UserModel | null> => {
 export const getCurrentUser = async (): Promise<UserModel> => {
   const user = await userSession();
   if (user) {
+    console.log(user.email);
+    console.log(user.name);
+    setUserContext(user.name, user.email);
     return user;
   }
   throw new Error("User not found");
@@ -44,6 +47,8 @@ export const hashValue = (value: string): string => {
 export const redirectIfAuthenticated = async () => {
   const user = await userSession();
   if (user) {
+    console.log(user.email);
+    console.log(user.name);
     setUserContext(user.name, user.email);
     RedirectToPage("chat");
   }
