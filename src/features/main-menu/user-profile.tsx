@@ -18,7 +18,7 @@ import { flushTelemetry, setUserContext, trackEvent } from '../../app/lib/appIns
 
 export const UserProfile = () => {
   const { data: session } = useSession();
-  console.log(session?.user.email);
+  //console.log(session?.user.email);
   setUserContext(session?.user?.email ?? '', session?.user?.email ?? '');
 
   return (
