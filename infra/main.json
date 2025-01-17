@@ -4,11 +4,15 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "3256939710395371274"
+      "version": "0.32.4.45862",
+      "templateHash": "5984410763975349559"
     }
   },
   "parameters": {
+    "disableLocalAuth": {
+      "type": "bool",
+      "defaultValue": false
+    },
     "name": {
       "type": "string",
       "minLength": 1,
@@ -145,10 +149,6 @@
     "resourceGroupName": {
       "type": "string",
       "defaultValue": ""
-    },
-    "disableLocalAuth": {
-      "type": "bool",
-      "defaultValue": false
     }
   },
   "variables": {
@@ -258,8 +258,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "10505282472173598922"
+              "version": "0.32.4.45862",
+              "templateHash": "1979473744682213387"
             }
           },
           "parameters": {
@@ -1138,6 +1138,54 @@
             "url": {
               "type": "string",
               "value": "[format('https://{0}', reference(resourceId('Microsoft.Web/sites', variables('webapp_name')), '2020-06-01').defaultHostName)]"
+            },
+            "webapp_name": {
+              "type": "string",
+              "value": "[variables('webapp_name')]"
+            },
+            "openai_name": {
+              "type": "string",
+              "value": "[variables('openai_name')]"
+            },
+            "openai_dalle_name": {
+              "type": "string",
+              "value": "[variables('openai_dalle_name')]"
+            },
+            "cosmos_name": {
+              "type": "string",
+              "value": "[variables('cosmos_name')]"
+            },
+            "cosmos_endpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmos_name')), '2023-04-15').documentEndpoint]"
+            },
+            "database_name": {
+              "type": "string",
+              "value": "[variables('databaseName')]"
+            },
+            "history_container_name": {
+              "type": "string",
+              "value": "[variables('historyContainerName')]"
+            },
+            "config_container_name": {
+              "type": "string",
+              "value": "[variables('configContainerName')]"
+            },
+            "search_name": {
+              "type": "string",
+              "value": "[variables('search_name')]"
+            },
+            "form_recognizer_name": {
+              "type": "string",
+              "value": "[variables('form_recognizer_name')]"
+            },
+            "storage_name": {
+              "type": "string",
+              "value": "[variables('storage_name')]"
+            },
+            "key_vault_name": {
+              "type": "string",
+              "value": "[variables('keyVaultName')]"
             }
           }
         }
@@ -1152,6 +1200,10 @@
       "type": "string",
       "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.url.value]"
     },
+    "AZURE_WEBAPP_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.webapp_name.value]"
+    },
     "AZURE_LOCATION": {
       "type": "string",
       "value": "[parameters('location')]"
@@ -1159,6 +1211,86 @@
     "AZURE_TENANT_ID": {
       "type": "string",
       "value": "[tenant().tenantId]"
+    },
+    "AZURE_RESOURCE_GROUP": {
+      "type": "string",
+      "value": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))]"
+    },
+    "AZURE_OPENAI_API_INSTANCE_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.openai_name.value]"
+    },
+    "AZURE_OPENAI_API_DEPLOYMENT_NAME": {
+      "type": "string",
+      "value": "[parameters('chatGptDeploymentName')]"
+    },
+    "AZURE_OPENAI_API_VERSION": {
+      "type": "string",
+      "value": "[parameters('openAIApiVersion')]"
+    },
+    "AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME": {
+      "type": "string",
+      "value": "[parameters('embeddingDeploymentName')]"
+    },
+    "AZURE_OPENAI_DALLE_API_INSTANCE_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.openai_dalle_name.value]"
+    },
+    "AZURE_OPENAI_DALLE_API_DEPLOYMENT_NAME": {
+      "type": "string",
+      "value": "[parameters('dalleDeploymentName')]"
+    },
+    "AZURE_OPENAI_DALLE_API_VERSION": {
+      "type": "string",
+      "value": "[parameters('dalleApiVersion')]"
+    },
+    "AZURE_COSMOSDB_ACCOUNT_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.cosmos_name.value]"
+    },
+    "AZURE_COSMOSDB_URI": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.cosmos_endpoint.value]"
+    },
+    "AZURE_COSMOSDB_DB_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.database_name.value]"
+    },
+    "AZURE_COSMOSDB_CONTAINER_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.history_container_name.value]"
+    },
+    "AZURE_COSMOSDB_CONFIG_CONTAINER_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.config_container_name.value]"
+    },
+    "AZURE_SEARCH_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.search_name.value]"
+    },
+    "AZURE_SEARCH_INDEX_NAME": {
+      "type": "string",
+      "value": "[parameters('searchServiceIndexName')]"
+    },
+    "AZURE_DOCUMENT_INTELLIGENCE_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.form_recognizer_name.value]"
+    },
+    "AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT": {
+      "type": "string",
+      "value": "[format('https://{0}.cognitiveservices.azure.com/', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.form_recognizer_name.value)]"
+    },
+    "AZURE_SPEECH_REGION": {
+      "type": "string",
+      "value": "[parameters('location')]"
+    },
+    "AZURE_STORAGE_ACCOUNT_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.storage_name.value]"
+    },
+    "AZURE_KEY_VAULT_NAME": {
+      "type": "string",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('rg-{0}', parameters('name')))), 'Microsoft.Resources/deployments', 'all-resources'), '2022-09-01').outputs.key_vault_name.value]"
     }
   }
 }
