@@ -13,11 +13,12 @@ import { CircleUserRound, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { ThemeToggle } from "./theme-toggle";
-import { flushTelemetry, setUserContext } from '../../app/lib/appInsights';
+import { flushTelemetry, setUserContext, trackEvent } from '../../app/lib/appInsights';
 
 
 export const UserProfile = () => {
   const { data: session } = useSession();
+  console.log(session?.user.email);
   setUserContext(session?.user?.email ?? '', session?.user?.email ?? '');
 
   return (
