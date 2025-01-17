@@ -2,11 +2,11 @@
 
 ### Introduction
 
-The Azure Chat Solution Accelerator powered by Azure OpenAI Service allows organizations to deploy a private chat tenant with enhanced security and control over their data. One of the new features is the support for Managed Identities, adding a layer of security by eliminating the need for managing service principals and secrets manually.
+The Azure Chat Solution Accelerator powered by Azure OpenAI Service allows organizations to deploy a private chat tenant with enhanced security and control over their data. One of the new features is the support for [Managed Identities](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview), adding a layer of security by eliminating the need for managing service principals and secrets manually, and leveraging Azure's built-in role-based access controls.
 
 ### Security Advantages of Managed Identities
 
-**Managed Identities** for Azure resources provide the following benefits:
+[**Managed Identities**](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) for Azure resources provide the following benefits:
 
 1. **Improved Security**:
     - **No Secret Management**: Eliminates the need to manually store and manage credentials or keys.
@@ -42,11 +42,16 @@ Using Managed Identities is preferred for production deployments due to:
 To deploy the application to Azure App Service with Managed Identities, follow the standard deployment instructions available in the [Deploy to Azure - GitHub Actions](https://github.com/microsoft/azurechat) section of the repository. Ensure to:
 
 1. **Update the Parameter**:
-   - Set the parameter `disableLocalAuth` to `true` in `infra/main.bicep` (or `infra/main.json` for ARM deployment) to use Managed Identities.
+    - Set the parameter `disableLocalAuth` to `true` in [`infra/main.bicep`](/infra/main.bicep) (or [`infra/main.json`](/infra/main.json) for ARM deployment) to use Managed Identities.
 2. **Deploy as normal**:
-   - refer to the [README](../README.md)
-3. **Remove  Parameter**:
-After deployment remove the value in AZURE_OPENAI_API_KEY (if there is any) in the Environment Variables of the WebApp, the openai npm package requires this to be empty if using EntraID Authentication.
+    - refer to the [README](../README.md)
+3. (optional) **Setup your local dev environment**: 
+    - Run this script to grant yourself RBAC permissions on the Azure resources so you can run AzureChat locally
+    - In Powershell:
+        ```
+        PS> .\scripts\appreg_setup.ps1
+        ```
+    - You can then [run locally](3-run-locally.md)
 
 
 ### Conclusion

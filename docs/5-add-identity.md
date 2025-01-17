@@ -49,6 +49,20 @@ We'll create two GitHub apps: one for testing locally and another for production
 
 ### 🟡 Development App Setup
 
+### Automated Approach 🆕
+You can use the helper script to create the App Registration and populate the keys automatically!
+Assuming you have the permissions for the manual approach (next section).
+1. In Powershell, run:
+   ```
+   PS> .\scripts\appreg_setup.ps1 -webappname <webappname> [-showsecret]
+   ```
+   - The `webappname` is the resource name of the Azure Web App resource, e.g. `myenv-webapp-e6g73wtcmam74`
+   - `-showsecret` will display the app secret at the end of the script (only if you need it)
+2. It might take a minute or two for the Web App to pickup the new config and restart
+3. Enjoy automation!
+
+### Manual Approach
+
 1. Navigate to [Azure AD Apps setup](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
 2. Create a [New Registration](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/CreateApplicationBlade/quickStartType~/null/isMSAApp~/false)
 3. Fill in the following details
