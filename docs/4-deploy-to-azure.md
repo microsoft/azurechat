@@ -21,7 +21,7 @@ The GitHub workflow requires a secret named `AZURE_CREDENTIALS` to authenticate 
 
 2. Copy the JSON output from the command.
 
-3. In the GitHub repository, navigate to Settings > Secrets > Actions and select New repository secret.
+3. In the GitHub repository, navigate to Settings > Secrets > Actions and select **New repository secret**.
 
 4. Enter `AZURE_CREDENTIALS` as the name and paste the contents of the JSON output as the value.
 
@@ -33,7 +33,7 @@ Under the same repository secrets add a new variable `AZURE_APP_SERVICE_NAME` to
 
 ### 3. Run GitHub Actions
 
-Once the secrets are configured, the GitHub Actions will be triggered for every code push to the repository. Alternatively, you can manually run the workflow by clicking on the "Run Workflow" button in the Actions tab in GitHub.
+Once the secrets are configured, the GitHub Actions will be triggered for every code push to the repository. Alternatively, you can manually run the workflow by clicking on the "Run Workflow" button in the Actions tab of your GitHub repository.
 
 ![Workflow screenshot](/docs/images/runworkflow.png)
 

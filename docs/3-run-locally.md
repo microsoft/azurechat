@@ -1,12 +1,12 @@
 # 👨🏻‍💻 Run Locally
 
-Clone this repository locally or fork to your Github account. Run all of the the steps below from the `src` directory.
+Clone this repository locally or fork to your GitHub account. Run all of the the steps below from the `src` directory.
 
 ## Prerequisites
 
-- **History Database**: If you didn't [provision the Azure resources](2-provision-azure-resources.md), you **must** at least deploy an instance of Cosmos DB in your Azure Subscription to store chat history.
+- **History Database**: If you didn't [provision the Azure resources](./4-deploy-to-azure.md), you **must** at least deploy an instance of Azure Cosmos DB in your Azure Subscription to store chat history.
 
-- **Identity Provider**: For local development, you have the option of using a username / password. If you prefer to use an Identity Provider, follow the [instructions](3-run-locally.md) to add one.
+- **Identity Provider**: For local development, you have the option of using a username / password to sign in. If you prefer to use an Identity Provider, follow the [instructions](./5-add-identity.md) to add one.
 
 ## Steps
 
@@ -16,9 +16,9 @@ Clone this repository locally or fork to your Github account. Run all of the the
 4. Start the app by running `npm run dev`
 5. Access the app on [http://localhost:3000](http://localhost:3000)
 
-You should now be prompted to login with your chosen OAuth provider.
+You should now be prompted to log in with your chosen authentication method (per the pre-requisite configuration).
 
 > **NOTE**  
-> If using Basic Auth (DEV ONLY) any username you enter will create a new user id (hash of username@localhost). You can use this to simulate multiple users. Once successfully logged in, you can start creating new conversations.
+> If using Basic Auth (DEV ONLY), any username you enter will create a new user id (hash of username@localhost). You can use this to simulate multiple users. Once successfully logged in, you can start creating new conversations.
 
 [Next](/docs/4-deploy-to-azure.md)
