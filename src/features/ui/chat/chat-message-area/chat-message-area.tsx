@@ -14,7 +14,7 @@ export const ChatMessageArea = (props: {
   children?: React.ReactNode;
   profilePicture?: string | null;
   profileName?: string;
-  role: "function" | "user" | "assistant" | "system" | "tool";
+  role: "function" | "user" | "assistant" | "tool";
   onCopy: () => void;
 }) => {
   const [isIconChecked, setIsIconChecked] = useState(false);
