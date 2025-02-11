@@ -50,7 +50,12 @@ To deploy the application to Azure App Service with Managed Identities, follow t
    - Run this script to grant yourself RBAC permissions on the Azure resources so you can run AzureChat locally
    - In Powershell:
      ```powershell
-     PS> .\scripts\appreg_setup.ps1
+     PS> .\scripts\add_localdev_roles.ps1
+     ```
+   - In Bash:
+     ```bash
+     > chmod +x .\scripts\add_localdev_roles.sh
+     > .\scripts\add_localdev_roles.sh
      ```
    - You can now refer to the documentation to [run Azure Chat locally](3-run-locally.md).
 

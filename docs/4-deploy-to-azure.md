@@ -1,3 +1,25 @@
+# ☁️ Deploy to Azure - Azure Developer CLI (azd)
+
+To deploy the application to Azure using the Azure Developer CLI, follow the steps below.
+
+> [!IMPORTANT]
+> This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. Note that you do not need to clone this repo to complete these steps.
+
+1. Download the [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview)
+1. If you have not cloned this repo, run `azd init -t microsoft/azurechat`. If you have cloned this repo, just run 'azd init' from the repo root directory.
+1. Run `azd up` to provision and deploy the application
+
+```pwsh
+azd init -t microsoft/azurechat
+azd up
+
+# if you have already cloned the repo
+azd up
+
+# if you are wanting to see logs run with debug flag
+azd up --debug
+```
+
 # ☁️ Deploy to Azure - GitHub Actions
 
 The following steps describes how the application can be deployed to Azure App service using GitHub Actions.

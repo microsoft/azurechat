@@ -12,6 +12,10 @@ Clone this repository locally or fork to your GitHub account. Run all of the the
 
 1. Change directory to the `src` folder
 2. Rename/copy the file `.env.example` to `.env.local` and populate the environment variables based on the deployed resources in Azure.
+
+  > **NOTE**  
+  > If you have used the Azure Developer CLI to deploy the Azure infrastructure required for the solution ([using the directions here](./4-deploy-to-azure.md)), you can find the values for many the required environment variables in the `.env` file the `.azure\<azd env name>` directory. This generated file will not contain any keys, however it is recommended to use managed identities as described in "Setup your local development environment" on [this page](./10-managed-identities.md).
+
 3. Install npm packages by running `npm install`
 4. Start the app by running `npm run dev`
 5. Access the app on [http://localhost:3000](http://localhost:3000)

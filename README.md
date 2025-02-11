@@ -1,7 +1,7 @@
 # What's new - January 2025
 A new year brings some much requested feature updates to one of our most popular AI chat repos!
 - **[Managed Identity-based security](/docs/10-managed-identities.md)**. This uses Azure's underlying RBAC and removes (almost) all keys/secrets.
-- `appreg_setup.ps1` helper script to **[create the App Registration for you](/docs/5-add-identity.md#azure-ad-authentication-provider)** in Entra (if you have the permissions). Less copypasta means happier devs 🥰 
+- `appreg_setup.ps1` and `appreg_setup.sh` helper scripts to **[create the App Registration for you](/docs/5-add-identity.md#azure-ad-authentication-provider)** in Entra (if you have the permissions). Less copypasta means happier devs 🥰 
 
 # Unleash the Power of Azure OpenAI
 
