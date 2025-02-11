@@ -52,8 +52,10 @@ To deploy the application to Azure App Service with Managed Identities, follow t
      ```powershell
      PS> .\scripts\appreg_setup.ps1
      ```
-   - You can now refer to the documentation to [run Azure Chat locally](3-run-locally.md).
+   - You can now refer to the documentation to [run Azure Chat locally](2-run-locally.md).
 
 ## Conclusion
 
 By leveraging Managed Identities, you enhance the security posture of your Azure Chat deployment while simplifying secret management and access control. This guide outlines the security advantages and highlights the necessary parameter changes to ensure a secure and efficient production setup. For more details, review the complete code and configurations available in the repository's `infra` directory.
+
+🏁 [Back to README](../README.md)

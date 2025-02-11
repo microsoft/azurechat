@@ -2,8 +2,8 @@
 
 Please make sure the following prerequisites are in place prior to deploying this accelerator:
 
-1. Setup GitHub or Azure AD for Authentication:
-   The [add an identity provider](./5-add-identity.md) section below shows how to configure authentication providers.
+1. Setup GitHub or Entra ID for authentication:
+   The [add an identity provider](./3-add-identity.md) section below shows how to configure authentication providers.
 
 > [!NOTE]
 > You can configure the authentication provider to your identity solution using [NextAuth providers](https://next-auth.js.org/providers/)
@@ -12,19 +12,19 @@ Please make sure the following prerequisites are in place prior to deploying thi
 
 _Azure Chat Solution Accelerator powered by Azure OpenAI Service_ is built using the following technologies:
 
-- [Node.js 18](https://nodejs.org/en): an open-source, cross-platform JavaScript runtime environment.
+- [Node.js 22](https://nodejs.org/en): an open-source, cross-platform JavaScript runtime environment.
 
-- [Next.js 13](https://nextjs.org/docs): enables you to create full-stack web applications by extending the latest React features
+- [Next.js 14](https://nextjs.org/docs): enables you to create full-stack web applications by extending the latest React features.
 
-- [NextAuth.js](https://next-auth.js.org/): configurable authentication framework for Next.js 13
+- [NextAuth.js](https://next-auth.js.org/): configurable authentication framework for Next.js.
 
-- [OpenAI SDK](https://github.com/openai/openai-node) NodeJS library that simplifies building conversational UI
+- [OpenAI SDK](https://github.com/openai/openai-node) NodeJS library that simplifies building conversational UI.
 
-- [Tailwind CSS](https://tailwindcss.com/): is a utility-first CSS framework that provides a series of predefined classes that can be used to style each element by mixing and matching
+- [Tailwind CSS](https://tailwindcss.com/): is a utility-first CSS framework that provides a series of predefined classes that can be used to style each element by mixing and matching.
 
 - [shadcn/ui](https://ui.shadcn.com/): re-usable components built using Radix UI and Tailwind CSS.
 
-- [Azure Cosmos DB](https://learn.microsoft.com/en-GB/azure/cosmos-db/nosql/): fully managed platform-as-a-service (PaaS) NoSQL database to store chat history
+- [Azure Cosmos DB](https://learn.microsoft.com/en-GB/azure/cosmos-db/nosql/): fully managed platform-as-a-service (PaaS) NoSQL database to store chat history.
 
 - [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview): Azure OpenAI Service provides REST API access to OpenAI's powerful language models including the GPT-4, GPT-35-Turbo, and Embeddings model series.
 
@@ -46,7 +46,7 @@ The following Azure services can be deployed to expand the feature set of your s
 
 The following high-level diagram depicts the architecture of the solution accelerator:
 
-![Architecture diagram](/docs/images/architecture.png)
+![Architecture diagram](./images/architecture.png)
 
 # Azure Deployment Costs
 
@@ -65,4 +65,6 @@ To reduce costs, you can switch to free SKUs for Azure App Service, Azure AI Sea
 > [!WARNING]
 > To avoid unnecessary costs, remember to destroy your provisioned resources by deleting the resource group.
 
-[Next](./3-run-locally.md)
+## Continue to the next step...
+
+👉 [Next: Run Azure Chat Locally (development)](./2-run-locally.md)

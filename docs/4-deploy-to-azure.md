@@ -4,7 +4,7 @@ The following steps describes how the application can be deployed to Azure App s
 
 ## 🧬 Fork the repository
 
-Fork this repository to your own organisation so that you can execute GitHub Actions against your own Azure Subscription.
+If you haven't already, fork this repository to your own organisation so that you can execute GitHub Actions against your own Azure Subscription. This allows you to edit the code, customise it to your needs, and maintain control over the deployment process.
 
 ## 🗝️ Configure secrets in your GitHub repository
 
@@ -37,4 +37,6 @@ Once the secrets are configured, the GitHub Actions will be triggered for every 
 
 ![Workflow screenshot](/docs/images/runworkflow.png)
 
-[Next](/docs/5-add-identity.md)
+## Continue to the next step...
+
+👉 [Next: Chatting with your file](./5-chat-over-file.md)
