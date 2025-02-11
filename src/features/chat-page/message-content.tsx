@@ -1,6 +1,7 @@
 import { Markdown } from "@/features/ui/markdown/markdown";
 import { FunctionSquare } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
+
 import {
   Accordion,
   AccordionContent,
@@ -9,6 +10,8 @@ import {
 } from "../ui/accordion";
 import { RecursiveUI } from "../ui/recursive-ui";
 import { CitationAction } from "./citation/citation-action";
+import MermaidComponent from "./mermaid-diagram";
+
 
 interface MessageContentProps {
   message: {
@@ -20,14 +23,28 @@ interface MessageContentProps {
 }
 
 const MessageContent: React.FC<MessageContentProps> = ({ message }) => {
+  const getMermaidCode = (content: string): string | null => {
+    const mermaidRegex = /```mermaid((.*\n)+?)```/; // Adjust regex based on how Mermaid diagrams are identified
+    const match = content.match(mermaidRegex);
+    return match ? match[1] : null;
+  };
+
   if (message.role === "assistant" || message.role === "user") {
+    const mermaidCode = getMermaidCode(message.content);
+    const mermaidDiagramId = useMemo(() => `mermaid-${Date.now()}`, []); // Generate a unique ID
+
     return (
       <>
-        <Markdown
-          content={message.content}
-          onCitationClick={CitationAction}
-        ></Markdown>
-        {message.multiModalImage && <img src={message.multiModalImage} />}
+        {/* Render message content and optionally a mermaid diagram */}
+        <Markdown content={message.content} onCitationClick={CitationAction} />
+        {mermaidCode && (
+          <>
+            <br />
+            {/* Render Mermaid diagram with the extracted code and unique ID */}
+            <MermaidComponent source={mermaidCode.trim()} id={mermaidDiagramId} />
+          </>
+        )}
+        {message.multiModalImage && <img src={message.multiModalImage} alt="Multimodal" />}
       </>
     );
   }
@@ -72,3 +89,4 @@ const toJson = (value: string) => {
 };
 
 export default MessageContent;
+

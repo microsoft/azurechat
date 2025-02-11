@@ -35,3 +35,4 @@ next-env.d.ts
 .azure/
 infra/aad_setup.sh
 .vscode
+infra/main.parameters.example.json
