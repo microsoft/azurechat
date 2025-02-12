@@ -68,18 +68,18 @@ jobs:
           node-version: "20.x"
 
       - name: ⬇️ Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: Nextjs-site
 
       - name: 🗝️ Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2.2.0
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Set the build during deployment setting to false. This setting was added in the templates to all azd to work, but breaks deployment via webapps-deploy
       - name: Azure CLI script
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2.1.0
         with:
           inlineScript: |
             rg=$(az webapp list --query "[?name=='${{ secrets.AZURE_APP_SERVICE_NAME }}'].resourceGroup" --output tsv)
@@ -91,7 +91,7 @@ jobs:
 
       - name: 🚀 Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3.0.1
         with:
           app-name: ${{ secrets.AZURE_APP_SERVICE_NAME }}
           package: ${{ github.workspace }}/Nextjs-site.zip
