@@ -1,6 +1,6 @@
 # 📃 Chatting With Your File
 
-There are multiple ways you can integrate chat with your data in this guide you will learn how to enable users to upload a file through Azure Chat and engage in chat discussions related to the file contents.
+There are multiple ways you can integrate chat-with-your-data, in this guide you will learn how to enable users to upload a file through Azure Chat and engage in chat discussions related to the file contents.
 
 1. This approach is simple and easy to use.
 2. File contents are indexed and maintained within the chat interface and are only available for the current chat session by the current user.
@@ -89,4 +89,6 @@ With the help of the Extensions feature you can bring your own Azure AI Search i
 
 5. Save the function and publish the extension.
 
-[Next](/docs/6-persona.md)
+## Continue to the next step...
+
+👉 [Next: Personas](./6-persona.md)

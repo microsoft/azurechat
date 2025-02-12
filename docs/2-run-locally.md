@@ -4,11 +4,11 @@ Clone this repository locally or fork to your GitHub account. Run all of the the
 
 ## Prerequisites
 
-- **History Database**: If you didn't [provision the Azure resources](./4-deploy-to-azure.md), you **must** at least deploy an instance of Azure Cosmos DB in your Azure Subscription to store chat history.
+- **History Database**: If you don't want to [provision the Azure resources](./4-deploy-to-azure.md), you **must** at least deploy an instance of Azure Cosmos DB in your Azure Subscription to store chat history.
 
-- **Identity Provider**: For local development, you have the option of using a username / password to sign in. If you prefer to use an Identity Provider, follow the [instructions](./5-add-identity.md) to add one.
+- **Identity Provider**: For local development, you have the option of using a username / password to sign in. If you prefer to use an Identity Provider, follow the [instructions](./3-add-identity.md) in the next chapter to add one.
 
-## Steps
+## Steps to Run Locally
 
 1. Change directory to the `src` folder
 2. Rename/copy the file `.env.example` to `.env.local` and populate the environment variables based on the deployed resources in Azure.
@@ -22,7 +22,9 @@ Clone this repository locally or fork to your GitHub account. Run all of the the
 
 You should now be prompted to log in with your chosen authentication method (per the pre-requisite configuration).
 
-> **NOTE**  
+> **NOTE**
 > If using Basic Auth (DEV ONLY), any username you enter will create a new user id (hash of username@localhost). You can use this to simulate multiple users. Once successfully logged in, you can start creating new conversations.
 
-[Next](/docs/4-deploy-to-azure.md)
+## Continue to the next step...
+
+👉 [Next: Add an Identity Provider](./3-add-identity.md)

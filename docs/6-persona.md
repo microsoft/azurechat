@@ -51,4 +51,6 @@ You can now use this persona in your conversations.
 
 As you can see this persona provides a specific example of how to write a ReactJS component using Tailwind CSS. You can now use this persona to create ReactJS components and the response will be in line with the above format.
 
-[Next](/docs/8-extensions.md)
+## Continue to the next step...
+
+👉 [Next: Extensions](./7-extensions.md)
