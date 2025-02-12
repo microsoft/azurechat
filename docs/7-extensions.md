@@ -1,10 +1,10 @@
 # 💡🔗 Extensions
 
-With Extensions, you can enhance the functionality of Azure Chat by integrating it with your internal APIs or external resources.Extensions are created using OpenAI Tools, specifically through Function Calling.
+With Extensions, you can enhance the functionality of Azure Chat by integrating it with your internal APIs or external resources. Extensions are created using Azure OpenAI tools, specifically through a process known as [Function Calling](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/function-calling).
 
-As a user, you have the ability to create extensions that call your own internal APIs or external resources. However, if you are an admin, you can create extensions that can be utilised by all users within your organization.
+As a user, you have the ability to create extensions that call your own internal APIs or external resources. However, if you are an admin, you can create extensions that can be utilised by all users within your organisation.
 
-Refer to the [OpenAI Tools](https://platform.openai.com/docs/guides/function-calling) documentation for more information on how tools and functions call works.
+Not all models support tool/function calling, only support a single tool/function, or allow for multiple functions to be called in parallel ([read more](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/function-calling#function-calling-support)).
 
 Azure Chat expects the following from the function definition:
 
@@ -43,14 +43,14 @@ Azure Chat expects the following from the function definition:
 }
 ```
 
-As an example you can create an extension that calls Bing Search API to search for a specific topic and return the results to the user.
-
-In the example below only the `query` is required as Bing does not require a body parameter.
-
 > [!NOTE]
-> As header values specified for an extension often contain secrets (e.g. API keys) Azure Chat stores those values securely in Azure Key Vault. If you are deploying the solution to Azure using azd or the bicep templates the required Key Vault role assignment is automatically created. If you are running the solution locally you will need to manually add the "Key Vault Secrets Officer" role to identy that is running the solution (wh8ch will typically be the user logged into the Azure CLI)
+> As header values specified for an extension often contain secrets (e.g. API keys) Azure Chat stores those values securely in Azure Key Vault. If you are deploying the solution to Azure using `azd` or the Bicep templates, the required Azure Key Vault role assignment is automatically created. If you are running the solution locally, you will need to manually add the "Key Vault Secrets Officer" role to the identity that is running the solution (which will typically be the user logged into the Azure CLI)
 
 # Bing Search Extension
+
+As an example you can create an extension that calls Bing Search API to search for a specific topic over live internet data, and returns the results to the user.
+
+In the example below only the `query` is required as Bing does not require a body parameter.
 
 1.  **Name**: `Bing Search`
 2.  **Short Description**: `Bring up to date information with Bing Search`
@@ -66,9 +66,9 @@ In the example below only the `query` is required as Bing does not require a bod
 
 5.  **Function**:
 
-    - API Endpoint: GET https://api.bing.microsoft.com/v7.0/search?q=BING_SEARCH_QUERY
+    - API Endpoint: **GET** `https://api.bing.microsoft.com/v7.0/search?q=BING_SEARCH_QUERY`
 
-      BIG_SEARCH_QUERY is a variable that will be replaced with the search query entered by the user. The BIG_SEARCH_QUERY will be automatically passed to the function as part of the request based on the function definition below.
+      BIG_SEARCH_QUERY is a variable that will be replaced with the search query entered by the user. In the function definition below, the BIG_SEARCH_QUERY will be automatically passed to the function as part of the request.
 
     - Function definition:
 
@@ -100,13 +100,13 @@ In the example below only the `query` is required as Bing does not require a bod
       }
       ```
 
-6.  **Publish**: Publish the extension to make it available to use in your conversations. Publish is an admin only feature. If you are not an admin you will not see the publish button.
+6.  **Publish**: Publish the extension to make it available to use in your conversations. Publish is an admin-only feature. If you are not an admin you will not see the publish button.
 
 # GitHub Issues Extension
 
 This example is much more complex as it is capable of invoking multiple APIs to create or update a GitHub Issue depending on the user question.
 
-In this example you will be able to create and update GitHub Issues using the GitHub API.
+In this example you will be able to create and update GitHub Issues using the [GitHub API](https://docs.github.com/rest).
 
 1.  **Name**: `GitHub Issues`
 2.  **Short Description**: `Create and update GitHub Issues`
@@ -197,11 +197,11 @@ In this example you will be able to create and update GitHub Issues using the Gi
       POST https://api.github.com/repos/GITHUB_OWNER/GITHUB_REPO/issues/ISSUE_NUMBER
       ```
 
-      The ISSUE_NUMBER will be automatically passed to the function as part of the request based on the function definition below.
+      The `ISSUE_NUMBER` will be automatically passed to the function as part of the request based on the function definition below.
 
     - The function definition for updating GitHub issue
 
-      The `body` parameter is the same scheme as CreateGitHubIssue function. However you will notice that the `query` parameter is added to the function definition. This is because Azure Chat will automatically pass the query parameters to the function as part of the request. In this case the query parameter is ISSUE_NUMBER.G
+      The `body` parameter is the same scheme as CreateGitHubIssue function. However, you will notice that the `query` parameter is added to the function definition. This is because Azure Chat will automatically pass the query parameters to the function as part of the request. In this case the query parameter is `ISSUE_NUMBER`.
 
       ```json
       {
@@ -261,4 +261,8 @@ In this example you will be able to create and update GitHub Issues using the Gi
       }
       ```
 
-    [Next](/docs/9-environment-variables.md)
+6.  **Publish**: Publish the extension to make it available to use in your conversations. Publish is an admin-only feature. If you are not an admin you will not see the publish button.
+
+## Continue to the next step...
+
+👉 [Next: Environment Variables](./8-environment-variables.md)

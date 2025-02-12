@@ -1,36 +1,46 @@
+# What's new - January 2025
+
+A new year brings some much requested feature updates to one of our most popular AI chat repos!
+
+- **[Managed Identity-based security](/docs/9-managed-identities.md)**. This uses Azure's underlying RBAC and removes (almost) all keys/secrets.
+- `appreg_setup.ps1` helper script to **[create the App Registration for you](/docs/3-add-identity.md#entra-id-authentication-provider)** in Entra ID (if you have the permissions). Less copypasta means happier devs 🥰
+
 # Unleash the Power of Azure OpenAI
 
 1. [Introduction](#introduction)
-1. [Solution Overview](/docs/1-introduction.md)
-1. [Deploy to Azure](#deploy-to-azure)
-1. [Run from your local machine](/docs/3-run-locally.md)
-1. [Deploy to Azure with GitHub Actions](/docs/4-deploy-to-azure.md)
-1. [Add identity provider](/docs/5-add-identity.md)
-1. [Chatting with your file](/docs/6-chat-over-file.md)
-1. [Persona](/docs/6-persona.md)
-1. [Extensions](/docs/8-extensions.md)
-1. [Environment variables](/docs/9-environment-variables.md)
-1. [Migration considerations](/docs/migration.md)
+2. [Solution Overview](./docs/1-introduction.md)
+3. [Run from your local machine](./docs/2-run-locally.md)
+4. [Add identity provider](./docs/3-add-identity.md)
+5. [Deploy to Azure](#deploy-to-azure)
+6. [Deploy to Azure with GitHub Actions](./docs/4-deploy-to-azure.md)
+7. [Chatting with your file](./docs/5-chat-over-file.md)
+8. [Persona](./docs/6-persona.md)
+9. [Extensions](./docs/7-extensions.md)
+10. [Environment variables](./docs/8-environment-variables.md)
+11. [Managed Identity-based deployment](./docs/9-managed-identities.md)
+12. [Migration considerations](./docs/migration.md)
 
 # Introduction
 
 _Azure Chat Solution Accelerator powered by Azure OpenAI Service_
 
-![](/docs/images/intro.png)
+![Intro Image](/docs/images/intro.png)
 
 _Azure Chat Solution Accelerator powered by Azure OpenAI Service_ is a solution accelerator that allows organisations to deploy a private chat tenant in their Azure Subscription, with a familiar user experience and the added capabilities of chatting over your data and files.
 
 Benefits are:
 
-1. Private: Deployed in your Azure tenancy, allowing you to isolate it to your Azure tenant.
+1. **Private:** Deployed in your Azure tenancy, allowing you to isolate it to your Azure tenant.
 
-2. Controlled: Network traffic can be fully isolated to your network and other enterprise grade authentication security features are built in.
+2. **Controlled:** Network traffic can be fully isolated to your network and other enterprise grade authentication security features are built in.
 
-3. Value: Deliver added business value with your own internal data sources (plug and play) or integrate with your internal services (e.g., ServiceNow, etc).
+3. **Value:** Deliver added business value with your own internal data sources (plug and play) or integrate with your internal services (e.g., ServiceNow, etc).
 
 # Deploy to Azure
 
-You can provision Azure resources for the solution accelerator using either the Azure Developer CLI or the Deploy to Azure button below. Regardless of the method you chose you will still need set up an [identity provider and specify an admin user](/docs/5-add-identity.md)
+You can provision Azure resources for the solution accelerator using either the Azure Developer CLI or the Deploy to Azure button below. Regardless of the method you chose you will still need set up an [identity provider and specify an admin user](/docs/3-add-identity.md).
+
+We recommend you also read the dedicated [Deploy to Azure](./docs/4-deploy-to-azure.md) documentation to understand how to deploy the application using GitHub Actions.
 
 ## Deployment Options
 
@@ -66,9 +76,9 @@ Click on the Deploy to Azure button to deploy the Azure resources for the applic
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/anzappazurechatgpt)
 
 > [!IMPORTANT]
-> The application is protected by an identity provider and follow the steps in [Add an identity provider](/docs/5-add-identity.md) section for adding authentication to your app.
+> The application is protected by an identity provider, follow the steps in [Add an identity provider](/docs/3-add-identity.md) section for adding authentication to your app.
 
-[Next](./docs/1-introduction.md)
+[Next: Introduction](./docs/1-introduction.md)
 
 # Contributing
 

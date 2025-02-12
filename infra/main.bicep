@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+// Activates/Deactivates Authentication using keys. If true it will enforce RBAC using managed identities
+param disableLocalAuth bool = false
+
 @minLength(1)
 @maxLength(64)
 @description('Name of the the environment which is used to generate a short unique hash used in all resources.')
@@ -88,9 +91,37 @@ module resources 'resources.bicep' = {
     storageServiceSku: storageServiceSku
     storageServiceImageContainerName: storageServiceImageContainerName
     location: location
+    disableLocalAuth:disableLocalAuth
   }
 }
 
 output APP_URL string = resources.outputs.url
+output AZURE_WEBAPP_NAME string = resources.outputs.webapp_name
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
+output AZURE_RESOURCE_GROUP string = rg.name
+
+output AZURE_OPENAI_API_INSTANCE_NAME string = resources.outputs.openai_name
+output AZURE_OPENAI_API_DEPLOYMENT_NAME string = chatGptDeploymentName
+output AZURE_OPENAI_API_VERSION string = openAIApiVersion
+output AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME string = embeddingDeploymentName
+
+output AZURE_OPENAI_DALLE_API_INSTANCE_NAME string = resources.outputs.openai_dalle_name
+output AZURE_OPENAI_DALLE_API_DEPLOYMENT_NAME string = dalleDeploymentName
+output AZURE_OPENAI_DALLE_API_VERSION string = dalleApiVersion
+
+output AZURE_COSMOSDB_ACCOUNT_NAME string = resources.outputs.cosmos_name
+output AZURE_COSMOSDB_URI string = resources.outputs.cosmos_endpoint
+output AZURE_COSMOSDB_DB_NAME string = resources.outputs.database_name
+output AZURE_COSMOSDB_CONTAINER_NAME string = resources.outputs.history_container_name
+output AZURE_COSMOSDB_CONFIG_CONTAINER_NAME string = resources.outputs.config_container_name
+
+output AZURE_SEARCH_NAME string = resources.outputs.search_name
+output AZURE_SEARCH_INDEX_NAME string = searchServiceIndexName
+
+output AZURE_DOCUMENT_INTELLIGENCE_NAME string = resources.outputs.form_recognizer_name
+output AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT string = 'https://${resources.outputs.form_recognizer_name}.cognitiveservices.azure.com/'
+
+output AZURE_SPEECH_REGION string = location
+output AZURE_STORAGE_ACCOUNT_NAME string = resources.outputs.storage_name
+output AZURE_KEY_VAULT_NAME string = resources.outputs.key_vault_name
