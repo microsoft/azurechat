@@ -106,6 +106,113 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   kind: 'linux'
 }
 
+var appSettingsCommon = [
+    {
+      name: 'USE_MANAGED_IDENTITIES'
+      value: disableLocalAuth
+    }
+    
+    { 
+      name: 'AZURE_KEY_VAULT_NAME'
+      value: keyVaultName
+    }
+    { 
+      name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
+      value: 'true'
+    }
+    {
+      name: 'AZURE_OPENAI_API_INSTANCE_NAME'
+      value: openai_name
+    }
+    {
+      name: 'AZURE_OPENAI_API_DEPLOYMENT_NAME'
+      value: chatGptDeploymentName
+    }
+    {
+      name: 'AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME'
+      value: embeddingDeploymentName
+    }
+    {
+      name: 'AZURE_OPENAI_API_VERSION'
+      value: openai_api_version
+    }
+    {
+      name: 'AZURE_OPENAI_DALLE_API_INSTANCE_NAME'
+      value: openai_dalle_name
+    }
+    {
+      name: 'AZURE_OPENAI_DALLE_API_DEPLOYMENT_NAME'
+      value: dalleDeploymentName
+    }
+    {
+      name: 'AZURE_OPENAI_DALLE_API_VERSION'
+      value: dalleApiVersion
+    }
+    {
+      name: 'NEXTAUTH_SECRET'
+      value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::NEXTAUTH_SECRET.name})'
+    }
+    {
+      name: 'NEXTAUTH_URL'
+      value: 'https://${webapp_name}.azurewebsites.net'
+    }
+    {
+      name: 'AZURE_COSMOSDB_URI'
+      value: cosmosDbAccount.properties.documentEndpoint
+    }
+    { 
+      name: 'AZURE_SEARCH_NAME'
+      value: search_name
+    }
+    { 
+      name: 'AZURE_SEARCH_INDEX_NAME'
+      value: searchServiceIndexName
+    }
+    { 
+      name: 'AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT'
+      value: 'https://${form_recognizer_name}.cognitiveservices.azure.com/'
+    }        
+    {
+      name: 'AZURE_SPEECH_REGION'
+      value: location
+    }
+    {
+      name: 'AZURE_SPEECH_KEY'
+      value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_SPEECH_KEY.name})'
+    }
+    {
+      name: 'AZURE_STORAGE_ACCOUNT_NAME'
+      value: storage_name
+    }
+  ]
+
+var appSettingsWithLocalAuth = disableLocalAuth ? [] : [ 
+  {
+    name: 'AZURE_OPENAI_API_KEY'
+    value:  '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_OPENAI_API_KEY.name})'
+  }
+  {
+    name: 'AZURE_OPENAI_DALLE_API_KEY'
+    value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_OPENAI_DALLE_API_KEY.name})'
+  }
+  {
+    name: 'AZURE_COSMOSDB_KEY'
+    value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_COSMOSDB_KEY.name})'
+  }
+  {
+    name: 'AZURE_SEARCH_API_KEY'
+    value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_SEARCH_API_KEY.name})'
+  }    
+  {
+    name: 'AZURE_DOCUMENT_INTELLIGENCE_KEY'
+    value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_DOCUMENT_INTELLIGENCE_KEY.name})'
+  }
+  {
+    name: 'AZURE_STORAGE_ACCOUNT_KEY'
+    value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_STORAGE_ACCOUNT_KEY.name})'
+  }
+]
+
 resource webApp 'Microsoft.Web/sites@2020-06-01' = {
   name: webapp_name
   location: location
@@ -119,109 +226,7 @@ resource webApp 'Microsoft.Web/sites@2020-06-01' = {
       appCommandLine: 'next start'
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
-      appSettings: [ 
-        {
-          name: 'USE_MANAGED_IDENTITIES'
-          value: disableLocalAuth
-        }
-        
-        { 
-          name: 'AZURE_KEY_VAULT_NAME'
-          value: keyVaultName
-        }
-        { 
-          name: 'SCM_DO_BUILD_DURING_DEPLOYMENT'
-          value: 'true'
-        }
-        {
-          name: 'AZURE_OPENAI_API_KEY'
-          value:  disableLocalAuth ? '' :'@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_OPENAI_API_KEY.name})'
-        }
-        {
-          name: 'AZURE_OPENAI_API_INSTANCE_NAME'
-          value: openai_name
-        }
-        {
-          name: 'AZURE_OPENAI_API_DEPLOYMENT_NAME'
-          value: chatGptDeploymentName
-        }
-        {
-          name: 'AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME'
-          value: embeddingDeploymentName
-        }
-        {
-          name: 'AZURE_OPENAI_API_VERSION'
-          value: openai_api_version
-        }
-        {
-          name: 'AZURE_OPENAI_DALLE_API_KEY'
-          value: disableLocalAuth ? '' :'@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_OPENAI_DALLE_API_KEY.name})'
-        }
-        {
-          name: 'AZURE_OPENAI_DALLE_API_INSTANCE_NAME'
-          value: openai_dalle_name
-        }
-        {
-          name: 'AZURE_OPENAI_DALLE_API_DEPLOYMENT_NAME'
-          value: dalleDeploymentName
-        }
-        {
-          name: 'AZURE_OPENAI_DALLE_API_VERSION'
-          value: dalleApiVersion
-        }
-        {
-          name: 'NEXTAUTH_SECRET'
-          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::NEXTAUTH_SECRET.name})'
-        }
-        {
-          name: 'NEXTAUTH_URL'
-          value: 'https://${webapp_name}.azurewebsites.net'
-        }
-        {
-          name: 'AZURE_COSMOSDB_URI'
-          value: cosmosDbAccount.properties.documentEndpoint
-        }
-        {
-          name: 'AZURE_COSMOSDB_KEY'
-          value: disableLocalAuth ? '' :'@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_COSMOSDB_KEY.name})'
-        }
-        {
-          name: 'AZURE_SEARCH_API_KEY'
-          value: disableLocalAuth ? '' :'@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_SEARCH_API_KEY.name})'
-        }
-        { 
-          name: 'AZURE_SEARCH_NAME'
-          value: search_name
-        }
-        { 
-          name: 'AZURE_SEARCH_INDEX_NAME'
-          value: searchServiceIndexName
-        }
-        { 
-          name: 'AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT'
-          value: 'https://${form_recognizer_name}.cognitiveservices.azure.com/'
-        }        
-        {
-          name: 'AZURE_DOCUMENT_INTELLIGENCE_KEY'
-          value: disableLocalAuth ? '' :'@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_DOCUMENT_INTELLIGENCE_KEY.name})'
-        }
-        {
-          name: 'AZURE_SPEECH_REGION'
-          value: location
-        }
-        {
-          name: 'AZURE_SPEECH_KEY'
-          value: '@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_SPEECH_KEY.name})'
-        }
-        {
-          name: 'AZURE_STORAGE_ACCOUNT_NAME'
-          value: storage_name
-        }
-        {
-          name: 'AZURE_STORAGE_ACCOUNT_KEY'
-          value: disableLocalAuth ? '' :'@Microsoft.KeyVault(VaultName=${kv.name};SecretName=${kv::AZURE_STORAGE_ACCOUNT_KEY.name})'
-        }
-      ]
+      appSettings: concat(appSettingsCommon, appSettingsWithLocalAuth)
     }
   }
   identity: { type: 'SystemAssigned'}
