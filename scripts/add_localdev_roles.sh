@@ -1,5 +1,4 @@
 #!/bin/bash
-# filepath: /home/dwatson/wip/github/microsoft/azurechat/scripts/add_localdev_roles.sh
 
 echo -e "\nThis script will add the required IAM roles to allow the logged in user to run AzureChat locally."
 echo "This will only work if you have used AZD to deploy the app, and have the required permissions to modify IAM."

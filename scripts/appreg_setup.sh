@@ -1,5 +1,4 @@
 #!/bin/bash
-# filepath: /home/dwatson/wip/github/microsoft/azurechat/scripts/appreg_setup.sh
 
 # Parse parameters
 showsecret_flag="false"
