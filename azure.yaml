@@ -12,7 +12,7 @@ hooks:
   postdeploy:
     posix:
       shell: sh
-      run: echo -e "\n\033[0;36mTo complete the application setup you will need to configure an identity provider\033[0m\n(see the "Production App Setup" documentation at https://github.com/microsoft/azurechat/blob/main/docs/3-add-identity.md)\n"
+      run: echo "\n\033[0;36mTo complete the application setup you will need to configure an identity provider\033[0m\n(see the "Production App Setup" documentation at https://github.com/microsoft/azurechat/blob/main/docs/3-add-identity.md)\n"
       interactive: true
       continueOnError: false
     windows:
