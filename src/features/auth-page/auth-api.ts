@@ -45,7 +45,7 @@ const configureIdentityProvider = () => {
         tenantId: process.env.AZURE_AD_TENANT_ID!,
         authorization: {
           params: {
-            scope: "openid profile email User.Read email offline_access", // Add required scopes here
+            scope: "openid User.Read", 
           },
         },
         async profile(profile, tokens) {
