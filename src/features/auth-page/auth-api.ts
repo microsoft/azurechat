@@ -4,6 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 import { Provider } from "next-auth/providers/index";
 import { hashValue } from "./helpers";
+import { image } from "@markdoc/markdoc/dist/src/schema";
+import { access } from "fs";
 
 const configureIdentityProvider = () => {
   const providers: Array<Provider> = [];
@@ -18,10 +20,13 @@ const configureIdentityProvider = () => {
         clientId: process.env.AUTH_GITHUB_ID!,
         clientSecret: process.env.AUTH_GITHUB_SECRET!,
         async profile(profile) {
+          const image = await fetchProfilePicture(profile.avatar_url, null);
           const newProfile = {
             ...profile,
             isAdmin: adminEmails?.includes(profile.email.toLowerCase()),
+            image: image,
           };
+          console.log("GitHub profile:", newProfile);
           return newProfile;
         },
       })
@@ -38,17 +43,24 @@ const configureIdentityProvider = () => {
         clientId: process.env.AZURE_AD_CLIENT_ID!,
         clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
         tenantId: process.env.AZURE_AD_TENANT_ID!,
-        async profile(profile) {
+        authorization: {
+          params: {
+            scope: "openid profile User.Read", 
+          },
+        },
+        async profile(profile, tokens) {
           const email = profile.email || profile.preferred_username || "";
+          const image = await fetchProfilePicture(`https://graph.microsoft.com/v1.0/me/photos/48x48/$value`, tokens.access_token);
           const newProfile = {
             ...profile,
             email,
-            // throws error without this - unsure of the root cause (https://stackoverflow.com/questions/76244244/profile-id-is-missing-in-google-oauth-profile-response-nextauth)
             id: profile.sub,
             isAdmin:
               adminEmails?.includes(profile.email?.toLowerCase()) ||
               adminEmails?.includes(profile.preferred_username?.toLowerCase()),
+            image: image,
           };
+          console.log("Azure AD profile:", newProfile);
           return newProfile;
         },
       })
@@ -93,6 +105,30 @@ const configureIdentityProvider = () => {
 
   return providers;
 };
+
+export const fetchProfilePicture = async (profilePictureUrl: string, accessToken: any): Promise<any> => {
+  console.log("Fetching profile picture...");
+  var image = null
+  const profilePicture = await fetch(
+    profilePictureUrl,
+    accessToken && {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  if (profilePicture.ok) {
+    console.log("Profile picture fetched successfully.");
+    const pictureBuffer = await profilePicture.arrayBuffer();
+    const pictureBase64 = Buffer.from(pictureBuffer).toString("base64");
+    image = `data:image/jpeg;base64,${pictureBase64}`;
+  }
+  else {
+    console.error("Failed to fetch profile picture:", profilePictureUrl, profilePicture.statusText);
+  }
+  return image;
+};
+
 
 export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
