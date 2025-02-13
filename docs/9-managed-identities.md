@@ -44,10 +44,13 @@ To deploy the application to Azure App Service with Managed Identities, follow t
 
 1. **Update the Parameter**:
    - Set the parameter `disableLocalAuth` to `true` in [`infra/main.bicep`](/infra/main.bicep) (or [`infra/main.json`](/infra/main.json) for ARM deployment) to use Managed Identities.
-2. **Deploy as normal**:
+2. **Deploy resources using azd**:
    - refer to the [README](../README.md)
 3. **(Optional) Setup your local development environment**:
-   - Run this script to grant yourself RBAC permissions on the Azure resources so you can run AzureChat locally
+   
+   Run this script to grant yourself RBAC permissions on the Azure resources so you can run AzureChat locally with managed identities. 
+
+   If you haven't already done so then you will need to login to Azure using the Azure CLI command `az login`
    - In Powershell:
      ```powershell
      PS> .\scripts\add_localdev_roles.ps1
@@ -57,7 +60,7 @@ To deploy the application to Azure App Service with Managed Identities, follow t
      > chmod +x .\scripts\add_localdev_roles.sh
      > .\scripts\add_localdev_roles.sh
      ```
-   - You can now refer to the documentation to [run Azure Chat locally](2-run-locally.md).
+    You can now refer to the documentation to [run Azure Chat locally](2-run-locally.md).
 
 ## Conclusion
 
