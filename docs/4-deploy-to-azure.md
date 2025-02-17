@@ -11,11 +11,13 @@ To deploy the application to Azure using the Azure Developer CLI, follow the ste
 2. **If you have not cloned this repo**:
 
    1. Run `azd init -t microsoft/azurechat`
-   2. Run `azd up` to provision and deploy the application
+   2. Run `azd auth login` to authenticate with Azure
+   3. Run `azd up` to provision and deploy the application
 
 3. **If you have cloned this repo**:
    1. Run `azd init` from the repo root directory
-   2. Run `azd up` to provision and deploy the application
+   2. Run `azd auth login` to authenticate with Azure
+   3. Run `azd up` to provision and deploy the application
 
 ## Option 2: GitHub Actions
 
