@@ -45,7 +45,7 @@ To deploy the application to Azure App Service with Managed Identities, follow t
 1. **Update the Parameter**:
    - Set the parameter `disableLocalAuth` to `true` in [`infra/main.bicep`](/infra/main.bicep) (or [`infra/main.json`](/infra/main.json) for ARM deployment) to use Managed Identities.
 2. **Deploy resources using azd**:
-   - refer to the [README](../README.md)
+   - Refer to the [README](../README.md)
 3. **(Optional) Setup your local development environment**:
    
    Run this script to grant yourself RBAC permissions on the Azure resources so you can run AzureChat locally with managed identities. 
