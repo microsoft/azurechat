@@ -20,9 +20,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full w-full overflow-hidden text-sm">
+    <html lang="en" className="h-full w-full overflow-hidden text-sm" suppressHydrationWarning>
       <body
-        className={cn(inter.className, "h-full w-full flex  bg-background")}
+        className={cn(inter.className, "h-full w-full flex bg-background")}
       >
         <ThemeProvider
           attribute="class"
