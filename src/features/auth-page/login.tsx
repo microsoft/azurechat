@@ -2,6 +2,7 @@
 import { AI_NAME } from "@/features/theme/theme-config";
 import { signIn } from "next-auth/react";
 import { FC } from "react";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -18,7 +19,9 @@ interface LoginProps {
   entraIdEnabled: boolean;
 }
 
-export const LogIn: FC<LoginProps> = (props) => {
+export const LogIn: FC<LoginProps> = ({ isDevMode, githubEnabled, entraIdEnabled }) => {
+  const noIdentityProvider = !isDevMode && !githubEnabled && !entraIdEnabled;
+
   return (
     <Card className="flex gap-2 flex-col min-w-[300px]">
       <CardHeader className="gap-2">
@@ -33,13 +36,19 @@ export const LogIn: FC<LoginProps> = (props) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        {props.githubEnabled && (
+        {noIdentityProvider && <Alert variant={"destructive"}>
+          <AlertTitle>No identity provider found</AlertTitle>
+          <AlertDescription>
+            You need to configure an identity provider to proceed.
+          </AlertDescription>
+        </Alert>}
+        {githubEnabled && (
           <Button onClick={() => signIn("github")}>GitHub</Button>
         )}
-        {props.entraIdEnabled && (
+        {entraIdEnabled && (
           <Button onClick={() => signIn("azure-ad")}>Microsoft 365</Button>
         )}
-        {props.isDevMode && (
+        {isDevMode && (
           <Button onClick={() => signIn("localdev")}>
             Basic Auth (DEV ONLY)
           </Button>
