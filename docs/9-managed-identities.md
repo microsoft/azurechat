@@ -45,7 +45,7 @@ To deploy the application to Azure App Service with Managed Identities, follow t
 1. **Update the Parameter**:
    - Set the parameter `disableLocalAuth` to `true` in [`infra/main.bicep`](/infra/main.bicep) (or [`infra/main.json`](/infra/main.json) for ARM deployment) to use Managed Identities.
 2. **Deploy resources using azd**:
-   - refer to the [README](../README.md)
+   - Refer to the [README](../README.md)
 
 ## Run Locally with Managed Identities
    
