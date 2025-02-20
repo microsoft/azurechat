@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 // Activates/Deactivates Authentication using keys. If true it will enforce RBAC using managed identities
 param disableLocalAuth bool = false
@@ -56,16 +56,8 @@ param resourceGroupName string = ''
 var resourceToken = toLower(uniqueString(subscription().id, name, location))
 var tags = { 'azd-env-name': name }
 
-// Organize resources in a resource group
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : 'rg-${name}'
-  location: location
-  tags: tags
-}
-
 module resources 'resources.bicep' = {
   name: 'all-resources'
-  scope: rg
   params: {
     name: name
     resourceToken: resourceToken
