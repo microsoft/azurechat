@@ -32,6 +32,7 @@ param storageServiceImageContainerName string
 param location string = resourceGroup().location
 
 param disableLocalAuth bool= false
+param usePrivateEndpoints bool = false
 
 @secure()
 param nextAuthHash string = uniqueString(newGuid())
@@ -88,6 +89,22 @@ var llmDeployments = [
     capacity: embeddingDeploymentCapacity
   }
 ]
+
+module privateEndpoints 'private_endpoints.bicep' = if (usePrivateEndpoints) {
+  name: 'private-endpoints'
+  params: {
+    location: location
+    name: name
+    resourceToken: resourceToken
+    tags: tags
+    cosmosServiceId: cosmosDbAccount.id
+    openAiServiceId: azureopenai.id
+    dalleServiceId: azureopenaidalle.id
+    formRecognizerServiceId: formRecognizer.id
+    speechServiceId: speechService.id
+    storageAccountId: storage.id
+  }
+}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: appservice_name
@@ -213,13 +230,15 @@ var appSettingsWithLocalAuth = disableLocalAuth ? [] : [
   }
 ]
 
-resource webApp 'Microsoft.Web/sites@2020-06-01' = {
+resource webApp 'Microsoft.Web/sites@2024-04-01' = {
   name: webapp_name
   location: location
   tags: union(tags, { 'azd-service-name': 'frontend' })
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
+    virtualNetworkSubnetId: usePrivateEndpoints ? privateEndpoints.outputs.appServiceSubnetId : null
+    vnetRouteAllEnabled: usePrivateEndpoints ? false : null
     siteConfig: {
       linuxFxVersion: 'node|18-lts'
       alwaysOn: true
@@ -360,6 +379,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   properties: {
     databaseAccountOfferType: 'Standard'
     disableLocalAuth: disableLocalAuth
+    publicNetworkAccess: usePrivateEndpoints ? 'Disabled' : 'Enabled'
     locations: [
       {
         locationName: location

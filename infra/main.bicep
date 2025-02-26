@@ -1,7 +1,13 @@
 targetScope = 'subscription'
 
 // Activates/Deactivates Authentication using keys. If true it will enforce RBAC using managed identities
-param disableLocalAuth bool = false
+@allowed([true, false])
+@description('Enables/Disables Authentication using keys. If true it will enforce RBAC using managed identity and disable key auth on backend resouces')
+param disableLocalAuth bool
+
+@allowed([false, true])
+@description('Enables/Disables Private Endpoints for backend Azure resources. If true, it will create a virtual network and subnets to host the private endpoints.')
+param usePrivateEndpoints bool
 
 @minLength(1)
 @maxLength(64)
@@ -22,6 +28,16 @@ param location string
 })
 param openAILocation string
 
+// DALL-E v3 only supported in limited regions for now
+@description('Location for the OpenAI DALL-E 3 instance resource group')
+@allowed(['swedencentral', 'eastus', 'australiaeast'])
+@metadata({
+  azd: {
+    type: 'location'
+  }
+})
+param dalleLocation string
+
 param openAISku string = 'S0'
 param openAIApiVersion string ='2024-08-01-preview'
 
@@ -33,10 +49,7 @@ param embeddingDeploymentName string = 'embedding'
 param embeddingDeploymentCapacity int = 120
 param embeddingModelName string = 'text-embedding-ada-002'
 
-// DALL-E v3 only supported in limited regions for now
-@description('Location for the OpenAI DALL-E 3 instance resource group')
-@allowed(['swedencentral', 'eastus', 'australiaeast'])
-param dalleLocation string
+
 
 param dalleDeploymentCapacity int = 1
 param dalleDeploymentName string = 'dall-e-3'
@@ -92,6 +105,7 @@ module resources 'resources.bicep' = {
     storageServiceImageContainerName: storageServiceImageContainerName
     location: location
     disableLocalAuth:disableLocalAuth
+    usePrivateEndpoints: usePrivateEndpoints
   }
 }
 
