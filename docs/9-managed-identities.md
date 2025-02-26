@@ -40,15 +40,31 @@ Using Managed Identities is preferred for production deployments due to:
 
 ### Deploy to Azure with Managed Identities
 
-To deploy the application to Azure App Service with Managed Identities, follow the standard deployment instructions available in the [Deploy to Azure - GitHub Actions](https://github.com/microsoft/azurechat) section of the repository. Ensure to:
+To deploy the application to Azure App Service with Managed Identities, follow the standard deployment instructions available in the [Deploy to Azure - GitHub Actions](https://github.com/microsoft/azurechat) section of the repository as follows:
 
 1. **Update the Parameter**:
    - Set the parameter `disableLocalAuth` to `true` in [`infra/main.bicep`](/infra/main.bicep) (or [`infra/main.json`](/infra/main.json) for ARM deployment) to use Managed Identities.
 2. **Deploy resources using azd**:
    - Refer to the [README](../README.md)
-3. **(Optional) Setup your local development environment**:
+
+## Run Locally with Managed Identities
    
-   Run this script to grant yourself RBAC permissions on the Azure resources so you can run AzureChat locally with managed identities. 
+You can run Azure Chat locally with Managed Identities  - in this case the identity of the currently logged in user (via `az login`) is used to authenticate with the required Azure services. Follow the steps below to run Azure Chat locally with Managed Identities:
+
+1. Refer to the documentation in [Run Locally](2-run-locally.md) to set up your local environment up for development.
+1. Update your `.env` file with the following setting:
+   ```
+   USE_MANAGED_IDENTITIES=true
+   ```
+1. Make sure that your `.env` either has the following settings removed, uncommented, or set to empty. Even though you have set `USE_MANAGED_IDENTITIES=true` the various SDKs that the application uses to interact with these services can still default to key based authentication if these are present:
+   ```
+   AZURE_OPENAI_API_KEY=
+   AZURE_OPENAI_DALLE_API_KEY=
+   AZURE_COSMOSDB_KEY=
+   AZURE_SEARCH_API_KEY=
+   AZURE_DOCUMENT_INTELLIGENCE_KEY=
+   ```
+1. Run this script to grant yourself RBAC permissions on the various Azure resources used by Azure Chat. 
 
    If you haven't already done so then you will need to login to Azure using the Azure CLI command `az login`
    - In Powershell:
@@ -60,7 +76,7 @@ To deploy the application to Azure App Service with Managed Identities, follow t
      > chmod +x .\scripts\add_localdev_roles.sh
      > .\scripts\add_localdev_roles.sh
      ```
-    You can now refer to the documentation to [run Azure Chat locally](2-run-locally.md).
+    
 
 ## Conclusion
 
