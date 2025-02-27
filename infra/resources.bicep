@@ -104,6 +104,7 @@ module privateEndpoints 'private_endpoints_core.bicep' = if (usePrivateEndpoints
     speech_service_id: speechService.id
     storage_id: storage.id
     keyVault_id: kv.id
+    search_service_id: searchService.id
   }
 }
 
