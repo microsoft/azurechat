@@ -90,19 +90,20 @@ var llmDeployments = [
   }
 ]
 
-module privateEndpoints 'private_endpoints.bicep' = if (usePrivateEndpoints) {
+module privateEndpoints 'private_endpoints_core.bicep' = if (usePrivateEndpoints) {
   name: 'private-endpoints'
   params: {
     location: location
     name: name
     resourceToken: resourceToken
     tags: tags
-    cosmosServiceId: cosmosDbAccount.id
-    openAiServiceId: azureopenai.id
-    dalleServiceId: azureopenaidalle.id
-    formRecognizerServiceId: formRecognizer.id
-    speechServiceId: speechService.id
-    storageAccountId: storage.id
+    cosmos_id: cosmosDbAccount.id
+    openai_id: azureopenai.id
+    openai_dalle_id: azureopenaidalle.id
+    form_recognizer_id: formRecognizer.id
+    speech_service_id: speechService.id
+    storage_id: storage.id
+    keyVault_id: kv.id
   }
 }
 
@@ -456,6 +457,7 @@ resource searchService 'Microsoft.Search/searchServices@2022-09-01' = {
     publicNetworkAccess: 'enabled'
     replicaCount: 1
     disableLocalAuth: disableLocalAuth
+    
   }
   sku: {
     name: searchServiceSkuName
@@ -469,8 +471,9 @@ resource azureopenai 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   kind: 'OpenAI'
   properties: {
     customSubDomainName: openai_name
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: usePrivateEndpoints ? 'Disabled' : 'Enabled'
     disableLocalAuth: disableLocalAuth
+    
   }
   sku: {
     name: openAiSkuName
@@ -529,7 +532,7 @@ resource speechService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   kind: 'SpeechServices'
   properties: {
     customSubDomainName: speech_service_name
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: usePrivateEndpoints ? 'Disabled' : 'Enabled'
     /* TODO: disableLocalAuth: disableLocalAuth*/
   }
   sku: {
