@@ -36,7 +36,7 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
       <Link
         href={props.href}
         className={cn(
-          "flex-1 flex items-center gap-2 p-3 overflow-hidden",
+          "flex-1 flex items-center gap-2 p-3",
           path.startsWith(props.href) && props.href !== "/"
             ? "text-primary"
             : ""
@@ -45,7 +45,7 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
         {props.children}
       </Link>
       <DropdownMenu>
-        <DropdownMenuTrigger disabled={isLoading}>
+        <DropdownMenuTrigger disabled={isLoading} className="hover:bg-primary-foreground rounded-sm h-10 m-auto">
           {isLoading ? (
             <LoadingIndicator isLoading={isLoading} />
           ) : (
