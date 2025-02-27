@@ -1,7 +1,7 @@
 param serviceId string
 
-// leave blank if not DNS zone required (e.g. if multiple services share a DNS zone)
-param dnsZoneName string = ''
+param dnsZoneName string
+param createDnsZone bool = true
 param virtualNetworkId string
 param privateEndpointSubnetId string
 param groupId string
@@ -32,12 +32,12 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01' = {
   }
 }
 
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (!empty(dnsZoneName)) {
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = if (createDnsZone) {
   name: dnsZoneName
   location: 'global'
 }
 
-resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (!empty(dnsZoneName)){
+resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (createDnsZone){
   parent: privateDnsZone
   name: '${privateDnsZone.name}-link'
   location: 'global'
@@ -57,7 +57,7 @@ resource privateEndpointsDnsZoneGroup 'Microsoft.Network/privateEndpoints/privat
       {
         name: privateDnsZone.name
         properties: {
-          privateDnsZoneId: privateDnsZone.id
+          privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZones', privateDnsZone.name)
         }
       }
     ]

@@ -306,6 +306,7 @@ resource kv 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
     enabledForDeployment: false
     enabledForDiskEncryption: true
     enabledForTemplateDeployment: false
+    publicNetworkAccess: usePrivateEndpoints ? 'Disabled' : 'Enabled'
   }
 
   resource AZURE_OPENAI_API_KEY 'secrets' = if (!disableLocalAuth) {
@@ -441,7 +442,7 @@ resource formRecognizer 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   kind: 'FormRecognizer'
   properties: {
     customSubDomainName: form_recognizer_name
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: usePrivateEndpoints ? 'Disabled' : 'Enabled'
     disableLocalAuth: disableLocalAuth
   }
   sku: {
@@ -455,7 +456,7 @@ resource searchService 'Microsoft.Search/searchServices@2022-09-01' = {
   tags: tags
   properties: {
     partitionCount: 1
-    publicNetworkAccess: 'enabled'
+    publicNetworkAccess: usePrivateEndpoints ? 'disabled' : 'enabled'
     replicaCount: 1
     disableLocalAuth: disableLocalAuth
     
@@ -502,7 +503,7 @@ resource azureopenaidalle 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   kind: 'OpenAI'
   properties: {
     customSubDomainName: openai_dalle_name
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: usePrivateEndpoints ? 'Disabled' : 'Enabled'
     disableLocalAuth: disableLocalAuth
   }
   sku: {
@@ -533,7 +534,8 @@ resource speechService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   kind: 'SpeechServices'
   properties: {
     customSubDomainName: speech_service_name
-    publicNetworkAccess: usePrivateEndpoints ? 'Disabled' : 'Enabled'
+    // called from the browser so public endpoint is required
+    publicNetworkAccess: 'Enabled'
     /* TODO: disableLocalAuth: disableLocalAuth*/
   }
   sku: {
@@ -550,6 +552,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   sku: storageServiceSku
   properties:{
     allowSharedKeyAccess: !disableLocalAuth
+    publicNetworkAccess: usePrivateEndpoints ? 'Disabled' : 'Enabled'
   }
 
   resource blobServices 'blobServices' = {
