@@ -9,7 +9,7 @@ param cosmos_id string
 param openai_id string
 param openai_dalle_id string
 param form_recognizer_id string
-param speech_service_id string
+// param speech_service_id string
 param search_service_id string
 param storage_id string
 param keyVault_id string
@@ -69,6 +69,12 @@ var privateEndpointSpecs_noDNSZone = [
   }
 ]
 
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
+  name: toLower('${name}-nsg-${resourceToken}')
+  location: location
+  tags: tags
+}
+
 resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2021-08-01' = {
   name: virtualNetworkName
   location: location
@@ -88,6 +94,9 @@ resource subnet_privateEndpoint 'Microsoft.Network/virtualNetworks/subnets@2024-
   properties: {
     addressPrefix: '192.168.0.0/24'
     privateEndpointNetworkPolicies: 'Disabled'
+    networkSecurityGroup: {
+      id: networkSecurityGroup.id
+    }
   }
 }
 
@@ -104,6 +113,9 @@ resource subnet_appServiceBackend 'Microsoft.Network/virtualNetworks/subnets@202
         }
       }
     ]
+    networkSecurityGroup: {
+      id: networkSecurityGroup.id
+    }
   }
 }
 
@@ -137,6 +149,6 @@ module privateEndpoints_noDNSZone 'private_endpoints_services.bicep' = [
       groupId: privateEndpointSpec.groupId
     }
   }
-] 
+]
 
 output appServiceSubnetId string = subnet_appServiceBackend.id
