@@ -39,6 +39,10 @@ param nextAuthHash string = uniqueString(newGuid())
 
 param tags object = {}
 
+param privateEndpointVNetPrefix string = '192.168.0.0/16'
+param privateEndpointSubnetAddressPrefix string = '192.168.0.0/24'
+param appServiceBackendSubnetAddressPrefix string = '192.168.1.0/24'
+
 var openai_name = toLower('${name}-aillm-${resourceToken}')
 var openai_dalle_name = toLower('${name}-aidalle-${resourceToken}')
 
@@ -105,6 +109,9 @@ module privateEndpoints 'private_endpoints_core.bicep' = if (usePrivateEndpoints
     storage_id: storage.id
     keyVault_id: kv.id
     search_service_id: searchService.id
+    privateEndpointVNetPrefix: privateEndpointVNetPrefix
+    privateEndpointSubnetAddressPrefix: privateEndpointSubnetAddressPrefix
+    appServiceBackendSubnetAddressPrefix: appServiceBackendSubnetAddressPrefix
   }
 }
 

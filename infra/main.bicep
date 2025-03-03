@@ -20,7 +20,30 @@ param location string
 
 // azure open ai -- regions currently support gpt-4o global-standard
 @description('Location for the OpenAI resource group')
-@allowed(['australiaeast', 'brazilsouth', 'canadaeast', 'eastus', 'eastus2', 'francecentral', 'germanywestcentral', 'japaneast', 'koreacentral', 'northcentralus', 'norwayeast', 'polandcentral', 'spaincentral', 'southafricanorth', 'southcentralus', 'southindia', 'swedencentral', 'switzerlandnorth', 'uksouth', 'westeurope', 'westus', 'westus3'])
+@allowed([
+  'australiaeast'
+  'brazilsouth'
+  'canadaeast'
+  'eastus'
+  'eastus2'
+  'francecentral'
+  'germanywestcentral'
+  'japaneast'
+  'koreacentral'
+  'northcentralus'
+  'norwayeast'
+  'polandcentral'
+  'spaincentral'
+  'southafricanorth'
+  'southcentralus'
+  'southindia'
+  'swedencentral'
+  'switzerlandnorth'
+  'uksouth'
+  'westeurope'
+  'westus'
+  'westus3'
+])
 @metadata({
   azd: {
     type: 'location'
@@ -39,7 +62,7 @@ param openAILocation string
 param dalleLocation string
 
 param openAISku string = 'S0'
-param openAIApiVersion string ='2024-08-01-preview'
+param openAIApiVersion string = '2024-08-01-preview'
 
 param chatGptDeploymentCapacity int = 30
 param chatGptDeploymentName string = 'gpt-4o'
@@ -48,8 +71,6 @@ param chatGptModelVersion string = '2024-05-13'
 param embeddingDeploymentName string = 'embedding'
 param embeddingDeploymentCapacity int = 120
 param embeddingModelName string = 'text-embedding-ada-002'
-
-
 
 param dalleDeploymentCapacity int = 1
 param dalleDeploymentName string = 'dall-e-3'
@@ -61,10 +82,14 @@ param searchServiceIndexName string = 'azure-chat'
 param searchServiceSkuName string = 'standard'
 
 // TODO: define good default Sku and settings for storage account
-param storageServiceSku object = { name: 'Standard_LRS' } 
+param storageServiceSku object = { name: 'Standard_LRS' }
 param storageServiceImageContainerName string = 'images'
 
 param resourceGroupName string = ''
+
+param privateEndpointVNetPrefix string = '192.168.0.0/16'
+param privateEndpointSubnetAddressPrefix string = '192.168.0.0/24'
+param appServiceBackendSubnetAddressPrefix string = '192.168.1.0/24'
 
 var resourceToken = toLower(uniqueString(subscription().id, name, location))
 var tags = { 'azd-env-name': name }
@@ -104,8 +129,11 @@ module resources 'resources.bicep' = {
     storageServiceSku: storageServiceSku
     storageServiceImageContainerName: storageServiceImageContainerName
     location: location
-    disableLocalAuth:disableLocalAuth
+    disableLocalAuth: disableLocalAuth
     usePrivateEndpoints: usePrivateEndpoints
+    privateEndpointVNetPrefix: privateEndpointVNetPrefix
+    privateEndpointSubnetAddressPrefix: privateEndpointSubnetAddressPrefix
+    appServiceBackendSubnetAddressPrefix: appServiceBackendSubnetAddressPrefix
   }
 }
 

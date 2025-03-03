@@ -16,6 +16,10 @@ param keyVault_id string
 
 param tags object
 
+param privateEndpointVNetPrefix string = '192.168.0.0/16'
+param privateEndpointSubnetAddressPrefix string = '192.168.0.0/24'
+param appServiceBackendSubnetAddressPrefix string = '192.168.1.0/24'
+
 var subnetNamePrivateEndpoints = 'privateEndpoints'
 var subnetNameAppServiceBackend = 'appServiceBackend'
 
@@ -76,7 +80,7 @@ resource virtualNetwork 'Microsoft.Network/VirtualNetworks@2021-08-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '192.168.0.0/16'
+        privateEndpointVNetPrefix
       ]
     }
   }
@@ -86,7 +90,7 @@ resource subnet_privateEndpoint 'Microsoft.Network/virtualNetworks/subnets@2024-
   parent: virtualNetwork
   name: subnetNamePrivateEndpoints
   properties: {
-    addressPrefix: '192.168.0.0/24'
+    addressPrefix: privateEndpointSubnetAddressPrefix
     privateEndpointNetworkPolicies: 'Disabled'
   }
 }
@@ -95,7 +99,7 @@ resource subnet_appServiceBackend 'Microsoft.Network/virtualNetworks/subnets@202
   parent: virtualNetwork
   name: subnetNameAppServiceBackend
   properties: {
-    addressPrefix: '192.168.1.0/24'
+    addressPrefix: appServiceBackendSubnetAddressPrefix
     delegations: [
       {
         name: 'delegation'
