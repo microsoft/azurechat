@@ -32,7 +32,7 @@ param storageServiceImageContainerName string
 param location string = resourceGroup().location
 
 param disableLocalAuth bool = true
-param usePrivateEndpoints bool = false
+param usePrivateEndpoints bool = true
 
 @secure()
 param nextAuthHash string = uniqueString(newGuid())
