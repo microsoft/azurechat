@@ -15,7 +15,7 @@ import {
   ServerActionResponse,
   zodErrorsToServerActionErrors,
 } from "@/features/common/server-action-response";
-import { HistoryContainer } from "@/features/common/services/cosmos";
+import { ConfigContainer } from "@/features/common/services/cosmos";
 import { AzureKeyVaultInstance } from "@/features/common/services/key-vault";
 import { uniqueId } from "@/features/common/util";
 import { AI_NAME, CHAT_DEFAULT_PERSONA } from "@/features/theme/theme-config";
@@ -46,7 +46,7 @@ export const FindExtensionByID = async (
       ],
     };
 
-    const { resources } = await HistoryContainer()
+    const { resources } = await ConfigContainer()
       .items.query<ExtensionModel>(querySpec)
       .fetchAll();
 
@@ -111,7 +111,7 @@ export const CreateExtension = async (
       await secureHeaderValues(modelToSave);
 
       const { resource } =
-        await HistoryContainer().items.create<ExtensionModel>(modelToSave);
+        await ConfigContainer().items.create<ExtensionModel>(modelToSave);
 
       if (resource) {
         return {
@@ -231,7 +231,7 @@ export const DeleteExtension = async (
         await vault.beginDeleteSecret(h.id);
       });
 
-      const { resource } = await HistoryContainer()
+      const { resource } = await ConfigContainer()
         .item(id, extensionResponse.response.userId)
         .delete<ExtensionModel>();
 
@@ -300,7 +300,7 @@ export const UpdateExtension = async (
         await secureHeaderValues(inputModel);
 
         const { resource } =
-          await HistoryContainer().items.upsert<ExtensionModel>(inputModel);
+          await ConfigContainer().items.upsert<ExtensionModel>(inputModel);
 
         if (resource) {
           return {
@@ -358,7 +358,7 @@ export const FindAllExtensionForCurrentUser = async (): Promise<
       ],
     };
 
-    const { resources } = await HistoryContainer()
+    const { resources } = await ConfigContainer()
       .items.query<ExtensionModel>(querySpec)
       .fetchAll();
 
