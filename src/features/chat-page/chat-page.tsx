@@ -85,7 +85,7 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
           {loading === "loading" && <ChatLoading />}
         </ChatMessageContentArea>
       </ChatMessageContainer>
-      <ChatInput extensions={props.extensions} />
+      <ChatInput/>
     </main>
   );
 };

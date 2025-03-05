@@ -32,11 +32,7 @@ import {
 } from "./speech/use-text-to-speech";
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
 
-interface Props {
-  extensions: Array<ExtensionModel>;
-}
-
-export const ChatInput: FC<Props> = (props) => {
+export const ChatInput = () => {
   const { loading, input, chatThreadId } = useChat();
   const { uploadButtonLabel } = useFileStore();
   const { isPlaying } = useTextToSpeech();
