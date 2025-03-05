@@ -18,7 +18,7 @@ import { ImageInput } from "@/features/ui/chat/chat-input-area/image-input";
 import { Microphone } from "@/features/ui/chat/chat-input-area/microphone";
 import { StopChat } from "@/features/ui/chat/chat-input-area/stop-chat";
 import { SubmitChat } from "@/features/ui/chat/chat-input-area/submit-chat";
-import React, { useRef } from "react";
+import React, { FC, useRef } from "react";
 import { chatStore, useChat } from "../chat-store";
 import { fileStore, useFileStore } from "./file/file-store";
 import { PromptSlider } from "./prompt/prompt-slider";
@@ -30,8 +30,13 @@ import {
   textToSpeechStore,
   useTextToSpeech,
 } from "./speech/use-text-to-speech";
+import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
 
-export const ChatInput = () => {
+interface Props {
+  extensions: Array<ExtensionModel>;
+}
+
+export const ChatInput: FC<Props> = (props) => {
   const { loading, input, chatThreadId } = useChat();
   const { uploadButtonLabel } = useFileStore();
   const { isPlaying } = useTextToSpeech();
@@ -48,23 +53,28 @@ export const ChatInput = () => {
   };
 
   const handlePaste = async (event: any) => {
-    const items = (event.clipboardData || event.nativeEvent.clipboardData)?.items;
-    const item = Array.from(items as DataTransferItem[]).find((i) => i.type.indexOf('image') !== -1);
+    const items = (event.clipboardData || event.nativeEvent.clipboardData)
+      ?.items;
 
-    if (item) {
-      const blob = (item as DataTransferItem).getAsFile();
-      if (blob) {
-        const formData = new FormData();
-        formData.append('file', blob);
-
-        // Trigger file upload
-        await fileStore.onFileChange({ formData, chatThreadId });
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].kind === "file") {
+        uploadPastedFile(items[i]);
       }
     }
   };
 
+  const uploadPastedFile = async (file: any) => {
+    const blob = file.getAsFile();
+    if (blob) {
+      const formData = new FormData();
+      formData.append("file", blob);
+      // Trigger file upload
+      await fileStore.onFileChange({ formData, chatThreadId });
+    }
+  };
+
   return (
-    (<ChatInputForm
+    <ChatInputForm
       ref={formRef}
       onSubmit={(e) => {
         e.preventDefault();
@@ -102,13 +112,14 @@ export const ChatInput = () => {
         </ChatInputSecondaryActionArea>
         <ChatInputPrimaryActionArea>
           <ImageInput />
-          <Microphone
+          {/* Does not work so we disable it for now */}
+          {/* <Microphone
             startRecognition={() => speechToTextStore.startRecognition()}
             stopRecognition={() => speechToTextStore.stopRecognition()}
             isPlaying={isPlaying}
             stopPlaying={() => textToSpeechStore.stopPlaying()}
             isMicrophoneReady={isMicrophoneReady}
-          />
+          /> */}
           {loading === "loading" ? (
             <StopChat stop={() => chatStore.stopGeneratingMessages()} />
           ) : (
@@ -116,6 +127,6 @@ export const ChatInput = () => {
           )}
         </ChatInputPrimaryActionArea>
       </ChatInputActionArea>
-    </ChatInputForm>)
+    </ChatInputForm>
   );
 };
