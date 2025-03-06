@@ -38,13 +38,11 @@ function initializeTelemetry(instrumentationKey: string, session: SessionContext
         [reactPlugin.identifier]: { history: browserHistory },
       },
       disableAjaxTracking: false,
-      disableFetchTracking: true,
+      disableFetchTracking: false,
       autoTrackPageVisitTime: false,
       enableCorsCorrelation: true,
       enableRequestHeaderTracking: true,
       enableResponseHeaderTracking: true,
-      maxBatchInterval: 15000, // Adjust batch timing (15 seconds)
-      maxBatchSizeInBytes: 1000000, // Maximum batch size
     }
   });
 

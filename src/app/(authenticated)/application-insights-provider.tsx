@@ -12,7 +12,6 @@ export default function ApplicationInsightsProvider({
     children: React.ReactNode
 }) {
   const session = useSession()
-  console.log("asdf")
   const { reactPlugin } = initializeTelemetry(instrumentationKey, session)
   return <AppInsightsContext.Provider value={reactPlugin}>{children}</AppInsightsContext.Provider>
 }
