@@ -37,7 +37,7 @@ function initializeTelemetry(instrumentationKey: string, session: SessionContext
       extensionConfig: {
         [reactPlugin.identifier]: { history: browserHistory },
       },
-      enableAutoRouteTracking: false,
+      enableAutoRouteTracking: true,
       disableAjaxTracking: true,
       disableFetchTracking: true,
       autoTrackPageVisitTime: false,
