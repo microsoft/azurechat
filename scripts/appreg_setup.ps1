@@ -6,6 +6,10 @@ param (
 )
 
 if (-not $webappname) {
+    $webappname=(azd env get-value AZURE_WEBAPP_NAME).Trim()
+}
+
+if (-not $webappname -or $webappname -like "*ERROR*") {
     Write-Host "`n  Usage: .\appreg_setup.ps1 -webappname <webappname> [-showsecret] `n"
     Write-Host "No arguments provided. Please provide the web app name from the Azure portal (e.g. azurechat-ulg3yy5ybjhdq)."
     Write-Host "The -showsecret flag will display the client secret in the console output."

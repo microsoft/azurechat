@@ -253,7 +253,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     virtualNetworkSubnetId: usePrivateEndpoints ? privateEndpoints.outputs.appServiceSubnetId : null
     vnetRouteAllEnabled: usePrivateEndpoints ? false : null
     siteConfig: {
-      linuxFxVersion: 'node|18-lts'
+      linuxFxVersion: 'NODE|22-lts'
       alwaysOn: true
       appCommandLine: 'next start'
       ftpsState: 'Disabled'
