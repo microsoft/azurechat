@@ -49,8 +49,8 @@ export const ChatInput = () => {
   };
 
   const handlePaste = async (event: any) => {
-    const items = (event.clipboardData || event.nativeEvent.clipboardData)
-      ?.items;
+    const items = (event.clipboardData || event.nativeEvent.clipboardData)?.items;
+    if(!items) return;
 
     for (let i = 0; i < items.length; i++) {
       if (items[i].kind === "file") {
