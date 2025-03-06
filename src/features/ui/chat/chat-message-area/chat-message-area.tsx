@@ -35,11 +35,10 @@ export const ChatMessageArea = (props: {
   let profile = null;
 
   switch (props.role) {
-    case "assistant":
     case "user":
       if (props.profilePicture) {
         profile = (
-          <Avatar>
+          <Avatar className="rounded">
             <AvatarImage src={props.profilePicture} />
           </Avatar>
         );
@@ -53,7 +52,6 @@ export const ChatMessageArea = (props: {
         );
       }
       break;
-    case "tool":
     case "function":
       profile = (
         <PocketKnife
@@ -64,6 +62,11 @@ export const ChatMessageArea = (props: {
       );
       break;
     default:
+      profile = (
+        <Avatar>
+          <AvatarImage src="/ai-icon.png" />
+        </Avatar>
+      );
       break;
   }
 
