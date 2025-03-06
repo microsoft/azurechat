@@ -1,7 +1,7 @@
 import { AuthenticatedProviders } from "@/features/globals/providers";
 import { MainMenu } from "@/features/main-menu/main-menu";
 import { AI_NAME } from "@/features/theme/theme-config";
-import ApplicationInsightsProvider from "../application-insights-provider";
+import ApplicationInsightsProvider from "./application-insights-provider";
 import { cn } from "@/ui/lib";
 
 import { unstable_noStore as noStore } from 'next/cache'
