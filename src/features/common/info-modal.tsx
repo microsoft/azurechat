@@ -13,7 +13,6 @@ const InfoModal = () => {
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      // Changed to Ctrl+Shift+I (for Information)
       if (event.ctrlKey && event.shiftKey && event.key === ">") {
         setIsOpen(true)
       }
