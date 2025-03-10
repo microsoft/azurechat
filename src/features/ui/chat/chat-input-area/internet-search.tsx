@@ -31,7 +31,7 @@ export const InternetSearch = (props: { extension: ExtensionModel; threadExtensi
     <>
       <Button
         size="icon"
-        variant={threadExtensions.includes(props.extension.id) ? "outline" : "ghost"}
+        variant={threadExtensions.includes(props.extension.id) ? "default" : "ghost"}
         type="button"
         aria-label="Internet Access"
         onClick={toggleInstall}

@@ -10,7 +10,7 @@ import {
   SheetTrigger,
 } from "@/features/ui/sheet";
 import { Switch } from "@/features/ui/switch";
-import { PocketKnife } from "lucide-react";
+import { Globe, PocketKnife } from "lucide-react";
 import { FC } from "react";
 import { chatStore } from "../chat-store";
 import { personaStore } from "@/features/persona-page/persona-store";
@@ -83,11 +83,14 @@ export const ExtensionDetail: FC<Props> = (props) => {
                     </div>
                   </div>
                   <div>
-                    {extension.name !== "Bing Search" && props.parent == "chat" && (
+                    {extension.name !== "Bing Search" ||
+                    props.parent !== "chat" ? (
                       <Switch
                         defaultChecked={isInstalled}
                         onCheckedChange={(e) => toggleInstall(e, extension.id)}
                       />
+                    ) : (
+                      <Globe />
                     )}
                   </div>
                 </div>

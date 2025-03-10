@@ -24,7 +24,7 @@ import { PromptSlider } from "./prompt/prompt-slider";
 import { useSpeechToText } from "./speech/use-speech-to-text";
 import { useTextToSpeech } from "./speech/use-text-to-speech";
 import type { ChatDocumentModel } from "../chat-services/models";
-import { Trash2 } from "lucide-react";
+import { Trash2, File } from "lucide-react";
 import { Button } from "@/features/ui/button";
 import { SoftDeleteChatDocumentsForCurrentUser } from "../chat-services/chat-thread-service";
 import { RevalidateCache } from "@/features/common/navigation-helpers";
@@ -98,15 +98,15 @@ export const ChatInput = ({
       status={uploadButtonLabel}
       onPaste={handlePaste}
     >
-      {/* Chat Documents Section */}
       {chatDocuments.length > 0 && (
         <div className="flex flex-wrap gap-2 p-2 mb-2 rounded-md">
           {chatDocuments.map((doc, index) => (
             <div
               key={index}
-              className="px-2 py-1 rounded border border-slate-400 dark:border-gray-800 text-xs flex items-center h-7"
+              className="px-2 py-1 gap-2 rounded border bg-background hover:bg-accent hover:text-accent-foreground text-xs flex items-center h-7"
             >
-              <span className="truncate max-w-[150px]">{doc.name}</span>
+              <File size={12}/>
+              <span className="truncate max-w-[200px]">{doc.name}</span>
             </div>
           ))}
           <Button
