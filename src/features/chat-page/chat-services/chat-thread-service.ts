@@ -23,6 +23,7 @@ import {
   ChatThreadModel,
 } from "./models";
 import { redirect } from "next/navigation";
+import { ChatApiText } from "./chat-api/chat-api-text";
 
 export const FindAllChatThreadForCurrentUser = async (): Promise<
   ServerActionResponse<Array<ChatThreadModel>>
@@ -315,14 +316,21 @@ export const CreateChatThread = async (): Promise<
 
 export const UpdateChatTitle = async (
   chatThreadId: string,
-  title: string
+  prompt: string
 ): Promise<ServerActionResponse<ChatThreadModel>> => {
   try {
     const response = await FindChatThreadForCurrentUser(chatThreadId);
+    const shorterPrompt = prompt.slice(0, 300);
     if (response.status === "OK") {
       const chatThread = response.response;
-      // take the first 30 characters
-      chatThread.name = title.substring(0, 30);
+      const systemPrompt = `- you will generate a short title based on the first message a user begins a conversation with
+                            - ensure it is not more than 40 characters long
+                            - the title should be a summary or keywords of the user's message
+                            - do not use quotes or colons
+                            USERPROMPT: ${shorterPrompt}`;
+
+      chatThread.name = await ChatApiText(systemPrompt);
+
       return await UpsertChatThread(chatThread);
     }
     return response;

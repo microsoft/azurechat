@@ -166,79 +166,8 @@ class ChatState {
         signal: controller.signal,
       });
 
-      const onParse = (event: ParsedEvent | ReconnectInterval) => {
-        if (event.type === "event") {
-          const responseType = JSON.parse(event.data) as AzureChatCompletion;
-          switch (responseType.type) {
-            case "functionCall":
-              const mappedFunction: ChatMessageModel = {
-                id: uniqueId(),
-                content: responseType.response.arguments,
-                name: responseType.response.name,
-                role: "function",
-                createdAt: new Date(),
-                isDeleted: false,
-                threadId: this.chatThreadId,
-                type: "CHAT_MESSAGE",
-                userId: "",
-                multiModalImage: "",
-              };
-              this.addToMessages(mappedFunction);
-              break;
-            case "functionCallResult":
-              const mappedFunctionResult: ChatMessageModel = {
-                id: uniqueId(),
-                content: responseType.response,
-                name: "tool",
-                role: "tool",
-                createdAt: new Date(),
-                isDeleted: false,
-                threadId: this.chatThreadId,
-                type: "CHAT_MESSAGE",
-                userId: "",
-                multiModalImage: "",
-              };
-              this.addToMessages(mappedFunctionResult);
-              break;
-            case "content":
-              const mappedContent: ChatMessageModel = {
-                id: responseType.response.id,
-                content: responseType.response.choices[0].message.content || "",
-                name: AI_NAME,
-                role: "assistant",
-                createdAt: new Date(),
-                isDeleted: false,
-                threadId: this.chatThreadId,
-                type: "CHAT_MESSAGE",
-                userId: "",
-                multiModalImage: "",
-              };
-
-              this.addToMessages(mappedContent);
-              this.lastMessage = mappedContent.content;
-
-              break;
-            case "abort":
-              this.removeMessage(newUserMessage.id);
-              this.loading = "idle";
-              break;
-            case "error":
-              showError(responseType.response);
-              this.loading = "idle";
-              break;
-            case "finalContent":
-              this.loading = "idle";
-              this.completed(this.lastMessage);
-              this.updateTitle();
-              break;
-            default:
-              break;
-          }
-        }
-      };
-
       if (response.body) {
-        const parser = createParser(onParse);
+        const parser = this.createStreamParser(newUserMessage);
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -288,6 +217,78 @@ class ChatState {
     formData.append("content", body);
 
     this.chat(formData);
+  }
+
+  private createStreamParser(newUserMessage: ChatMessageModel) {
+    return createParser((event: ParsedEvent | ReconnectInterval) => {
+      if (event.type === "event") {
+        const responseType = JSON.parse(event.data) as AzureChatCompletion;
+        switch (responseType.type) {
+          case "functionCall":
+            const mappedFunction: ChatMessageModel = {
+              id: uniqueId(),
+              content: responseType.response.arguments,
+              name: responseType.response.name,
+              role: "function",
+              createdAt: new Date(),
+              isDeleted: false,
+              threadId: this.chatThreadId,
+              type: "CHAT_MESSAGE",
+              userId: "",
+              multiModalImage: "",
+            };
+            this.addToMessages(mappedFunction);
+            break;
+          case "functionCallResult":
+            const mappedFunctionResult: ChatMessageModel = {
+              id: uniqueId(),
+              content: responseType.response,
+              name: "tool",
+              role: "tool",
+              createdAt: new Date(),
+              isDeleted: false,
+              threadId: this.chatThreadId,
+              type: "CHAT_MESSAGE",
+              userId: "",
+              multiModalImage: "",
+            };
+            this.addToMessages(mappedFunctionResult);
+            break;
+          case "content":
+            const mappedContent: ChatMessageModel = {
+              id: responseType.response.id,
+              content: responseType.response.choices[0].message.content || "",
+              name: AI_NAME,
+              role: "assistant",
+              createdAt: new Date(),
+              isDeleted: false,
+              threadId: this.chatThreadId,
+              type: "CHAT_MESSAGE",
+              userId: "",
+              multiModalImage: "",
+            };
+
+            this.addToMessages(mappedContent);
+            this.lastMessage = mappedContent.content;
+            break;
+          case "abort":
+            this.removeMessage(newUserMessage.id);
+            this.loading = "idle";
+            break;
+          case "error":
+            showError(responseType.response);
+            this.loading = "idle";
+            break;
+          case "finalContent":
+            this.loading = "idle";
+            this.completed(this.lastMessage);
+            this.updateTitle();
+            break;
+          default:
+            break;
+        }
+      }
+    });
   }
 }
 

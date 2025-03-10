@@ -7,6 +7,8 @@ import { cn } from "@/ui/lib";
 import { AI_NAME } from "@/features/theme/theme-config";
 import { DisplayError } from "@/features/ui/error/display-error";
 import { ScrollArea } from "@/features/ui/scroll-area";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export const dynamic = "force-dynamic";
 
@@ -31,9 +33,11 @@ export default async function RootLayout({
       <div className="flex-1 flex">
         <MenuTray>
           <ChatMenuHeader />
-          <ScrollArea>
-            <ChatMenu menuItems={chatHistoryResponse.response} />
-          </ScrollArea>
+          <Suspense fallback={<Loading />}>
+            <ScrollArea>
+              <ChatMenu menuItems={chatHistoryResponse.response} />
+            </ScrollArea>
+          </Suspense>
         </MenuTray>
         {children}
       </div>
