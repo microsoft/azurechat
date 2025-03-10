@@ -28,12 +28,20 @@ import { Trash2 } from "lucide-react";
 import { Button } from "@/features/ui/button";
 import { SoftDeleteChatDocumentsForCurrentUser } from "../chat-services/chat-thread-service";
 import { RevalidateCache } from "@/features/common/navigation-helpers";
+import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
+import { InternetSearch } from "@/features/ui/chat/chat-input-area/internet-search";
 
 interface ChatInputProps {
   chatDocuments: ChatDocumentModel[];
+  internetSearch?: ExtensionModel;
+  threadExtensions?: string[];
 }
 
-export const ChatInput = ({ chatDocuments }: ChatInputProps) => {
+export const ChatInput = ({
+  chatDocuments,
+  internetSearch,
+  threadExtensions
+}: ChatInputProps) => {
   const { loading, input, chatThreadId } = useChat();
   const { uploadButtonLabel } = useFileStore();
   const { isPlaying } = useTextToSpeech();
@@ -132,6 +140,7 @@ export const ChatInput = ({ chatDocuments }: ChatInputProps) => {
       />
       <ChatInputActionArea>
         <ChatInputSecondaryActionArea>
+          {internetSearch && threadExtensions && <InternetSearch extension={internetSearch} threadExtensions={threadExtensions}/>}
           <AttachFile
             onClick={(formData) =>
               fileStore.onFileChange({ formData, chatThreadId })

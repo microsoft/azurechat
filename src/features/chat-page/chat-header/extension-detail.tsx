@@ -4,6 +4,7 @@ import { ScrollArea } from "@/features/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -33,7 +34,7 @@ export const ExtensionDetail: FC<Props> = (props) => {
     } else {
       if (props.parent === "chat") {
         await chatStore.RemoveExtensionFromChatThread(extensionId);
-      }else {
+      } else {
         personaStore.removeExtension(extensionId);
       }
     }
@@ -45,14 +46,25 @@ export const ExtensionDetail: FC<Props> = (props) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant={"outline"} className="gap-2" disabled={props.disabled} aria-label="Current Chat Extensions Menu">
-          <PocketKnife size={16} /> 
-          {installedCount > 0 ? `Installed ${installedCount}` : `Add Extensions (Available: ${totalCount})`}
+        <Button
+          variant={"outline"}
+          className="gap-2"
+          disabled={props.disabled}
+          aria-label="Current Chat Extensions Menu"
+        >
+          <PocketKnife size={16} />
+          {installedCount > 0
+            ? `Installed ${installedCount}`
+            : `Add Extensions (Available: ${totalCount})`}
         </Button>
       </SheetTrigger>
       <SheetContent className="min-w-[480px] sm:w-[540px] flex flex-col">
         <SheetHeader>
           <SheetTitle>Extensions</SheetTitle>
+          <SheetDescription>
+            Enhance your AI Chat with added tools and features for extended
+            functionality and smarter interactions.
+          </SheetDescription>
         </SheetHeader>
         <ScrollArea className="flex-1 -mx-6 flex" type="always">
           <div className="pb-6 px-6 flex gap-4 flex-col  flex-1">
@@ -71,10 +83,12 @@ export const ExtensionDetail: FC<Props> = (props) => {
                     </div>
                   </div>
                   <div>
-                    <Switch
-                      defaultChecked={isInstalled}
-                      onCheckedChange={(e) => toggleInstall(e, extension.id)}
-                    />
+                    {extension.name !== "Bing Search" && props.parent == "chat" && (
+                      <Switch
+                        defaultChecked={isInstalled}
+                        onCheckedChange={(e) => toggleInstall(e, extension.id)}
+                      />
+                    )}
                   </div>
                 </div>
               );
