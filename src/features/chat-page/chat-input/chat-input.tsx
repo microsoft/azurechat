@@ -15,24 +15,25 @@ import {
 } from "@/features/ui/chat/chat-input-area/chat-input-area";
 import { ChatTextInput } from "@/features/ui/chat/chat-input-area/chat-text-input";
 import { ImageInput } from "@/features/ui/chat/chat-input-area/image-input";
-import { Microphone } from "@/features/ui/chat/chat-input-area/microphone";
 import { StopChat } from "@/features/ui/chat/chat-input-area/stop-chat";
 import { SubmitChat } from "@/features/ui/chat/chat-input-area/submit-chat";
-import React, { FC, useRef } from "react";
+import React, { useRef } from "react";
 import { chatStore, useChat } from "../chat-store";
 import { fileStore, useFileStore } from "./file/file-store";
 import { PromptSlider } from "./prompt/prompt-slider";
-import {
-  speechToTextStore,
-  useSpeechToText,
-} from "./speech/use-speech-to-text";
-import {
-  textToSpeechStore,
-  useTextToSpeech,
-} from "./speech/use-text-to-speech";
-import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
+import { useSpeechToText } from "./speech/use-speech-to-text";
+import { useTextToSpeech } from "./speech/use-text-to-speech";
+import type { ChatDocumentModel } from "../chat-services/models";
+import { Trash2 } from "lucide-react";
+import { Button } from "@/features/ui/button";
+import { SoftDeleteChatDocumentsForCurrentUser } from "../chat-services/chat-thread-service";
+import { RevalidateCache } from "@/features/common/navigation-helpers";
 
-export const ChatInput = () => {
+interface ChatInputProps {
+  chatDocuments: ChatDocumentModel[];
+}
+
+export const ChatInput = ({ chatDocuments }: ChatInputProps) => {
   const { loading, input, chatThreadId } = useChat();
   const { uploadButtonLabel } = useFileStore();
   const { isPlaying } = useTextToSpeech();
@@ -49,8 +50,9 @@ export const ChatInput = () => {
   };
 
   const handlePaste = async (event: any) => {
-    const items = (event.clipboardData || event.nativeEvent.clipboardData)?.items;
-    if(!items) return;
+    const items = (event.clipboardData || event.nativeEvent.clipboardData)
+      ?.items;
+    if (!items) return;
 
     for (let i = 0; i < items.length; i++) {
       if (items[i].kind === "file") {
@@ -69,6 +71,15 @@ export const ChatInput = () => {
     }
   };
 
+  const handleDocumentsDeletion = async () => {
+    const threadId = chatDocuments[0].chatThreadId;
+    await SoftDeleteChatDocumentsForCurrentUser(threadId);
+    RevalidateCache({
+      page: "chat",
+      type: "layout",
+    });
+  };
+
   return (
     <ChatInputForm
       ref={formRef}
@@ -79,6 +90,28 @@ export const ChatInput = () => {
       status={uploadButtonLabel}
       onPaste={handlePaste}
     >
+      {/* Chat Documents Section */}
+      {chatDocuments.length > 0 && (
+        <div className="flex flex-wrap gap-2 p-2 mb-2 rounded-md">
+          {chatDocuments.map((doc, index) => (
+            <div
+              key={index}
+              className="px-2 py-1 rounded border border-slate-400 dark:border-gray-800 text-xs flex items-center h-7"
+            >
+              <span className="truncate max-w-[150px]">{doc.name}</span>
+            </div>
+          ))}
+          <Button
+            variant={"outline"}
+            size={"icon"}
+            className="h-7"
+            onClick={handleDocumentsDeletion}
+          >
+            <Trash2 className="" size={12} />
+          </Button>
+        </div>
+      )}
+
       <ChatTextInput
         onBlur={(e) => {
           if (e.currentTarget.value.replace(/\s/g, "").length === 0) {
