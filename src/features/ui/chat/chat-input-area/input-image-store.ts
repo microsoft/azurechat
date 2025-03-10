@@ -9,8 +9,9 @@ class InputImageState {
     return this.previewImage;
   }
 
-  public UpdateBase64Image(image: string) {
+  public UpdateBase64Image(image: Base64URLString) {
     this.base64Image = image;
+    this.previewImage = image;
   }
 
   public Reset() {

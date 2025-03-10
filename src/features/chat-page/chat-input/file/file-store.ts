@@ -13,7 +13,7 @@ import {
 } from "../../chat-services/chat-document-service";
 import { chatStore } from "../../chat-store";
 
-const MAX_UPLOAD_DOCUMENT_SIZE: number = 25165824; // 3MB in bits
+const MAX_UPLOAD_DOCUMENT_SIZE: number = 3000000; // 3MB in bytes
 class FileStore {
   public uploadButtonLabel: string = "";
 
@@ -42,9 +42,9 @@ class FileStore {
         const documentIndexResponses: Array<ServerActionResponse<boolean>> = [];
 
         for (const doc of crackingResponse.response) {
-          this.uploadButtonLabel = `Indexing document [${index + 1}]/[${
+          this.uploadButtonLabel = `Indexing document ${index + 1}/${
             crackingResponse.response.length
-          }]`;
+          }`;
 
           // index one document at a time
           const indexResponses = await IndexDocuments(

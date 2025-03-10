@@ -18,7 +18,7 @@ import { ImageInput } from "@/features/ui/chat/chat-input-area/image-input";
 import { Microphone } from "@/features/ui/chat/chat-input-area/microphone";
 import { StopChat } from "@/features/ui/chat/chat-input-area/stop-chat";
 import { SubmitChat } from "@/features/ui/chat/chat-input-area/submit-chat";
-import React, { FC, useRef } from "react";
+import React, { useRef } from "react";
 import { chatStore, useChat } from "../chat-store";
 import { fileStore, useFileStore } from "./file/file-store";
 import { PromptSlider } from "./prompt/prompt-slider";
@@ -30,7 +30,7 @@ import {
   textToSpeechStore,
   useTextToSpeech,
 } from "./speech/use-text-to-speech";
-import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
+import { InputImageStore } from "@/features/ui/chat/chat-input-area/input-image-store";
 
 export const ChatInput = () => {
   const { loading, input, chatThreadId } = useChat();
@@ -48,23 +48,39 @@ export const ChatInput = () => {
     }
   };
 
-  const handlePaste = async (event: any) => {
+  const handlePaste = (event: React.ClipboardEvent<HTMLFormElement>) => {
     const items = (event.clipboardData || event.nativeEvent.clipboardData)?.items;
-    if(!items) return;
+    if (!items) return;
 
     for (let i = 0; i < items.length; i++) {
       if (items[i].kind === "file") {
-        uploadPastedFile(items[i]);
+        if (items[i].type.startsWith("image/")) {
+          handlePastedImage(items[i]);
+        } else {
+          handlePastedFile(items[i]);
+        }
       }
     }
   };
 
-  const uploadPastedFile = async (file: any) => {
+  const handlePastedImage = async (file: DataTransferItem) => {
+    const blob = file.getAsFile();
+    if (blob) {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onload = () => {
+        if (reader.result) {
+          InputImageStore.UpdateBase64Image(reader.result as string);
+        }
+      };
+    }
+  };
+
+  const handlePastedFile = async (file: DataTransferItem) => {
     const blob = file.getAsFile();
     if (blob) {
       const formData = new FormData();
       formData.append("file", blob);
-      // Trigger file upload
       await fileStore.onFileChange({ formData, chatThreadId });
     }
   };
