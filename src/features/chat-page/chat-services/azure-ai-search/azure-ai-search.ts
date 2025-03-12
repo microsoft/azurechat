@@ -263,7 +263,7 @@ export const IndexDocuments = async (
   }
 };
 
-export const DeleteDocuments = async (
+export const DeleteDocumentsOfChatThread = async (
   chatThreadId: string
 ): Promise<Array<ServerActionResponse<boolean>>> => {
   try {

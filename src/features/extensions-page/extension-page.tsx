@@ -4,6 +4,7 @@ import { AddExtension } from "./add-extension/add-new-extension";
 import { ExtensionCard } from "./extension-card/extension-card";
 import { ExtensionHero } from "./extension-hero/extension-hero";
 import { ExtensionModel } from "./extension-services/models";
+import { userHashedId } from "../auth-page/helpers";
 
 interface Props {
   extensions: ExtensionModel[];
@@ -16,12 +17,12 @@ export const ExtensionPage: FC<Props> = (props) => {
         <ExtensionHero />
         <div className="container max-w-4xl py-8">
           <div className="grid grid-cols-3 gap-3">
-            {props.extensions.map((extension) => {
+            {props.extensions.map(async (extension) => {
               return (
                 <ExtensionCard
                   extension={extension}
                   key={extension.id}
-                  showContextMenu
+                  showActionMenu={extension.userId === (await userHashedId())}
                 />
               );
             })}

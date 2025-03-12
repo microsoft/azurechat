@@ -42,11 +42,11 @@ export const ChatInputActionArea = (props: { children?: React.ReactNode }) => {
 export const ChatInputPrimaryActionArea = (props: {
   children?: React.ReactNode;
 }) => {
-  return <div className="flex">{props.children}</div>;
+  return <div className="flex space-x-1">{props.children}</div>;
 };
 
 export const ChatInputSecondaryActionArea = (props: {
   children?: React.ReactNode;
 }) => {
-  return <div className="flex">{props.children}</div>;
+  return <div className="flex space-x-1">{props.children}</div>;
 };
