@@ -14,7 +14,7 @@ import {
 } from "@/features/theme/theme-config";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { HistoryContainer } from "../../common/services/cosmos";
-import { DeleteDocuments } from "./azure-ai-search/azure-ai-search";
+import { DeleteDocumentsOfChatThread } from "./azure-ai-search/azure-ai-search";
 import { FindAllChatDocuments } from "./chat-document-service";
 import { FindAllChatMessagesForCurrentUser } from "./chat-message-service";
 import {
@@ -23,6 +23,7 @@ import {
   ChatThreadModel,
 } from "./models";
 import { redirect } from "next/navigation";
+import { RevalidateCache } from "@/features/common/navigation-helpers";
 
 export const FindAllChatThreadForCurrentUser = async (): Promise<
   ServerActionResponse<Array<ChatThreadModel>>
@@ -147,7 +148,7 @@ export const SoftDeleteChatThreadForCurrentUser = async (
       const chatDocuments = chatDocumentsResponse.response;
 
       if (chatDocuments.length !== 0) {
-        await DeleteDocuments(chatThreadID);
+        await DeleteDocumentsOfChatThread(chatThreadID);
       }
 
       chatDocuments.forEach(async (chatDocument: ChatDocumentModel) => {
@@ -163,6 +164,42 @@ export const SoftDeleteChatThreadForCurrentUser = async (
     }
 
     return chatThreadResponse;
+  } catch (error) {
+    return {
+      status: "ERROR",
+      errors: [{ message: `${error}` }],
+    };
+  }
+};
+
+export const SoftDeleteChatDocumentsForCurrentUser = async (
+  chatThreadId: string
+): Promise<ServerActionResponse> => {
+  try {
+    const chatDocumentsResponse = await FindAllChatDocuments(chatThreadId);
+
+    if (chatDocumentsResponse.status !== "OK") {
+      return chatDocumentsResponse;
+    }
+
+    const chatDocuments = chatDocumentsResponse.response;
+
+    if (chatDocuments.length !== 0) {
+      await DeleteDocumentsOfChatThread(chatThreadId);
+    }
+
+    chatDocuments.forEach(async (chatDocument: ChatDocumentModel) => {
+      const itemToUpdate = {
+        ...chatDocument,
+      };
+      itemToUpdate.isDeleted = true;
+      await HistoryContainer().items.upsert(itemToUpdate);
+    });
+
+    return {
+      status: "OK",
+      response: "OK",
+    };
   } catch (error) {
     return {
       status: "ERROR",

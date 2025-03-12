@@ -85,7 +85,11 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
           {loading === "loading" && <ChatLoading />}
         </ChatMessageContentArea>
       </ChatMessageContainer>
-      <ChatInput/>
+      <ChatInput
+        chatDocuments={props.chatDocuments}
+        internetSearch={props.extensions.find((e) => e.name == "Bing Search")}
+        threadExtensions={props.chatThread.extension}
+      />
     </main>
   );
 };
