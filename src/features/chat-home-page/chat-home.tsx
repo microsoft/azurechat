@@ -19,7 +19,7 @@ interface ChatPersonaProps {
 
 export const ChatHome: FC<ChatPersonaProps> = (props) => {
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className="flex-1 px-3">
       <main className="flex flex-1 flex-col gap-6 pb-6">
         <Hero
           title={
