@@ -6,7 +6,6 @@ import { ChatDocumentModel, ChatThreadModel } from "../chat-services/models";
 import { DocumentDetail } from "./document-detail";
 import { ExtensionDetail } from "./extension-detail";
 import { PersonaDetail } from "./persona-detail";
-import { chatStore } from "../chat-store";
 
 interface Props {
   chatThread: ChatThreadModel;

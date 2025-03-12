@@ -48,7 +48,7 @@ export const PromptSlider: FC<SliderProps> = (props) => {
             <SheetDescription>
               {!isLoading && prompts.length === 0 ? "There are no prompts" : ""}
             </SheetDescription>
-            <LoadingIndicator isLoading={isLoading} />
+            <LoadingIndicator isLoading={isLoading && prompts.length == 0} />
             {prompts.map((prompt) => (
               <Card
                 key={prompt.id}
