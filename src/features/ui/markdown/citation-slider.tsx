@@ -9,6 +9,7 @@ import {
 import { FC, useActionState } from "react";
 import { ScrollArea } from "../scroll-area";
 import { useMarkdownContext } from "./markdown-context";
+import Loading from "@/app/loading";
 
 interface SliderProps {
   name: string;
@@ -21,7 +22,7 @@ export const CitationSlider: FC<SliderProps> = (props) => {
 
   if (!onCitationClick) throw new Error("onCitationClick is null");
 
-  const [node, formAction] = useActionState(onCitationClick, null);
+  const [node, formAction, isPending] = useActionState(onCitationClick, null);
 
   return (
     <form>
@@ -42,7 +43,11 @@ export const CitationSlider: FC<SliderProps> = (props) => {
             <SheetTitle>Citation</SheetTitle>
           </SheetHeader>
           <ScrollArea className="flex-1 flex -mx-6">
-            <div className="px-6 whitespace-pre-wrap">{node}</div>
+            {isPending ? (
+              <Loading/>
+            ) : (
+              <div className="px-6 whitespace-pre-wrap">{node}</div>
+            )}
           </ScrollArea>
         </SheetContent>
       </Sheet>

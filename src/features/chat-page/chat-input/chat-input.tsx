@@ -21,8 +21,15 @@ import React, { useRef } from "react";
 import { chatStore, useChat } from "../chat-store";
 import { fileStore, useFileStore } from "./file/file-store";
 import { PromptSlider } from "./prompt/prompt-slider";
-import { useSpeechToText } from "./speech/use-speech-to-text";
-import { useTextToSpeech } from "./speech/use-text-to-speech";
+import {
+  speechToTextStore,
+  useSpeechToText,
+} from "./speech/use-speech-to-text";
+import {
+  textToSpeechStore,
+  useTextToSpeech,
+} from "./speech/use-text-to-speech";
+import { InputImageStore } from "@/features/ui/chat/chat-input-area/input-image-store";
 import type { ChatDocumentModel } from "../chat-services/models";
 import { Trash2, File } from "lucide-react";
 import { Button } from "@/features/ui/button";
@@ -64,17 +71,33 @@ export const ChatInput = ({
 
     for (let i = 0; i < items.length; i++) {
       if (items[i].kind === "file") {
-        uploadPastedFile(items[i]);
+        if (items[i].type.startsWith("image/")) {
+          handlePastedImage(items[i]);
+        } else {
+          handlePastedFile(items[i]);
+        }
       }
     }
   };
 
-  const uploadPastedFile = async (file: any) => {
+  const handlePastedImage = async (file: DataTransferItem) => {
+    const blob = file.getAsFile();
+    if (blob) {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onload = () => {
+        if (reader.result) {
+          InputImageStore.UpdateBase64Image(reader.result as string);
+        }
+      };
+    }
+  };
+
+  const handlePastedFile = async (file: DataTransferItem) => {
     const blob = file.getAsFile();
     if (blob) {
       const formData = new FormData();
       formData.append("file", blob);
-      // Trigger file upload
       await fileStore.onFileChange({ formData, chatThreadId });
     }
   };
