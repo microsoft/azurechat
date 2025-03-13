@@ -53,7 +53,7 @@ export const ChatApiRAG = async (props: {
   // Augment the user prompt
   const _userMessage = `\n
 - Review the following content from documents uploaded by the user and create a final answer.
-- If you don't know the answer, just say that you don't know. Don't try to make up an answer.
+- If you don't know the answer, state that you don't know and still try to address the question as best as possible.
 - You must always include a citation at the end of your answer and don't include full stop after the citations.
 - Use the format for your citation {% citation items=[{name:"filename 1",id:"file id"}, {name:"filename 2",id:"file id"}] /%}
 ----------------
