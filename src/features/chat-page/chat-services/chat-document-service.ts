@@ -10,7 +10,11 @@ import { DocumentIntelligenceInstance } from "@/features/common/services/documen
 import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { EnsureIndexIsCreated } from "./azure-ai-search/azure-ai-search";
-import { CHAT_DOCUMENT_ATTRIBUTE, ChatDocumentModel } from "./models";
+import {
+  CHAT_DOCUMENT_ATTRIBUTE,
+  ChatDocumentModel,
+  SupportedFileExtensionsDocumentIntellicence,
+} from "./models";
 
 const MAX_UPLOAD_DOCUMENT_SIZE: number = 3000000; // 3MB in bytes
 const CHUNK_SIZE = 2300;
@@ -22,23 +26,30 @@ export const CrackDocument = async (
 ): Promise<ServerActionResponse<string[]>> => {
   try {
     const response = await EnsureIndexIsCreated();
-    if (response.status === "OK") {
-      const fileResponse = await LoadFile(formData);
-      if (fileResponse.status === "OK") {
-        const splitDocuments = await ChunkDocumentWithOverlap(
-          fileResponse.response.join("\n")
-        );
+    if (response.status !== "OK") return response;
 
-        return {
-          status: "OK",
-          response: splitDocuments,
-        };
-      }
+    if (IsAlreadyText(formData)) {
+      const file = formData.get("file") as unknown as File;
+      const text = await file.text();
+      const splitDocuments = await ChunkDocumentWithOverlap(text);
 
-      return fileResponse;
+      return {
+        status: "OK",
+        response: splitDocuments,
+      };
     }
+    
+    const fileResponse = await LoadFile(formData);
+    if (fileResponse.status !== "OK") return fileResponse;
 
-    return response;
+    const splitDocuments = await ChunkDocumentWithOverlap(
+      fileResponse.response.join("\n")
+    );
+
+    return {
+      status: "OK",
+      response: splitDocuments,
+    };
   } catch (e) {
     return {
       status: "ERROR",
@@ -51,11 +62,27 @@ export const CrackDocument = async (
   }
 };
 
+const IsAlreadyText = (formData: FormData) => {
+  const file: File | null = formData.get("file") as unknown as File;
+
+  if (file && file.type.startsWith("text/")) {
+    return true;
+  }
+
+  return false;
+};
+
 const LoadFile = async (
   formData: FormData
 ): Promise<ServerActionResponse<string[]>> => {
   try {
     const file: File | null = formData.get("file") as unknown as File;
+
+    const fileExtension = file.name.split(".").pop();
+
+    if (!isSupportedFileType(fileExtension)) {
+      throw new Error("Unsupported File Type");
+    }
 
     const fileSize = process.env.MAX_UPLOAD_DOCUMENT_SIZE
       ? Number(process.env.MAX_UPLOAD_DOCUMENT_SIZE)
@@ -104,6 +131,13 @@ const LoadFile = async (
       ],
     };
   }
+};
+
+const isSupportedFileType = (extension: string | undefined): boolean => {
+  if (!extension) return false;
+  return Object.values(SupportedFileExtensionsDocumentIntellicence).includes(
+    extension.toUpperCase() as SupportedFileExtensionsDocumentIntellicence
+  );
 };
 
 export const FindAllChatDocuments = async (

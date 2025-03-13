@@ -108,3 +108,18 @@ export type AzureChatCompletion =
   | AzureChatCompletionContent
   | AzureChatCompletionFinalContent
   | AzureChatCompletionAbort;
+
+// https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/prebuilt/read?view=doc-intel-4.0.0&tabs=sample-code#input-requirements-v4
+export enum SupportedFileExtensionsDocumentIntellicence {
+  JPEG = "JPEG",
+  JPG = "JPG",
+  PNG = "PNG",
+  BMP = "BMP",
+  TIFF = "TIFF",
+  HEIF = "HEIF",
+  DOCX = "DOCX",
+  XLSX = "XLSX",
+  PPTX = "PPTX",
+  HTML = "HTML",
+  PDF = "PDF",
+}
