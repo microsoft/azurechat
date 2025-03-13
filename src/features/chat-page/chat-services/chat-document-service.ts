@@ -14,6 +14,7 @@ import {
   CHAT_DOCUMENT_ATTRIBUTE,
   ChatDocumentModel,
   SupportedFileExtensionsDocumentIntellicence,
+  SupportedFileExtensionsTextFiles,
 } from "./models";
 
 const MAX_UPLOAD_DOCUMENT_SIZE: number = 3000000; // 3MB in bytes
@@ -28,8 +29,9 @@ export const CrackDocument = async (
     const response = await EnsureIndexIsCreated();
     if (response.status !== "OK") return response;
 
-    if (IsAlreadyText(formData)) {
-      const file = formData.get("file") as unknown as File;
+    const file = formData.get("file") as unknown as File;
+    const fileExtension = file.name.split(".").pop();
+    if (fileExtension && IsAlreadyText(fileExtension)) {
       const text = await file.text();
       const splitDocuments = await ChunkDocumentWithOverlap(text);
 
@@ -38,7 +40,7 @@ export const CrackDocument = async (
         response: splitDocuments,
       };
     }
-    
+
     const fileResponse = await LoadFile(formData);
     if (fileResponse.status !== "OK") return fileResponse;
 
@@ -62,14 +64,11 @@ export const CrackDocument = async (
   }
 };
 
-const IsAlreadyText = (formData: FormData) => {
-  const file: File | null = formData.get("file") as unknown as File;
-
-  if (file && file.type.startsWith("text/")) {
-    return true;
-  }
-
-  return false;
+const IsAlreadyText = (extension: string) => {
+  if (!extension) return false;
+  return Object.values(SupportedFileExtensionsTextFiles).includes(
+    extension.toUpperCase() as SupportedFileExtensionsTextFiles
+  );
 };
 
 const LoadFile = async (
