@@ -108,3 +108,67 @@ export type AzureChatCompletion =
   | AzureChatCompletionContent
   | AzureChatCompletionFinalContent
   | AzureChatCompletionAbort;
+
+// https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/prebuilt/read?view=doc-intel-4.0.0&tabs=sample-code#input-requirements-v4
+export enum SupportedFileExtensionsDocumentIntellicence {
+  JPEG = "JPEG",
+  JPG = "JPG",
+  PNG = "PNG",
+  BMP = "BMP",
+  TIFF = "TIFF",
+  HEIF = "HEIF",
+  DOCX = "DOCX",
+  XLSX = "XLSX",
+  PPTX = "PPTX",
+  HTML = "HTML",
+  PDF = "PDF",
+}
+
+// https://platform.openai.com/docs/guides/images?api-mode=responses#image-input-requirements
+export enum SupportedFileExtensionsInputImages{
+  JPEG = "JPEG",
+  JPG = "JPG",
+  PNG = "PNG",
+  WEBP = "WEBP"
+}
+
+export enum SupportedFileExtensionsTextFiles {
+  TXT = "TXT",
+  LOG = "LOG",
+  CSV = "CSV",
+  MD = "MD",
+  RTF = "RTF",
+  HTML = "HTML",
+  HTM = "HTM",
+  CSS = "CSS",
+  JS = "JS",
+  JSON = "JSON",
+  XML = "XML",
+  YML = "YML",
+  YAML = "YAML",
+  PHP = "PHP",
+  PY = "PY",
+  JAVA = "JAVA",
+  C = "C",
+  H = "H",
+  CPP = "CPP",
+  HPP = "HPP",
+  TS = "TS",
+  SQL = "SQL",
+  INI = "INI",
+  CONF = "CONF",
+  ENV = "ENV",
+  TEX = "TEX",
+  SH = "SH",
+  BAT = "BAT",
+  PS1 = "PS1",
+  GITIGNORE = "GITIGNORE",
+  GRADLE = "GRADLE",
+  GROOVY = "GROOVY",
+  MAKEFILE = "MAKEFILE",
+  MK = "MK",
+  PLIST = "PLIST",
+  TOML = "TOML",
+  RC = "RC",
+}
+

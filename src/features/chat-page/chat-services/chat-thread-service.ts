@@ -24,7 +24,6 @@ import {
 } from "./models";
 import { redirect } from "next/navigation";
 import { ChatApiText } from "./chat-api/chat-api-text";
-import { RevalidateCache } from "@/features/common/navigation-helpers";
 
 export const FindAllChatThreadForCurrentUser = async (): Promise<
   ServerActionResponse<Array<ChatThreadModel>>
