@@ -124,6 +124,14 @@ export enum SupportedFileExtensionsDocumentIntellicence {
   PDF = "PDF",
 }
 
+// https://platform.openai.com/docs/guides/images?api-mode=responses#image-input-requirements
+export enum SupportedFileExtensionsInputImages{
+  JPEG = "JPEG",
+  JPG = "JPG",
+  PNG = "PNG",
+  WEBP = "WEBP"
+}
+
 export enum SupportedFileExtensionsTextFiles {
   TXT = "TXT",
   LOG = "LOG",

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { FC, useRef } from "react";
 import { Button } from "../../button";
 import { InputImageStore, useInputImage } from "./input-image-store";
+import { SupportedFileExtensionsInputImages } from "@/features/chat-page/chat-services/models";
 
 export const ImageInput: FC = () => {
   const { base64Image, previewImage } = useInputImage();
@@ -41,7 +42,9 @@ export const ImageInput: FC = () => {
       />
       <input
         type="file"
-        accept="image/*"
+        accept={Object.values(SupportedFileExtensionsInputImages)
+          .map((ext) => "image/" + ext.toLowerCase())
+          .join(",")}
         name="image"
         ref={fileInputRef}
         className="hidden"

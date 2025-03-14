@@ -11,14 +11,21 @@ import {
   FindTopChatMessagesForCurrentUser,
 } from "../chat-message-service";
 import { EnsureChatThreadOperation } from "../chat-thread-service";
-import { ChatThreadModel, UserPrompt } from "../models";
+import {
+  ChatThreadModel,
+  SupportedFileExtensionsInputImages,
+  UserPrompt,
+} from "../models";
 import { mapOpenAIChatMessages } from "../utils";
 import { GetDefaultExtensions } from "./chat-api-default-extensions";
 import { GetDynamicExtensions } from "./chat-api-dynamic-extensions";
 import { ChatApiExtensions } from "./chat-api-extension";
 import { ChatApiMultimodal } from "./chat-api-multimodal";
 import { OpenAIStream } from "./open-ai-stream";
-import { reportCompletionTokens, reportUserChatMessage } from "../../../common/services/chat-metrics-service";
+import {
+  reportCompletionTokens,
+  reportUserChatMessage,
+} from "../../../common/services/chat-metrics-service";
 import { ChatTokenService } from "@/features/common/services/chat-token-service";
 type ChatTypes = "extensions" | "chat-with-file" | "multimodal";
 
@@ -28,6 +35,20 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
   if (currentChatThreadResponse.status !== "OK") {
     return new Response("", { status: 401 });
   }
+
+  const base64Image = props.multimodalImage;
+  const matches = base64Image.match(/^data:image\/([a-zA-Z]+);base64,/);
+  const fileExtension = matches ? matches[1] : null;
+  
+  if (!fileExtension)
+    return new Response("Missing File Extension", { status: 400 });
+
+  if (
+    !Object.values(SupportedFileExtensionsInputImages).includes(
+      fileExtension.toUpperCase() as SupportedFileExtensionsInputImages
+    )
+  )
+    return new Response("Filetype is not supported", { status: 400 });
 
   const currentChatThread = currentChatThreadResponse.response;
 
@@ -95,7 +116,10 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
       break;
   }
 
-  reportUserChatMessage("gpt-4", { personaMessageTitle: currentChatThread.personaMessageTitle, threadId: currentChatThread.id});
+  reportUserChatMessage("gpt-4", {
+    personaMessageTitle: currentChatThread.personaMessageTitle,
+    threadId: currentChatThread.id,
+  });
 
   const readableStream = OpenAIStream({
     runner: runner,
@@ -103,9 +127,11 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
   });
 
   runner.on("finalContent", async (finalContent: string) => {
-      const chatTokenService = new ChatTokenService();
-      const tokens = chatTokenService.getTokenCount(finalContent);
-      reportCompletionTokens(tokens, "gpt-4", {personaMessageTitle: currentChatThread.personaMessageTitle});
+    const chatTokenService = new ChatTokenService();
+    const tokens = chatTokenService.getTokenCount(finalContent);
+    reportCompletionTokens(tokens, "gpt-4", {
+      personaMessageTitle: currentChatThread.personaMessageTitle,
+    });
   });
 
   return new Response(readableStream, {
