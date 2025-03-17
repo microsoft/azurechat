@@ -36,19 +36,21 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
     return new Response("", { status: 401 });
   }
 
-  const base64Image = props.multimodalImage;
-  const matches = base64Image.match(/^data:image\/([a-zA-Z]+);base64,/);
-  const fileExtension = matches ? matches[1] : null;
-  
-  if (!fileExtension)
-    return new Response("Missing File Extension", { status: 400 });
+  if (props.multimodalImage) {
+    const base64Image = props.multimodalImage;
+    const matches = base64Image.match(/^data:image\/([a-zA-Z]+);base64,/);
+    const fileExtension = matches ? matches[1] : null;
 
-  if (
-    !Object.values(SupportedFileExtensionsInputImages).includes(
-      fileExtension.toUpperCase() as SupportedFileExtensionsInputImages
+    if (!fileExtension)
+      return new Response("Missing File Extension", { status: 400 });
+
+    if (
+      !Object.values(SupportedFileExtensionsInputImages).includes(
+        fileExtension.toUpperCase() as SupportedFileExtensionsInputImages
+      )
     )
-  )
-    return new Response("Filetype is not supported", { status: 400 });
+      return new Response("Filetype is not supported", { status: 400 });
+  }
 
   const currentChatThread = currentChatThreadResponse.response;
 
