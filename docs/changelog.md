@@ -6,7 +6,7 @@
 
 - Added: Feedback Form
 - Added: Document uploads now support text files (.txt, .md, etc.).
-- Added: Search functionality is now available in the chatbox.
+- Changed: Internet Search functionality moved to the chatbox.
 - Added: Files can now be deleted from a chat.
 - Added: Files are now visible in the chatbox.
 - Fixed: Tool editing icons are now shown based on user permissions.
