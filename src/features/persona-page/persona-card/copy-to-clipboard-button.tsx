@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useState, useEffect } from "react";
-import { Clipboard, Check } from "lucide-react"; // Assuming lucide-react has a Check icon
+import { Clipboard, Check, icons } from "lucide-react";
 import { Button } from "../../ui/button";
 
 interface CopyToClipboardButtonProps {
@@ -27,8 +27,10 @@ export const CopyToClipboardButton: FC<CopyToClipboardButtonProps> = ({ relative
 
   return (
     <Button
-      className="flex items-center gap-2 px-4 py-2 rounded transition-colors"
+      className="flex items-center gap-2 px-[5px] py-2 rounded transition-colors"
       onClick={copyToClipboard}
+      size={"icon"}
+      asChild
     >
       {isCopied ? <Check size={18} /> : <Clipboard size={18} />}
     </Button>
