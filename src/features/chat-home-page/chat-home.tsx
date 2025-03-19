@@ -1,5 +1,5 @@
-"use client";
-import { AddExtension } from "@/features/extensions-page/add-extension/add-new-extension";
+"use client"
+
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
 import { PersonaCard } from "@/features/persona-page/persona-card/persona-card";
 import { PersonaModel } from "@/features/persona-page/persona-services/models";
@@ -20,9 +20,107 @@ interface ChatPersonaProps {
   news: NewsArticleModel[];
 }
 
-export const ChatHome: FC<ChatPersonaProps> = (props) => {
-  const [showChanglog, setShowChangelog] = useState<boolean>(false);
+const FeedbackButton = () => (
+  <Button
+    variant="ghost"
+    className="flex items-center gap-3"
+    onClick={() =>
+      window.open(
+        "https://forms.office.com/Pages/ResponsePage.aspx?id=M8Rk7OgevU2Dejn1bHzc6qjXxr1TIg9Fg1aYy60PnqtUOVdLNjhPVTVZU1RXVUpSUEVDNTRPUDBMRy4u",
+        "_blank"
+      )
+    }
+  >
+    <ExternalLink className="h-5 w-5" />
+    Report Feedback
+  </Button>
+);
 
+const HomeButton = ({ onClick }: { onClick: () => void }) => (
+  <Button variant="ghost" className="flex items-center gap-3" onClick={onClick}>
+    <House className="h-5 w-5" />
+    <p>Home</p>
+  </Button>
+);
+
+const ChangelogButton = ({ onClick }: { onClick: () => void }) => (
+  <Button variant="ghost" className="gap-3" onClick={onClick}>
+    <Logs className="h-5 w-5" />
+    <p>Changelog</p>
+  </Button>
+);
+
+const ChangelogSection = ({
+  setShowChangelog,
+}: {
+  setShowChangelog: (arg0: boolean) => void;
+}) => (
+  <div>
+    <div className="flex justify-between">
+      <h2 className="text-2xl font-bold mb-3">Changelog</h2>
+      <div className="flex gap-2">
+        <FeedbackButton />
+        <HomeButton onClick={() => setShowChangelog(false)} />
+      </div>
+    </div>
+    <Changelog
+      owner="SchickliCop"
+      repo="azurechat"
+      path="docs/changelog.md"
+      branch="feature/ms/introduce-changelog"
+    />
+  </div>
+);
+
+const ArticlesSection = ({
+  news,
+  setShowChangelog,
+}: {
+  news: NewsArticleModel[];
+  setShowChangelog: (arg0: boolean) => void;
+}) => (
+  <div>
+    <div className="flex justify-between">
+      <h2 className="text-2xl font-bold mb-3">Articles</h2>
+      <div className="flex gap-2">
+        <FeedbackButton />
+        <ChangelogButton onClick={() => setShowChangelog(true)} />
+      </div>
+    </div>
+    <div className="space-y-4">
+      {news && news.length > 0 ? (
+        news.map((newsArticle) => (
+          <NewsArticle newsArticle={newsArticle} key={newsArticle.id} />
+        ))
+      ) : (
+        <p className="text-muted-foreground max-w-xl">No current news</p>
+      )}
+    </div>
+  </div>
+);
+
+const PersonasSection = ({ personas }: { personas: PersonaModel[] }) => (
+  <div>
+    <h2 className="text-2xl font-bold mb-3">Personas</h2>
+    {personas && personas.length > 0 ? (
+      <div className="grid grid-cols-3 gap-3">
+        {personas.map((persona: PersonaModel) => (
+          <PersonaCard
+            persona={persona}
+            key={persona.id}
+            showContextMenu={false}
+            showActionMenu={false}
+          />
+        ))}
+      </div>
+    ) : (
+      <p className="text-muted-foreground max-w-xl">No personas created</p>
+    )}
+  </div>
+);
+
+export const ChatHome: FC<ChatPersonaProps> = ({ personas, news }) => {
+  const [showChangelog, setShowChangelog] = useState<boolean>(false);
   return (
     <ScrollArea className="flex-1 px-3">
       <main className="flex flex-1 flex-col gap-6 pb-6">
@@ -40,117 +138,17 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
             </>
           }
           description={AI_DESCRIPTION}
-        ></Hero>
+        />
         <div className="container max-w-4xl flex gap-20 flex-col">
-          {showChanglog ? (
-            <div>
-              <div className="flex justify-between">
-                <h2 className="text-2xl font-bold mb-3">Changelog</h2>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    className="flex items-center gap-3"
-                    onClick={() =>
-                      window.open(
-                        "https://forms.office.com/Pages/ResponsePage.aspx?id=M8Rk7OgevU2Dejn1bHzc6qjXxr1TIg9Fg1aYy60PnqtUOVdLNjhPVTVZU1RXVUpSUEVDNTRPUDBMRy4u",
-                        "_blank"
-                      )
-                    }
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                    Report Feedback
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="flex items-center gap-3"
-                    onClick={() => setShowChangelog(false)}
-                  >
-                    <House className="h-5 w-5" />
-                    <p>Home</p>
-                  </Button>
-                </div>
-              </div>
-              <Changelog
-                // owner="buhlergroup"
-                // repo="azurechat"
-                // path="docs/changelog.md"
-
-                owner="SchickliCop"
-                repo="azurechat"
-                path="docs/changelog.md"
-                branch="feature/ms/introduce-changelog"
-              />
-            </div>
+          {showChangelog ? (
+            <ChangelogSection setShowChangelog={setShowChangelog} />
           ) : (
             <>
-              <div>
-                <div>
-                  <div className="flex justify-between">
-                    <h2 className="text-2xl font-bold mb-3">Articles</h2>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        className="flex items-center gap-3"
-                        onClick={() =>
-                          window.open(
-                            "https://forms.office.com/Pages/ResponsePage.aspx?id=M8Rk7OgevU2Dejn1bHzc6qjXxr1TIg9Fg1aYy60PnqtUOVdLNjhPVTVZU1RXVUpSUEVDNTRPUDBMRy4u",
-                            "_blank"
-                          )
-                        }
-                      >
-                        <ExternalLink className="h-5 w-5" />
-                        Report Feedback
-                      </Button>
-                      <Button
-                        variant={"ghost"}
-                        className="gap-3"
-                        onClick={() => setShowChangelog(true)}
-                      >
-                        <Logs className="h-5 w-5" />
-                        <p>Changelog</p>
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    {props.news && props.news.length > 0 ? (
-                      props.news.map((newsArticle) => {
-                        return (
-                          <NewsArticle
-                            newsArticle={newsArticle}
-                            key={newsArticle.id}
-                          />
-                        );
-                      })
-                    ) : (
-                      <p className="text-muted-foreground max-w-xl">
-                        No current news
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold mb-3">Personas</h2>
-
-                {props.personas && props.personas.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-3">
-                    {props.personas.map((persona) => {
-                      return (
-                        <PersonaCard
-                          persona={persona}
-                          key={persona.id}
-                          showContextMenu={false}
-                          showActionMenu={false}
-                        />
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-muted-foreground max-w-xl">
-                    No personas created
-                  </p>
-                )}
-              </div>
+              <ArticlesSection
+                news={news}
+                setShowChangelog={setShowChangelog}
+              />
+              <PersonasSection personas={personas} />
             </>
           )}
         </div>
