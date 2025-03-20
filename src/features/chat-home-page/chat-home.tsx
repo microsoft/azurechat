@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
 import { PersonaCard } from "@/features/persona-page/persona-card/persona-card";
@@ -63,12 +63,7 @@ const ChangelogSection = ({
         <HomeButton onClick={() => setShowChangelog(false)} />
       </div>
     </div>
-    <Changelog
-      owner="SchickliCop"
-      repo="azurechat"
-      path="docs/changelog.md"
-      branch="feature/ms/introduce-changelog"
-    />
+    <Changelog />
   </div>
 );
 

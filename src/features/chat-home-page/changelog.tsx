@@ -2,7 +2,7 @@
 import type React from "react"
 
 import { useEffect, useState } from "react"
-import { fetchChangelog } from "@/features/common/services/github"
+import { getChangelog } from "@/features/common/services/changelog"
 import { Badge } from "@/features/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui/card"
 import { PlusCircle, WrenchIcon, RefreshCw, Trash2 } from "lucide-react"
@@ -17,14 +17,7 @@ type ChangelogEntry = {
   }[]
 }
 
-type ChangelogProps = {
-  owner: string
-  repo: string
-  path: string
-  branch?: string
-}
-
-export function Changelog({ owner, repo, path, branch = "main" }: ChangelogProps) {
+export function Changelog() {
   const [entries, setEntries] = useState<ChangelogEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -33,7 +26,7 @@ export function Changelog({ owner, repo, path, branch = "main" }: ChangelogProps
     async function loadChangelog() {
       try {
         setLoading(true)
-        const content = await fetchChangelog(owner, repo, path, branch)
+        const content = await getChangelog()
         const parsedEntries = parseChangelog(content)
         setEntries(parsedEntries)
         setError(null)
@@ -46,7 +39,7 @@ export function Changelog({ owner, repo, path, branch = "main" }: ChangelogProps
     }
 
     loadChangelog()
-  }, [owner, repo, path, branch])
+  }, [])
 
   if (loading) {
     return <Loading />
