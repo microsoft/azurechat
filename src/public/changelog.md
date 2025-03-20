@@ -19,5 +19,5 @@
 - Added: Sidebar now displays past chats and allows bookmarking important chats.
 - Added: Main start page contains a news and best practices article section for Bühler Chat and a lower section showcasing personas.
 - Added: Support for Personas, which are user-guided AI assistants tailored via specific prompts.
-- Added: Ability to promote personas for visibility across users via service desk tickets.
+- Added: Ability to share personas via a link.
 - Added: Integration of DALL·E 3 for image creation based on text descriptions, with automatic handling of prompts for generating images.
