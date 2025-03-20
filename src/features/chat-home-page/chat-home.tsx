@@ -20,16 +20,11 @@ interface ChatPersonaProps {
   news: NewsArticleModel[];
 }
 
-const FeedbackButton = () => (
+const FeedbackButton = ({ feedBackLink }: { feedBackLink: string }) => (
   <Button
     variant="ghost"
     className="flex items-center gap-3"
-    onClick={() =>
-      window.open(
-        "https://forms.office.com/Pages/ResponsePage.aspx?id=M8Rk7OgevU2Dejn1bHzc6qjXxr1TIg9Fg1aYy60PnqtUOVdLNjhPVTVZU1RXVUpSUEVDNTRPUDBMRy4u",
-        "_blank"
-      )
-    }
+    onClick={() => window.open(feedBackLink, "_blank")}
   >
     <ExternalLink className="h-5 w-5" />
     Report Feedback
@@ -59,7 +54,11 @@ const ChangelogSection = ({
     <div className="flex justify-between">
       <h2 className="text-2xl font-bold mb-3">Changelog</h2>
       <div className="flex gap-2">
-        <FeedbackButton />
+        {process.env.NEXT_PUBLIC_FEEDBACK_LINK && (
+          <FeedbackButton
+            feedBackLink={process.env.NEXT_PUBLIC_FEEDBACK_LINK}
+          />
+        )}
         <HomeButton onClick={() => setShowChangelog(false)} />
       </div>
     </div>
@@ -78,7 +77,11 @@ const ArticlesSection = ({
     <div className="flex justify-between">
       <h2 className="text-2xl font-bold mb-3">Articles</h2>
       <div className="flex gap-2">
-        <FeedbackButton />
+        {process.env.NEXT_PUBLIC_FEEDBACK_LINK && (
+          <FeedbackButton
+            feedBackLink={process.env.NEXT_PUBLIC_FEEDBACK_LINK}
+          />
+        )}
         <ChangelogButton onClick={() => setShowChangelog(true)} />
       </div>
     </div>
