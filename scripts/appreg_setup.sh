@@ -13,6 +13,9 @@ while [[ "$#" -gt 0 ]]; do
         -showsecret)
             showsecret_flag="true"
             ;;
+        -localredirect)
+            local_redirect_flag="true"
+            ;;
         *)
             echo "Unknown parameter passed: $1"
             exit 1
@@ -22,8 +25,13 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 if [[ -z "$webappname" ]]; then
+    webappname=$(azd env get-value AZURE_WEBAPP_NAME)
+fi
+
+if [[ -z "$webappname" ]] || [[ $webappname == *"ERROR"* ]]; then
+
     echo ""
-    echo "Usage: $0 -w <webappname> [-showsecret]"
+    echo "Usage: $0 -w <webappname> [-showsecret] [-localredirect]"
     echo "No arguments provided. Please provide the web app name from the Azure portal (e.g. azurechat-ulg3yy5ybjhdq)."
     exit 1
 fi
@@ -51,8 +59,16 @@ echo "Done."
 
 redirecturl="https://${webappname}.azurewebsites.net/api/auth/callback/azure-ad"
 graphurl="https://graph.microsoft.com/v1.0/applications/${objectid}"
-echo "> Updating redirect url to $redirecturl..."
-az rest --method PATCH --uri $graphurl --body "{'web':{'redirectUris':['${redirecturl}']}}"
+
+if [[ "$local_redirect_flag" == "true" ]]; then
+    echo "> Updating redirect url to $redirecturl and http://localhost:3000/api/auth/callback/azure-ad..."
+    redirectBody="{'web':{'redirectUris':['${redirecturl}','http://localhost:3000/api/auth/callback/azure-ad']}}"
+else
+    echo "> Updating redirect url to $redirecturl..."
+    redirectBody="{'web':{'redirectUris':['${redirecturl}']}}"
+fi
+
+az rest --method PATCH --uri $graphurl --body $redirectBody
 echo "Done."
 
 rg=$(az webapp list --query "[?name=='${webappname}'].resourceGroup" --output tsv | tr -d '[:space:]')
