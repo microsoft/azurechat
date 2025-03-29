@@ -47,6 +47,28 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9;
   }
+
+  .codelco {
+    --background: 24 30% 10%; /* Negro cobrizo */
+    --foreground: 30 20% 95%; /* Blanco cálido */
+    --card: 24 30% 10%;
+    --card-foreground: 30 20% 95%;
+    --popover: 24 30% 10%;
+    --popover-foreground: 30 20% 95%;
+    --primary: 25 70% 40%; /* Cobre */
+    --primary-foreground: 0 0% 100%; /* Blanco */
+    --secondary: 24 20% 20%; /* Marrón oscuro */
+    --secondary-foreground: 30 20% 95%;
+    --muted: 24 20% 20%;
+    --muted-foreground: 30 15% 70%;
+    --accent: 25 60% 35%; /* Cobre oscuro */
+    --accent-foreground: 30 20% 95%;
+    --destructive: 0 60% 35%; /* Rojo oscuro */
+    --destructive-foreground: 30 20% 95%;
+    --border: 24 20% 25%;
+    --input: 24 20% 25%;
+    --ring: 25 70% 40%; /* Cobre */
+  }
 }
 
 @layer base {

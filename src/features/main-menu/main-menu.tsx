@@ -43,11 +43,11 @@ export const MainMenu = async () => {
               <VenetianMask {...menuIconProps} />
             </MenuLink>
           </MenuItem>
-          <MenuItem tooltip="extensions">
+          {/* <MenuItem tooltip="extensions">
             <MenuLink href="/extensions" ariaLabel="Go to the Extensions configuration page">
               <PocketKnife {...menuIconProps} />
             </MenuLink>
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem tooltip="prompts">
             <MenuLink href="/prompt" ariaLabel="Go to the Prompt Library configuration page">
               <Book {...menuIconProps} />
