@@ -16,7 +16,7 @@ export const NewChat = () => {
       variant={"outline"}
     >
       {pending ? <LoadingIndicator isLoading={pending} /> : <Plus size={18} />}
-      New Chat
+      Nuevo Chat
     </Button>
   );
 };

@@ -49,8 +49,8 @@
   }
 
   .codelco {
-    --background: 24 30% 10%; /* Negro cobrizo */
-    --foreground: 30 20% 95%; /* Blanco cálido */
+    --background: 222.2 84% 4.9%; /* Negro cobrizo */
+    --foreground: 210 40% 98%; /* Blanco cálido */
     --card: 24 30% 10%;
     --card-foreground: 30 20% 95%;
     --popover: 24 30% 10%;
