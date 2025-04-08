@@ -44,11 +44,11 @@ export const hashValue = (value: string): string => {
 export const redirectIfAuthenticated = async () => {
   const user = await userSession();
   if (user) {
-    // RedirectToPage("chat");
-    const response = await CreateChatThread();
-       if (response.status === "OK") {
-        RedirectToChatThread(response.response.id);
-      }
+    RedirectToPage("chat");
+    // const response = await CreateChatThread();
+    //    if (response.status === "OK") {
+    //     RedirectToChatThread(response.response.id);
+    //   }
   }
 };
 

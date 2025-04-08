@@ -1,64 +1,24 @@
-import { ChatPage } from "@/features/chat-page/chat-page";
-import { FindAllChatDocuments } from "@/features/chat-page/chat-services/chat-document-service";
-import { FindAllChatMessagesForCurrentUser } from "@/features/chat-page/chat-services/chat-message-service";
-import { CreateChatThread, FindChatThreadForCurrentUser } from "@/features/chat-page/chat-services/chat-thread-service";
-import { RedirectToChatThread } from "@/features/common/navigation-helpers";
-import { uniqueId } from "@/features/common/util";
+import { ChatHome } from "@/features/chat-home-page/chat-home";
 import { FindAllExtensionForCurrentUser } from "@/features/extensions-page/extension-services/extension-service";
-import { AI_NAME } from "@/features/theme/theme-config";
+import { FindAllPersonaForCurrentUser } from "@/features/persona-page/persona-services/persona-service";
 import { DisplayError } from "@/features/ui/error/display-error";
 
-export const metadata = {
-  title: AI_NAME,
-  description: AI_NAME,
-};
+export default async function Home() {
+  const [personaResponse, extensionResponse] = await Promise.all([
+    FindAllPersonaForCurrentUser(),
+    FindAllExtensionForCurrentUser(),
+  ]);
 
-interface HomeParams {
-  params: {
-    id: string;
-  };
-}
-
-export default async function Home(props: HomeParams) {
-
- 
-  const { id } = props.params;
-  if (!id) {
-       const response = await CreateChatThread();
-       if (response.status === "OK") {
-      RedirectToChatThread(response.response.id);
-   }
-  }
-
-  const [chatResponse, chatThreadResponse, docsResponse, extensionResponse] =
-    await Promise.all([
-      FindAllChatMessagesForCurrentUser(id),
-      FindChatThreadForCurrentUser(id),
-      FindAllChatDocuments(id),
-      FindAllExtensionForCurrentUser(),
-    ]);
-
-  if (docsResponse.status !== "OK") {
-    return <DisplayError errors={docsResponse.errors} />;
-  }
-
-  if (chatResponse.status !== "OK") {
-    return <DisplayError errors={chatResponse.errors} />;
+  if (personaResponse.status !== "OK") {
+    return <DisplayError errors={personaResponse.errors} />;
   }
 
   if (extensionResponse.status !== "OK") {
     return <DisplayError errors={extensionResponse.errors} />;
   }
-
-  if (chatThreadResponse.status !== "OK") {
-    return <DisplayError errors={chatThreadResponse.errors} />;
-  }
-
   return (
-    <ChatPage
-      messages={chatResponse.response}
-      chatThread={chatThreadResponse.response}
-      chatDocuments={docsResponse.response}
+    <ChatHome
+      personas={personaResponse.response}
       extensions={extensionResponse.response}
     />
   );
