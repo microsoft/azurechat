@@ -34,7 +34,7 @@ const MessageContent: React.FC<MessageContentProps> = ({ message }) => {
 
   if (message.role === "tool" || message.role === "function") {
     return (
-      <div className="py-3">
+      <div className="py-2">
         <Accordion
           type="multiple"
           className="bg-background rounded-md border p-2"

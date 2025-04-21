@@ -8,7 +8,7 @@ interface DisclaimerProps {
 
 const Disclaimer: React.FC<DisclaimerProps> = ({ text }) => {
   return (
-    <div className="w-full py-4">
+    <div className="w-full pt-0 pb-2">
         <div className="container max-w-3xl flex justify-between items-center">
         <p>{text}</p>
         </div>
@@ -17,4 +17,3 @@ const Disclaimer: React.FC<DisclaimerProps> = ({ text }) => {
 };
 
 export default Disclaimer;
-

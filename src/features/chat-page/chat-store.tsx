@@ -9,12 +9,13 @@ import {
 } from "eventsource-parser";
 import { FormEvent } from "react";
 import { proxy, useSnapshot } from "valtio";
-import { RevalidateCache } from "../common/navigation-helpers";
+import { RedirectToChatThread, RevalidateCache } from "../common/navigation-helpers";
 import { InputImageStore } from "../ui/chat/chat-input-area/input-image-store";
 import { textToSpeechStore } from "./chat-input/speech/use-text-to-speech";
 import { ResetInputRows } from "./chat-input/use-chat-input-dynamic-height";
 import {
   AddExtensionToChatThread,
+  CreateChatThread,
   RemoveExtensionFromChatThread,
   UpdateChatTitle,
 } from "./chat-services/chat-thread-service";
@@ -278,12 +279,41 @@ class ChatState {
       return;
     }
 
-    // get form data from e
-    const formData = new FormData(e.currentTarget);
+    // Store the user input message
+    const userInput = this.input;
+    
+    // Check if we need to create a new chat thread
+    // This handles both empty IDs and the case where we've navigated to the chat home page
+    const isOnHomePage = window.location.pathname === "/chat";
+    if (this.chatThreadId === "" || this.chatThreadId === undefined || isOnHomePage) {
+      this.loading = "loading";
+      const response = await CreateChatThread();
+      
+      if (response.status !== "OK") {
+        showError("Failed to create chat thread: " + response.errors[0].message);
+        this.loading = "idle";
+        return;
+      }
+      
+      // Clear the input before redirecting
+      this.reset();
+      
+      // Encode the message to handle special characters
+      const encodedMessage = encodeURIComponent(userInput);
+      
+      // Immediately redirect to the new thread with the message as a parameter
+      // This prevents showing the home page during the redirect
+      window.location.href = `/chat/${response.response.id}?message=${encodedMessage}`;
+      return;
+    }
+
+    // Handle normal case when thread already exists
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
 
     const body = JSON.stringify({
       id: this.chatThreadId,
-      message: this.input,
+      message: userInput,
     });
     formData.append("content", body);
 

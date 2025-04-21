@@ -3,6 +3,7 @@ import { FindAllChatDocuments } from "@/features/chat-page/chat-services/chat-do
 import { FindAllChatMessagesForCurrentUser } from "@/features/chat-page/chat-services/chat-message-service";
 import { FindChatThreadForCurrentUser } from "@/features/chat-page/chat-services/chat-thread-service";
 import { FindAllExtensionForCurrentUser } from "@/features/extensions-page/extension-services/extension-service";
+import { FindAllPersonaForCurrentUser } from "@/features/persona-page/persona-services/persona-service";
 import { AI_NAME } from "@/features/theme/theme-config";
 import { DisplayError } from "@/features/ui/error/display-error";
 
@@ -15,16 +16,18 @@ interface HomeParams {
   params: {
     id: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function Home(props: HomeParams) {
   const { id } = props.params;
-  const [chatResponse, chatThreadResponse, docsResponse, extensionResponse] =
+  const [chatResponse, chatThreadResponse, docsResponse, extensionResponse, personaResponse] =
     await Promise.all([
       FindAllChatMessagesForCurrentUser(id),
       FindChatThreadForCurrentUser(id),
       FindAllChatDocuments(id),
       FindAllExtensionForCurrentUser(),
+      FindAllPersonaForCurrentUser(),
     ]);
 
   if (docsResponse.status !== "OK") {
@@ -42,6 +45,13 @@ export default async function Home(props: HomeParams) {
   if (chatThreadResponse.status !== "OK") {
     return <DisplayError errors={chatThreadResponse.errors} />;
   }
+  
+  if (personaResponse.status !== "OK") {
+    return <DisplayError errors={personaResponse.errors} />;
+  }
+
+  // Extract message from URL query if it exists
+  const initialMessage = props.searchParams.message as string | undefined;
 
   return (
     <ChatPage
@@ -49,6 +59,8 @@ export default async function Home(props: HomeParams) {
       chatThread={chatThreadResponse.response}
       chatDocuments={docsResponse.response}
       extensions={extensionResponse.response}
+      personas={personaResponse.response}
+      initialMessage={initialMessage}
     />
   );
 }

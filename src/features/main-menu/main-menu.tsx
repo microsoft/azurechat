@@ -47,17 +47,17 @@ export const MainMenu = async () => {
           <MenuTrayToggle />
         </MenuItemContainer>
         <MenuItemContainer>
-          {/* <MenuItem tooltip="Chat">
+          <MenuItem tooltip="Chat">
             <MenuLink href="/chat" ariaLabel="Go to the Chat page">
               <MessageCircle {...menuIconProps} />
             </MenuLink>
-          </MenuItem> */}
-          {/* <MenuItem tooltip="Persona">
+          </MenuItem>
+          <MenuItem tooltip="Persona">
             <MenuLink href="/persona" ariaLabel="Go to the Persona configuration page">
               <VenetianMask {...menuIconProps} />
             </MenuLink>
-          </MenuItem> */}
-          {/* <MenuItem tooltip="extensions">
+          </MenuItem>
+          <MenuItem tooltip="extensions">
             <MenuLink href="/extensions" ariaLabel="Go to the Extensions configuration page">
               <PocketKnife {...menuIconProps} />
             </MenuLink>
@@ -66,7 +66,7 @@ export const MainMenu = async () => {
             <MenuLink href="/prompt" ariaLabel="Go to the Prompt Library configuration page">
               <Book {...menuIconProps} />
             </MenuLink>
-          </MenuItem> */}
+          </MenuItem>
           {user.isAdmin && (
             <>
               <MenuItem tooltip="reporting">

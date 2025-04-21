@@ -1,8 +1,10 @@
 import React, { ForwardRefRenderFunction } from "react";
 import { ScrollArea } from "../../scroll-area";
+import { cn } from "../../lib";
 
-interface ChatMessageContainerProps {
+export interface ChatMessageContainerProps {
   children?: React.ReactNode;
+  className?: string;
 }
 
 const ChatMessageContainer: ForwardRefRenderFunction<
@@ -10,7 +12,7 @@ const ChatMessageContainer: ForwardRefRenderFunction<
   ChatMessageContainerProps
 > = (props, ref) => {
   return (
-    <ScrollArea ref={ref} className="flex-1  h-full" type="always">
+    <ScrollArea ref={ref} className={cn("flex-1 h-full", props.className)} type="always">
       {props.children}
     </ScrollArea>
   );

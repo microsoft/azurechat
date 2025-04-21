@@ -1,4 +1,5 @@
 import { ChatHome } from "@/features/chat-home-page/chat-home";
+import { ChatInput } from "@/features/chat-page/chat-input/chat-input";
 import { FindAllExtensionForCurrentUser } from "@/features/extensions-page/extension-services/extension-service";
 import { FindAllPersonaForCurrentUser } from "@/features/persona-page/persona-services/persona-service";
 import { DisplayError } from "@/features/ui/error/display-error";

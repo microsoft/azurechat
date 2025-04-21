@@ -9,6 +9,8 @@ import {
 import { useEffect, useState } from "react";
 import { Avatar, AvatarImage } from "../../avatar";
 import { Button } from "../../button";
+import Image from "next/image";
+
 
 export const ChatMessageArea = (props: {
   children?: React.ReactNode;
@@ -19,6 +21,7 @@ export const ChatMessageArea = (props: {
   onCopy: () => void;
 }) => {
   const [isIconChecked, setIsIconChecked] = useState(false);
+  const isUser = props.role === "user";
 
   const handleButtonClick = () => {
     props.onCopy();
@@ -34,9 +37,17 @@ export const ChatMessageArea = (props: {
   }, [isIconChecked]);
 
   let profile = null;
-
+  
   switch (props.role) {
     case "assistant":
+      if (props.profilePicture) {
+        profile = (
+          <Avatar>
+            <AvatarImage src={props.profilePicture} />
+          </Avatar>
+        );
+      }
+      break;
     case "user":
       if (props.profilePicture) {
         profile = (
@@ -69,42 +80,58 @@ export const ChatMessageArea = (props: {
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="h-7 flex items-center justify-between">
-        <div className="flex gap-3">
+    <div className={cn(
+      "flex flex-col mb-6",
+      isUser ? "items-end" : "items-start"
+    )}>
+      <div className={cn(
+        "flex items-center gap-2 mb-1 w-full",
+        isUser ? "flex-row-reverse justify-start" : "flex-row justify-start"
+      )}>
+        <div className={cn(
+          "flex gap-3",
+          isUser ? "flex-row-reverse" : "flex-row"
+        )}>
           {profile}
           <div
             className={cn(
-              "text-primary capitalize items-center flex text-muted-foreground",
+              "text-primary capitalize items-center flex",
               props.role === "function" || props.role === "tool"
                 ? "text-muted-foreground text-sm"
                 : "",
-              props.theme === "dark" ? "text-white" : "text-black"
+              props.theme === "dark" ? "text-white" : "text-black",
+              isUser ? "mr-2" : "ml-2"
             )}
           >
             {props.profileName}
           </div>
         </div>
-        <div className=" h-7 flex items-center justify-between">
-          <div>
-            <Button
-              variant={"ghost"}
-              size={"sm"}
-              title="Copy text"
-              className="justify-right flex"
-              onClick={handleButtonClick}
-            >
-              {isIconChecked ? (
-                <CheckIcon size={16} />
-              ) : (
-                <ClipboardIcon size={16} />
-              )}
-            </Button>
-          </div>
+        <div className="ml-auto">
+          <Button
+            variant={"ghost"}
+            size={"sm"}
+            title="Copy text"
+            className="justify-right flex"
+            onClick={handleButtonClick}
+          >
+            {isIconChecked ? (
+              <CheckIcon size={16} />
+            ) : (
+              <ClipboardIcon size={16} />
+            )}
+          </Button>
         </div>
       </div>
-      <div className="flex flex-col gap-2 flex-1 px-10">
-        <div className="prose prose-slate dark:prose-invert whitespace-break-spaces prose-p:leading-relaxed prose-pre:p-0 max-w-none">
+      <div className={cn(
+        "flex flex-col gap-2 max-w-[85%]",
+        isUser ? "items-end" : "items-start"
+      )}>
+        <div className={cn(
+          "prose prose-slate dark:prose-invert whitespace-break-spaces prose-p:leading-relaxed prose-pre:p-0",
+          isUser 
+            ? "bg-blue-50 dark:bg-blue-900/30 p-3 rounded-xl rounded-tr-none"
+            : "bg-white dark:bg-slate-800 p-3 rounded-xl rounded-tl-none",
+        )}>
           {props.children}
         </div>
       </div>
