@@ -75,7 +75,7 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
       });
       break;
     case "multimodal":
-      runner = ChatApiMultimodal({
+      runner = await ChatApiMultimodal({
         chatThread: currentChatThread,
         userMessage: props.message,
         file: props.multimodalImage,
