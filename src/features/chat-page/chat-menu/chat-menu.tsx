@@ -1,5 +1,5 @@
 import { sortByTimestamp } from "@/features/common/util";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   ChatThreadModel,
   MenuItemsGroup,
@@ -13,7 +13,9 @@ interface ChatMenuProps {
 }
 
 export const ChatMenu: FC<ChatMenuProps> = (props) => {
+
   const menuItemsGrouped = GroupChatThreadByType(props.menuItems);
+  
   return (
     <div className="px-3 flex flex-col gap-8 overflow-hidden">
       {Object.entries(menuItemsGrouped).map(

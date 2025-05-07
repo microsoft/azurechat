@@ -23,6 +23,6 @@
       "@/ui/*": ["./features/ui/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/static/file.js"],
   "exclude": ["node_modules"]
 }

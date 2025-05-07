@@ -27,7 +27,7 @@ export const LogIn: FC<LoginProps> = (props) => {
       <CardHeader className="gap-32">
         <CardTitle className="text-2xl flex gap-2 items-center">
           <Avatar className="h-36 w-30">
-            <AvatarImage src={theme === 'dark' ? "/Logo-COMAU-white.png" : "/ai-icon.png"} />
+            <AvatarImage className="h-36 w-30" src={theme === 'dark' ? "/Logo-COMAU-white.png" : "/ai-icon.png"} />
           </Avatar>
           <span className={theme === 'dark' ? "text-white" : "text-blue"}>AICO - AI for Comau</span>
         </CardTitle>

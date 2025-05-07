@@ -1,3 +1,4 @@
+"use client";
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
 import { CHAT_DEFAULT_PERSONA } from "@/features/theme/theme-config";
 import { VenetianMask } from "lucide-react";

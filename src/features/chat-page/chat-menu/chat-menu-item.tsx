@@ -11,7 +11,7 @@ import { cn } from "@/ui/lib";
 import { BookmarkCheck, MoreVertical, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { ChatThreadModel } from "../chat-services/models";
 import {
   BookmarkChatThread,
@@ -27,9 +27,19 @@ interface ChatMenuItemProps {
 
 export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
   const path = usePathname();
-  const { isLoading, handleAction } = useDropdownAction({
+  const {isLoading, handleAction } = useDropdownAction({
     chatThread: props.chatThread,
   });
+
+
+// //  console.log(path, props.href, "dropdown action");
+//   useEffect(() => {
+//     console.log(path, "path changed");
+//     let chatID=props.href.replace("/chat/", "");
+//     console.log(chatID, "chat id");
+
+//   });
+
 
   return (
     <div className="flex group hover:bg-muted pr-3 text-muted-foreground rounded-sm hover:text-muted-foreground">
@@ -82,8 +92,8 @@ export const ChatMenuItem: FC<ChatMenuItemProps> = (props) => {
 
 type DropdownAction = "bookmark" | "rename" | "delete";
 
-const useDropdownAction = (props: { chatThread: ChatThreadModel }) => {
-  const { chatThread } = props;
+const useDropdownAction = (props: { chatThread: ChatThreadModel}) => {
+  const { chatThread} = props;
   const [isLoading, setIsLoading] = useState(false);
 
   const handleAction = async (action: DropdownAction) => {
@@ -103,6 +113,7 @@ const useDropdownAction = (props: { chatThread: ChatThreadModel }) => {
           window.confirm("Are you sure you want to delete this chat thread?")
         ) {
           await DeleteChatThreadByID(chatThread.id);
+          
         }
         break;
     }
