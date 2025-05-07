@@ -10,6 +10,7 @@ import { PersonaModel } from "../persona-services/models";
 import { PersonaCardContextMenu } from "./persona-card-context-menu";
 import { ViewPersona } from "./persona-view";
 import { StartNewPersonaChat } from "./start-new-persona-chat";
+import {CopyStartNewPersonaChat} from "@/features/persona-page/persona-card/copy-start-new-persona-chat";
 
 interface Props {
   persona: PersonaModel;
@@ -33,7 +34,7 @@ export const PersonaCard: FC<Props> = (props) => {
       </CardContent>
       <CardFooter className="gap-1 content-stretch f">
         {props.showContextMenu && <ViewPersona persona={persona} />}
-
+        <CopyStartNewPersonaChat id={persona.id} />
         <StartNewPersonaChat persona={persona} />
       </CardFooter>
     </Card>
