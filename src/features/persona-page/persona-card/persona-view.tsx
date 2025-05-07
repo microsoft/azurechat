@@ -12,6 +12,7 @@ import {
   SheetTrigger,
 } from "../../ui/sheet";
 import { PersonaModel } from "../persona-services/models";
+import { AI_NAME } from "@/features/theme/theme-config";
 
 interface Props {
   persona: PersonaModel;
@@ -41,6 +42,18 @@ export const ViewPersona: FC<Props> = (props) => {
                 name="personaMessage"
                 placeholder="Personality of your persona"
               />
+              <div className="grid grid-cols-[20px_1fr] gap-2">
+                <input className="h-5"
+                       type="checkbox"
+                       name="useIntroductionMessage"
+                       defaultChecked={persona.useIntroductionMessage}
+                       disabled
+                       aria-disabled
+                />
+                <div className="flex items-center text-sm text-muted-foreground">
+                  {AI_NAME} uses a customized introduction message for this persona
+                </div>
+              </div>
               <p className="text-xs text-muted-foreground">
                 {persona.isPublished
                   ? `This is published and everyone in your organisation can use ${persona.name} persona`
