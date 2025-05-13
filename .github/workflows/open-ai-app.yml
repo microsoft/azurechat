@@ -22,10 +22,11 @@ jobs:
         with:
           node-version: "20.x"
 
-      - name: ⚙️ npm install and build
+      - name: ⚙️ npm install and build (with framer-motion)
         run: |
           cd ./src
           npm install
+          npm install framer-motion
           npm run build --if-present
           cd ..
          
