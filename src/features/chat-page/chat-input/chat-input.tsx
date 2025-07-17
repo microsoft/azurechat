@@ -34,6 +34,7 @@ import {
 
 export const ChatInput = () => {
   const { loading, input, chatThreadId } = useChat();
+  const { webSearchEnabled } = useChat();
   const { uploadButtonLabel } = useFileStore();
   const { isPlaying } = useTextToSpeech();
   const { isMicrophoneReady } = useSpeechToText();
@@ -83,6 +84,18 @@ export const ChatInput = () => {
             }
           />
           <PromptSlider />
+          {/* Web Search toggle */}
+          <label className="flex items-center ml-2 text-sm">
+            <input
+              type="checkbox"
+              checked={webSearchEnabled}
+              onChange={(e) =>
+                chatStore.updateWebSearchEnabled(e.currentTarget.checked)
+              }
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+            />
+            <span className="ml-1">Web Search</span>
+          </label>
         </ChatInputSecondaryActionArea>
         <ChatInputPrimaryActionArea>
           <ImageInput />

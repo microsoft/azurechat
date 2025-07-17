@@ -18,7 +18,8 @@ import { GetDynamicExtensions } from "./chat-api-dynamic-extensions";
 import { ChatApiExtensions } from "./chat-api-extension";
 import { ChatApiMultimodal } from "./chat-api-multimodal";
 import { OpenAIStream } from "./open-ai-stream";
-type ChatTypes = "extensions" | "chat-with-file" | "multimodal";
+import { ChatApiWebSearch } from "./chat-api-websearch";
+type ChatTypes = "extensions" | "chat-with-file" | "multimodal" | "websearch";
 
 export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
   const currentChatThreadResponse = await EnsureChatThreadOperation(props.id);
@@ -45,8 +46,9 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
   currentChatThread.personaMessage = `${CHAT_DEFAULT_SYSTEM_PROMPT} \n\n ${currentChatThread.personaMessage}`;
 
   let chatType: ChatTypes = "extensions";
-
-  if (props.multimodalImage && props.multimodalImage.length > 0) {
+  if (props.webSearchEnabled) {
+    chatType = "websearch";
+  } else if (props.multimodalImage && props.multimodalImage.length > 0) {
     chatType = "multimodal";
   } else if (docs.length > 0) {
     chatType = "chat-with-file";
@@ -63,15 +65,23 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
     multiModalImage: props.multimodalImage,
   });
 
-  let runner: ChatCompletionStreamingRunner;
 
+  let runner: ChatCompletionStreamingRunner;
   switch (chatType) {
+    case "websearch":
+      runner = await ChatApiWebSearch({
+        chatThread: currentChatThread,
+        userMessage: props.message,
+        history,
+        signal,
+      });
+      break;
     case "chat-with-file":
       runner = await ChatApiRAG({
         chatThread: currentChatThread,
         userMessage: props.message,
-        history: history,
-        signal: signal,
+        history,
+        signal,
       });
       break;
     case "multimodal":
@@ -79,24 +89,20 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
         chatThread: currentChatThread,
         userMessage: props.message,
         file: props.multimodalImage,
-        signal: signal,
+        signal,
       });
       break;
     case "extensions":
       runner = await ChatApiExtensions({
         chatThread: currentChatThread,
         userMessage: props.message,
-        history: history,
+        history,
         extensions: extension,
-        signal: signal,
+        signal,
       });
       break;
   }
-
-  const readableStream = OpenAIStream({
-    runner: runner,
-    chatThread: currentChatThread,
-  });
+  const readableStream = OpenAIStream({ runner, chatThread: currentChatThread });
 
   return new Response(readableStream, {
     headers: {

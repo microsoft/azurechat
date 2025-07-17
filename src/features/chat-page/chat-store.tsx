@@ -28,6 +28,8 @@ let abortController: AbortController = new AbortController();
 type chatStatus = "idle" | "loading" | "file upload";
 
 class ChatState {
+  /** whether to enable web search via Azure AI Foundry */
+  public webSearchEnabled: boolean = false;
   public messages: Array<ChatMessageModel> = [];
   public loading: chatStatus = "idle";
   public input: string = "";
@@ -123,10 +125,17 @@ class ChatState {
     this.autoScroll = value;
   }
 
+  /** Toggle web search flag */
+  public updateWebSearchEnabled(value: boolean) {
+    this.webSearchEnabled = value;
+  }
+
   private reset() {
     this.input = "";
     ResetInputRows();
     InputImageStore.Reset();
+    // reset web search toggle
+    this.webSearchEnabled = false;
   }
 
   private async chat(formData: FormData) {
@@ -284,6 +293,7 @@ class ChatState {
     const body = JSON.stringify({
       id: this.chatThreadId,
       message: this.input,
+      webSearchEnabled: this.webSearchEnabled,
     });
     formData.append("content", body);
 

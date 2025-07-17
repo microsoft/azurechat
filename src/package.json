@@ -10,10 +10,12 @@
     "debug": "set NODE_OPTIONS=--inspect && next dev"
   },
   "dependencies": {
+    "@azure/ai-agents": "^1.0.0",
     "@azure/ai-form-recognizer": "^5.0.0",
     "@azure/cosmos": "^4.0.0",
-    "@azure/identity": "^4.4.1",
+    "@azure/identity": "^4.10.2",
     "@azure/keyvault-secrets": "^4.7.0",
+    "@azure/openai": "^2.0.0-beta.2",
     "@azure/search-documents": "^12.0.0",
     "@azure/storage-blob": "^12.17.0",
     "@codemirror/lang-javascript": "^6.2.1",
@@ -44,7 +46,6 @@
     "next-auth": "^4.24.5",
     "next-themes": "^0.2.1",
     "openai": "^4.67.1",
-    "@azure/openai":"^2.0.0-beta.2",
     "react": "^18",
     "react-dom": "^18",
     "react-syntax-highlighter": "^15.5.0",

@@ -40,6 +40,8 @@ export interface UserPrompt {
   id: string; // thread id
   message: string;
   multimodalImage: string;
+  /** enable web search via Azure AI Foundry Agent */
+  webSearchEnabled: boolean;
 }
 
 export interface ChatDocumentModel {
