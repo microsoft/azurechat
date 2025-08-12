@@ -18,7 +18,7 @@ param name string
 @description('Primary location for all resources')
 param location string
 
-// azure open ai -- regions currently support gpt-4o global-standard
+// azure open ai -- regions currently support gpt-5 global-standard
 @description('Location for the OpenAI resource group')
 @allowed([
   'australiaeast'
@@ -62,12 +62,12 @@ param openAILocation string
 param dalleLocation string
 
 param openAISku string = 'S0'
-param openAIApiVersion string = '2024-08-01-preview'
+param openAIApiVersion string = '2024-12-01-preview'
 
 param chatGptDeploymentCapacity int = 30
-param chatGptDeploymentName string = 'gpt-4o'
-param chatGptModelName string = 'gpt-4o'
-param chatGptModelVersion string = '2024-05-13'
+param chatGptDeploymentName string = 'gpt-5-chat'
+param chatGptModelName string = 'gpt-5-chat'
+param chatGptModelVersion string = '2024-12-01'
 param embeddingDeploymentName string = 'embedding'
 param embeddingDeploymentCapacity int = 120
 param embeddingModelName string = 'text-embedding-ada-002'
