@@ -35,7 +35,6 @@ class ChatState {
   public autoScroll: boolean = false;
   public userName: string = "";
   public chatThreadId: string = "";
-  public model: string = "";
 
   private chatThread: ChatThreadModel | undefined;
 
@@ -114,10 +113,6 @@ class ChatState {
 
   public updateInput(value: string) {
     this.input = value;
-  }
-
-  public updateModel(value: string) {
-    this.model = value;
   }
 
   public stopGeneratingMessages() {
@@ -289,7 +284,6 @@ class ChatState {
     const body = JSON.stringify({
       id: this.chatThreadId,
       message: this.input,
-      model: this.model,
     });
     formData.append("content", body);
 
