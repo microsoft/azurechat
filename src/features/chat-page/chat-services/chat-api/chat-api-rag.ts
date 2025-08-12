@@ -17,10 +17,11 @@ export const ChatApiRAG = async (props: {
   userMessage: string;
   history: ChatCompletionMessageParam[];
   signal: AbortSignal;
+  model?: string;
 }): Promise<ChatCompletionStreamingRunner> => {
-  const { chatThread, userMessage, history, signal } = props;
+  const { chatThread, userMessage, history, signal, model } = props;
 
-  const openAI = OpenAIInstance();
+  const openAI = OpenAIInstance(model);
 
   const documentResponse = await SimilaritySearch(
     userMessage,
@@ -64,7 +65,7 @@ ${userMessage}
 `;
 
   const stream: ChatCompletionStreamParams = {
-    model: "",
+    model: model ?? process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME!,
     stream: true,
     messages: [
       {
