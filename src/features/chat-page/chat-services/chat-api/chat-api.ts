@@ -71,6 +71,7 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
         chatThread: currentChatThread,
         userMessage: props.message,
         history: history,
+        model: props.model,
         signal: signal,
       });
       break;
@@ -79,6 +80,7 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
         chatThread: currentChatThread,
         userMessage: props.message,
         file: props.multimodalImage,
+        model: props.model,
         signal: signal,
       });
       break;
@@ -88,6 +90,7 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
         userMessage: props.message,
         history: history,
         extensions: extension,
+        model: props.model,
         signal: signal,
       });
       break;
