@@ -9,10 +9,11 @@ export const ChatApiMultimodal = (props: {
   userMessage: string;
   file: string;
   signal: AbortSignal;
+  model?: string;
 }): ChatCompletionStreamingRunner => {
-  const { chatThread, userMessage, signal, file } = props;
+  const { chatThread, userMessage, signal, file, model } = props;
 
-  const openAI = OpenAIInstance();
+  const openAI = OpenAIInstance(model);
 
   return openAI.beta.chat.completions.stream(
     {

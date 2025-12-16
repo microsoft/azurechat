@@ -6,6 +6,14 @@ import { ChatDocumentModel, ChatThreadModel } from "../chat-services/models";
 import { DocumentDetail } from "./document-detail";
 import { ExtensionDetail } from "./extension-detail";
 import { PersonaDetail } from "./persona-detail";
+import { chatStore, useChat } from "@/features/chat-page/chat-store";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/features/ui/select";
 
 interface Props {
   chatThread: ChatThreadModel;
@@ -29,7 +37,9 @@ export const ChatHeader: FC<Props> = (props) => {
             {persona}
           </span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {/* Model selector */}
+          <ModelSelect />
           <PersonaDetail chatThread={props.chatThread} />
           <DocumentDetail chatDocuments={props.chatDocuments} />
           <ExtensionDetail
@@ -41,5 +51,24 @@ export const ChatHeader: FC<Props> = (props) => {
         </div>
       </div>
     </div>
+  );
+};
+
+const ModelSelect: FC = () => {
+  const { selectedModel } = useChat();
+  const onChange = (v: string) => chatStore.updateSelectedModel(v);
+
+  return (
+    <Select value={selectedModel} onValueChange={onChange}>
+      <SelectTrigger className="w-44">
+        <SelectValue placeholder="Välj modell" />
+      </SelectTrigger>
+      <SelectContent>
+        {/* Use your Azure OpenAI deployment names here */}
+        <SelectItem value="gpt-4o">gpt-4o</SelectItem>
+        <SelectItem value="gpt-5">gpt-5</SelectItem>
+        <SelectItem value="gpt-5-mini">gpt-5-mini</SelectItem>
+      </SelectContent>
+    </Select>
   );
 };

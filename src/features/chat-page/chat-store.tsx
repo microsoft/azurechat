@@ -35,6 +35,7 @@ class ChatState {
   public autoScroll: boolean = false;
   public userName: string = "";
   public chatThreadId: string = "";
+  public selectedModel: string = "";
 
   private chatThread: ChatThreadModel | undefined;
 
@@ -56,6 +57,10 @@ class ChatState {
 
   public updateLoading(value: chatStatus) {
     this.loading = value;
+  }
+
+  public updateSelectedModel(model: string) {
+    this.selectedModel = model;
   }
 
   public initChatSession({
@@ -284,6 +289,7 @@ class ChatState {
     const body = JSON.stringify({
       id: this.chatThreadId,
       message: this.input,
+      model: this.selectedModel,
     });
     formData.append("content", body);
 

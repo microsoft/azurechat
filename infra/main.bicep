@@ -91,6 +91,30 @@ param privateEndpointVNetPrefix string = '192.168.0.0/16'
 param privateEndpointSubnetAddressPrefix string = '192.168.0.0/24'
 param appServiceBackendSubnetAddressPrefix string = '192.168.1.0/24'
 
+@description('Additional OpenAI deployments to create if you want more to choose from(e.g., gpt-5, gpt-5-mini)')
+param additionalLlmDeployments array = [
+  {
+    name: 'gpt-5'
+    model: {
+      name: 'gpt-5'
+      version: '2025-01-01-preview'
+    }
+    sku: {
+      capacity: 120
+    }
+  }
+  {
+    name: 'gpt-5-mini'
+    model: {
+      name: 'gpt-5-mini'
+      version: '2025-01-01-preview'
+    }
+    sku: {
+      capacity: 120
+    }
+  }
+]
+
 var resourceToken = toLower(uniqueString(subscription().id, name, location))
 var tags = { 'azd-env-name': name }
 
@@ -134,6 +158,7 @@ module resources 'resources.bicep' = {
     privateEndpointVNetPrefix: privateEndpointVNetPrefix
     privateEndpointSubnetAddressPrefix: privateEndpointSubnetAddressPrefix
     appServiceBackendSubnetAddressPrefix: appServiceBackendSubnetAddressPrefix
+    additionalLlmDeployments: additionalLlmDeployments
   }
 }
 

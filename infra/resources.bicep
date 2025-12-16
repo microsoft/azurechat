@@ -43,6 +43,9 @@ param privateEndpointVNetPrefix string = '192.168.0.0/16'
 param privateEndpointSubnetAddressPrefix string = '192.168.0.0/24'
 param appServiceBackendSubnetAddressPrefix string = '192.168.1.0/24'
 
+@description('Optional additional LLM deployments to create on the same Azure OpenAI resource')
+param additionalLlmDeployments array = []
+
 var openai_name = toLower('${name}-aillm-${resourceToken}')
 var openai_dalle_name = toLower('${name}-aidalle-${resourceToken}')
 
@@ -73,7 +76,7 @@ var databaseName = 'chat'
 var historyContainerName = 'history'
 var configContainerName = 'config'
 
-var llmDeployments = [
+var baseLlmDeployments = [
   {
     name: chatGptDeploymentName
     model: {
@@ -96,6 +99,23 @@ var llmDeployments = [
     capacity: embeddingDeploymentCapacity
   }
 ]
+
+var mappedAdditionalDeployments = [
+  for addition in additionalLlmDeployments: {
+    name: addition.name
+    model: {
+      format: 'OpenAI'
+      name: addition.modelName
+      version: addition.modelVersion
+    }
+    sku: {
+      name: 'GlobalStandard'
+      capacity: addition.capacity
+    }
+  }
+]
+
+var llmDeployments = concat(baseLlmDeployments, mappedAdditionalDeployments)
 
 module privateEndpoints 'private_endpoints_core.bicep' = if (usePrivateEndpoints) {
   name: 'private-endpoints'
@@ -149,16 +169,16 @@ var appSettingsCommon = [
     value: 'true'
   }
   {
+    name: 'AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME'
+    value: embeddingDeploymentName
+  }
+  {
     name: 'AZURE_OPENAI_API_INSTANCE_NAME'
     value: openai_name
   }
   {
     name: 'AZURE_OPENAI_API_DEPLOYMENT_NAME'
     value: chatGptDeploymentName
-  }
-  {
-    name: 'AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME'
-    value: embeddingDeploymentName
   }
   {
     name: 'AZURE_OPENAI_API_VERSION'
@@ -214,6 +234,25 @@ var appSettingsCommon = [
   }
 ]
 
+var additionalModelSettingsDeployment = [
+  for (deployment, i) in mappedAdditionalDeployments: {
+    name: 'AZURE_OPENAI_API_DEPLOYMENT_NAME_MODEL_${i + 1}'
+    value: deployment.model.name
+  }
+]
+
+var additionalModelSettingsVersion = [
+  for (deployment, i) in mappedAdditionalDeployments: {
+    name: 'AZURE_OPENAI_API_VERSION_MODEL_${i + 1}'
+    value: deployment.model.version
+  }
+]
+
+var additionalModelSettings = concat(
+  additionalModelSettingsDeployment,
+  additionalModelSettingsVersion
+)
+
 var appSettingsWithLocalAuth = disableLocalAuth
   ? []
   : [
@@ -258,7 +297,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
       appCommandLine: 'next start'
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
-      appSettings: concat(appSettingsCommon, appSettingsWithLocalAuth)
+      appSettings: concat(appSettingsCommon, additionalModelSettings, appSettingsWithLocalAuth)
     }
   }
   identity: { type: 'SystemAssigned' }

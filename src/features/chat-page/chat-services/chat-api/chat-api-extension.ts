@@ -13,10 +13,11 @@ export const ChatApiExtensions = async (props: {
   history: ChatCompletionMessageParam[];
   extensions: RunnableToolFunction<any>[];
   signal: AbortSignal;
+  model?: string;
 }): Promise<ChatCompletionStreamingRunner> => {
-  const { userMessage, history, signal, chatThread, extensions } = props;
+  const { userMessage, history, signal, chatThread, extensions, model } = props;
 
-  const openAI = OpenAIInstance();
+  const openAI = OpenAIInstance(model);
   const systemMessage = await extensionsSystemMessage(chatThread);
   return openAI.beta.chat.completions.runTools(
     {
