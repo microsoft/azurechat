@@ -7,16 +7,15 @@ import {
   DropdownMenuTrigger,
 } from "@/features/ui/dropdown-menu";
 import { LoadingIndicator } from "@/features/ui/loading";
-import { Download, MoreVertical, Trash } from "lucide-react";
+import { MoreVertical, Trash } from "lucide-react";
 import { useState } from "react";
-import { DownloadChatExport } from "./chat-export-client";
 import { DropdownMenuItemWithIcon } from "./chat-menu-item";
 import { DeleteAllChatThreads } from "./chat-menu-service";
 
 export const ChatContextMenu = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDeleteAll = async () => {
+  const handleAction = async () => {
     if (
       window.confirm("Are you sure you want to delete all the chat threads?")
     ) {
@@ -32,17 +31,6 @@ export const ChatContextMenu = () => {
     }
   };
 
-  const handleExportAll = async () => {
-    try {
-      setIsLoading(true);
-      await DownloadChatExport();
-    } catch (error) {
-      showError(`${error}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger disabled={isLoading}>
@@ -53,13 +41,7 @@ export const ChatContextMenu = () => {
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent side="right" align="start">
-        <DropdownMenuItemWithIcon onClick={async () => await handleExportAll()}>
-          <Download size={18} />
-          <span>Export all</span>
-        </DropdownMenuItemWithIcon>
-        <DropdownMenuItemWithIcon
-          onClick={async () => await handleDeleteAll()}
-        >
+        <DropdownMenuItemWithIcon onClick={async () => await handleAction()}>
           <Trash size={18} />
           <span>Delete all</span>
         </DropdownMenuItemWithIcon>
