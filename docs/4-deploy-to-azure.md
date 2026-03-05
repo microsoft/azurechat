@@ -19,6 +19,22 @@ To deploy the application to Azure using the Azure Developer CLI, follow the ste
    2. Run `azd auth login` to authenticate with Azure
    3. Run `azd up` to provision and deploy the application
 
+In both cases you will be prompted for some configuration values. These are described below:
+
+| Prompt - azd init | Description |
+|--------|-------------|
+| Enter a new environment name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| The name of the azd environment. The application will be deployed into a resource group called `rg-<environment name>`, and this value is also used in the name of all the created Azure resources.|
+
+| Prompt - azd up | Description |
+|--------|-------------|
+| Select an Azure Subscription to use| Select the Azure subscription you want to deploy the application to |
+|Select an Azure location to use| Select the Azure region you want to deploy the Azure services to. This location is used by all services except OpenAI deployments - these are set separately (below) |
+| Enter a value for the 'dalleLocation' infrastructure parameter| Select the Azure region you want to deploy the DALL-E model to. The number of regions that support DALL-E is currently limited |
+| Enter a value for the 'disableLocalAuth' infrastructure parameter | Set to `true` to use Managed Identities for authentication, or `false` to use keys. See [Managed Identities](9-managed-identities.md) for more information. if you are unsure we recommend you select `true` |
+| Enter a value for the 'openAILocation' infrastructure parameter: | Select the Azure region you want to deploy the OpenAI service to. |
+|Enter a value for the 'usePrivateEndpoints' infrastructure parameter: | Set to `false` to deploy the application without Private Endpoints, or `true` to use Private Endpoints. See [Private Endpoints](10-private-endpoints.md) for more information. If you are unsure we recommend you select `false` |
+
+
 ## Option 2: GitHub Actions
 
 The following steps describes how the application can be deployed to Azure App service using GitHub Actions.
