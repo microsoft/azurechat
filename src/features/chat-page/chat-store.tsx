@@ -31,6 +31,9 @@ class ChatState {
   public messages: Array<ChatMessageModel> = [];
   public loading: chatStatus = "idle";
   public input: string = "";
+  // Set by the home page when it seeds input before routing to a new thread,
+  // so the chat input auto-submits on arrival.
+  public autoSubmitPending: boolean = false;
   public lastMessage: string = "";
   public autoScroll: boolean = false;
   public userName: string = "";

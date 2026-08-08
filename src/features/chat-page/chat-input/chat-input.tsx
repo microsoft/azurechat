@@ -50,6 +50,20 @@ export const ChatInput = () => {
     }
   };
 
+  // Home page seeds input and routes here with autoSubmitPending set; send it
+  // through the normal form path once the thread is initialised.
+  React.useEffect(() => {
+    if (
+      chatStore.autoSubmitPending &&
+      chatThreadId &&
+      input.trim().length > 0
+    ) {
+      chatStore.autoSubmitPending = false;
+      submit();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatThreadId]);
+
   return (
     <ChatInputForm
       ref={formRef}
