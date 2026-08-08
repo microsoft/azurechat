@@ -131,7 +131,11 @@ export const ExtensionSimilaritySearch = async (props: {
   indexName: string;
 }): Promise<ServerActionResponse<Array<DocumentSearchResponse>>> => {
   try {
-    if (debug) console.log("Executing ExtensionSimilaritySearch with props:", props);
+    if (debug)
+      console.log("Executing ExtensionSimilaritySearch with props:", {
+        ...props,
+        apiKey: "[redacted]",
+      });
     const openai = OpenAIEmbeddingInstance();
     const { searchText, vectors, apiKey, searchName, indexName } = props;
 

@@ -32,7 +32,7 @@ export const DocumentIntelligenceInstance = () => {
   console.log("Credential obtained using", USE_MANAGED_IDENTITIES ? "Managed Identities" : "API Key");
 
   const client = new DocumentAnalysisClient(endpoint, credential);
-  if (debug) console.log("Document Analysis Client created:", client);
+  if (debug) console.log("Document Analysis Client created:", { endpoint });
 
   return client;
 };
