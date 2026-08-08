@@ -5,6 +5,16 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: [main]
+    # Paths that cannot affect what the web app runs. Skipping them keeps
+    # docs and tooling commits from restarting the container in production.
+    # infra/ and scripts/ are deliberately absent: they are not deployed by
+    # this workflow, but a change there usually accompanies one that is.
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - ".claude/**"
+      - ".devcontainer/**"
+      - "LICENSE"
 
   # Allow manual workflow trigger
   workflow_dispatch:
