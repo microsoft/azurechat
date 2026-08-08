@@ -60,6 +60,7 @@ export const ChatInput = () => {
       status={uploadButtonLabel}
     >
       <ChatTextInput
+        placeholder="Send a message (Press Shift + Enter for new line)"
         onBlur={(e) => {
           if (e.currentTarget.value.replace(/\s/g, "").length === 0) {
             ResetInputRows();

@@ -36,6 +36,15 @@ export const ChatHome: FC<ChatPersonaProps> = (props) => {
           description={AI_DESCRIPTION}
         ></Hero>
         <div className="container max-w-4xl flex gap-20 flex-col">
+          <div
+            className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <p>
+              Please remember <span className="font-bold">NOT</span> to share{" "}
+              <span className="font-bold">sensitive or PHI data</span>.
+            </p>
+          </div>
           {flags.extensionsEnabled && (
             <div>
               <h2 className="text-2xl font-bold mb-3">Extensions</h2>

@@ -45,7 +45,10 @@ const configureIdentityProvider = () => {
         tenantId: process.env.AZURE_AD_TENANT_ID!,
         authorization: {
           params: {
-            scope: "openid profile User.Read", 
+            // "email" keeps the email claim in the id_token; without it the
+            // fallback to preferred_username can change userHashedId and
+            // orphan pre-existing chat history keyed on SHA-256(email).
+            scope: "openid profile email User.Read",
           },
         },
         async profile(profile, tokens) {
