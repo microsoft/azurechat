@@ -19,7 +19,9 @@ export const Hero: FC<HeroProps> = (props) => {
           </p>
         </div>
         {props.children && (
-          <div className="flex flex-wrap gap-2">{props.children}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {props.children}
+          </div>
         )}
       </div>
     </div>
@@ -39,7 +41,7 @@ export const HeroButton: FC<HeroButtonProps> = (props) => {
     <button
       onClick={props.onClick}
       className={cn(
-        "flex flex-col gap-1 items-start text-start rounded-2xl border px-4 py-3 max-w-60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "flex flex-col gap-1 h-full items-start text-start rounded-2xl border px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         props.variant === "primary"
           ? "bg-foreground text-background border-transparent hover:opacity-90"
           : "bg-background hover:bg-secondary"
