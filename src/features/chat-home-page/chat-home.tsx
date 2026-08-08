@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/features/auth-page/helpers";
 import { GetFeatureFlags } from "@/features/common/feature-flags";
+import { firstNameFromDisplayName } from "@/features/common/util";
 import { AddExtension } from "@/features/extensions-page/add-extension/add-new-extension";
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
 import { PersonaModel } from "@/features/persona-page/persona-services/models";
@@ -14,7 +15,7 @@ interface ChatPersonaProps {
 export const ChatHome = async (props: ChatPersonaProps) => {
   const flags = GetFeatureFlags();
   const user = await getCurrentUser();
-  const firstName = user.name?.split(" ")[0] ?? "";
+  const firstName = firstNameFromDisplayName(user.name);
 
   return (
     <main className="relative flex flex-1 flex-col items-center justify-center px-4">
