@@ -1,6 +1,7 @@
 "use server";
 import "server-only";
 
+import { GetFeatureFlags } from "@/features/common/feature-flags";
 import { ServerActionResponse } from "@/features/common/server-action-response";
 import { OpenAIDALLEInstance } from "@/features/common/services/openai";
 import { uniqueId } from "@/features/common/util";
@@ -14,29 +15,31 @@ export const GetDefaultExtensions = async (props: {
 }): Promise<ServerActionResponse<Array<any>>> => {
   const defaultExtensions: Array<any> = [];
 
-  // Add image creation Extension
-  defaultExtensions.push({
-    type: "function",
-    function: {
-      function: async (args: any) =>
-        await executeCreateImage(
-          args,
-          props.chatThread.id,
-          props.userMessage,
-          props.signal
-        ),
-      parse: (input: string) => JSON.parse(input),
-      parameters: {
-        type: "object",
-        properties: {
-          prompt: { type: "string" },
+  // Add image creation Extension when DALL-E + blob storage are configured
+  if (GetFeatureFlags().imageGenEnabled) {
+    defaultExtensions.push({
+      type: "function",
+      function: {
+        function: async (args: any) =>
+          await executeCreateImage(
+            args,
+            props.chatThread.id,
+            props.userMessage,
+            props.signal
+          ),
+        parse: (input: string) => JSON.parse(input),
+        parameters: {
+          type: "object",
+          properties: {
+            prompt: { type: "string" },
+          },
         },
+        description:
+          "You must only use this tool if the user asks you to create an image. You must only use this tool once per message.",
+        name: "create_img",
       },
-      description:
-        "You must only use this tool if the user asks you to create an image. You must only use this tool once per message.",
-      name: "create_img",
-    },
-  });
+    });
+  }
 
   // Add any other default Extension here
 

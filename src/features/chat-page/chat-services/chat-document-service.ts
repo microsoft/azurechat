@@ -4,6 +4,7 @@ import "server-only";
 import { userHashedId } from "@/features/auth-page/helpers";
 import { HistoryContainer } from "@/features/common/services/cosmos";
 
+import { GetFeatureFlags } from "@/features/common/feature-flags";
 import { RevalidateCache } from "@/features/common/navigation-helpers";
 import { ServerActionResponse } from "@/features/common/server-action-response";
 import { DocumentIntelligenceInstance } from "@/features/common/services/document-intelligence";
@@ -21,6 +22,14 @@ const debug = process.env.DEBUG === "true";
 export const CrackDocument = async (
   formData: FormData
 ): Promise<ServerActionResponse<string[]>> => {
+  if (!GetFeatureFlags().chatWithFileEnabled) {
+    return {
+      status: "ERROR",
+      errors: [
+        { message: "Document upload is not enabled on this deployment." },
+      ],
+    };
+  }
   try {
     if (debug) console.log("CrackDocument: Ensuring index is created.");
     const response = await EnsureIndexIsCreated();

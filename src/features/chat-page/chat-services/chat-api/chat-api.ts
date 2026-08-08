@@ -2,7 +2,11 @@
 import "server-only";
 
 import { getCurrentUser } from "@/features/auth-page/helpers";
-import { CHAT_DEFAULT_SYSTEM_PROMPT } from "@/features/theme/theme-config";
+import { GetFeatureFlags } from "@/features/common/feature-flags";
+import {
+  CHAT_DEFAULT_SYSTEM_PROMPT,
+  CHAT_IMAGE_GEN_PROMPT,
+} from "@/features/theme/theme-config";
 import { ChatCompletionStreamingRunner } from "openai/resources/beta/chat/completions";
 import { ChatApiRAG } from "../chat-api/chat-api-rag";
 import { FindAllChatDocuments } from "../chat-document-service";
@@ -42,7 +46,10 @@ export const ChatAPIEntry = async (props: UserPrompt, signal: AbortSignal) => {
   ]);
   // Starting values for system and user prompt
   // Note that the system message will also get prepended with the extension execution steps. Please see ChatApiExtensions method.
-  currentChatThread.personaMessage = `${CHAT_DEFAULT_SYSTEM_PROMPT} \n\n ${currentChatThread.personaMessage}`;
+  const systemPrompt = GetFeatureFlags().imageGenEnabled
+    ? `${CHAT_DEFAULT_SYSTEM_PROMPT}\n\n${CHAT_IMAGE_GEN_PROMPT}`
+    : CHAT_DEFAULT_SYSTEM_PROMPT;
+  currentChatThread.personaMessage = `${systemPrompt} \n\n ${currentChatThread.personaMessage}`;
 
   let chatType: ChatTypes = "extensions";
 

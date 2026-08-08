@@ -11,6 +11,7 @@ import {
   CHAT_THREAD_ATTRIBUTE,
   ChatThreadModel,
 } from "@/features/chat-page/chat-services/models";
+import { GetFeatureFlags } from "@/features/common/feature-flags";
 import {
   ServerActionResponse,
   zodErrorsToServerActionErrors,
@@ -18,6 +19,11 @@ import {
 import { HistoryContainer } from "@/features/common/services/cosmos";
 import { AzureKeyVaultInstance } from "@/features/common/services/key-vault";
 import { uniqueId } from "@/features/common/util";
+
+const extensionsDisabledResponse = (): ServerActionResponse<ExtensionModel> => ({
+  status: "ERROR",
+  errors: [{ message: "Extensions are not enabled on this deployment." }],
+});
 import { AI_NAME, CHAT_DEFAULT_PERSONA } from "@/features/theme/theme-config";
 import { SqlQuerySpec } from "@azure/cosmos";
 import {
@@ -80,6 +86,9 @@ export const FindExtensionByID = async (
 export const CreateExtension = async (
   inputModel: ExtensionModel
 ): Promise<ServerActionResponse<ExtensionModel>> => {
+  if (!GetFeatureFlags().extensionsEnabled) {
+    return extensionsDisabledResponse();
+  }
   try {
     const user = await getCurrentUser();
 
@@ -222,6 +231,9 @@ export const FindSecureHeaderValue = async (
 export const DeleteExtension = async (
   id: string
 ): Promise<ServerActionResponse<ExtensionModel>> => {
+  if (!GetFeatureFlags().extensionsEnabled) {
+    return extensionsDisabledResponse();
+  }
   try {
     const extensionResponse = await EnsureExtensionOperation(id);
 
@@ -268,6 +280,9 @@ export const DeleteExtension = async (
 export const UpdateExtension = async (
   inputModel: ExtensionModel
 ): Promise<ServerActionResponse<ExtensionModel>> => {
+  if (!GetFeatureFlags().extensionsEnabled) {
+    return extensionsDisabledResponse();
+  }
   try {
     const extensionResponse = await EnsureExtensionOperation(inputModel.id);
     const user = await getCurrentUser();

@@ -18,21 +18,37 @@ export const ChatApiExtensions = async (props: {
 
   const openAI = OpenAIInstance();
   const systemMessage = await extensionsSystemMessage(chatThread);
+  const messages: ChatCompletionMessageParam[] = [
+    {
+      role: "system",
+      content: chatThread.personaMessage + "\n" + systemMessage,
+    },
+    ...history,
+    {
+      role: "user",
+      content: userMessage,
+    },
+  ];
+
+  // Azure OpenAI rejects an empty tools array, so fall back to a plain
+  // stream when no extensions are registered. This also keeps basic chat
+  // working on deployments whose model has no tool-calling support.
+  if (extensions.length === 0) {
+    return openAI.beta.chat.completions.stream(
+      {
+        model: "",
+        stream: true,
+        messages,
+      },
+      { signal: signal }
+    );
+  }
+
   return openAI.beta.chat.completions.runTools(
     {
       model: "",
       stream: true,
-      messages: [
-        {
-          role: "system",
-          content: chatThread.personaMessage + "\n" + systemMessage,
-        },
-        ...history,
-        {
-          role: "user",
-          content: userMessage,
-        },
-      ],
+      messages,
       tools: extensions,
     },
     { signal: signal }
