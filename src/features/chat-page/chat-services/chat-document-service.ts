@@ -111,7 +111,7 @@ const LoadFile = async (
         status: "ERROR",
         errors: [
           {
-            message: `File is too large and must be less than ${MAX_UPLOAD_DOCUMENT_SIZE} bytes.`,
+            message: `File is too large and must be less than ${fileSize} bytes.`,
           },
         ],
       };
