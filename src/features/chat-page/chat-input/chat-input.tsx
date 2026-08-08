@@ -10,6 +10,7 @@ import {
 import { AttachFile } from "@/features/ui/chat/chat-input-area/attach-file";
 import {
   ChatInputActionArea,
+  ChatInputDocument,
   ChatInputForm,
   ChatInputPrimaryActionArea,
   ChatInputSecondaryActionArea,
@@ -33,7 +34,9 @@ import {
   useTextToSpeech,
 } from "./speech/use-text-to-speech";
 
-export const ChatInput = () => {
+export const ChatInput = (props: {
+  chatDocuments?: Array<ChatInputDocument>;
+}) => {
   const flags = useFeatureFlags();
   const { loading, input, chatThreadId } = useChat();
   const { uploadButtonLabel } = useFileStore();
@@ -72,6 +75,7 @@ export const ChatInput = () => {
         chatStore.submitChat(e);
       }}
       status={uploadButtonLabel}
+      documents={props.chatDocuments}
     >
       <ChatTextInput
         placeholder="Send a message (Press Shift + Enter for new line)"
