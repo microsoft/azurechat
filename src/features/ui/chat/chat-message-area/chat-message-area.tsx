@@ -1,14 +1,19 @@
 "use client";
 import { cn } from "@/ui/lib";
-import {
-  CheckIcon,
-  ClipboardIcon,
-  PocketKnife,
-  UserCircle,
-} from "lucide-react";
+import { CheckIcon, ClipboardIcon, PocketKnife } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Avatar, AvatarImage } from "../../avatar";
-import { Button } from "../../button";
+
+const CopyButton = (props: { copied: boolean; onClick: () => void }) => (
+  <button
+    type="button"
+    title="Copy text"
+    aria-label="Copy text"
+    onClick={props.onClick}
+    className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
+  >
+    {props.copied ? <CheckIcon size={15} /> : <ClipboardIcon size={15} />}
+  </button>
+);
 
 export const ChatMessageArea = (props: {
   children?: React.ReactNode;
@@ -32,79 +37,45 @@ export const ChatMessageArea = (props: {
     return () => clearTimeout(timeout);
   }, [isIconChecked]);
 
-  let profile = null;
+  const prose =
+    "prose prose-slate dark:prose-invert whitespace-break-spaces prose-p:leading-relaxed prose-pre:p-0 max-w-none";
 
-  switch (props.role) {
-    case "assistant":
-    case "user":
-      if (props.profilePicture) {
-        profile = (
-          <Avatar>
-            <AvatarImage src={props.profilePicture} />
-          </Avatar>
-        );
-      } else {
-        profile = (
-          <UserCircle
-            size={28}
-            strokeWidth={1.4}
-            className="text-muted-foreground"
-          />
-        );
-      }
-      break;
-    case "tool":
-    case "function":
-      profile = (
-        <PocketKnife
-          size={28}
-          strokeWidth={1.4}
-          className="text-muted-foreground"
-        />
-      );
-      break;
-    default:
-      break;
+  // User turns read as a right-aligned bubble; the author is unambiguous from
+  // the alignment, so no avatar or name row.
+  if (props.role === "user") {
+    return (
+      <div className="group flex flex-col items-end gap-1">
+        <div
+          className={cn(
+            prose,
+            "bg-secondary dark:bg-accent rounded-3xl px-5 py-2.5 max-w-[75%] overflow-hidden"
+          )}
+        >
+          {props.children}
+        </div>
+        <CopyButton copied={isIconChecked} onClick={handleButtonClick} />
+      </div>
+    );
+  }
+
+  // Tool and function turns are diagnostic output, so they keep a label.
+  if (props.role === "function" || props.role === "tool") {
+    return (
+      <div className="group flex flex-col gap-1">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <PocketKnife size={16} strokeWidth={1.6} />
+          {props.profileName}
+        </div>
+        <div className={prose}>{props.children}</div>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="h-7 flex items-center justify-between">
-        <div className="flex gap-3">
-          {profile}
-          <div
-            className={cn(
-              "text-primary capitalize items-center flex",
-              props.role === "function" || props.role === "tool"
-                ? "text-muted-foreground text-sm"
-                : ""
-            )}
-          >
-            {props.profileName}
-          </div>
-        </div>
-        <div className=" h-7 flex items-center justify-between">
-          <div>
-            <Button
-              variant={"ghost"}
-              size={"sm"}
-              title="Copy text"
-              className="justify-right flex"
-              onClick={handleButtonClick}
-            >
-              {isIconChecked ? (
-                <CheckIcon size={16} />
-              ) : (
-                <ClipboardIcon size={16} />
-              )}
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 flex-1 px-10">
-        <div className="prose prose-slate dark:prose-invert whitespace-break-spaces prose-p:leading-relaxed prose-pre:p-0 max-w-none">
-          {props.children}
-        </div>
+    <div className="group flex flex-col gap-1">
+      <div className={prose}>{props.children}</div>
+      <div className="flex">
+        <CopyButton copied={isIconChecked} onClick={handleButtonClick} />
       </div>
     </div>
   );
