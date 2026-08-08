@@ -27,8 +27,8 @@ export const GetCredential = () => {
   const credential = USE_MANAGED_IDENTITIES
     ? new DefaultAzureCredential()
     : new AzureKeyCredential(apiKey);
-  
-  if (debug) console.log("Credential obtained:", credential);
+
+  if (debug) console.log("Credential obtained");
   return credential;
 }
 
@@ -42,7 +42,7 @@ export const AzureAISearchInstance = <T extends object>() => {
     credential
   );
 
-  console.log("Search Client created:", searchClient);
+  console.log("Search Client created:", { endpoint, indexName });
   return searchClient;
 };
 
@@ -55,7 +55,7 @@ export const AzureAISearchIndexClientInstance = () => {
     credential
   );
 
-  console.log("Search Index Client created:", searchClient);
+  console.log("Search Index Client created:", { endpoint });
   return searchClient;
 };
 
@@ -68,6 +68,6 @@ export const AzureAISearchIndexerClientInstance = () => {
     credential
   );
 
-  console.log("Search Indexer Client created:", client);
+  console.log("Search Indexer Client created:", { endpoint });
   return client;
 };
