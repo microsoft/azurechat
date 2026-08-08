@@ -6,18 +6,13 @@ import { promptStore } from "../prompt-store";
 export const PromptHero = () => {
   return (
     <Hero
-      title={
-        <>
-          <Book size={36} strokeWidth={1.5} /> Prompt Library
-        </>
-      }
-      description={
-        "Prompt templates are statements or questions meant to help users get creative without having to come up with ideas from scratch."
-      }
+      title="Prompt library"
+      description="Reusable prompt templates, so a good starting point is never more than a click away."
     >
       <HeroButton
-        title="Add New Prompt"
-        description="Build your own prompt template"
+        variant="primary"
+        title="New prompt"
+        description="Build your own prompt template."
         icon={<Book />}
         onClick={() => promptStore.newPrompt()}
       />

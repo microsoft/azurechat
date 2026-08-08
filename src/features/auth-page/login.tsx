@@ -4,13 +4,6 @@ import { signIn } from "next-auth/react";
 import { FC } from "react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 
 interface LoginProps {
   isDevMode: boolean;
@@ -20,29 +13,44 @@ interface LoginProps {
 
 export const LogIn: FC<LoginProps> = (props) => {
   return (
-    <Card className="flex gap-2 flex-col min-w-[300px]">
-      <CardHeader className="gap-2">
-        <CardTitle className="text-2xl flex gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={"ai-icon.png"} />
-          </Avatar>
-          <span className="text-primary">{AI_NAME}</span>
-        </CardTitle>
-        <CardDescription>Login in with your BlazerID</CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        {props.githubEnabled && (
-          <Button onClick={() => signIn("github")}>GitHub</Button>
-        )}
+    <div className="flex flex-col items-center gap-8 min-w-[320px]">
+      <div className="flex flex-col items-center gap-3">
+        <Avatar className="h-12 w-12">
+          <AvatarImage src={"ai-icon.png"} alt="" />
+        </Avatar>
+        <h1 className="text-2xl font-normal tracking-tight">{AI_NAME}</h1>
+        <p className="text-sm text-muted-foreground">
+          Sign in with your BlazerID
+        </p>
+      </div>
+      <div className="flex flex-col gap-2 w-full max-w-[280px]">
         {props.entraIdEnabled && (
-          <Button onClick={() => signIn("azure-ad")}>BlazerID</Button>
-        )}
-        {props.isDevMode && (
-          <Button onClick={() => signIn("localdev")}>
-            Basic Auth (DEV ONLY)
+          <Button
+            className="rounded-full h-11"
+            onClick={() => signIn("azure-ad")}
+          >
+            Continue with BlazerID
           </Button>
         )}
-      </CardContent>
-    </Card>
+        {props.githubEnabled && (
+          <Button
+            variant={"outline"}
+            className="rounded-full h-11"
+            onClick={() => signIn("github")}
+          >
+            Continue with GitHub
+          </Button>
+        )}
+        {props.isDevMode && (
+          <Button
+            variant={"outline"}
+            className="rounded-full h-11"
+            onClick={() => signIn("localdev")}
+          >
+            Basic auth (dev only)
+          </Button>
+        )}
+      </div>
+    </div>
   );
 };

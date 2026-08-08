@@ -7,7 +7,7 @@ import ChatMessageContainer from "@/features/ui/chat/chat-message-area/chat-mess
 import ChatMessageContentArea from "@/features/ui/chat/chat-message-area/chat-message-content";
 import { useChatScrollAnchor } from "@/features/ui/chat/chat-message-area/use-chat-scroll-anchor";
 import { useSession } from "next-auth/react";
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useMemo, useRef } from "react";
 import { ExtensionModel } from "../extensions-page/extension-services/models";
 import { ChatHeader } from "./chat-header/chat-header";
 import {
@@ -37,6 +37,38 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
 
   const { messages, loading } = useChat();
 
+  // Documents belong to the thread, not to a message, but the upload always
+  // precedes the send. Walking both lists by timestamp assigns each document
+  // to the turn it was attached for, and leaves anything uploaded since the
+  // last turn as still-pending — which is what the composer shows.
+  const { documentsByMessageId, pendingDocuments } = useMemo(() => {
+    const ordered = [...props.chatDocuments].sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    const byMessage: Record<string, Array<ChatDocumentModel>> = {};
+    let cursor = 0;
+
+    for (const message of messages) {
+      if (message.role !== "user") continue;
+      const sentAt = new Date(message.createdAt).getTime();
+      const attached: Array<ChatDocumentModel> = [];
+      while (
+        cursor < ordered.length &&
+        new Date(ordered[cursor].createdAt).getTime() <= sentAt
+      ) {
+        attached.push(ordered[cursor]);
+        cursor++;
+      }
+      if (attached.length > 0) byMessage[message.id] = attached;
+    }
+
+    return {
+      documentsByMessageId: byMessage,
+      pendingDocuments: ordered.slice(cursor),
+    };
+  }, [props.chatDocuments, messages]);
+
   const current = useRef<HTMLDivElement>(null);
 
   useChatScrollAnchor({ ref: current });
@@ -50,23 +82,13 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
       />
       <ChatMessageContainer ref={current}>
         <ChatMessageContentArea>
-          {messages.length === 0 && (
-            <div
-              className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-              role="alert"
-            >
-              <p>
-                Please remember <span className="font-bold">NOT</span> to share{" "}
-                <span className="font-bold">sensitive or PHI data</span>.
-              </p>
-            </div>
-          )}
           {messages.map((message) => {
             return (
               <ChatMessageArea
                 key={message.id}
                 profileName={message.name}
                 role={message.role}
+                documents={documentsByMessageId[message.id]}
                 onCopy={() => {
                   navigator.clipboard.writeText(message.content);
                 }}
@@ -83,7 +105,7 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
           {loading === "loading" && <ChatLoading />}
         </ChatMessageContentArea>
       </ChatMessageContainer>
-      <ChatInput />
+      <ChatInput chatDocuments={pendingDocuments} />
     </main>
   );
 };

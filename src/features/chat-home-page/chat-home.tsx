@@ -1,94 +1,44 @@
+import { getCurrentUser } from "@/features/auth-page/helpers";
 import { GetFeatureFlags } from "@/features/common/feature-flags";
 import { AddExtension } from "@/features/extensions-page/add-extension/add-new-extension";
-import { ExtensionCard } from "@/features/extensions-page/extension-card/extension-card";
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
-import { PersonaCard } from "@/features/persona-page/persona-card/persona-card";
 import { PersonaModel } from "@/features/persona-page/persona-services/models";
-import { AI_DESCRIPTION, AI_NAME } from "@/features/theme/theme-config";
-import { Hero } from "@/features/ui/hero";
-import { ScrollArea } from "@/features/ui/scroll-area";
-import Image from "next/image";
-import { FC } from "react";
+import { PHI_DISCLAIMER } from "@/features/theme/theme-config";
+import { HomeInput, PersonaSuggestion } from "./home-input";
 
 interface ChatPersonaProps {
   personas: PersonaModel[];
   extensions: ExtensionModel[];
 }
 
-export const ChatHome: FC<ChatPersonaProps> = (props) => {
+export const ChatHome = async (props: ChatPersonaProps) => {
   const flags = GetFeatureFlags();
+  const user = await getCurrentUser();
+  const firstName = user.name?.split(" ")[0] ?? "";
+
   return (
-    <ScrollArea className="flex-1">
-      <main className="flex flex-1 flex-col gap-6 pb-6">
-        <Hero
-          title={
-            <>
-              <Image
-                src={"/ai-icon.png"}
-                width={60}
-                height={60}
-                quality={100}
-                alt="ai-icon"
-              />{" "}
-              {AI_NAME}
-            </>
-          }
-          description={AI_DESCRIPTION}
-        ></Hero>
-        <div className="container max-w-4xl flex gap-20 flex-col">
-          <div
-            className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-            role="alert"
-          >
-            <p>
-              Please remember <span className="font-bold">NOT</span> to share{" "}
-              <span className="font-bold">sensitive or PHI data</span>.
-            </p>
+    <main className="relative flex flex-1 flex-col items-center justify-center px-4">
+      <div className="w-full max-w-2xl flex flex-col items-center gap-8 -mt-16">
+        <h1 className="text-3xl font-normal tracking-tight text-center">
+          {firstName ? `Good to see you, ${firstName}.` : "Good to see you."}
+        </h1>
+
+        <HomeInput />
+
+        {props.personas.length > 0 && (
+          <div className="w-full max-w-xl flex flex-col">
+            {props.personas.slice(0, 3).map((persona) => (
+              <PersonaSuggestion key={persona.id} persona={persona} />
+            ))}
           </div>
-          {flags.extensionsEnabled && (
-            <div>
-              <h2 className="text-2xl font-bold mb-3">Extensions</h2>
+        )}
+      </div>
 
-              {props.extensions && props.extensions.length > 0 ? (
-                <div className="grid grid-cols-3 gap-3">
-                  {props.extensions.map((extension) => {
-                    return (
-                      <ExtensionCard
-                        extension={extension}
-                        key={extension.id}
-                        showContextMenu={false}
-                      />
-                    );
-                  })}
-                </div>
-              ) :
-                <p className="text-muted-foreground max-w-xl">No extentions created</p>
-              }
+      <p className="absolute bottom-4 text-[11px] text-muted-foreground text-center px-4">
+        {PHI_DISCLAIMER}
+      </p>
 
-            </div>
-          )}
-          <div>
-            <h2 className="text-2xl font-bold mb-3">Personas</h2>
-
-            {props.personas && props.personas.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3">
-                {props.personas.map((persona) => {
-                  return (
-                    <PersonaCard
-                      persona={persona}
-                      key={persona.id}
-                      showContextMenu={false}
-                    />
-                  );
-                })}
-              </div>
-            ) :
-              <p className="text-muted-foreground max-w-xl">No personas created</p>
-            }
-          </div>
-        </div>
-        {flags.extensionsEnabled && <AddExtension />}
-      </main>
-    </ScrollArea>
+      {flags.extensionsEnabled && <AddExtension />}
+    </main>
   );
 };

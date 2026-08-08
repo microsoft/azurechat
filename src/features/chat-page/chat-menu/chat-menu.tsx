@@ -15,11 +15,12 @@ interface ChatMenuProps {
 export const ChatMenu: FC<ChatMenuProps> = (props) => {
   const menuItemsGrouped = GroupChatThreadByType(props.menuItems);
   return (
-    <div className="px-3 flex flex-col gap-8 overflow-hidden">
-      {Object.entries(menuItemsGrouped).map(
-        ([groupName, groupItems], index) => (
+    <div className="px-2 flex flex-col gap-6 overflow-hidden">
+      {Object.entries(menuItemsGrouped)
+        .filter(([, groupItems]) => groupItems && groupItems.length > 0)
+        .map(([groupName, groupItems], index) => (
           <ChatGroup key={index} title={groupName}>
-            {groupItems?.map((item) => (
+            {groupItems.map((item) => (
               <ChatMenuItem
                 key={item.id}
                 href={`/chat/${item.id}`}
@@ -29,8 +30,7 @@ export const ChatMenu: FC<ChatMenuProps> = (props) => {
               </ChatMenuItem>
             ))}
           </ChatGroup>
-        )
-      )}
+        ))}
     </div>
   );
 };

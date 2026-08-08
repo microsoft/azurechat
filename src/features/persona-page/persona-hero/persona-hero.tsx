@@ -6,17 +6,13 @@ import { personaStore } from "../persona-store";
 export const PersonaHero = () => {
   return (
     <Hero
-      title={
-        <>
-          <VenetianMask size={36} strokeWidth={1.5} /> Persona
-        </>
-      }
-      description={`  Persona is a representation of a personality that you can use to
-    have a conversation with.`}
+      title="Personas"
+      description="Reusable personalities that shape how the assistant responds in a conversation."
     >
       <HeroButton
-        title="New Persona"
-        description="Create a new personality that you can use to have a conversation with."
+        variant="primary"
+        title="New persona"
+        description="Start from a blank personality."
         icon={<VenetianMask />}
         onClick={() =>
           personaStore.newPersonaAndOpen({
