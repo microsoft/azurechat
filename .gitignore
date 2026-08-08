@@ -26,6 +26,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # typescript
 *.tsbuildinfo
@@ -33,3 +34,5 @@ next-env.d.ts
 
 .azure/
 infra/aad_setup.sh
+.vscode
+infra/main.parameters.example.json
