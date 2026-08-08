@@ -1,7 +1,26 @@
 "use client";
 import { cn } from "@/ui/lib";
-import { CheckIcon, ClipboardIcon, PocketKnife } from "lucide-react";
+import { CheckIcon, ClipboardIcon, FileText, PocketKnife } from "lucide-react";
 import { useEffect, useState } from "react";
+
+const AttachedDocuments = (props: {
+  documents?: Array<{ id: string; name: string }>;
+}) => {
+  if (!props.documents || props.documents.length === 0) return null;
+  return (
+    <ul className="w-full flex flex-col items-end gap-1">
+      {props.documents.map((document) => (
+        <li
+          key={document.id}
+          className="flex items-center gap-1.5 text-xs text-muted-foreground max-w-[75%]"
+        >
+          <FileText size={13} className="shrink-0" />
+          <span className="truncate">{document.name}</span>
+        </li>
+      ))}
+    </ul>
+  );
+};
 
 const CopyButton = (props: { copied: boolean; onClick: () => void }) => (
   <button
@@ -20,6 +39,7 @@ export const ChatMessageArea = (props: {
   profilePicture?: string | null;
   profileName?: string;
   role: "function" | "user" | "assistant" | "system" | "tool";
+  documents?: Array<{ id: string; name: string }>;
   onCopy: () => void;
 }) => {
   const [isIconChecked, setIsIconChecked] = useState(false);
@@ -53,6 +73,7 @@ export const ChatMessageArea = (props: {
         >
           {props.children}
         </div>
+        <AttachedDocuments documents={props.documents} />
         <CopyButton copied={isIconChecked} onClick={handleButtonClick} />
       </div>
     );
