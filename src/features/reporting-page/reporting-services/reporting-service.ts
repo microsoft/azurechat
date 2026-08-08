@@ -9,9 +9,16 @@ import { ServerActionResponse } from "@/features/common/server-action-response";
 import { HistoryContainer } from "@/features/common/services/cosmos";
 import { SqlQuerySpec } from "@azure/cosmos";
 
+export interface ReportingFilter {
+  user?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
 export const FindAllChatThreadsForAdmin = async (
   limit: number,
-  offset: number
+  offset: number,
+  filter: ReportingFilter = {}
 ): Promise<ServerActionResponse<Array<ChatThreadModel>>> => {
   const user = await getCurrentUser();
 
@@ -23,23 +30,43 @@ export const FindAllChatThreadsForAdmin = async (
   }
 
   try {
+    const conditions = ["r.type=@type"];
+    const parameters: SqlQuerySpec["parameters"] = [
+      { name: "@type", value: CHAT_THREAD_ATTRIBUTE },
+    ];
+
+    const userTerm = filter.user?.trim();
+    if (userTerm) {
+      conditions.push("CONTAINS(LOWER(r.useName), LOWER(@user))");
+      parameters.push({ name: "@user", value: userTerm });
+    }
+
+    // createdAt is stored as an ISO-8601 string, so lexical comparison is
+    // chronological. The end date is pushed to the end of that day so the
+    // range reads inclusively, the way a person picking two dates expects.
+    if (filter.startDate) {
+      conditions.push("r.createdAt >= @startDate");
+      parameters.push({
+        name: "@startDate",
+        value: `${filter.startDate}T00:00:00.000Z`,
+      });
+    }
+    if (filter.endDate) {
+      conditions.push("r.createdAt <= @endDate");
+      parameters.push({
+        name: "@endDate",
+        value: `${filter.endDate}T23:59:59.999Z`,
+      });
+    }
+
+    parameters.push({ name: "@offset", value: offset });
+    parameters.push({ name: "@limit", value: limit });
+
     const querySpec: SqlQuerySpec = {
-      query:
-        "SELECT * FROM root r WHERE r.type=@type ORDER BY r.createdAt DESC OFFSET @offset LIMIT @limit",
-      parameters: [
-        {
-          name: "@type",
-          value: CHAT_THREAD_ATTRIBUTE,
-        },
-        {
-          name: "@offset",
-          value: offset,
-        },
-        {
-          name: "@limit",
-          value: limit,
-        },
-      ],
+      query: `SELECT * FROM root r WHERE ${conditions.join(
+        " AND "
+      )} ORDER BY r.createdAt DESC OFFSET @offset LIMIT @limit`,
+      parameters,
     };
 
     const { resources } = await HistoryContainer()
