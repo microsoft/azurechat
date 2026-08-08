@@ -1,5 +1,5 @@
-import { Button } from "@/features/ui/button";
 import { FC, PropsWithChildren } from "react";
+import { cn } from "./lib";
 
 interface HeroProps extends PropsWithChildren {
   title: React.ReactNode;
@@ -8,15 +8,19 @@ interface HeroProps extends PropsWithChildren {
 
 export const Hero: FC<HeroProps> = (props) => {
   return (
-    <div className="border-b w-full py-16">
-      <div className="container max-w-4xl h-full flex flex-col gap-16">
-        <div className="flex gap-6 flex-col items-start">
-          <h1 className="text-4xl font-bold flex gap-2 items-center">
+    <div className="w-full pt-12 pb-2">
+      <div className="container max-w-4xl flex flex-col gap-8">
+        <div className="flex gap-2 flex-col items-start">
+          <h1 className="text-2xl font-normal tracking-tight flex gap-2 items-center">
             {props.title}
           </h1>
-          <p className="text-muted-foreground max-w-xl">{props.description}</p>
+          <p className="text-muted-foreground text-sm max-w-xl">
+            {props.description}
+          </p>
         </div>
-        <div className="grid grid-cols-3 gap-2">{props.children}</div>
+        {props.children && (
+          <div className="flex flex-wrap gap-2">{props.children}</div>
+        )}
       </div>
     </div>
   );
@@ -27,23 +31,34 @@ interface HeroButtonProps {
   title: string;
   description: string;
   onClick: () => void;
+  variant?: "primary" | "default";
 }
 
 export const HeroButton: FC<HeroButtonProps> = (props) => {
   return (
-    <Button
-      variant={"outline"}
-      className="flex flex-col gap-4 h-auto p-4 items-start text-start justify-start"
+    <button
       onClick={props.onClick}
+      className={cn(
+        "flex flex-col gap-1 items-start text-start rounded-2xl border px-4 py-3 max-w-60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        props.variant === "primary"
+          ? "bg-foreground text-background border-transparent hover:opacity-90"
+          : "bg-background hover:bg-secondary"
+      )}
     >
-      <span className="flex gap-2 items-center text-primary">
-        <span>{props.icon}</span>
-        <span className="">{props.title}</span>
+      <span className="flex gap-2 items-center text-sm font-medium [&_svg]:h-4 [&_svg]:w-4">
+        {props.icon}
+        {props.title}
       </span>
-
-      <span className="text-muted-foreground whitespace-break-spaces font-normal">
+      <span
+        className={cn(
+          "text-xs font-normal line-clamp-2",
+          props.variant === "primary"
+            ? "text-background/70"
+            : "text-muted-foreground"
+        )}
+      >
         {props.description}
       </span>
-    </Button>
+    </button>
   );
 };

@@ -20,10 +20,8 @@ export const PromptCard: FC<Props> = (props) => {
           </div>
         )}
       </CardHeader>
-      <CardContent className="text-muted-foreground flex-1">
-        {prompt.description.length > 100
-          ? prompt.description.slice(0, 100).concat("...")
-          : prompt.description}
+      <CardContent className="text-sm text-muted-foreground flex-1">
+        <p className="line-clamp-3">{prompt.description}</p>
       </CardContent>
     </Card>
   );

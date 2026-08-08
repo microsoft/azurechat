@@ -28,8 +28,8 @@ export const PersonaCard: FC<Props> = (props) => {
           </div>
         )}
       </CardHeader>
-      <CardContent className="text-muted-foreground flex-1">
-        {persona.description}
+      <CardContent className="text-sm text-muted-foreground flex-1">
+        <p className="line-clamp-3">{persona.description}</p>
       </CardContent>
       <CardFooter className="gap-1 content-stretch f">
         {props.showContextMenu && <ViewPersona persona={persona} />}

@@ -52,7 +52,7 @@ async function ReportingContent(props: ChatReportingProps) {
   const chatThreads = chatHistoryResponse.response;
   const hasMoreResults = chatThreads.length === SEARCH_PAGE_SIZE;
   return (
-    <div className="container max-w-4xl py-3">
+    <div className="container max-w-5xl py-8">
       <Table>
         <TableHeader>
           <TableRow>
@@ -68,18 +68,34 @@ async function ReportingContent(props: ChatReportingProps) {
             ))}
         </TableBody>
       </Table>
-      <div className="flex gap-2 p-2 justify-end">
+      <div className="flex gap-2 py-4 justify-end">
         {previousPage >= 0 && (
-          <Button asChild size={"icon"} variant={"outline"}>
-            <Link href={"/reporting?pageNumber=" + previousPage}>
-              <ChevronLeft />
+          <Button
+            asChild
+            size={"icon"}
+            variant={"outline"}
+            className="rounded-full"
+          >
+            <Link
+              href={"/reporting?pageNumber=" + previousPage}
+              aria-label="Previous page"
+            >
+              <ChevronLeft size={18} />
             </Link>
           </Button>
         )}
         {hasMoreResults && (
-          <Button asChild size={"icon"} variant={"outline"}>
-            <Link href={"/reporting?pageNumber=" + nextPage}>
-              <ChevronRight />
+          <Button
+            asChild
+            size={"icon"}
+            variant={"outline"}
+            className="rounded-full"
+          >
+            <Link
+              href={"/reporting?pageNumber=" + nextPage}
+              aria-label="Next page"
+            >
+              <ChevronRight size={18} />
             </Link>
           </Button>
         )}
