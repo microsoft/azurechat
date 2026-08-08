@@ -14,12 +14,14 @@ import {
   Sheet,
   VenetianMask,
 } from "lucide-react";
+import { GetFeatureFlags } from "@/features/common/feature-flags";
 import { getCurrentUser } from "../auth-page/helpers";
 import { MenuLink } from "./menu-link";
 import { UserProfile } from "./user-profile";
 
 export const MainMenu = async () => {
   const user = await getCurrentUser();
+  const flags = GetFeatureFlags();
 
   return (
     <Menu>
@@ -43,11 +45,13 @@ export const MainMenu = async () => {
               <VenetianMask {...menuIconProps} />
             </MenuLink>
           </MenuItem>
-          <MenuItem tooltip="extensions">
-            <MenuLink href="/extensions" ariaLabel="Go to the Extensions configuration page">
-              <PocketKnife {...menuIconProps} />
-            </MenuLink>
-          </MenuItem>
+          {flags.extensionsEnabled && (
+            <MenuItem tooltip="extensions">
+              <MenuLink href="/extensions" ariaLabel="Go to the Extensions configuration page">
+                <PocketKnife {...menuIconProps} />
+              </MenuLink>
+            </MenuItem>
+          )}
           <MenuItem tooltip="prompts">
             <MenuLink href="/prompt" ariaLabel="Go to the Prompt Library configuration page">
               <Book {...menuIconProps} />

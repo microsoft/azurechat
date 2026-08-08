@@ -1,3 +1,5 @@
+import { GetFeatureFlags } from "@/features/common/feature-flags";
+import { FeatureFlagsProvider } from "@/features/globals/feature-flags-context";
 import { AuthenticatedProviders } from "@/features/globals/providers";
 import { MainMenu } from "@/features/main-menu/main-menu";
 import { AI_NAME } from "@/features/theme/theme-config";
@@ -17,10 +19,12 @@ export default function RootLayout({
 }) {
   return (
     <AuthenticatedProviders>
-      <div className={cn("flex flex-1 items-stretch")}>
-        <MainMenu />
-        <div className="flex-1 flex">{children}</div>
-      </div>
+      <FeatureFlagsProvider flags={GetFeatureFlags()}>
+        <div className={cn("flex flex-1 items-stretch")}>
+          <MainMenu />
+          <div className="flex-1 flex">{children}</div>
+        </div>
+      </FeatureFlagsProvider>
     </AuthenticatedProviders>
   );
 }

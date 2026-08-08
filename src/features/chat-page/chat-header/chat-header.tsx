@@ -1,4 +1,5 @@
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
+import { useFeatureFlags } from "@/features/globals/feature-flags-context";
 import { CHAT_DEFAULT_PERSONA } from "@/features/theme/theme-config";
 import { VenetianMask } from "lucide-react";
 import { FC } from "react";
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export const ChatHeader: FC<Props> = (props) => {
+  const flags = useFeatureFlags();
   const persona =
     props.chatThread.personaMessageTitle === "" ||
     props.chatThread.personaMessageTitle === undefined
@@ -31,13 +33,17 @@ export const ChatHeader: FC<Props> = (props) => {
         </div>
         <div className="flex gap-2">
           <PersonaDetail chatThread={props.chatThread} />
-          <DocumentDetail chatDocuments={props.chatDocuments} />
-          <ExtensionDetail
-            disabled={props.chatDocuments.length !== 0}
-            extensions={props.extensions}
-            installedExtensionIds={props.chatThread.extension}
-            chatThreadId={props.chatThread.id}
-          />
+          {(flags.chatWithFileEnabled || props.chatDocuments.length > 0) && (
+            <DocumentDetail chatDocuments={props.chatDocuments} />
+          )}
+          {flags.extensionsEnabled && (
+            <ExtensionDetail
+              disabled={props.chatDocuments.length !== 0}
+              extensions={props.extensions}
+              installedExtensionIds={props.chatThread.extension}
+              chatThreadId={props.chatThread.id}
+            />
+          )}
         </div>
       </div>
     </div>

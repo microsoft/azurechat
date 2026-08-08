@@ -17,6 +17,7 @@ import {
 import { ChatTextInput } from "@/features/ui/chat/chat-input-area/chat-text-input";
 import { ImageInput } from "@/features/ui/chat/chat-input-area/image-input";
 import { Microphone } from "@/features/ui/chat/chat-input-area/microphone";
+import { useFeatureFlags } from "@/features/globals/feature-flags-context";
 import { StopChat } from "@/features/ui/chat/chat-input-area/stop-chat";
 import { SubmitChat } from "@/features/ui/chat/chat-input-area/submit-chat";
 import React, { useRef } from "react";
@@ -33,6 +34,7 @@ import {
 } from "./speech/use-text-to-speech";
 
 export const ChatInput = () => {
+  const flags = useFeatureFlags();
   const { loading, input, chatThreadId } = useChat();
   const { uploadButtonLabel } = useFileStore();
   const { isPlaying } = useTextToSpeech();
@@ -77,22 +79,26 @@ export const ChatInput = () => {
       />
       <ChatInputActionArea>
         <ChatInputSecondaryActionArea>
-          <AttachFile
-            onClick={(formData) =>
-              fileStore.onFileChange({ formData, chatThreadId })
-            }
-          />
+          {flags.chatWithFileEnabled && (
+            <AttachFile
+              onClick={(formData) =>
+                fileStore.onFileChange({ formData, chatThreadId })
+              }
+            />
+          )}
           <PromptSlider />
         </ChatInputSecondaryActionArea>
         <ChatInputPrimaryActionArea>
-          <ImageInput />
-          <Microphone
-            startRecognition={() => speechToTextStore.startRecognition()}
-            stopRecognition={() => speechToTextStore.stopRecognition()}
-            isPlaying={isPlaying}
-            stopPlaying={() => textToSpeechStore.stopPlaying()}
-            isMicrophoneReady={isMicrophoneReady}
-          />
+          {flags.multimodalEnabled && <ImageInput />}
+          {flags.speechEnabled && (
+            <Microphone
+              startRecognition={() => speechToTextStore.startRecognition()}
+              stopRecognition={() => speechToTextStore.stopRecognition()}
+              isPlaying={isPlaying}
+              stopPlaying={() => textToSpeechStore.stopPlaying()}
+              isMicrophoneReady={isMicrophoneReady}
+            />
+          )}
           {loading === "loading" ? (
             <StopChat stop={() => chatStore.stopGeneratingMessages()} />
           ) : (
