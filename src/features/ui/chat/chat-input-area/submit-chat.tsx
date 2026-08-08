@@ -10,7 +10,7 @@ export const SubmitChat = React.forwardRef<
     {...props}
     ref={ref}
     aria-label="Submit chat input"
-    className="flex size-9 items-center justify-center rounded-full bg-foreground text-background transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-foreground text-background transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
   >
     <ArrowUp size={18} />
   </button>

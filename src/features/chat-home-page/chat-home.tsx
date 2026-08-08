@@ -3,6 +3,7 @@ import { GetFeatureFlags } from "@/features/common/feature-flags";
 import { AddExtension } from "@/features/extensions-page/add-extension/add-new-extension";
 import { ExtensionModel } from "@/features/extensions-page/extension-services/models";
 import { PersonaModel } from "@/features/persona-page/persona-services/models";
+import { PHI_DISCLAIMER } from "@/features/theme/theme-config";
 import { HomeInput, PersonaSuggestion } from "./home-input";
 
 interface ChatPersonaProps {
@@ -33,8 +34,8 @@ export const ChatHome = async (props: ChatPersonaProps) => {
         )}
       </div>
 
-      <p className="absolute bottom-4 text-[13px] text-destructive/90 text-center px-4">
-        Do not share sensitive or PHI data.
+      <p className="absolute bottom-4 text-[11px] text-muted-foreground text-center px-4">
+        {PHI_DISCLAIMER}
       </p>
 
       {flags.extensionsEnabled && <AddExtension />}

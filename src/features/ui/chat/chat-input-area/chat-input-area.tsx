@@ -1,5 +1,6 @@
 "use client";
 
+import { PHI_DISCLAIMER } from "@/features/theme/theme-config";
 import React from "react";
 import { LoadingIndicator } from "../../loading";
 
@@ -19,6 +20,9 @@ export const ChatInputForm = React.forwardRef<
           {props.children}
         </form>
       </div>
+      <p className="text-center text-[11px] text-muted-foreground pb-1">
+        {PHI_DISCLAIMER}
+      </p>
     </div>
   </div>
 ));
@@ -36,17 +40,21 @@ export const ChatInputStatus = (props: { status?: string }) => {
 };
 
 export const ChatInputActionArea = (props: { children?: React.ReactNode }) => {
-  return <div className="flex justify-between p-2">{props.children}</div>;
+  return (
+    <div className="flex justify-between items-center p-2">
+      {props.children}
+    </div>
+  );
 };
 
 export const ChatInputPrimaryActionArea = (props: {
   children?: React.ReactNode;
 }) => {
-  return <div className="flex">{props.children}</div>;
+  return <div className="flex items-center gap-1">{props.children}</div>;
 };
 
 export const ChatInputSecondaryActionArea = (props: {
   children?: React.ReactNode;
 }) => {
-  return <div className="flex">{props.children}</div>;
+  return <div className="flex items-center gap-1">{props.children}</div>;
 };

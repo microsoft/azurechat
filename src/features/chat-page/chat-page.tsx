@@ -50,17 +50,6 @@ export const ChatPage: FC<ChatPageProps> = (props) => {
       />
       <ChatMessageContainer ref={current}>
         <ChatMessageContentArea>
-          {messages.length === 0 && (
-            <div
-              className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-              role="alert"
-            >
-              <p>
-                Please remember <span className="font-bold">NOT</span> to share{" "}
-                <span className="font-bold">sensitive or PHI data</span>.
-              </p>
-            </div>
-          )}
           {messages.map((message) => {
             return (
               <ChatMessageArea

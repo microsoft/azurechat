@@ -10,3 +10,5 @@ export const CHAT_IMAGE_GEN_PROMPT = `You have access to the following functions
 1. create_img: You must only use the function create_img if the user asks you to create an image.`;
 
 export const NEW_CHAT_NAME = "New chat";
+
+export const PHI_DISCLAIMER = "Do not share sensitive or PHI data.";

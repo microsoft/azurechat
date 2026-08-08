@@ -52,7 +52,7 @@ export const HomeInput = () => {
           type="submit"
           disabled={busy || value.trim().length === 0}
           aria-label="Send"
-          className="flex size-9 items-center justify-center rounded-full bg-foreground text-background transition-opacity disabled:opacity-30"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-foreground text-background transition-opacity disabled:opacity-30"
         >
           {busy ? (
             <LoadingIndicator isLoading={true} />
