@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
 
       - name: Build Bicep for linting
-        uses: azure/CLI@v1
+        uses: azure/CLI@4db43908b9df2e7ac93c8275a8f9a448c59338dd # v1.0.9
         with:
           inlineScript: az config set bicep.use_binary_from_path=false && az bicep build -f infra/main.bicep --stdout
 
@@ -33,6 +33,6 @@ jobs:
           GDN_TEMPLATEANALYZER_VERBOSE: 1
 
       - name: Upload alerts to Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@b8d3b6e8af63cde30bdc382c0bc28114f4346c88 # v2.28.1
         with:
           sarif_file: ${{ steps.msdo.outputs.sarifFile }}
