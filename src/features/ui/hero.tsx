@@ -8,13 +8,13 @@ interface HeroProps extends PropsWithChildren {
 
 export const Hero: FC<HeroProps> = (props) => {
   return (
-    <div className="border-b w-full py-16">
-      <div className="container max-w-4xl h-full flex flex-col gap-16">
+    <div className="border-b w-full py-4">
+      <div className="container max-w-4xl h-full flex flex-col gap-4">
         <div className="flex gap-6 flex-col items-start">
           <h1 className="text-4xl font-bold flex gap-2 items-center">
             {props.title}
           </h1>
-          <p className="text-muted-foreground max-w-xl">{props.description}</p>
+          <p className="text-muted-foreground max-w-4xl">{props.description}</p>
         </div>
         <div className="grid grid-cols-3 gap-2">{props.children}</div>
       </div>

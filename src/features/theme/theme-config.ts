@@ -1,5 +1,5 @@
-export const AI_NAME = "Azure Chat";
-export const AI_DESCRIPTION = "Azure Chat is a friendly AI assistant.";
+export const AI_NAME = "Dayta Lab AI";
+export const AI_DESCRIPTION = "Experience secure, private AI solutions designed to transform data into valuable insights for your business. At Dayta Lab, your data privacy is our priority—analyze, generate, and manage insights with confidence on our trusted platform.";
 export const CHAT_DEFAULT_PERSONA = AI_NAME + " default";
 
 export const CHAT_DEFAULT_SYSTEM_PROMPT = `You are a friendly ${AI_NAME} AI assistant. You must always return in markdown format.
