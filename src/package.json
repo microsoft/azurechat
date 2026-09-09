@@ -49,7 +49,7 @@
     "react-dom": "^18",
     "react-syntax-highlighter": "^15.5.0",
     "server-only": "^0.0.1",
-    "sharp": "^0.33.2",
+    "sharp": "^0.35.4",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
     "valtio": "^1.12.1",
