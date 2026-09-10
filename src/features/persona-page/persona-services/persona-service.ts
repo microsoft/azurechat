@@ -239,6 +239,60 @@ export const UpsertPersona = async (
   }
 };
 
+export const FindPersonaForCurrentUser = async (
+    id: string
+): Promise<ServerActionResponse<PersonaModel>> => {
+  try {
+    const querySpec: SqlQuerySpec = {
+      query:
+          "SELECT * FROM root r WHERE r.type=@type AND (r.isPublished=@isPublished OR r.userId=@userId) AND r.id=@id",
+      parameters: [
+        {
+          name: "@type",
+          value: PERSONA_ATTRIBUTE,
+        },
+        {
+          name: "@isPublished",
+          value: true,
+        },
+        {
+          name: "@userId",
+          value: await userHashedId(),
+        },
+        {
+          name: "@id",
+          value: id,
+        },
+      ],
+    };
+
+    const { resources } = await HistoryContainer()
+        .items.query<PersonaModel>(querySpec)
+        .fetchAll();
+
+    if (resources.length === 0) {
+      return {
+        status: "NOT_FOUND",
+        errors: [{ message: `Persona not found. Please ensure the persona exists and is published for your account.` }],
+      };
+    }
+
+    return {
+      status: "OK",
+      response: resources[0],
+    };
+  } catch (error) {
+    return {
+      status: "ERROR",
+      errors: [
+        {
+          message: `Error finding persona: ${error}`,
+        },
+      ],
+    };
+  }
+};
+
 export const FindAllPersonaForCurrentUser = async (): Promise<
   ServerActionResponse<Array<PersonaModel>>
 > => {
