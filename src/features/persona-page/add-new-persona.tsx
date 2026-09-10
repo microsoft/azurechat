@@ -23,6 +23,7 @@ import {
   personaStore,
   usePersonaState,
 } from "./persona-store";
+import { AI_NAME } from "@/features/theme/theme-config";
 
 interface Props {}
 
@@ -108,6 +109,16 @@ export const AddNewPersona: FC<Props> = (props) => {
                   name="personaMessage"
                   placeholder="Personality of your persona"
                 />
+              </div>
+              <div className="grid grid-cols-[20px_1fr] gap-2">
+                <input className="h-5"
+                       type="checkbox"
+                       name="useIntroductionMessage"
+                       defaultChecked={persona.useIntroductionMessage}
+                />
+                <div className="flex items-center">
+                  <Label htmlFor="useIntroductionMessage">{AI_NAME} uses a customized introduction message for this persona</Label>
+                </div>
               </div>
             </div>
           </ScrollArea>

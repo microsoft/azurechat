@@ -2,7 +2,7 @@
 import "server-only";
 
 import { getCurrentUser, userHashedId } from "@/features/auth-page/helpers";
-import { UpsertChatThread } from "@/features/chat-page/chat-services/chat-thread-service";
+import { CreateIntroMessage, UpsertChatThread } from "@/features/chat-page/chat-services/chat-thread-service";
 import {
   CHAT_THREAD_ATTRIBUTE,
   ChatThreadModel,
@@ -15,12 +15,15 @@ import { HistoryContainer } from "@/features/common/services/cosmos";
 import { uniqueId } from "@/features/common/util";
 import { SqlQuerySpec } from "@azure/cosmos";
 import { PERSONA_ATTRIBUTE, PersonaModel, PersonaModelSchema } from "./models";
+import { INTRODUCTION_MESSAGE_PROMPT} from "@/features/theme/theme-config";
+import { OpenAIInstance } from "@/features/common/services/openai";
 
 interface PersonaInput {
   name: string;
   description: string;
   personaMessage: string;
   isPublished: boolean;
+  useIntroductionMessage: boolean;
 }
 
 export const FindPersonaByID = async (
@@ -84,6 +87,7 @@ export const CreatePersona = async (
       description: props.description,
       personaMessage: props.personaMessage,
       isPublished: user.isAdmin ? props.isPublished : false,
+      useIntroductionMessage: props.useIntroductionMessage,
       userId: await userHashedId(),
       createdAt: new Date(),
       type: "PERSONA",
@@ -197,6 +201,7 @@ export const UpsertPersona = async (
         isPublished: user.isAdmin
           ? personaInput.isPublished
           : persona.isPublished,
+        useIntroductionMessage: personaInput.useIntroductionMessage,
         createdAt: new Date(),
       };
 
@@ -305,6 +310,9 @@ export const CreatePersonaChat = async (
       personaMessageTitle: persona.name,
       extension: [],
     });
+    if (response.status === "OK" && persona.useIntroductionMessage) {
+      await CreatePersonaIntroMessage(response.response.id, persona.personaMessage)
+    }
 
     return response;
   }
@@ -326,3 +334,22 @@ const ValidateSchema = (model: PersonaModel): ServerActionResponse => {
     response: model,
   };
 };
+
+const CreatePersonaIntroMessage = async (chatThreadId: string, personaMessage: string) => {
+  let completionText = "";
+  const openAI = OpenAIInstance();
+  try {
+    const completion = await openAI.chat.completions.create({
+      model: "",
+      messages: [
+        { role: "system", content: INTRODUCTION_MESSAGE_PROMPT },
+        { role: "user", content: `These are your general capabilities: ${personaMessage}`},
+      ],
+    });
+
+    completionText = (completion.choices[0]?.message?.content || "");
+    await CreateIntroMessage(chatThreadId, completionText);
+  } catch (error) {
+    console.error("Error during OpenAI completion:", error);
+  }
+}

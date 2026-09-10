@@ -10,6 +10,7 @@ import { RedirectToChatThread } from "@/features/common/navigation-helpers";
 import { ServerActionResponse } from "@/features/common/server-action-response";
 import { uniqueId } from "@/features/common/util";
 import {
+  AI_NAME,
   CHAT_DEFAULT_PERSONA,
   NEW_CHAT_NAME,
 } from "@/features/theme/theme-config";
@@ -17,10 +18,11 @@ import { SqlQuerySpec } from "@azure/cosmos";
 import { HistoryContainer } from "../../common/services/cosmos";
 import { DeleteDocuments } from "./azure-ai-search/azure-ai-search";
 import { FindAllChatDocuments } from "./chat-document-service";
-import { FindAllChatMessagesForCurrentUser } from "./chat-message-service";
+import { CreateChatMessage, FindAllChatMessagesForCurrentUser } from "./chat-message-service";
 import {
   CHAT_THREAD_ATTRIBUTE,
   ChatDocumentModel,
+  ChatRole,
   ChatThreadModel,
 } from "./models";
 
@@ -333,6 +335,18 @@ export const UpdateChatTitle = async (
     };
   }
 };
+
+export const CreateIntroMessage = async (chatThreadId: string, messageText: string) => {
+  let role: ChatRole = "assistant";
+  const messageModel = {
+    name: AI_NAME,
+    role: role,
+    content: messageText,
+    chatThreadId: chatThreadId,
+    multiModalImage: "",
+  };
+  void CreateChatMessage(messageModel);
+}
 
 export const CreateChatAndRedirect = async () => {
   const response = await CreateChatThread();
