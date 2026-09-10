@@ -255,7 +255,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     siteConfig: {
       linuxFxVersion: 'NODE|22-lts'
       alwaysOn: true
-      appCommandLine: 'next start'
+      appCommandLine: 'node .next/standalone/server.js'
       ftpsState: 'Disabled'
       minTlsVersion: '1.2'
       appSettings: concat(appSettingsCommon, appSettingsWithLocalAuth)
