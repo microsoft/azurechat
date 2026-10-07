@@ -24,7 +24,7 @@ jobs:
           inlineScript: az config set bicep.use_binary_from_path=false && az bicep build -f infra/main.bicep --stdout
 
       - name: Run Microsoft Security DevOps Analysis
-        uses: microsoft/security-devops-action@preview
+        uses: microsoft/security-devops-action@08976cb623803b1b36d7112d4ff9f59eae704de0 # v1.12.0
         id: msdo
         continue-on-error: true
         with:
